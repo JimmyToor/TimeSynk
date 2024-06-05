@@ -84,3 +84,7 @@ gem "rotp"
 gem "rqrcode"
 
 gem "inline_svg", "~> 1.9"
+
+gem "ice_cube", "~> 0.16.4"
+
+gem "recurring_select", "~> 3.0"
