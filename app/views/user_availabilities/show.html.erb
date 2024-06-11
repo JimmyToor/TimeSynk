@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @user_availability %>
+
+<div>
+  <%= link_to "Edit this user availability", edit_user_availability_path(@user_availability) %> |
+  <%= link_to "Back to user availabilities", user_availabilities_path %>
+
+  <%= button_to "Destroy this user availability", @user_availability, method: :delete %>
+</div>

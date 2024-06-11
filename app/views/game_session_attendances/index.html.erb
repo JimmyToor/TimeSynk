@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Game session attendances</h1>
+
+<div id="game_session_attendances">
+  <% @game_session_attendances.each do |game_session_attendance| %>
+    <%= render game_session_attendance %>
+    <p>
+      <%= link_to "Show this game session attendance", game_session_attendance %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New game session attendance", new_game_session_attendance_path %>

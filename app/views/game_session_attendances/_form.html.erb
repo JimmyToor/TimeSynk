@@ -1,0 +1,32 @@
+<%= form_with(model: game_session_attendance) do |form| %>
+  <% if game_session_attendance.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(game_session_attendance.errors.count, "error") %> prohibited this game_session_attendance from being saved:</h2>
+
+      <ul>
+        <% game_session_attendance.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :game_session_id, style: "display: block" %>
+    <%= form.text_field :game_session_id %>
+  </div>
+
+  <div>
+    <%= form.label :user_id, style: "display: block" %>
+    <%= form.text_field :user_id %>
+  </div>
+
+  <div>
+    <%= form.label :attending, style: "display: block" %>
+    <%= form.check_box :attending %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

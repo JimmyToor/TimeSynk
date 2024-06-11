@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @game_proposal %>
+
+<div>
+  <%= link_to "Edit this game proposal", edit_game_proposal_path(@game_proposal) %> |
+  <%= link_to "Back to game proposals", game_proposals_path %>
+
+  <%= button_to "Destroy this game proposal", @game_proposal, method: :delete %>
+</div>

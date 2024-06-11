@@ -1,0 +1,32 @@
+<%= form_with(model: proposal_availability) do |form| %>
+  <% if proposal_availability.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(proposal_availability.errors.count, "error") %> prohibited this proposal_availability from being saved:</h2>
+
+      <ul>
+        <% proposal_availability.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :schedule_id, style: "display: block" %>
+    <%= form.text_field :schedule_id %>
+  </div>
+
+  <div>
+    <%= form.label :user_id, style: "display: block" %>
+    <%= form.text_field :user_id %>
+  </div>
+
+  <div>
+    <%= form.label :proposal_id, style: "display: block" %>
+    <%= form.text_field :proposal_id %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

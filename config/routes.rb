@@ -1,4 +1,14 @@
 Rails.application.routes.draw do
+  resources :game_session_attendances
+  resources :group_availabilities
+  resources :proposal_availabilities
+  resources :user_availabilities
+  resources :game_sessions
+  resources :schedules
+  resources :proposal_votes
+  resources :game_proposals
+  resources :group_memberships
+  resources :groups
   namespace :two_factor_authentication do
     namespace :challenge do
       resource :totp,           only: [:new, :create]
@@ -16,6 +26,7 @@ Rails.application.routes.draw do
   post "sign_in", to: "sessions#create"
   get  "sign_up", to: "registrations#new"
   post "sign_up", to: "registrations#create"
+  delete "sign_out", to: "sessions#destroy", as: :sign_out
   resources :sessions, only: [:index, :show, :destroy]
   resource  :password, only: [:edit, :update]
   namespace :identity do

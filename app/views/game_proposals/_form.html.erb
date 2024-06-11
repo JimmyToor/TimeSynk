@@ -1,0 +1,42 @@
+<%= form_with(model: game_proposal) do |form| %>
+  <% if game_proposal.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(game_proposal.errors.count, "error") %> prohibited this game_proposal from being saved:</h2>
+
+      <ul>
+        <% game_proposal.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :group_id, style: "display: block" %>
+    <%= form.text_field :group_id %>
+  </div>
+
+  <div>
+    <%= form.label :game_checksum, style: "display: block" %>
+    <%= form.number_field :game_checksum %>
+  </div>
+
+  <div>
+    <%= form.label :user_id, style: "display: block" %>
+    <%= form.text_field :user_id %>
+  </div>
+
+  <div>
+    <%= form.label :yes_votes, style: "display: block" %>
+    <%= form.number_field :yes_votes %>
+  </div>
+
+  <div>
+    <%= form.label :no_votes, style: "display: block" %>
+    <%= form.number_field :no_votes %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

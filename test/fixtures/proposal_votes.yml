@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  proposal: one
+  yes_vote: false
+  comment: MyText
+
+two:
+  user: two
+  proposal: two
+  yes_vote: false
+  comment: MyText

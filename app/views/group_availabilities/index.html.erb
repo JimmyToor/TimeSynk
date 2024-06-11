@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Group availabilities</h1>
+
+<div id="group_availabilities">
+  <% @group_availabilities.each do |group_availability| %>
+    <%= render group_availability %>
+    <p>
+      <%= link_to "Show this group availability", group_availability %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New group availability", new_group_availability_path %>

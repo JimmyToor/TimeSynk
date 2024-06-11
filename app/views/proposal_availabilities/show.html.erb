@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @proposal_availability %>
+
+<div>
+  <%= link_to "Edit this proposal availability", edit_proposal_availability_path(@proposal_availability) %> |
+  <%= link_to "Back to proposal availabilities", proposal_availabilities_path %>
+
+  <%= button_to "Destroy this proposal availability", @proposal_availability, method: :delete %>
+</div>

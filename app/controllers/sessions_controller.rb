@@ -8,10 +8,11 @@ class SessionsController < ApplicationController
   end
 
   def new
+    render layout: "guest"
   end
 
   def create
-    if user = User.authenticate_by(email: params[:email], password: params[:password])
+    if (user = User.authenticate_by(email: params[:email], password: params[:password]))
       @session = user.sessions.create!
       cookies.signed.permanent[:session_token] = { value: @session.id, httponly: true }
 
@@ -22,11 +23,18 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    @session.destroy; redirect_to(sessions_path, notice: "That session has been logged out")
+    @session.destroy
+    cookies.delete(:session_token)
+    redirect_to(sessions_path, notice: "That session has been logged out")
   end
 
   private
-    def set_session
-      @session = Current.user.sessions.find(params[:id])
+
+  def set_session
+    @session = if params[:id]
+      Current.user.sessions.find(params[:id])
+    else
+      Current.user.sessions.find_by(id: cookies.signed[:session_token])
     end
+  end
 end

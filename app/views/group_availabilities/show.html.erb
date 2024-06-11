@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @group_availability %>
+
+<div>
+  <%= link_to "Edit this group availability", edit_group_availability_path(@group_availability) %> |
+  <%= link_to "Back to group availabilities", group_availabilities_path %>
+
+  <%= button_to "Destroy this group availability", @group_availability, method: :delete %>
+</div>

@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Proposal availabilities</h1>
+
+<div id="proposal_availabilities">
+  <% @proposal_availabilities.each do |proposal_availability| %>
+    <%= render proposal_availability %>
+    <p>
+      <%= link_to "Show this proposal availability", proposal_availability %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New proposal availability", new_proposal_availability_path %>

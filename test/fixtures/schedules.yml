@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  start_date: 2024-06-06 14:47:35
+  end_date: 2024-06-06 14:47:35
+  duration: 1
+  schedule_pattern: MyText
+
+two:
+  start_date: 2024-06-06 14:47:35
+  end_date: 2024-06-06 14:47:35
+  duration: 1
+  schedule_pattern: MyText
