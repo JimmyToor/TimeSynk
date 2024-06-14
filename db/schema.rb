@@ -134,6 +134,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_06_231939) do
 
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
+    t.string "username", null: false
     t.string "password_digest", null: false
     t.boolean "verified", default: false, null: false
     t.integer "account_id", null: false
@@ -141,6 +142,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_06_231939) do
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_users_on_account_id"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   add_foreign_key "game_proposals", "groups"

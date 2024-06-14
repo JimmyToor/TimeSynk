@@ -11,5 +11,6 @@ User.create(
   email: "test@test.com",
   password: "mypassword123",
   password_confirmation: "mypassword123",
+  username: "tester",
   verified: true
 )

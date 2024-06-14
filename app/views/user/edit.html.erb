@@ -1,6 +1,9 @@
+<h1>User#edit</h1>
+<p>Find me in app/views/user/edit.html.erb</p>
 <p style="color: green"><%= notice %></p>
 
 <p>Signed as <%= Current.user.email %></p>
+<p><%= Current.user.username %></p>
 
 <h2>Login and verification</h2>
 
@@ -19,5 +22,4 @@
 </div>
 
 <br>
-
 <%= button_to "Sign out", Current.session, method: :delete %>

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'user/edit'
   resources :game_session_attendances
   resources :group_availabilities
   resources :proposal_availabilities
@@ -26,7 +27,9 @@ Rails.application.routes.draw do
   post "sign_in", to: "sessions#create"
   get  "sign_up", to: "registrations#new"
   post "sign_up", to: "registrations#create"
-  delete "sign_out", to: "sessions#destroy", as: :sign_out
+  get "sign_out", to: "sessions#destroy", as: :sign_out
+  get "settings", to: "user#edit", as: :settings
+  get "home", to: "home#index", as: :home
   resources :sessions, only: [:index, :show, :destroy]
   resource  :password, only: [:edit, :update]
   namespace :identity do

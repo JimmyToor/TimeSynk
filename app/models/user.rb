@@ -24,6 +24,7 @@ class User < ApplicationRecord
   has_many :group_availability_schedules, through: :group_availabilities, source: :schedule
   has_many :proposal_availability_schedules, through: :proposal_availabilities, source: :schedule
 
+
   validates :email, presence: true, uniqueness: true, format: {with: URI::MailTo::EMAIL_REGEXP}
   validates :password, allow_nil: true, length: {minimum: 12}
 
