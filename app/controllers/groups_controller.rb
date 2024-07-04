@@ -3,32 +3,39 @@ class GroupsController < ApplicationController
 
   # GET /groups or /groups.json
   def index
-    @groups = Group.all
+    @groups = policy_scope(Group)
+    authorize @groups
   end
 
   # GET /groups/1 or /groups/1.json
   def show
+    authorize(@group)
+    @group_membership = GroupMembership.find_by(group: @group, user: Current.user)
   end
 
   # GET /groups/new
   def new
     @group = Group.new
+    authorize(@group)
   end
 
   # GET /groups/1/edit
   def edit
+    authorize(@group)
   end
 
   # POST /groups or /groups.json
   def create
-    @group = Group.new(group_params)
+    service = GroupCreationService.new(group_params, Current.user)
+    @group = service.create_group_and_membership
+    authorize(@group)
 
     respond_to do |format|
-      if @group.save
+      if @group.persisted?
         format.html { redirect_to group_url(@group), notice: "Group was successfully created." }
         format.json { render :show, status: :created, location: @group }
       else
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { render :new, status: :unprocessable_entity, notice: I18n.t("group.group_creation_error") }
         format.json { render json: @group.errors, status: :unprocessable_entity }
       end
     end
@@ -36,6 +43,7 @@ class GroupsController < ApplicationController
 
   # PATCH/PUT /groups/1 or /groups/1.json
   def update
+    authorize(@group)
     respond_to do |format|
       if @group.update(group_params)
         format.html { redirect_to group_url(@group), notice: "Group was successfully updated." }
@@ -49,6 +57,7 @@ class GroupsController < ApplicationController
 
   # DELETE /groups/1 or /groups/1.json
   def destroy
+    authorize(@group)
     @group.destroy!
 
     respond_to do |format|

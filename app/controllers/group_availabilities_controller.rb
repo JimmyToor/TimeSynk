@@ -3,7 +3,7 @@ class GroupAvailabilitiesController < ApplicationController
 
   # GET /group_availabilities or /group_availabilities.json
   def index
-    @group_availabilities = GroupAvailability.all
+    @group_availabilities = GroupAvailability.where(group_id: params[:group_id])
   end
 
   # GET /group_availabilities/1 or /group_availabilities/1.json

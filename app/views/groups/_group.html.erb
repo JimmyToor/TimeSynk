@@ -5,8 +5,16 @@
   </p>
 
   <p>
-    <strong>User:</strong>
-    <%= group.user_id %>
+    <strong>Members:</strong>
   </p>
+  <ul>
+    <% group.users.each do |user| %>
+      <li><%= link_to user.username,
+                      user_path(user, params: {group_id: group.id }),
+                      class: "btn btn-primary",
+                      data: { turbo_frame: "show_user" } %></li>
+  <% end %>
+  </ul>
+  <%= turbo_frame_tag "show_user" %>
 
 </div>

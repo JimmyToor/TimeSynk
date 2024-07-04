@@ -13,4 +13,13 @@ User.create(
   password_confirmation: "mypassword123",
   username: "tester",
   verified: true
+).add_role(:admin)
+
+User.create(
+  email: "normaluser@test.com",
+  password: "mypassword123",
+  password_confirmation: "mypassword123",
+  username: "normaluser",
+  verified: true
 )
+

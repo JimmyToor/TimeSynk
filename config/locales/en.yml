@@ -29,3 +29,12 @@
 
 en:
   hello: "Hello world"
+  group:
+    creation_error: "There was an error creating the group. Please try again later."
+    join_error: "There was an error joining the group. Please try again later."
+    join_success: "You have successfully joined the group."
+    invalid_link: "Invalid group invite link."
+    group_creation_error: "There was an error creating the group. Please try again later."
+  group_membership:
+    invite_not_valid: "There was a problem with the invite. Please try again later."
+    already_member: "You are already a member of this group."

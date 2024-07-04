@@ -1,0 +1,15 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @invite %>
+
+<div>
+  <%= form_with(model: [@invite.group, GroupMembership.new], local: true) do |form| %>
+    <%= form.hidden_field :invite_token, value: @invite.invite_token %>
+    <%= form.hidden_field :user_id, value: Current.user.id %>
+    <%= form.submit "Accept Invite" %>
+  <% end %>
+</div>
+
+
+
+

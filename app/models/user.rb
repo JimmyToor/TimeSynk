@@ -1,5 +1,8 @@
 class User < ApplicationRecord
+  rolify
   has_secure_password
+
+  after_create :assign_default_role
 
   generates_token_for :email_verification, expires_in: 2.days do
     email
@@ -13,6 +16,7 @@ class User < ApplicationRecord
   has_many :sessions, dependent: :destroy
   has_many :group_memberships, dependent: :destroy
   has_many :groups, through: :group_memberships
+  has_many :invites, dependent: :destroy
   has_many :game_proposals, dependent: :destroy
   has_many :game_sessions, dependent: :destroy
   has_many :game_session_attendances, dependent: :destroy
@@ -48,5 +52,9 @@ class User < ApplicationRecord
 
   def schedules_for_proposal(proposal)
     proposal_availability_schedules.where(proposal_availabilities: {proposal: proposal})
+  end
+
+  def assign_default_role
+    self.add_role(:newuser) if self.roles.blank?
   end
 end

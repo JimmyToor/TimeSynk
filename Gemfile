@@ -8,8 +8,8 @@ gem "rails", "~> 7.1.3", ">= 7.1.3.3"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
 
-# Use sqlite3 as the database for Active Record
-gem "sqlite3", "~> 1.4"
+# Use postgresql as the database for Active Record
+gem "pg", "~> 1.1"
 
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
@@ -35,9 +35,6 @@ gem "jbuilder"
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
-
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
@@ -50,7 +47,7 @@ gem "bootsnap", require: false
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
-  gem 'standard', require: false
+  gem "standard", require: false
 end
 
 group :development do
@@ -72,7 +69,6 @@ end
 
 gem "authentication-zero", "~> 3.0"
 
-gem "litestack", "~> 0.4.4"
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
 # Use OmniAuth to support multi-provider authentication [https://github.com/omniauth/omniauth]
@@ -89,3 +85,7 @@ gem "inline_svg", "~> 1.9"
 gem "ice_cube", "~> 0.16.4"
 
 gem "recurring_select", "~> 3.0"
+
+gem "rolify", "~> 6.0"
+
+gem "pundit", "~> 2.3"

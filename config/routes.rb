@@ -1,15 +1,26 @@
 Rails.application.routes.draw do
-  get 'user/edit'
-  resources :game_session_attendances
-  resources :group_availabilities
-  resources :proposal_availabilities
-  resources :user_availabilities
-  resources :game_sessions
-  resources :schedules
-  resources :proposal_votes
-  resources :game_proposals
-  resources :group_memberships
-  resources :groups
+  resources :schedules, only: [:index]
+  resources :group_availabilities, only: [:index]
+  resources :proposal_availabilities, only: [:index]
+  resources :user_availabilities, only: [:index]
+  resources :game_proposals, only: [:index]
+  resources :game_sessions, only: [:index]
+  resources :users
+  shallow do
+    resources :groups do
+      resources :group_memberships, only: [:index, :destroy, :create]
+      resources :invites, except: [:show]
+      resources :group_availabilities
+      resources :game_proposals do
+        resources :game_sessions do
+          resources :game_session_attendances
+        end
+        resources :proposal_availabilities
+        resources :proposal_votes
+      end
+    end
+  end
+  get "invites/join/:invite_token", to: "group_memberships#new", as: :accept_invite
   namespace :two_factor_authentication do
     namespace :challenge do
       resource :totp,           only: [:new, :create]
@@ -23,12 +34,12 @@ Rails.application.routes.draw do
   get  "/auth/failure",            to: "sessions/omniauth#failure"
   get  "/auth/:provider/callback", to: "sessions/omniauth#create"
   post "/auth/:provider/callback", to: "sessions/omniauth#create"
-  get  "sign_in", to: "sessions#new"
+  get  "sign_in", to: "sessions#new", as: :sign_in
   post "sign_in", to: "sessions#create"
-  get  "sign_up", to: "registrations#new"
+  get  "sign_up", to: "registrations#new", as: :sign_up
   post "sign_up", to: "registrations#create"
   get "sign_out", to: "sessions#destroy", as: :sign_out
-  get "settings", to: "user#edit", as: :settings
+  get "settings", to: "users#edit", as: :settings
   get "home", to: "home#index", as: :home
   resources :sessions, only: [:index, :show, :destroy]
   resource  :password, only: [:edit, :update]

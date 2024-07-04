@@ -3,8 +3,16 @@
 <%= render @group %>
 
 <div>
+  <h3>Group Invites</h3>
+  <%= render @group.invites %>
+</div>
+
+<div>
   <%= link_to "Edit this group", edit_group_path(@group) %> |
+  <%= link_to "Invite to this group", new_group_invite_path(@group) %>
+  <%= link_to "Show this group's invites", group_invites_path(@group) %>
   <%= link_to "Back to groups", groups_path %>
 
+  <%= button_to "Leave this group", @group_membership, method: :delete %>
   <%= button_to "Destroy this group", @group, method: :delete %>
 </div>

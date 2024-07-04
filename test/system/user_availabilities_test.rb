@@ -10,9 +10,9 @@ class UserAvailabilitiesTest < ApplicationSystemTestCase
     assert_selector "h1", text: "User availabilities"
   end
 
-  test "should create user availability" do
+  test "should create users availability" do
     visit user_availabilities_url
-    click_on "New user availability"
+    click_on "New users availability"
 
     fill_in "Schedule", with: @user_availability.schedule_id
     fill_in "User", with: @user_availability.user_id
@@ -24,7 +24,7 @@ class UserAvailabilitiesTest < ApplicationSystemTestCase
 
   test "should update User availability" do
     visit user_availability_url(@user_availability)
-    click_on "Edit this user availability", match: :first
+    click_on "Edit this users availability", match: :first
 
     fill_in "Schedule", with: @user_availability.schedule_id
     fill_in "User", with: @user_availability.user_id
@@ -36,7 +36,7 @@ class UserAvailabilitiesTest < ApplicationSystemTestCase
 
   test "should destroy User availability" do
     visit user_availability_url(@user_availability)
-    click_on "Destroy this user availability", match: :first
+    click_on "Destroy this users availability", match: :first
 
     assert_text "User availability was successfully destroyed"
   end

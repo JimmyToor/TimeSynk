@@ -1,0 +1,17 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Group invites</h1>
+
+<div id="invites">
+  <% @invites.each do |invite| %>
+    <%= render invite %>
+    <p>
+      <%= link_to "Edit this group invite", edit_invite_path(invite) %> |
+      <%= button_to "Destroy this group invite", invite, method: :delete %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New invite", new_group_invite_path(@group) %>
+<%= link_to ("Back to #{@group.name}"), group_path(@group) %>
+

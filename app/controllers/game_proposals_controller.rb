@@ -3,7 +3,11 @@ class GameProposalsController < ApplicationController
 
   # GET /game_proposals or /game_proposals.json
   def index
-    @game_proposals = GameProposal.all
+    @game_proposals = if params[:group_id]
+      GameProposal.for_group(params[:group_id])
+    else
+      GameProposal.for_current_user_groups
+    end
   end
 
   # GET /game_proposals/1 or /game_proposals/1.json

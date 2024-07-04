@@ -1,0 +1,11 @@
+<%= turbo_frame_tag "show_user" do %>
+
+  <p style="color: green"><%= notice %></p>
+
+  <%= render @user %>
+
+  <% if @roles.present? %>
+    <h3>Roles</h3>
+    <%= render @roles %>
+  <% end %>
+<% end %>

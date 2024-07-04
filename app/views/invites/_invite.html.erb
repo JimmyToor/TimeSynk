@@ -1,0 +1,29 @@
+<div id="<%= dom_id invite %>">
+  <p>
+    <strong>User:</strong>
+    <%= invite.user_id %>
+  </p>
+
+  <p>
+    <strong>Group:</strong>
+    <%= invite.group_id %>
+  </p>
+
+  <p>
+    <strong>Invite URL:</strong>
+    <%= accept_invite_url(invite_token: invite.invite_token) %>
+  </p>
+
+  <p>
+    <strong>Roles:</strong>
+    <% Role.where(id: invite.role_ids).pluck(:name).each do |role| %>
+      <%= role %><br>
+    <% end %>
+  </p>
+
+  <p>
+    <strong>Expires at:</strong>
+    <%= invite.expires_at %>
+  </p>
+
+</div>

@@ -1,0 +1,9 @@
+<h1>New invite</h1>
+
+<%= render "form", invite: @invite, group: @invite.group %>
+
+<br>
+
+<div>
+  <%= link_to "Back to group invites", group_invites_path(@invite.group) %>
+</div>

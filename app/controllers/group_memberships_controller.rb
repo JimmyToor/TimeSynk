@@ -13,22 +13,33 @@ class GroupMembershipsController < ApplicationController
   # GET /group_memberships/new
   def new
     @group_membership = GroupMembership.new
+    @invite = Invite.find_by(invite_token: params[:invite_token])
+    if !@invite || !@invite.group
+      render :error, alert: "Invalid invite"
+    end
   end
 
   # GET /group_memberships/1/edit
   def edit
+
   end
 
   # POST /group_memberships or /group_memberships.json
-  def create
-    @group_membership = GroupMembership.new(group_membership_params)
+  def create # TODO Only let admins create memberships for users that are not themselves
+    if group_membership_params[:invite_token].present?
+      service = InviteAcceptanceService.new(group_membership_params.merge(group_id: params[:group_id]))
+      @group_membership = service.accept_invite
+    else
+      @group_membership = GroupMembership.new(group_membership_params)
+      @group_membership.save
+    end
 
     respond_to do |format|
-      if @group_membership.save
-        format.html { redirect_to group_membership_url(@group_membership), notice: "Group membership was successfully created." }
+      if @group_membership.persisted?
+        format.html { redirect_to group_path(@group_membership.group), notice: "You have joined #{@group_membership.group.name}." }
         format.json { render :show, status: :created, location: @group_membership }
       else
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { render :error, status: :unprocessable_entity, notice: @group_membership.errors.full_messages.join(", ") }
         format.json { render json: @group_membership.errors, status: :unprocessable_entity }
       end
     end
@@ -38,7 +49,7 @@ class GroupMembershipsController < ApplicationController
   def update
     respond_to do |format|
       if @group_membership.update(group_membership_params)
-        format.html { redirect_to group_membership_url(@group_membership), notice: "Group membership was successfully updated." }
+        format.html { redirect_to group_path(@group_membership.group), notice: "Group membership was successfully updated." }
         format.json { render :show, status: :ok, location: @group_membership }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -49,10 +60,11 @@ class GroupMembershipsController < ApplicationController
 
   # DELETE /group_memberships/1 or /group_memberships/1.json
   def destroy
+    @group = @group_membership.group
     @group_membership.destroy!
 
     respond_to do |format|
-      format.html { redirect_to group_memberships_url, notice: "Group membership was successfully destroyed." }
+      format.html { redirect_to groups_path, notice: "Group membership was successfully destroyed." }
       format.json { head :no_content }
     end
   end
@@ -65,6 +77,6 @@ class GroupMembershipsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def group_membership_params
-      params.require(:group_membership).permit(:group_id, :user_id)
+      params.require(:group_membership).permit(:invite_token, :group_id, :user_id)
     end
 end

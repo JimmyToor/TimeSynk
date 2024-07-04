@@ -1,0 +1,42 @@
+<%= form_with(model: [@invite.group,@invite]) do |form| %>
+  <% if @invite.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(@invite.errors.count, "error") %> prohibited this group_invite from being saved:</h2>
+
+      <ul>
+        <% @invite.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :user_id, style: "display: block" %>
+    <%= form.text_field :user_id %>
+  </div>
+
+  <div>
+    <%= form.label :group_id, style: "display: block" %>
+    <%= form.text_field :group_id %>
+  </div>
+
+  <div>
+    <%= form.label :invite_token, style: "display: block" %>
+    <%= form.text_field :invite_token %>
+  </div>
+
+  <div>
+    <%= form.label :role_ids, style: "display: block" %>
+    <%= form.collection_check_boxes :role_ids, Role.where(resource_type: :Group), :id, :name, include_hidden: false  %>
+  </div>
+
+  <div>
+    <%= form.label :expires_at, style: "display: block" %>
+    <%= form.datetime_field :expires_at %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
