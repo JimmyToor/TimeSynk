@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show edit ]
+  before_action :set_user, only: %i[ update show ]
 
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
@@ -17,8 +17,27 @@ class UsersController < ApplicationController
     end
   end
 
+  def update
+    unless user_params[:avatar].present?
+      @user.avatar.purge
+    end
+    if @user.update(user_params)
+      redirect_to settings_path, notice: "Your settings were updated successfully"
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
   private
   def set_user
-    @user = User.find(params[:id])
+    @user = if params[:id].present?
+      User.find(params[:id])
+    else
+      Current.user
+    end
+  end
+
+  def user_params
+    params.permit(:avatar).require(:user).permit(:email, :username, :password, :password_confirmation)
   end
 end

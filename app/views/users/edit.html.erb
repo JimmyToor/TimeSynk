@@ -7,6 +7,16 @@
 
 <h2>Login and verification</h2>
 
+<%= form_with(url: Current.user, method: :patch) do |form| %>
+  <div>
+    <%= form.hidden_field :id %>
+    <%= form.label :avatar, style: "display:block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+    <%= user_avatar(Current.user) %>
+    <%= form.file_field :avatar %>
+    <%= form.submit "Update avatar" %>
+  </div>
+<% end %>
+
 <div>
   <%= link_to "Change password", edit_password_path %>
 </div>

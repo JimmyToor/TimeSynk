@@ -21,13 +21,22 @@ class User < ApplicationRecord
   has_many :game_sessions, dependent: :destroy
   has_many :game_session_attendances, dependent: :destroy
   has_many :proposal_votes, dependent: :destroy
+  has_many :schedules, dependent: :destroy
   has_many :user_availabilities, dependent: :destroy
   has_many :group_availabilities, dependent: :destroy
   has_many :proposal_availabilities, dependent: :destroy
   has_many :default_availability_schedules, through: :user_availabilities, source: :schedule
   has_many :group_availability_schedules, through: :group_availabilities, source: :schedule
   has_many :proposal_availability_schedules, through: :proposal_availabilities, source: :schedule
+  has_one_attached :avatar
 
+  scope :schedules_for_group, ->(group) {
+    :group_availabilities.where(group_availabilities: { group: group })
+  }
+
+  scope :schedules_for_proposal, ->(proposal) {
+    :proposal_availabilities.where(proposal_availabilities: { proposal: proposal })
+  }
 
   validates :email, presence: true, uniqueness: true, format: {with: URI::MailTo::EMAIL_REGEXP}
   validates :password, allow_nil: true, length: {minimum: 12}
@@ -46,15 +55,7 @@ class User < ApplicationRecord
     sessions.where.not(id: Current.session).delete_all
   end
 
-  def schedules_for_group(group)
-    group_availability_schedules.where(group_availabilities: {group: group})
-  end
-
-  def schedules_for_proposal(proposal)
-    proposal_availability_schedules.where(proposal_availabilities: {proposal: proposal})
-  end
-
   def assign_default_role
-    self.add_role(:newuser) if self.roles.blank?
+    add_role(:newuser) if roles.blank?
   end
 end

@@ -5,9 +5,10 @@ Rails.application.routes.draw do
   resources :user_availabilities, only: [:index]
   resources :game_proposals, only: [:index]
   resources :game_sessions, only: [:index]
-  resources :users
+  resource :user, only: [:update]
   shallow do
     resources :groups do
+      resources :schedules
       resources :group_memberships, only: [:index, :destroy, :create]
       resources :invites, except: [:show]
       resources :group_availabilities
