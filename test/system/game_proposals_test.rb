@@ -14,7 +14,7 @@ class GameProposalsTest < ApplicationSystemTestCase
     visit game_proposals_url
     click_on "New game proposal"
 
-    fill_in "Game checksum", with: @game_proposal.game_checksum
+    fill_in "Game ID", with: @game_proposal.game_id
     fill_in "Group", with: @game_proposal.group_id
     fill_in "No votes", with: @game_proposal.no_votes
     fill_in "User", with: @game_proposal.user_id
@@ -29,7 +29,7 @@ class GameProposalsTest < ApplicationSystemTestCase
     visit game_proposal_url(@game_proposal)
     click_on "Edit this game proposal", match: :first
 
-    fill_in "Game checksum", with: @game_proposal.game_checksum
+    fill_in "Game ID", with: @game_proposal.game_id
     fill_in "Group", with: @game_proposal.group_id
     fill_in "No votes", with: @game_proposal.no_votes
     fill_in "User", with: @game_proposal.user_id

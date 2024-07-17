@@ -1,4 +1,4 @@
-<%= form_with(model: game_session) do |form| %>
+<%= form_with(model: [game_proposal, game_session] ) do |form| %>
   <% if game_session.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(game_session.errors.count, "error") %> prohibited this game_session from being saved:</h2>
@@ -12,14 +12,13 @@
   <% end %>
 
   <div>
-    <%= form.label :group_id, style: "display: block" %>
-    <%= form.text_field :group_id %>
+    <%= form.label :game_proposal_id, style: "display: block" %>
+    <%= form.hidden_field :game_proposal_id, value: game_proposal.id %>
   </div>
 
-  <div>
-    <%= form.label :proposal_id, style: "display: block" %>
-    <%= form.text_field :proposal_id %>
-  </div>
+  <div
+    <%= form.label :user_id, style: "display: block" %>
+    <%= form.hidden_field :user_id, value: game_session.user_id %>
 
   <div>
     <%= form.label :date, style: "display: block" %>

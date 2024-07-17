@@ -77,5 +77,5 @@ Rails.application.configure do
 
   config.hosts << /[a-z0-9\-]+\.ngrok-free\.app/
 
-  config.assets.debug = true
+  config.assets.debug = false
 end

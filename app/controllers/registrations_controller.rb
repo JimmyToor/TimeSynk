@@ -1,6 +1,8 @@
 class RegistrationsController < ApplicationController
   skip_before_action :authenticate
-  layout 'guest'
+  skip_after_action :verify_authorized
+  skip_after_action :verify_policy_scoped
+  layout "guest"
 
   def new
     @user = User.new
@@ -27,7 +29,7 @@ class RegistrationsController < ApplicationController
   private
 
   def user_params
-    params.permit(:email, :username, :password, :password_confirmation)
+    params.permit(:email, :username, :password, :password_confirmation, :avatar)
   end
 
   def send_email_verification

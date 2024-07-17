@@ -17,7 +17,7 @@ class GameProposalsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create game_proposal" do
     assert_difference("GameProposal.count") do
-      post game_proposals_url, params: { game_proposal: { game_checksum: @game_proposal.game_checksum, group_id: @game_proposal.group_id, no_votes: @game_proposal.no_votes, user_id: @game_proposal.user_id, yes_votes: @game_proposal.yes_votes } }
+      post game_proposals_url, params: { game_proposal: { game_id: @game_proposal.game_id, group_id: @game_proposal.group_id, no_votes: @game_proposal.no_votes, user_id: @game_proposal.user_id, yes_votes: @game_proposal.yes_votes } }
     end
 
     assert_redirected_to game_proposal_url(GameProposal.last)
@@ -34,7 +34,7 @@ class GameProposalsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update game_proposal" do
-    patch game_proposal_url(@game_proposal), params: { game_proposal: { game_checksum: @game_proposal.game_checksum, group_id: @game_proposal.group_id, no_votes: @game_proposal.no_votes, user_id: @game_proposal.user_id, yes_votes: @game_proposal.yes_votes } }
+    patch game_proposal_url(@game_proposal), params: { game_proposal: { game_id: @game_proposal.game_id, group_id: @game_proposal.group_id, no_votes: @game_proposal.no_votes, user_id: @game_proposal.user_id, yes_votes: @game_proposal.yes_votes } }
     assert_redirected_to game_proposal_url(@game_proposal)
   end
 

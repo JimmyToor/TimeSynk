@@ -1,5 +1,8 @@
 class GameProposalsController < ApplicationController
   before_action :set_game_proposal, only: %i[ show edit update destroy ]
+  skip_after_action :verify_authorized
+  skip_after_action :verify_policy_scoped
+  require "igdb_client"
 
   # GET /game_proposals or /game_proposals.json
   def index
@@ -16,7 +19,7 @@ class GameProposalsController < ApplicationController
 
   # GET /game_proposals/new
   def new
-    @game_proposal = GameProposal.new
+    @game_proposal = GameProposal.new(group_id: params[:group_id])
   end
 
   # GET /game_proposals/1/edit
@@ -69,6 +72,6 @@ class GameProposalsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def game_proposal_params
-      params.require(:game_proposal).permit(:group_id, :game_checksum, :user_id, :yes_votes, :no_votes)
+      params.require(:game_proposal).permit(:game_id, :user_id, :yes_votes, :no_votes).merge(group_id: params[:group_id])
     end
 end

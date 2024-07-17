@@ -1,5 +1,7 @@
 class GameSessionsController < ApplicationController
   before_action :set_game_session, only: %i[ show edit update destroy ]
+  skip_after_action :verify_authorized
+  skip_after_action :verify_policy_scoped
 
   # GET /game_sessions or /game_sessions.json
   def index
@@ -16,7 +18,7 @@ class GameSessionsController < ApplicationController
 
   # GET /game_sessions/new
   def new
-    @game_session = GameSession.new
+    @game_session = GameSession.new(game_proposal_id: params[:game_proposal_id], user_id: Current.user.id)
   end
 
   # GET /game_sessions/1/edit
@@ -69,6 +71,6 @@ class GameSessionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def game_session_params
-      params.require(:game_session).permit(:group_id, :proposal_id, :date, :duration)
+      params.require(:game_session).permit(:game_proposal_id, :user_id, :date, :duration)
     end
 end

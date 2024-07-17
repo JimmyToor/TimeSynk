@@ -10,17 +10,45 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_24_222923) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_17_231557) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "accounts", force: :cascade do |t|
   end
 
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
   create_table "game_proposals", force: :cascade do |t|
     t.bigint "group_id", null: false
     t.bigint "user_id", null: false
-    t.integer "game_checksum"
+    t.integer "game_id"
     t.integer "yes_votes"
     t.integer "no_votes"
     t.datetime "created_at", null: false
@@ -45,18 +73,29 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_222923) do
     t.integer "duration"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["game_proposal_id"], name: "index_game_sessions_on_game_proposal_id"
+    t.index ["user_id"], name: "index_game_sessions_on_user_id"
+  end
+
+  create_table "games", force: :cascade do |t|
+    t.text "name", null: false
+    t.text "cover_image_url"
+    t.text "platforms", default: [], null: false, array: true
+    t.text "igdb_url"
+    t.date "release_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_games_on_name"
   end
 
   create_table "group_availabilities", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.bigint "group_id", null: false
     t.bigint "schedule_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["group_id"], name: "index_group_availabilities_on_group_id"
     t.index ["schedule_id"], name: "index_group_availabilities_on_schedule_id"
-    t.index ["user_id"], name: "index_group_availabilities_on_user_id"
   end
 
   create_table "group_memberships", force: :cascade do |t|
@@ -88,14 +127,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_222923) do
   end
 
   create_table "proposal_availabilities", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.bigint "game_proposal_id", null: false
     t.bigint "schedule_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["game_proposal_id"], name: "index_proposal_availabilities_on_game_proposal_id"
     t.index ["schedule_id"], name: "index_proposal_availabilities_on_schedule_id"
-    t.index ["user_id"], name: "index_proposal_availabilities_on_user_id"
   end
 
   create_table "proposal_votes", force: :cascade do |t|
@@ -129,6 +166,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_222923) do
   end
 
   create_table "schedules", force: :cascade do |t|
+    t.bigint "user_id", null: false
     t.datetime "start_date"
     t.datetime "end_date"
     t.integer "duration"
@@ -137,6 +175,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_222923) do
     t.datetime "updated_at", null: false
     t.index ["end_date"], name: "index_schedules_on_end_date"
     t.index ["start_date"], name: "index_schedules_on_start_date"
+    t.index ["user_id"], name: "index_schedules_on_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -149,12 +188,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_222923) do
   end
 
   create_table "user_availabilities", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.bigint "schedule_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["schedule_id"], name: "index_user_availabilities_on_schedule_id"
-    t.index ["user_id"], name: "index_user_availabilities_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -178,26 +215,27 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_24_222923) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "game_proposals", "groups"
   add_foreign_key "game_proposals", "users"
   add_foreign_key "game_session_attendances", "game_sessions"
   add_foreign_key "game_session_attendances", "users"
   add_foreign_key "game_sessions", "game_proposals"
+  add_foreign_key "game_sessions", "users"
   add_foreign_key "group_availabilities", "groups"
   add_foreign_key "group_availabilities", "schedules"
-  add_foreign_key "group_availabilities", "users"
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users"
   add_foreign_key "invites", "groups"
   add_foreign_key "invites", "users"
   add_foreign_key "proposal_availabilities", "game_proposals"
   add_foreign_key "proposal_availabilities", "schedules"
-  add_foreign_key "proposal_availabilities", "users"
   add_foreign_key "proposal_votes", "game_proposals"
   add_foreign_key "proposal_votes", "users"
   add_foreign_key "recovery_codes", "users"
+  add_foreign_key "schedules", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "user_availabilities", "schedules"
-  add_foreign_key "user_availabilities", "users"
   add_foreign_key "users", "accounts"
 end

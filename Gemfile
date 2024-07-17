@@ -42,7 +42,32 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
+ gem "image_processing", "~> 1.2"
+
+gem "authentication-zero", "~> 3.0"
+
+# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
+gem "bcrypt", "~> 3.1.7"
+# Use OmniAuth to support multi-provider authentication [https://github.com/omniauth/omniauth]
+gem "omniauth"
+# Provides a mitigation against CVE-2015-9284 [https://github.com/cookpad/omniauth-rails_csrf_protection]
+gem "omniauth-rails_csrf_protection"
+# Use rotp for generating and validating one time passwords [https://github.com/mdp/rotp]
+gem "rotp"
+# Use rqrcode for creating and rendering QR codes into various formats [https://github.com/whomwah/rqrcode]
+gem "rqrcode"
+
+gem "inline_svg", "~> 1.9"
+
+gem "recurring_select", github: "gregschmit/recurring_select"
+
+gem "rolify", "~> 6.0"
+
+gem "pundit", "~> 2.3"
+
+gem "validates_timeliness", "~> 7.0.0.beta1"
+
+gem "igdb_client", github: "darkstego/igdb_client"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -66,26 +91,3 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
-
-gem "authentication-zero", "~> 3.0"
-
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-gem "bcrypt", "~> 3.1.7"
-# Use OmniAuth to support multi-provider authentication [https://github.com/omniauth/omniauth]
-gem "omniauth"
-# Provides a mitigation against CVE-2015-9284 [https://github.com/cookpad/omniauth-rails_csrf_protection]
-gem "omniauth-rails_csrf_protection"
-# Use rotp for generating and validating one time passwords [https://github.com/mdp/rotp]
-gem "rotp"
-# Use rqrcode for creating and rendering QR codes into various formats [https://github.com/whomwah/rqrcode]
-gem "rqrcode"
-
-gem "inline_svg", "~> 1.9"
-
-gem "ice_cube", "~> 0.16.4"
-
-gem "recurring_select", "~> 3.0"
-
-gem "rolify", "~> 6.0"
-
-gem "pundit", "~> 2.3"

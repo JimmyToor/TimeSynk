@@ -2,14 +2,14 @@
 
 one:
   group: one
-  game_checksum: 1
+  game_id: 1
   user: one
   yes_votes: 1
   no_votes: 1
 
 two:
   group: two
-  game_checksum: 1
+  game_id: 1
   user: two
   yes_votes: 1
   no_votes: 1

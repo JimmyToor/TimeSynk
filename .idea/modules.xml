@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/TimeSync.iml" filepath="$PROJECT_DIR$/.idea/TimeSync.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/TimeSynk.iml" filepath="$PROJECT_DIR$/.idea/TimeSynk.iml" />
     </modules>
   </component>
 </project>

@@ -1,4 +1,4 @@
-<%= form_with(model: game_proposal) do |form| %>
+<%= form_with(model: [game_proposal.group, game_proposal], data: { controller: "game-selection" }, local: true) do |form| %>
   <% if game_proposal.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(game_proposal.errors.count, "error") %> prohibited this game_proposal from being saved:</h2>
@@ -11,29 +11,30 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :group_id, style: "display: block" %>
-    <%= form.text_field :group_id %>
-  </div>
+  <%= link_to "Browse Games", games_path, data: { turbo_frame: "games_list" } %>
+  <%= turbo_frame_tag "games_list" %>
 
+  <div data-game-selection-target="selectedGame">
+    <!-- This will be updated when a game is selected -->
+  </div>
   <div>
-    <%= form.label :game_checksum, style: "display: block" %>
-    <%= form.number_field :game_checksum %>
+    <%= form.label :game_id, style: "display: block" %>
+    <%= form.hidden_field :game_id, data: { game_selection_target: "gameId"} %>
   </div>
 
   <div>
     <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
+    <%= form.hidden_field :user_id, value: Current.user.id %>
   </div>
 
   <div>
     <%= form.label :yes_votes, style: "display: block" %>
-    <%= form.number_field :yes_votes %>
+    <%= form.hidden_field :yes_votes, value: 0 %>
   </div>
 
   <div>
     <%= form.label :no_votes, style: "display: block" %>
-    <%= form.number_field :no_votes %>
+    <%= form.hidden_field :no_votes, value: 0 %>
   </div>
 
   <div>

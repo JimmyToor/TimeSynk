@@ -5,6 +5,7 @@
 <div>
   <%= link_to "Edit this game proposal", edit_game_proposal_path(@game_proposal) %> |
   <%= link_to "Back to game proposals", game_proposals_path %>
+  <%= link_to "New Game Session", new_game_proposal_game_session_path(@game_proposal) %>
 
   <%= button_to "Destroy this game proposal", @game_proposal, method: :delete %>
 </div>
