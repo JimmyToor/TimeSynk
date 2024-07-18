@@ -1,5 +1,7 @@
 class ProposalVotesController < ApplicationController
   before_action :set_proposal_vote, only: %i[ show edit update destroy ]
+  skip_after_action :verify_authorized
+  skip_after_action :verify_policy_scoped
 
   # GET /proposal_votes or /proposal_votes.json
   def index
@@ -22,6 +24,11 @@ class ProposalVotesController < ApplicationController
   # POST /proposal_votes or /proposal_votes.json
   def create
     @proposal_vote = ProposalVote.new(proposal_vote_params)
+
+    if ProposalVote.find_by(user_id: @proposal_vote.user_id, game_proposal_id: @proposal_vote.game_proposal_id)
+      @proposal_vote.errors.add(:base, "You have already voted on this proposal")
+      return render :new, status: :unprocessable_entity
+    end
 
     respond_to do |format|
       if @proposal_vote.save
@@ -65,6 +72,6 @@ class ProposalVotesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def proposal_vote_params
-      params.require(:proposal_vote).permit(:user_id, :proposal_id, :yes_vote, :comment)
+      params.require(:proposal_vote).permit(:user_id, :game_proposal_id, :yes_vote, :comment).merge(game_proposal_id: params[:game_proposal_id])
     end
 end

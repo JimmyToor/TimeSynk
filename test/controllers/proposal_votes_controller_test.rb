@@ -17,7 +17,7 @@ class ProposalVotesControllerTest < ActionDispatch::IntegrationTest
 
   test "should create proposal_vote" do
     assert_difference("ProposalVote.count") do
-      post proposal_votes_url, params: { proposal_vote: { comment: @proposal_vote.comment, proposal_id: @proposal_vote.proposal_id, user_id: @proposal_vote.user_id, yes_vote: @proposal_vote.yes_vote } }
+      post proposal_votes_url, params: { proposal_vote: { comment: @proposal_vote.comment, game_proposal_id: @proposal_vote.proposal_id, user_id: @proposal_vote.user_id, yes_vote: @proposal_vote.yes_vote } }
     end
 
     assert_redirected_to proposal_vote_url(ProposalVote.last)
@@ -34,7 +34,7 @@ class ProposalVotesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update proposal_vote" do
-    patch proposal_vote_url(@proposal_vote), params: { proposal_vote: { comment: @proposal_vote.comment, proposal_id: @proposal_vote.proposal_id, user_id: @proposal_vote.user_id, yes_vote: @proposal_vote.yes_vote } }
+    patch proposal_vote_url(@proposal_vote), params: { proposal_vote: { comment: @proposal_vote.comment, game_proposal_id: @proposal_vote.proposal_id, user_id: @proposal_vote.user_id, yes_vote: @proposal_vote.yes_vote } }
     assert_redirected_to proposal_vote_url(@proposal_vote)
   end
 

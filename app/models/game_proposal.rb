@@ -5,6 +5,7 @@ class GameProposal < ApplicationRecord
   has_many :game_sessions, dependent: :destroy
   has_many :proposal_availabilities, dependent: :destroy
 
+
   scope :for_current_user_groups, -> { where(group_id: Current.user.groups.ids) }
   scope :for_group, ->(group_id) { where(group_id: group_id) }
 

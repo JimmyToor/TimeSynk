@@ -8,7 +8,7 @@
     <p>
       <%= link_to "Show this proposal vote", proposal_vote %>
     </p>
-  <% end %>
+    <%= link_to "New proposal vote", new_game_proposal_proposal_vote_path(proposal_vote.game_proposal) %>
+<% end %>
 </div>
 
-<%= link_to "New proposal vote", new_proposal_vote_path %>
