@@ -4,6 +4,9 @@
 
 import { application } from "./application"
 
+import CalendarController from "./calendar_controller"
+application.register("calendar", CalendarController)
+
 import GameSelectionController from "./game_selection_controller"
 application.register("game-selection", GameSelectionController)
 

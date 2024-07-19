@@ -1,3 +1,4 @@
+@import '@toast-ui/calendar/dist/toastui-calendar.min.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

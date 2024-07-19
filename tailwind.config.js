@@ -64,7 +64,7 @@ module.exports = {
   },
   plugins: [
       require('flowbite/plugin'),
-      require('@tailwindcss/typography')
+      require('@tailwindcss/typography'),
   ],
   darkMode: "media",
 

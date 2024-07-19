@@ -11,7 +11,7 @@ export default class extends Controller {
     this.gameIdTarget.value = gameId
     this.selectedGameTarget.textContent = `Selected Game: ${gameName}`
 
-    // Optionally, close the games list
+    // Close the games list
     const gamesList = this.element.querySelector('[data-turbo-frame="games_list"]')
     if (gamesList) {
       gamesList.innerHTML = ''
