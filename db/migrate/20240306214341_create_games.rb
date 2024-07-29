@@ -1,7 +1,7 @@
 class CreateGames < ActiveRecord::Migration[7.1]
   def change
-    create_table :games, id:false do |t|
-      t.bigint :id, primary_key: true
+    create_table :games do |t|
+      t.bigint :igdb_id
       t.text :name, null: false
       t.text :cover_image_url
       t.text :platforms, array: true, null: false, default: []
@@ -10,6 +10,7 @@ class CreateGames < ActiveRecord::Migration[7.1]
 
       t.timestamps
     end
+    add_index :games, :igdb_id, unique: true
     add_index :games, :name
   end
 end

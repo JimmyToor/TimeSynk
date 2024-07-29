@@ -38,3 +38,5 @@ en:
   group_membership:
     invite_not_valid: "There was a problem with the invite. Please try again later."
     already_member: "You are already a member of this group."
+  proposal_vote:
+    vote_unique: "You have already voted on this proposal."

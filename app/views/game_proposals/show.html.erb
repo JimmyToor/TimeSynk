@@ -2,21 +2,21 @@
 
 <%= render @game_proposal %>
 
-<div> <%# TODO: Change these to put if the user has voted %>
-  <%= button_to "Vote Yes", game_proposal_proposal_votes_path(@game_proposal,
-      proposal_vote: {
-        user_id: Current.user.id,
-        yes_vote: true,
-        comment: "I vote yes cause game is cool"
-      }), method: :post %>
-  <%= button_to "Vote No", game_proposal_proposal_votes_path(@game_proposal,
-      proposal_vote: {
-        user_id: Current.user.id,
-        yes_vote: false,
-        comment: "I vote no cause game is lame"
-  }), method: :post %>
-  <%= link_to "Edit this game proposal", edit_game_proposal_path(@game_proposal) %> |
-  <%= link_to "Back to game proposals", game_proposals_path %>
+<div>
+  <%= proposal_vote_form_for(@game_proposal,  @proposal_vote, :yes, voted, voted_yes, voted_no) do |f| %>
+    <%= f.vote_button(:yes, voted, voted_yes, voted_no) %>
+    <%= f.text_area :comment, placeholder: "Add a comment (optional)" %>
+    <%= f.hidden_field :game_proposal_id, value: @game_proposal.id %>
+  <% end unless voted_yes %>
+
+  <%= proposal_vote_form_for(@game_proposal,  @proposal_vote, :no, voted, voted_yes, voted_no) do |f| %>
+    <%= f.vote_button(:no, voted, voted_yes, voted_no) %>
+    <%= f.text_area :comment, placeholder: "Add a comment (optional)" %>
+    <%= f.hidden_field :game_proposal_id, value: @game_proposal.id %>
+<% end unless voted_no %>
+
+  <%= link_to "Edit this game proposal", edit_game_proposal_path(@game_proposal) %>
+  <%= link_to "Back to game proposals", group_game_proposals_path(@game_proposal.group) %>
   <%= link_to "View Game Sessions", game_proposal_game_sessions_path(@game_proposal) %>
   <%= link_to "New Game Session", new_game_proposal_game_session_path(@game_proposal) %>
 

@@ -20,7 +20,7 @@ class GameGateway
     @client.get(params)
   end
 
-  def get_popular_game_ids(fields: "game_id,value,popularity_type", limit: 10, sort: "value desc", popularity_type: 1)
+  def get_popular_game_ids(fields: "game_id,value,popularity_type", limit: 10, sort: "value asc", popularity_type: 1)
     params = {fields: fields, limit: limit, sort: sort, where: "popularity_type = #{popularity_type}"}
     @client.endpoint = "popularity_primitives"
     @client.get(params)

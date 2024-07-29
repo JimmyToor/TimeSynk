@@ -1,5 +1,5 @@
 class GameProposalsController < ApplicationController
-  before_action :set_game_proposal, only: %i[ show edit update destroy ]
+  before_action :set_game_proposal, :set_game, only: %i[ show edit update destroy ]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
   require "igdb_client"
@@ -15,6 +15,17 @@ class GameProposalsController < ApplicationController
 
   # GET /game_proposals/1 or /game_proposals/1.json
   def show
+    @proposal_vote = if @game_proposal.user_voted?(@game_proposal)
+      Current.user.get_vote_for_proposal(@game_proposal)
+    else
+      ProposalVote.new(user_id: Current.user.id, game_proposal_id: @game_proposal.id)
+    end
+
+    render locals: {
+      voted: @game_proposal.user_voted?(@game_proposal),
+      voted_yes: @game_proposal.user_voted_yes?(@game_proposal),
+      voted_no: @game_proposal.user_voted_no?(@game_proposal)
+    }
   end
 
   # GET /game_proposals/new
@@ -24,11 +35,12 @@ class GameProposalsController < ApplicationController
 
   # GET /game_proposals/1/edit
   def edit
+    @game = Game.find_by(id: @game_proposal.game_id)
   end
 
   # POST /game_proposals or /game_proposals.json
   def create
-    @game_proposal = GameProposal.new(game_proposal_params)
+    @game_proposal = GameProposal.new(game_proposal_params.merge(group_id: params[:group_id]))
 
     respond_to do |format|
       if @game_proposal.save
@@ -43,6 +55,7 @@ class GameProposalsController < ApplicationController
 
   # PATCH/PUT /game_proposals/1 or /game_proposals/1.json
   def update
+    Rails.logger.debug "GameProposal Update params: #{game_proposal_params}"
     respond_to do |format|
       if @game_proposal.update(game_proposal_params)
         format.html { redirect_to game_proposal_url(@game_proposal), notice: "Game proposal was successfully updated." }
@@ -70,8 +83,14 @@ class GameProposalsController < ApplicationController
       @game_proposal = GameProposal.find(params[:id])
     end
 
+    def set_game
+      @game = Game.find_by_id!(@game_proposal.game_id)
+    end
+
     # Only allow a list of trusted parameters through.
     def game_proposal_params
-      params.require(:game_proposal).permit(:game_id, :user_id, :yes_votes, :no_votes).merge(group_id: params[:group_id])
+      params.require(:game_proposal).permit(:game_id, :user_id, :yes_votes, :no_votes, :group_id)
     end
+
+
 end

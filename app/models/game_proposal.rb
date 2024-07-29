@@ -1,7 +1,8 @@
 class GameProposal < ApplicationRecord
   belongs_to :group
   belongs_to :user
-  has_many :proposal_votes, dependent: :destroy
+  belongs_to :game
+  has_many :proposal_votes, dependent: :destroy, inverse_of: :game_proposal
   has_many :game_sessions, dependent: :destroy
   has_many :proposal_availabilities, dependent: :destroy
 
@@ -13,11 +14,18 @@ class GameProposal < ApplicationRecord
     proposal_votes.exists?(user_id: user.id)
   end
 
-  def user_vote(user, vote)
-    proposal_votes.create(user: user, vote: vote)
+  def user_voted_yes?(user)
+    proposal_votes.exists?(user_id: user.id, yes_vote: true)
   end
 
-  def user_unvote(user)
-    proposal_votes.find_by(user_id: user.id).destroy
+  def user_voted_no?(user)
+     proposal_votes.exists?(user_id: user.id, yes_vote: false)
+  end
+
+  def update_vote_counts!
+    update(
+      yes_votes_count: proposal_votes.where(yes_vote: true).count,
+      no_votes_count: proposal_votes.where(yes_vote: false).count
+    )
   end
 end

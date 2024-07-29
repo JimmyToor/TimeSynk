@@ -1,10 +1,10 @@
 <h1>Editing group invite</h1>
 
-<%= render "form", invite: @invite %>
+<%= render "form", invite: @invite, group: nil %>
 
 <br>
 
 <div>
   <%= link_to "Show this group invite", @invite %> |
-  <%= link_to "Back to group invites", group_invites_path %>
+  <%= link_to "Back to group invites", group_invites_path(@invite.group) %>
 </div>
