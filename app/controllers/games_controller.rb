@@ -5,6 +5,7 @@ class GamesController < ApplicationController
   # GET /games or /games.json
   def index
     @games = Game.get_popular
+    Rails.logger.debug "Games: #{@games.inspect}"
   end
 
   private

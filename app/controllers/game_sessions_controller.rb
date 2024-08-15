@@ -1,5 +1,6 @@
 class GameSessionsController < ApplicationController
   before_action :set_game_session, only: %i[ show edit update destroy ]
+  before_action :set_game_proposal, only: %i[ new create ]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
 
@@ -18,7 +19,7 @@ class GameSessionsController < ApplicationController
 
   # GET /game_sessions/new
   def new
-    @game_session = GameSession.new(game_proposal_id: params[:game_proposal_id], user_id: Current.user.id)
+    @game_session = @game_proposal.game_sessions.build(user_id: Current.user.id)
   end
 
   # GET /game_sessions/1/edit
@@ -27,7 +28,9 @@ class GameSessionsController < ApplicationController
 
   # POST /game_sessions or /game_sessions.json
   def create
-    @game_session = GameSession.new(game_session_params)
+    # TODO: Don't allow users to make sessions in other users' names i.e. user_id should be the current user's id
+    # TODO: Don't allow users to make sessions for another proposal i.e. game_proposal_id in strong params should match the current proposal's id (from the url params).
+    @game_session = @game_proposal.game_sessions.build(game_session_params)
 
     respond_to do |format|
       if @game_session.save
@@ -64,13 +67,22 @@ class GameSessionsController < ApplicationController
   end
 
   private
+    
+  def set_game_proposal
+    @game_proposal = GameProposal.find(params[:game_proposal_id])
+  end
+    
     # Use callbacks to share common setup or constraints between actions.
-    def set_game_session
-      @game_session = GameSession.find(params[:id])
-    end
+  def set_game_session
+    @game_session = GameSession.find(params[:id])
+  end
+
+  def set_group
+    @group = Group.find(params[:group_id])
+  end
 
     # Only allow a list of trusted parameters through.
-    def game_session_params
-      params.require(:game_session).permit(:game_proposal_id, :user_id, :date, :duration)
-    end
+  def game_session_params
+    params.require(:game_session).permit(:game_session_id, :game_proposal_id, :user_id, :date, :duration)
+  end
 end

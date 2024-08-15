@@ -22,3 +22,6 @@
 
   <%= button_to "Destroy this game proposal", @game_proposal, method: :delete %>
 </div>
+
+<div id="calendar" data-controller="calendar" data-calendar-target="calendar" data-calendar-game-proposal-id=<%= @game_proposal.id %>>
+</div>

@@ -7,6 +7,9 @@ import { application } from "./application"
 import CalendarController from "./calendar_controller"
 application.register("calendar", CalendarController)
 
+import FlatpickrController from "./flatpickr_controller"
+application.register("flatpickr", FlatpickrController)
+
 import GameSelectionController from "./game_selection_controller"
 application.register("game-selection", GameSelectionController)
 

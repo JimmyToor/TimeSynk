@@ -65,6 +65,6 @@ class ProposalAvailabilitiesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def proposal_availability_params
-      params.require(:proposal_availability).permit(:schedule_id, :user_id, :proposal_id)
+      params.require(:proposal_availability).permit(:schedule_id, :user_id, :game_proposal_id)
     end
 end

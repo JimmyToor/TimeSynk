@@ -1,10 +1,10 @@
 class InvitesController < ApplicationController
   before_action :set_invite, only: %i[ edit update destroy ]
+  before_action :set_group, only: %i[ index new create ]
 
   # GET /invites or /invites.json
   def index # list invites
     @invites = policy_scope(Invite).for_group(params[:group_id])
-    @group = Group.find(params[:group_id])
   end
 
   def show # Let user accept invite, acceptance leads to create group membership
@@ -14,7 +14,7 @@ class InvitesController < ApplicationController
 
   # GET /groups/1/invite
   def new
-    @invite = Invite.new(group_id: params[:group_id], user_id: Current.user.id)
+    @invite = @group.invites.build(user_id: Current.user.id)
     authorize(@invite)
   end
 
@@ -25,7 +25,8 @@ class InvitesController < ApplicationController
 
   # POST /invites or /invites.json
   def create
-    @group = Group.find(invite_params[:group_id])
+    # TODO: Don't allow users to make invites in other users' names i.e. strong params user_id should be the current user's id.
+    # TODO: Don't allow users to create an invite to one group from another i.e. group_id in strong params should match the current group's id (from the url params).
     @invite = @group.invites.build(invite_params)
     authorize(@invite)
 
@@ -74,6 +75,10 @@ class InvitesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
   def set_invite
     @invite = Invite.find(params[:id])
+  end
+
+  def set_group
+    @group = Group.find_by!(id: params[:group_id])
   end
 
     # Only allow a list of trusted parameters through.

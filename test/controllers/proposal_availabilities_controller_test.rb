@@ -17,7 +17,7 @@ class ProposalAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
 
   test "should create proposal_availability" do
     assert_difference("ProposalAvailability.count") do
-      post proposal_availabilities_url, params: { proposal_availability: { proposal_id: @proposal_availability.proposal_id, schedule_id: @proposal_availability.schedule_id, user_id: @proposal_availability.user_id } }
+      post proposal_availabilities_url, params: { proposal_availability: { game_proposal_id: @proposal_availability.proposal_id, schedule_id: @proposal_availability.schedule_id, user_id: @proposal_availability.user_id } }
     end
 
     assert_redirected_to proposal_availability_url(ProposalAvailability.last)
@@ -34,7 +34,7 @@ class ProposalAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update proposal_availability" do
-    patch proposal_availability_url(@proposal_availability), params: { proposal_availability: { proposal_id: @proposal_availability.proposal_id, schedule_id: @proposal_availability.schedule_id, user_id: @proposal_availability.user_id } }
+    patch proposal_availability_url(@proposal_availability), params: { proposal_availability: { game_proposal_id: @proposal_availability.proposal_id, schedule_id: @proposal_availability.schedule_id, user_id: @proposal_availability.user_id } }
     assert_redirected_to proposal_availability_url(@proposal_availability)
   end
 

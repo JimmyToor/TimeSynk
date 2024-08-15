@@ -8,12 +8,18 @@
 </div>
 
 <div>
-  <%= link_to "New game proposal", new_group_game_proposal_path(@group) %>
+  <% if Current.user.has_role?(:admin) %>
+    <%= link_to "Join Group", new_group_group_membership_path(@group) %> |
+  <% end %>
+  <%= link_to "New game proposal", new_group_game_proposal_path(@group, nil) %> |
   <%= link_to "Edit this group", edit_group_path(@group) %> |
-  <%= link_to "Invite to this group", new_group_invite_path(@group) %>
-  <%= link_to "Show this group's invites", group_invites_path(@group) %>
+  <%= link_to "Invite to this group", new_group_invite_path(@group) %> |
+  <%= link_to "Show this group's invites", group_invites_path(@group) %> |
   <%= link_to "Back to groups", groups_path %>
 
   <%= button_to "Leave this group", @group_membership, method: :delete %>
   <%= button_to "Destroy this group", @group, method: :delete %>
+</div>
+
+<div id="calendar" data-controller="calendar" data-calendar-target="calendar" data-calendar-group-id=<%= @group.id %>>
 </div>

@@ -28,4 +28,9 @@ class GameProposal < ApplicationRecord
       no_votes_count: proposal_votes.where(yes_vote: false).count
     )
   end
+
+  def make_calendar_schedules
+    game_name = Game.find(game_id).name.to_s
+    game_sessions.map { |session| session.make_calendar_schedule(game_name) }
+  end
 end

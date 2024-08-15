@@ -1,4 +1,23 @@
-@import '@toast-ui/calendar/dist/toastui-calendar.min.css';
+@import 'flatpickr/dist/flatpickr.min.css';
+@import 'flatpickr/dist/themes/dark.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.rs_frequency, .rs_interval, .rs_count, .rs_datepicker {
+    padding: 0;
+}
+
+.rs_datepicker {
+    width: 210px !important;
+    padding-left: .5em;
+    padding-right: .5em;
+}
+
+.rs_termination_section {
+    table {
+        td {
+            padding-top: 5px !important;
+        }
+    }
+}

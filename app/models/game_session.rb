@@ -1,7 +1,8 @@
 class GameSession < ApplicationRecord
   belongs_to :game_proposal
-  has_many :game_session_attendances, dependent: :destroy
   belongs_to :user
+  has_many :game_session_attendances, dependent: :destroy
+
 
   scope :for_current_user_groups, -> { joins(game_proposal: :group).where(groups: { id: Current.user.groups.ids }) }
   scope :for_group, ->(group_id) { joins(game_proposal: :group).where(groups: { id: group_id }) }
@@ -17,5 +18,25 @@ class GameSession < ApplicationRecord
 
   def user_unattend(user)
     game_session_attendances.find_by(user_id: user.id).destroy
+  end
+
+  def make_icecube_schedule
+    IceCube::Schedule.new(date, {
+      duration: duration.minutes
+    })
+  end
+
+  def make_calendar_schedule(name = nil)
+    schedule = make_icecube_schedule
+    name = Game.find(game_proposal.game_id).name.to_s if name.nil?
+
+    schedule = schedule.to_hash
+    schedule[:id] = id
+    schedule[:name] = name
+    schedule[:duration] = duration
+    schedule[:user_id] = user_id
+
+    Rails.logger.debug "GameSession#make_calendar_data: schedule: #{schedule.inspect}"
+    schedule
   end
 end

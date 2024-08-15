@@ -1,0 +1,2 @@
+module AvailabilitySchedulesHelper
+end

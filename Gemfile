@@ -59,7 +59,7 @@ gem "rqrcode"
 
 gem "inline_svg", "~> 1.9"
 
-gem "recurring_select", github: "gregschmit/recurring_select"
+gem "recurring_select", github: "JimmyToor/recurring_select"
 
 gem "rolify", "~> 6.0"
 
@@ -69,10 +69,15 @@ gem "validates_timeliness", "~> 7.0.0.beta1"
 
 gem "igdb_client", github: "darkstego/igdb_client"
 
+gem "activesupport"
+
+gem "csv"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
   gem "standard", require: false
+  gem "foreman", require: false
 end
 
 group :development do

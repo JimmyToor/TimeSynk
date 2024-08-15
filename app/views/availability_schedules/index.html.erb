@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Availability schedules</h1>
+
+<div id="availability_schedules">
+  <% @availability_schedules.each do |availability_schedule| %>
+    <%= render availability_schedule %>
+    <p>
+      <%= link_to "Show this availability schedule", availability_schedule %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New availability schedule", new_availability_schedule_path %>

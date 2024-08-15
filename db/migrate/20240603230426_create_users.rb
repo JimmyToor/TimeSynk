@@ -4,6 +4,7 @@ class CreateUsers < ActiveRecord::Migration[7.1]
       t.string :email,           null: false, index: { unique: true }
       t.string :username, null: false, index: { unique: true }
       t.string :password_digest, null: false
+      t.string :timezone, null: false, default: "UTC"
 
       t.boolean :verified, null: false, default: false
 

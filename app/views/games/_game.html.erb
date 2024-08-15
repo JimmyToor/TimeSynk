@@ -2,7 +2,7 @@
   <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
     <th scope="row" class="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
       <% if game.cover_image_url.present? %>
-        <%= image_tag game.cover_image_url, class: "w-8 h-8 mr-3 rounded", alt: game.name if game.cover_image_url.present?  %>
+        <img src="<%= game.cover_image_url %>" alt="Game cover" class="w-8 h-8 mr-3 rounded">
       <% else %>
         <div class="w-8 h-8 mr-3 bg-gray-200"></div>
       <% end %>

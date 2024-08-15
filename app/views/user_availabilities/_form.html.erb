@@ -10,15 +10,15 @@
       </ul>
     </div>
   <% end %>
-
   <div>
-    <%= form.label :schedule_id, style: "display: block" %>
-    <%= form.text_field :schedule_id %>
+    <div>
+      <%= collection_select :user_availability, :availability_id, @availabilities, :id, :name %>
+    </div>
   </div>
 
   <div>
     <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
+    <%= form.hidden_field :user_id, value: Current.user.id %>
   </div>
 
   <div>

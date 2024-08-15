@@ -1,5 +1,7 @@
 class GroupMembershipsController < ApplicationController
   before_action :set_group_membership, only: %i[ show edit update destroy ]
+  skip_after_action :verify_authorized
+  skip_after_action :verify_policy_scoped
 
   # GET /group_memberships or /group_memberships.json
   def index
@@ -12,11 +14,26 @@ class GroupMembershipsController < ApplicationController
 
   # GET /group_memberships/new
   def new
-    @group_membership = GroupMembership.new
+    @group_membership = GroupMembership.build(group_id: params[:group_id])
     @invite = Invite.find_by(invite_token: params[:invite_token])
-    if !@invite || !@invite.group
-      render :error, alert: "Invalid invite"
+    group = @invite.group if @invite
+
+    # TODO: Clean this up, role checks should be in the policy
+    if Current.user.has_role?(:admin)
+      group = @group_membership.group
+      Rails.logger.debug "Admin is creating a group membership"
     end
+
+    if !@invite && !group
+      render :error, alert: "Invalid invite"
+      return
+    end
+
+    @group_membership.group_id = params[:group_id]
+    @group_membership.user_id = Current.user.id
+    locals = { group_membership: @group_membership, group: group }
+    locals[:invite] = @invite if @invite
+    render :new, locals: locals
   end
 
   # GET /group_memberships/1/edit

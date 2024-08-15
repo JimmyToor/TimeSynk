@@ -8,3 +8,6 @@
 
   <%= button_to "Destroy this game session", @game_session, method: :delete %>
 </div>
+
+<div id="calendar" data-controller="calendar" data-calendar-target="calendar" data-calendar-game-session-id=<%= @game_session.id %>>
+</div>

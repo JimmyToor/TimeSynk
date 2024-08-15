@@ -1,16 +1,21 @@
 Rails.application.routes.draw do
+  resources :availability_schedules
+  resources :availabilities
   resources :games, only: [:index, :show]
-  resources :schedules, only: [:index]
+  resources :schedules
   resources :group_availabilities, only: [:index]
   resources :proposal_availabilities, only: [:index]
-  resources :user_availabilities, only: [:index]
+  resource :user_availability
+  resolve("UserAvailability") { [:user_availability] }
   resources :game_proposals, only: [:index]
   resources :game_sessions, only: [:index]
+  get "calendars", to: "calendars#show"
   resource :user, only: [:show, :update]
+  resolve("User") { [:user] }
   shallow do
     resources :groups do
       resources :schedules
-      resources :group_memberships, only: [:index, :destroy, :create]
+      resources :group_memberships
       resources :invites, except: [:show]
       resources :group_availabilities
       resources :game_proposals do

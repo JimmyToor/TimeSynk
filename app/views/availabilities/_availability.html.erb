@@ -1,0 +1,17 @@
+<div id="<%= dom_id availability %>">
+  <p>
+    <strong>Name:</strong>
+    <%= availability.name %>
+  </p>
+
+  <p>
+    <strong>User:</strong>
+    <%= availability.user_id %>
+  </p>
+
+  <p>
+    <strong>Schedules:</strong>
+    <%= availability.schedules.map(&:name).join(", ") %>
+  </p>
+
+</div>

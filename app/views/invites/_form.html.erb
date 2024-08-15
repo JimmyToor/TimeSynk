@@ -13,12 +13,12 @@
 
   <div>
     <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
+    <%= form.hidden_field :user_id, value: invite.user_id %>
   </div>
 
   <div>
     <%= form.label :group_id, style: "display: block" %>
-    <%= form.text_field :group_id %>
+    <%= form.hidden_field :group_id, value: invite.group_id %>
   </div>
 
   <div>

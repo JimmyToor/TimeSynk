@@ -8,3 +8,6 @@
 
   <%= button_to "Destroy this schedule", @schedule, method: :delete %>
 </div>
+
+<div id="calendar" data-controller="calendar" data-calendar-target="calendar" data-calendar-schedule-id=<%= @schedule.id %>>
+</div>

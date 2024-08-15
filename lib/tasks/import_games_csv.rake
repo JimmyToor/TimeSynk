@@ -9,19 +9,16 @@ namespace :import do
 
     CSV.foreach(file_path, headers: true) do |row|
       game = {
-        id: row['ID'],
-        name: row['Name'],
-        release_date: row['Release Date'],
-        platforms: row['Platforms'].split(', '),
-        cover_image_url: row['Cover Image URL'],
-        igdb_url: row['IGDB URL'],
-        created_at: row['Created At'],
-        updated_at: row['Updated At']
+        id: row['igdb_id'],
+        name: row['name'],
+        release_date: row['release_date'],
+        platforms: row['platforms'].split(', '),
+        cover_image_url: row['cover_image_url'],
+        igdb_url: row['igdb_url'],
+        created_at: row['created_at'],
+        updated_at: row['updated_at']
       }
       games << game
-      if game[:id] == "1"
-        break
-      end
     end
 
     Game.transaction do

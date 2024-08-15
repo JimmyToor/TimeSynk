@@ -1,0 +1,27 @@
+<%= form_with(model: availability_schedule) do |form| %>
+  <% if availability_schedule.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(availability_schedule.errors.count, "error") %> prohibited this availability_schedule from being saved:</h2>
+
+      <ul>
+        <% availability_schedule.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :availability_id, style: "display: block" %>
+    <%= form.text_field :availability_id %>
+  </div>
+
+  <div>
+    <%= form.label :schedule_id, style: "display: block" %>
+    <%= form.text_field :schedule_id %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
