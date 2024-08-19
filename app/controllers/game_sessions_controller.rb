@@ -1,6 +1,7 @@
 class GameSessionsController < ApplicationController
   before_action :set_game_session, only: %i[ show edit update destroy ]
   before_action :set_game_proposal, only: %i[ new create ]
+  before_action :set_game_session_attendance, only: %i[ show ]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
 
@@ -31,7 +32,6 @@ class GameSessionsController < ApplicationController
     # TODO: Don't allow users to make sessions in other users' names i.e. user_id should be the current user's id
     # TODO: Don't allow users to make sessions for another proposal i.e. game_proposal_id in strong params should match the current proposal's id (from the url params).
     @game_session = @game_proposal.game_sessions.build(game_session_params)
-
     respond_to do |format|
       if @game_session.save
         format.html { redirect_to game_session_url(@game_session), notice: "Game session was successfully created." }
@@ -67,7 +67,7 @@ class GameSessionsController < ApplicationController
   end
 
   private
-    
+
   def set_game_proposal
     @game_proposal = GameProposal.find(params[:game_proposal_id])
   end
@@ -75,6 +75,10 @@ class GameSessionsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
   def set_game_session
     @game_session = GameSession.find(params[:id])
+  end
+
+  def set_game_session_attendance
+    @game_session_attendance = @game_session.user_get_or_build_attendance(Current.user)
   end
 
   def set_group

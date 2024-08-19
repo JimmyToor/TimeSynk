@@ -1,4 +1,4 @@
-<%= form_with(model: proposal_vote) do |form| %>
+<%= form_with(model: proposal_vote.new_record? ?  [game_proposal, proposal_vote] :  proposal_vote) do |form| %>
   <% if proposal_vote.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(proposal_vote.errors.count, "error") %> prohibited this proposal_vote from being saved:</h2>
@@ -12,21 +12,26 @@
   <% end %>
 
   <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
+    <%= form.hidden_field :user_id, value: Current.user.id %>
+    <%= form.hidden_field :game_proposal_id, value: proposal_vote.game_proposal_id  %>
   </div>
 
   <div>
-    <%= form.label :yes_vote, style: "display: block" %>
-    <%= form.check_box :yes_vote %>
+    <%= form.label :yes_vote, "Vote", style: "display: block" %>
+    <%= form.radio_button :yes_vote, true,  checked: proposal_vote.yes_vote == true %>
+    <%= form.label :yes_vote_true, "Yes", style: "display: inline" %>
+    <%= form.radio_button :yes_vote, false, checked: proposal_vote.yes_vote == false %>
+    <%= form.label :yes_vote_false, "No", style: "display: inline" %>
+    <%= form.radio_button :yes_vote, "", checked: proposal_vote.new_record? %>
+    <%= form.label :yes_vote_, "Unsure", style: "display: inline" %>
   </div>
 
   <div>
     <%= form.label :comment, style: "display: block" %>
-    <%= form.text_area :comment %>
+    <%= form.text_area :comment, placeholder:"Add a comment (optional)", value: proposal_vote.comment %>
   </div>
 
   <div>
-    <%= form.submit %>
+    <%= form.submit "Save", style: "display: block"  %>
   </div>
 <% end %>

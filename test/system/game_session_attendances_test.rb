@@ -1,6 +1,6 @@
 require "application_system_test_case"
 
-class SessionAttendancesTest < ApplicationSystemTestCase
+class GameSessionAttendancesTest < ApplicationSystemTestCase
   setup do
     @game_session_attendance = game_session_attendances(:one)
   end

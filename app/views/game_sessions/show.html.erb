@@ -3,6 +3,8 @@
 <%= render @game_session %>
 
 <div>
+  <%= render "game_session_attendances/form", game_session: @game_session, game_session_attendance: @game_session_attendance %>
+
   <%= link_to "Edit this game session", edit_game_session_path(@game_session) %> |
   <%= link_to "Back to game sessions", game_sessions_path %>
 

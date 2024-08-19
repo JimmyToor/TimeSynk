@@ -8,8 +8,16 @@ class GameSession < ApplicationRecord
   scope :for_group, ->(group_id) { joins(game_proposal: :group).where(groups: { id: group_id }) }
   scope :for_game_proposal, ->(game_proposal_id) { where(game_proposal_id: game_proposal_id) }
 
-  def user_attending?(user)
-    game_session_attendances.exists?(user_id: user.id)
+  def user_get_attendance(user)
+    Rails.logger.debug "GameSession#user_set_attendance? id is #{user.id}: #{game_session_attendances.exists?(user_id: user.id)}"
+    Rails.logger.debug "GameSession#user_set_attendance?: All attendances #{game_session_attendances.inspect}"
+    game_session_attendances.find_by(user_id: user.id)
+  end
+
+  def user_get_or_build_attendance(user)
+    attendance = user_get_attendance(user)
+    return attendance if attendance
+    game_session_attendances.build(user_id: Current.user.id, game_session_id: self.id)
   end
 
   def user_attend(user)

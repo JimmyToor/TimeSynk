@@ -3,17 +3,7 @@
 <%= render @game_proposal %>
 
 <div>
-  <%= proposal_vote_form_for(@game_proposal,  @proposal_vote, :yes, voted, voted_yes, voted_no) do |f| %>
-    <%= f.vote_button(:yes, voted, voted_yes, voted_no) %>
-    <%= f.text_area :comment, placeholder: "Add a comment (optional)" %>
-    <%= f.hidden_field :game_proposal_id, value: @game_proposal.id %>
-  <% end unless voted_yes %>
-
-  <%= proposal_vote_form_for(@game_proposal,  @proposal_vote, :no, voted, voted_yes, voted_no) do |f| %>
-    <%= f.vote_button(:no, voted, voted_yes, voted_no) %>
-    <%= f.text_area :comment, placeholder: "Add a comment (optional)" %>
-    <%= f.hidden_field :game_proposal_id, value: @game_proposal.id %>
-<% end unless voted_no %>
+  <%= render "proposal_votes/form", game_proposal: @game_proposal, proposal_vote: @proposal_vote %>
 
   <%= link_to "Edit this game proposal", edit_game_proposal_path(@game_proposal) %>
   <%= link_to "Back to game proposals", group_game_proposals_path(@game_proposal.group) %>

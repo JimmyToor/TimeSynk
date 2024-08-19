@@ -1,5 +1,6 @@
 class GameProposalsController < ApplicationController
   before_action :set_game_proposal, :set_game, only: %i[ show edit update destroy ]
+  before_action :set_proposal_vote, only: %i[ show ]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
   require "igdb_client"
@@ -15,17 +16,6 @@ class GameProposalsController < ApplicationController
 
   # GET /game_proposals/1 or /game_proposals/1.json
   def show
-    @proposal_vote = if @game_proposal.user_voted?(@game_proposal)
-      Current.user.get_vote_for_proposal(@game_proposal)
-    else
-      ProposalVote.new(user_id: Current.user.id, game_proposal_id: @game_proposal.id)
-    end
-
-    render locals: {
-      voted: @game_proposal.user_voted?(@game_proposal),
-      voted_yes: @game_proposal.user_voted_yes?(@game_proposal),
-      voted_no: @game_proposal.user_voted_no?(@game_proposal)
-    }
   end
 
   # GET /game_proposals/new
@@ -78,19 +68,23 @@ class GameProposalsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_game_proposal
-      @game_proposal = GameProposal.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_game_proposal
+    @game_proposal = GameProposal.find(params[:id])
+  end
 
-    def set_game
-      @game = Game.find_by_id!(@game_proposal.game_id)
-    end
+  def set_proposal_vote
+    @proposal_vote = @game_proposal.user_get_or_build_vote(Current.user)
+  end
 
-    # Only allow a list of trusted parameters through.
-    def game_proposal_params
-      params.require(:game_proposal).permit(:game_id, :user_id, :yes_votes, :no_votes, :group_id)
-    end
+  def set_game
+    @game = Game.find_by_id!(@game_proposal.game_id)
+  end
+
+  # Only allow a list of trusted parameters through.
+  def game_proposal_params
+    params.require(:game_proposal).permit(:game_id, :user_id, :yes_votes, :no_votes, :group_id)
+  end
 
 
 end

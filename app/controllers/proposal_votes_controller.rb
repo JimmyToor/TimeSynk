@@ -15,7 +15,7 @@ class ProposalVotesController < ApplicationController
 
   # GET /proposal_votes/new
   def new
-    @proposal_vote = @game_proposal.proposal_votes.build(user_id: Current.user.id)
+    @proposal_vote = @game_proposal.proposal_votes.build(user_id: Current.user.id, game_proposal_id: @game_proposal.id)
   end
 
   # GET /proposal_votes/1/edit
@@ -26,10 +26,6 @@ class ProposalVotesController < ApplicationController
   def create
     # TODO: Don't allow users to make votes in other users' names i.e. strong params user_id should be the current user's id.
     # TODO: Don't allow users to vote on one proposal from another i.e. game_proposal_id in strong params should match the current proposal's id (from the url params).
-    if @game_proposal.user_voted?(Current.user)
-      @game_proposal.errors.add(:base, "You have already voted on this proposal")
-      return render @game_proposal, status: :unprocessable_entity
-    end
     @proposal_vote = @game_proposal.proposal_votes.build(proposal_vote_params)
     Current.user.proposal_votes << @proposal_vote
     @game_proposal.proposal_votes << @proposal_vote
@@ -47,12 +43,17 @@ class ProposalVotesController < ApplicationController
 
   # PATCH/PUT /proposal_votes/1 or /proposal_votes/1.json
   def update
+    if proposal_vote_params[:yes_vote].empty?
+      @proposal_vote.destroy!
+      redirect_to @game_proposal, notice: "Proposal vote was successfully deleted."
+      return
+    end
     respond_to do |format|
       if @proposal_vote.update(proposal_vote_params)
         format.html { redirect_to @game_proposal, notice: "Proposal vote was successfully updated." }
         format.json { render :show, status: :ok, location: @proposal_vote }
       else
-        format.html { render :edit, status: :unprocessable_entity }
+        format.html { redirect_to @game_proposal, status: :unprocessable_entity }
         format.json { render json: @proposal_vote.errors, status: :unprocessable_entity }
       end
     end

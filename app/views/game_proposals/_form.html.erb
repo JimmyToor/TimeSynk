@@ -1,4 +1,4 @@
-<%= form_with(model: [group, game_proposal], data: { controller: "game-selection" }, local: true) do |form| %>
+<%= form_with(model: [group, game_proposal], data: { controller: "game-selection" }) do |form| %>
   <% if game_proposal.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(game_proposal.errors.count, "error") %> prohibited this game_proposal from being saved:</h2>

@@ -29,6 +29,12 @@ class GameProposal < ApplicationRecord
     )
   end
 
+  def user_get_or_build_vote(user)
+    vote = proposal_votes.find_by(user_id: user.id)
+    return vote if vote
+    proposal_votes.build(user_id: Current.user.id, game_proposal_id: id)
+  end
+
   def make_calendar_schedules
     game_name = Game.find(game_id).name.to_s
     game_sessions.map { |session| session.make_calendar_schedule(game_name) }
