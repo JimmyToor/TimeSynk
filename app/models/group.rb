@@ -10,4 +10,8 @@ class Group < ApplicationRecord
   scope :for_user , ->(user) { joins(:group_memberships).where(group_memberships: { user_id: user.id }) }
 
   validates :name, presence: true
+
+  def get_user_group_availability(user)
+    group_availabilities.find_by(user: user)
+  end
 end

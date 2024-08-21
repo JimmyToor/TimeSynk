@@ -3,7 +3,6 @@ class GameProposalsController < ApplicationController
   before_action :set_proposal_vote, only: %i[ show ]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
-  require "igdb_client"
 
   # GET /game_proposals or /game_proposals.json
   def index
@@ -16,6 +15,7 @@ class GameProposalsController < ApplicationController
 
   # GET /game_proposals/1 or /game_proposals/1.json
   def show
+    render :show, locals: { proposal_availability: @game_proposal.get_user_proposal_availability(Current.user) }
   end
 
   # GET /game_proposals/new

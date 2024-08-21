@@ -26,6 +26,12 @@ class CalendarsController < ApplicationController
     if params[:game_proposal_id].present?
       game_proposal = GameProposal.find(params[:game_proposal_id])
       @calendars << make_game_proposal_calendar(game_proposal)
+      Rails.logger.debug "CalendarsController#show: group users: #{ game_proposal.group.users.inspect }"
+      game_proposal.group.users.each do |user|
+        Rails.logger.debug "CalendarsController#show: getting availability for user: #{user.inspect}"
+        availability = user.get_nearest_proposal_availability(game_proposal)
+        @calendars << make_availability_calendar(availability)
+      end
     end
     render json: @calendars.as_json
   end

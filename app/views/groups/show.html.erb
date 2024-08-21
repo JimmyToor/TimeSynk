@@ -12,6 +12,12 @@
     <%= link_to "Join Group", new_group_group_membership_path(@group) %> |
   <% end %>
   <%= link_to "New game proposal", new_group_game_proposal_path(@group, nil) %> |
+  <%= link_to "Show this group's game proposals", group_game_proposals_path(@group) %> |
+  <% if local_assigns[:group_availability] %>
+    <%= link_to "Edit Group Availability", edit_group_availability_path(group_availability) %> |
+  <% else %>
+    <%= link_to "Set Group Availability", new_group_group_availability_path(@group) %> |
+  <% end %>
   <%= link_to "Edit this group", edit_group_path(@group) %> |
   <%= link_to "Invite to this group", new_group_invite_path(@group) %> |
   <%= link_to "Show this group's invites", group_invites_path(@group) %> |

@@ -29,6 +29,12 @@ class GameProposal < ApplicationRecord
     )
   end
 
+  def get_user_proposal_availability(user)
+    proposal_availabilities.find_by(user: user)
+  end
+
+
+
   def user_get_or_build_vote(user)
     vote = proposal_votes.find_by(user_id: user.id)
     return vote if vote

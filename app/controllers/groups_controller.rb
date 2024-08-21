@@ -11,6 +11,9 @@ class GroupsController < ApplicationController
   def show
     authorize(@group)
     @group_membership = GroupMembership.find_by(group: @group, user: Current.user)
+    Rails.logger.debug "availability: #{@group.get_user_group_availability(Current.user)}"
+
+    render :show, locals: { group_availability: @group.get_user_group_availability(Current.user) }
   end
 
   # GET /groups/new

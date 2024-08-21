@@ -1,9 +1,9 @@
 <h1>New proposal availability</h1>
 
-<%= render "form", proposal_availability: @proposal_availability %>
+<%= render "form", game_proposal: @game_proposal, proposal_availability: @proposal_availability %>
 
 <br>
 
 <div>
-  <%= link_to "Back to proposal availabilities", proposal_availabilities_path %>
+  <%= link_to "Back to game proposal", @game_proposal %>
 </div>

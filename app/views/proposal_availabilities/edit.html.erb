@@ -6,5 +6,6 @@
 
 <div>
   <%= link_to "Show this proposal availability", @proposal_availability %> |
-  <%= link_to "Back to proposal availabilities", proposal_availabilities_path %>
+  <%= button_to "Unset Proposal Availability", @proposal_availability, method: :delete %> |
+  <%= link_to "Back to proposal", game_proposal_path(@proposal_availability.game_proposal) %>
 </div>

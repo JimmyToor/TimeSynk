@@ -7,6 +7,11 @@
 
   <%= link_to "Edit this game proposal", edit_game_proposal_path(@game_proposal) %>
   <%= link_to "Back to game proposals", group_game_proposals_path(@game_proposal.group) %>
+  <% if local_assigns[:proposal_availability] %>
+    <%= link_to "Edit Proposal Availability", edit_proposal_availability_path(proposal_availability) %> |
+  <% else %>
+    <%= link_to "Set Proposal Availability", new_game_proposal_proposal_availability_path(@game_proposal) %> |
+  <% end %>
   <%= link_to "View Game Sessions", game_proposal_game_sessions_path(@game_proposal) %>
   <%= link_to "New Game Session", new_game_proposal_game_session_path(@game_proposal) %>
 

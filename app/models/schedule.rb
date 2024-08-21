@@ -50,7 +50,7 @@ class Schedule < ApplicationRecord
   #
   # Included fields: id, name, duration, user_id, cal_rrule, end_time, extimes, rtimes, start_time.
   # @return [Hash] the calendar data
-  def make_calendar_schedules
+  def make_calendar_schedule
     schedule = make_icecube_schedule
     rrule = schedule.to_ical if schedule.recurrence_rules.present?
     schedule = schedule.to_hash

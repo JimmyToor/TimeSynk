@@ -44,7 +44,7 @@ class SchedulesController < ApplicationController
       end
     else
       Rails.logger.debug "SchedulesController#create: schedule_pattern is empty"
-      @schedule.end_date = @schedule.start_date + @schedule.duration.minutes
+      @schedule.end_date = @schedule.start_date + schedule_params[:duration].minutes
     end
     Rails.logger.debug "SchedulesController#create: schedule: #{@schedule.inspect}"
 
@@ -93,12 +93,9 @@ class SchedulesController < ApplicationController
   # Only allow a list of trusted parameters through.
   def schedule_params
     params.require(:schedule).permit(:name, :user_id, :start_date, :duration, :schedule_pattern).tap do |schedule_params|
-      if schedule_params[:start_date].present? && schedule_params[:duration].present?
-        start_date = DateTime.parse(schedule_params[:start_date])
-        duration = schedule_params[:duration].to_i
-        schedule_params[:end_date] = start_date + duration.minutes
+      if schedule_params[:duration].present?
+        schedule_params[:duration] = schedule_params[:duration].to_i
       end
     end
   end
-
 end

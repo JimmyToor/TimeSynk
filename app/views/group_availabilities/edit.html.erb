@@ -6,5 +6,7 @@
 
 <div>
   <%= link_to "Show this group availability", @group_availability %> |
-  <%= link_to "Back to group availabilities", group_availabilities_path %>
+  <%= button_to "Unset Group Availability", @group_availability, method: :delete %> |
+  <%= link_to "Back to group", group_path(@group_availability.group) %>
+
 </div>

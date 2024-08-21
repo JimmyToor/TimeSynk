@@ -31,8 +31,7 @@ class GroupMembershipsController < ApplicationController
 
     @group_membership.group_id = params[:group_id]
     @group_membership.user_id = Current.user.id
-    locals = { group_membership: @group_membership, group: group }
-    locals[:invite] = @invite if @invite
+    locals = { group_membership: @group_membership, group: group, invite: @invite }
     render :new, locals: locals
   end
 

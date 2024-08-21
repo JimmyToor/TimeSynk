@@ -1,4 +1,4 @@
-<%= form_with(model: proposal_availability) do |form| %>
+<%= form_with(model: proposal_availability.new_record? ? [game_proposal, proposal_availability] : proposal_availability) do |form| %>
   <% if proposal_availability.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(proposal_availability.errors.count, "error") %> prohibited this proposal_availability from being saved:</h2>
@@ -12,18 +12,17 @@
   <% end %>
 
   <div>
-    <%= form.label :schedule_id, style: "display: block" %>
-    <%= form.text_field :schedule_id %>
+    <div>
+      <%= collection_select :proposal_availability, :availability_id, @availabilities, :id, :name %>
+    </div>
   </div>
 
   <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
+    <%= form.hidden_field :user_id, value: Current.user.id %>
   </div>
 
   <div>
-    <%= form.label :game_proposal_id, style: "display: block" %>
-    <%= form.text_field :game_proposal_id %>
+    <%= form.hidden_field :game_proposal_id, value: proposal_availability.game_proposal_id %>
   </div>
 
   <div>

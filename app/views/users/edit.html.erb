@@ -7,16 +7,20 @@
 
 <h2>Login and verification</h2>
 
-<%= form_with(url: Current.user, method: :patch) do |form| %>
+<%= form_with(model: Current.user, method: :patch) do |form| %>
   <div>
-    <%= form.hidden_field :id %>
     <%= form.label :avatar, style: "display:block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
     <%= user_avatar(Current.user) %>
     <%= form.file_field :avatar %>
     <%= form.submit "Update avatar" %>
   </div>
 <% end %>
-
+<%= form_with(model: Current.user, method: :patch) do |form| %>
+  <div>
+    <%= form.hidden_field :avatar, value: "" %>
+    <%= form.submit "Remove avatar" %>
+  </div>
+<% end %>
 <div>
   <%= link_to "See Schedules", schedules_path %>
   <%= link_to "See availabilities", availabilities_path %>

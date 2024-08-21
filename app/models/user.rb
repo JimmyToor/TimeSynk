@@ -29,8 +29,9 @@ class User < ApplicationRecord
   has_many :proposal_availability_schedules, through: :proposal_availabilities, source: :schedule, dependent: :destroy
   has_one_attached :avatar
 
-  validates :email, presence: true, uniqueness: true, format: {with: URI::MailTo::EMAIL_REGEXP}
-  validates :password, allow_nil: true, length: {minimum: 12}
+  validates :email, uniqueness: true, format: {with: URI::MailTo::EMAIL_REGEXP}, allow_blank: true
+  validates :username, presence: true, uniqueness: true, length: {minimum: 3, maximum: 20}
+  validates :password, allow_nil: true, length: {minimum: 8}
 
 
   normalizes :email, with: -> { _1.strip.downcase }
@@ -58,7 +59,7 @@ class User < ApplicationRecord
   def get_nearest_proposal_availability(game_proposal)
     availabilities = game_proposal.proposal_availabilities.for_user(self)
     if availabilities.empty?
-      get_nearest_group_availability(game_proposal.group).availability
+      get_nearest_group_availability(game_proposal.group)
     else
       availabilities.first.availability
     end

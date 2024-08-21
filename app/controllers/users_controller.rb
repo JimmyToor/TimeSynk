@@ -18,9 +18,8 @@ class UsersController < ApplicationController
   end
 
   def update
-    unless user_params[:avatar].present?
-      @user.avatar.purge
-    end
+    @user.avatar.purge if user_params[:avatar] === ""
+
     if @user.update(user_params)
       redirect_to settings_path, notice: "Your settings were updated successfully"
     else
@@ -38,6 +37,6 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.permit(:avatar).require(:user).permit(:email, :username, :password, :password_confirmation)
+    params.require(:user).permit(:email, :username, :password, :password_confirmation, :avatar)
   end
 end
