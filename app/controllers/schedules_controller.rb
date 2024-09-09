@@ -1,5 +1,5 @@
 class SchedulesController < ApplicationController
-  before_action :set_schedule, only: %i[ show edit update destroy ]
+  before_action :set_schedule, only: %i[show edit update destroy]
   skip_after_action :verify_authorized, except: :index
   skip_after_action :verify_policy_scoped, except: :index
 
@@ -8,9 +8,8 @@ class SchedulesController < ApplicationController
     @schedules = policy_scope(Schedule)
     authorize(@schedules)
     if params[:start] && params[:end]
-      @schedules = @schedules.where("start_date >= ?", params[:start]).each do |schedule|
+      @schedules = @schedules.where("start_date >= ?", params[:start]).select do |schedule|
         schedule if schedule.make_icecube_schedule.occurs_between?(params[:start], params[:end])
-        Rails.logger.debug "Schedule: #{schedule.inspect}"
       end
     end
   end
@@ -31,22 +30,7 @@ class SchedulesController < ApplicationController
   # POST /schedules or /schedules.json
   def create
     @schedule = Schedule.new(schedule_params)
-    Rails.logger.debug "SchedulesController#create: schedule_params: #{schedule_params.inspect}"
-    if @schedule.schedule_pattern.present?
-      pattern = @schedule.schedule_pattern
-      Rails.logger.debug "SchedulesController#create: pattern: #{pattern.inspect}"
-      if pattern[:until].present?
-        Rails.logger.debug "SchedulesController#createDuringEndDateChecks: pattern[:until]: #{pattern[:until]}"
-        @schedule.end_date = @schedule.schedule_pattern[:until][:time]
-      elsif pattern[:count]
-        Rails.logger.debug "SchedulesController#createDuringEndDateChecks: pattern[:count]: #{pattern[:count]}"
-        @schedule.end_date = @schedule.make_icecube_schedule.last
-      end
-    else
-      Rails.logger.debug "SchedulesController#create: schedule_pattern is empty"
-      @schedule.end_date = @schedule.start_date + schedule_params[:duration].minutes
-    end
-    Rails.logger.debug "SchedulesController#create: schedule: #{@schedule.inspect}"
+    set_end_date
 
     respond_to do |format|
       if @schedule.save
@@ -57,11 +41,11 @@ class SchedulesController < ApplicationController
         format.json { render json: @schedule.errors, status: :unprocessable_entity }
       end
     end
-
   end
 
   # PATCH/PUT /schedules/1 or /schedules/1.json
   def update
+    set_end_date
     respond_to do |format|
       if @schedule.update(schedule_params)
         format.html { redirect_to schedule_url(@schedule), notice: "Schedule was successfully updated." }
@@ -84,6 +68,21 @@ class SchedulesController < ApplicationController
   end
 
   private
+
+  def set_end_date
+    if @schedule.schedule_pattern.present?
+      pattern = @schedule.schedule_pattern
+      @schedule.end_date = if pattern[:until].present?
+        pattern[:until][:time]
+      elsif pattern[:count]
+        @schedule.make_icecube_schedule.last + schedule_params[:duration].minutes
+      else
+        @schedule.start_date + schedule_params[:duration].minutes
+      end
+    else
+      @schedule.end_date = @schedule.start_date + schedule_params[:duration].minutes
+    end
+  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_schedule

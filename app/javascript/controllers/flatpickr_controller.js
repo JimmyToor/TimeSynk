@@ -7,90 +7,91 @@ export default class extends Controller {
   static targets = [ "startDate", "endDate" ]
   startDatePicker = null;
   endDatePicker = null;
+  done = false;
 
   connect() {
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-    let startDatePickerEl = this.startDateTarget;
-    let endDatePickerEl = this.hasEndDateTarget ? this.endDateTarget : null;
-
-    this.initStartDatePicker(startDatePickerEl);
-    this.initEndDatePicker(endDatePickerEl);
+    console.log("Flatpickr controller connected");
+    this.initializePickers();
   }
 
-  initStartDatePicker(startDatePickerEl) {
-    if (startDatePickerEl == null) return;
+  disconnect() {
+    this.destroyPickers();
+  }
 
-    let startDefaultDate = startDatePickerEl.dataset.defaultDate || new Date().toISOString();
-    let startMinDate = startDatePickerEl.dataset.minDate || undefined;
+  initializePickers() {
+    this.initStartDatePicker();
+    this.initEndDatePicker();
+  }
 
-    this.startDatePicker = this.initDatePicker(startDatePickerEl, startDefaultDate, startMinDate,
+  destroyPickers() {
+    this.destroyStartDatePicker();
+    this.destroyEndDatePicker();
+  }
+
+  destroyEndDatePicker() {
+    if (this.endDatePicker) {
+      this.endDatePicker.destroy();
+      this.endDatePicker = null;
+    }
+  }
+
+  destroyStartDatePicker() {
+    if (this.startDatePicker) {
+      this.startDatePicker.destroy();
+      this.startDatePicker = null;
+    }
+  }
+
+  initStartDatePicker() {
+    if (!this.hasStartDateTarget) return;
+
+    this.startDatePicker = this.initDatePicker(this.startDateTarget, undefined, undefined,
       (selectedDates, dateStr, instance) => {
-        if (this.endDatePicker == null) return;
-
-        // Ensure end date is not before start date
-        if (this.endDatePicker.selectedDates[0] < new Date(dateStr)) {
-          this.endDatePicker.setDate(instance.selectedDates[0]);
+        if (this.endDatePicker) { // Ensure end date is not before start date
+          if (this.endDatePicker.selectedDates[0] < new Date(dateStr)) {
+            this.endDatePicker.setDate(instance.selectedDates[0]);
+          }
+          this.endDatePicker.set('minDate', dateStr);
         }
-        this.endDatePicker.set('minDate', dateStr);
       });
   }
 
-  initEndDatePicker(endDatePickerEl) {
-    if (endDatePickerEl == null) {
-      // End date target might not be present right away, so observe for it to be added to the DOM
-      this.observeForEndDateTarget();
-      return;
-    }
+  initEndDatePicker() {
+    if (!this.hasEndDateTarget) return;
+    // Priority: 1. Value from endDateTarget, 2. Value from startDatePicker, 3. Current date
+    let defaultDate = this.endDateTarget.value || this.startDatePicker?.selectedDates[0] || new Date().toISOString();
 
-    let endDefaultDate = endDatePickerEl?.dataset.defaultDate || this.startDatePicker.selectedDates[0] || new Date().toISOString();
-    let endMinDate = endDatePickerEl?.dataset.minDate || this.startDatePicker.selectedDates[0] || undefined;
-
-    this.endDatePicker = this.initDatePicker(endDatePickerEl, endDefaultDate, endMinDate);
+    this.endDatePicker = this.initDatePicker(this.endDateTarget, this.startDatePicker?.selectedDates[0], defaultDate);
   }
 
-  initDatePicker(datePickerEl, defaultDate, minDate, onClose = undefined) {
-    let options = {
+  initDatePicker(datePickerEl, minDate, defaultDate = undefined, onClose = undefined) {
+    return flatpickr(datePickerEl, {
       enableTime: true,
       dateFormat: "Z",
       altInput: true,
       altFormat: "F j, Y h:i K",
-      defaultDate: defaultDate,
+      defaultDate: defaultDate || datePickerEl.value,
       minDate: minDate,
       onClose: onClose,
-    }
-
-    return flatpickr(datePickerEl, options);
-  }
-
-  observeForEndDateTarget() {
-    const observer = new MutationObserver(mutations => {
-      mutations.forEach(mutation => {
-        if (mutation.type === 'childList') {
-          mutation.addedNodes.forEach(node => {
-            if (node.nodeType === Node.ELEMENT_NODE && this.checkForEndDate(node))
-              observer.disconnect();
-          });
-        }
-      });
+      allowInput: false,
+      altInputClass: "flatpickr-input form-control input",
     });
-
-    observer.observe(this.element, {childList: true, subtree: true})
   }
 
-  checkForEndDate(node) {
-    if (node.matches('[data-flatpickr-target="endDate"]')) {
-      this.initEndDatePicker(node);
-      return true;
-    }
+  startDateTargetConnected(element) {
+    this.initStartDatePicker();
+  }
 
-    let endDateElement = node.querySelector('[data-flatpickr-target="endDate"]');
-    if (endDateElement) {
-      this.initEndDatePicker(endDateElement);
-      return true;
-    }
+  endDateTargetConnected(element) {
+    this.initEndDatePicker();
+  }
 
-    return false;
+  startDateTargetDisconnected(element) {
+    this.destroyStartDatePicker()
+  }
+
+  endDateTargetDisconnected(element) {
+    this.destroyEndDatePicker()
   }
 }
 

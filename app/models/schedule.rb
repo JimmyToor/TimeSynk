@@ -1,8 +1,8 @@
 # `start_date` and `end_date` define the valid date range for the schedule.
 #
-# `end_date` represents the end of recurrence or the final event, not necessarily the end of the initial event.
+# `end_date` represents the end of recurrence (the end of the final event in the case of "count" recurrence), or the end of the initial event if there is no recurrence.
 #
-# `duration` is the length of time in minutes that the initial event will last.
+# `duration` is the length of time in seconds that the initial event will last.
 class Schedule < ApplicationRecord
   has_many :availability_schedules, dependent: :destroy
   has_many :availabilities, through: :availability_schedules
@@ -12,7 +12,7 @@ class Schedule < ApplicationRecord
   belongs_to :user
 
   validates :start_date, timeliness: {on_or_before: :end_date, type: :datetime}, presence: true
-  validates :end_date, timeliness: {on_or_after: :start_date, type: :datetime}, presence: true
+  validates :end_date, timeliness: {on_or_after: :start_date, type: :datetime}
 
   scope :group_availabilities_for_group, ->(group) {
     :group_availabilities.where(group_availabilities: { group: group })
@@ -59,7 +59,6 @@ class Schedule < ApplicationRecord
     schedule[:duration] = duration
     schedule[:user_id] = user_id
     schedule[:cal_rrule] = rrule || ""
-    Rails.logger.debug "Schedule#make_calendar_data: schedule: #{schedule.inspect}"
     schedule
   end
 

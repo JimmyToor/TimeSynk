@@ -27,5 +27,11 @@
   <%= button_to "Destroy this group", @group, method: :delete %>
 </div>
 
-<div id="calendar" data-controller="calendar" data-calendar-target="calendar" data-calendar-group-id=<%= @group.id %>>
+
+<div data-controller="calendar" data-calendar-group-id=<%= @group.id %>>
+  <div id="calendar-toggles" data-calendar-target="toggles">
+    <!-- Toggle buttons will be dynamically added here -->
+  </div>
+  <div id="calendar" data-calendar-target="calendar">
+  </div>
 </div>

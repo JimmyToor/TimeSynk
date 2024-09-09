@@ -4,8 +4,8 @@ module UsersHelper
     if user.avatar.attached?
       image_tag user.avatar.variant(resize_to_fill: [sizeX, sizeY]), class: "avatar"
     else
-      "No avatar"
-      #image_tag 'default_avatar.jpg', class: 'avatar'
+      #"no avatar"
+      inline_svg_tag "icons/default_avatar.svg", size: "#{sizeX}x#{sizeY}", class: "avatar"
     end
   end
 

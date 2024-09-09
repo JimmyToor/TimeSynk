@@ -2,12 +2,17 @@
 
 <%= render @availability %>
 
-<div id="calendar" data-controller="calendar" data-calendar-target="calendar" data-calendar-availability-id=<%= @availability.id %>>
-</div>
-
 <div>
   <%= link_to "Edit this availability", edit_availability_path(@availability) %> |
   <%= link_to "Back to availabilities", availabilities_path %>
 
   <%= button_to "Destroy this availability", @availability, method: :delete %>
+</div>
+
+<div data-controller="calendar" data-calendar-availability-id=<%= @availability.id %>>
+  <div id="calendar-toggles" data-calendar-target="toggles">
+    <!-- Toggle buttons will be dynamically added here -->
+  </div>
+  <div id="calendar" data-calendar-target="calendar">
+  </div>
 </div>

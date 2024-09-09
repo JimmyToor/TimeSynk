@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 ###
-# A Calendar is used to contain a collection of IceCube::Schedule objects.
+# A Calendar is used to contain the schedule information for a specific resource.
 class Calendar
   include ActiveModel::Model
   include ActiveModel::Serializers::JSON
 
-  attr_accessor :schedules, :array # Array of hashes with merged schedule and icecube_schedule values
+  attr_accessor :schedules, :array # Array of hashes with merged Schedule and icecube_schedule values
   attr_accessor :name
   attr_accessor :id
   attr_accessor :username

@@ -1,4 +1,5 @@
 <%= form_with(model: schedule, data: { controller: "flatpickr" }) do |form| %>
+
   <% if schedule.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(schedule.errors.count, "error") %> prohibited this schedule from being saved:</h2>
@@ -10,33 +11,33 @@
       </ul>
     </div>
   <% end %>
+  <div class="dark:bg-gray-800 p-4 rounded-lg shadow-lg">
+    <div>
+      <%= form.label :name, style: "display: block" %>
+      <%= form.text_field :name %>
+    </div>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
-  </div>
+    <div>
+      <%= form.hidden_field :user_id, value: Current.user.id %>
+    </div>
 
-  <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.hidden_field :user_id, value: Current.user.id %>
-  </div>
+    <div>
+      <%= form.label :start_date, "Starting on", style: "display: block" %>
+      <%= form.datetime_field :start_date, data: { flatpickr_target: "startDate"}, value: schedule.start_date.iso8601 %>
+    </div>
 
-  <div>
-    <%= form.label :start_date, "Starting on", style: "display: block" %>
-    <%= form.datetime_field :start_date, data: { flatpickr_target: "startDate", default_date: schedule.start_date.iso8601 }, value: schedule.start_date %>
-  </div>
+    <div>
+      <%= form.label :duration, style: "display: block" %>
+      <%= form.number_field :duration, value: schedule.duration %>
+    </div>
 
-  <div>
-    <%= form.label :duration, style: "display: block" %>
-    <%= form.number_field :duration, value: schedule.duration %>
-  </div>
+    <div>
+      <%= form.label :schedule_pattern, "Occurs", style: "display: block;" %>
+      <%= form.select_recurring :schedule_pattern, nil, allow_blank: true, initialize_flatpickr: false %>
+    </div>
 
-  <div>
-    <%= form.label :schedule_pattern, style: "display: block" %>
-    <%= form.select_recurring :schedule_pattern, nil, allow_blank: true %>
-  </div>
-
-  <div>
-    <%= form.submit %>
+    <div>
+      <%= form.submit %>
+    </div>
   </div>
 <% end %>
