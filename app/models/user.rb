@@ -29,6 +29,9 @@ class User < ApplicationRecord
   has_many :proposal_availability_schedules, through: :proposal_availabilities, source: :schedule, dependent: :destroy
   has_one_attached :avatar
 
+  validate :avatar_type
+
+
   validates :email, uniqueness: true, format: {with: URI::MailTo::EMAIL_REGEXP}, allow_blank: true
   validates :username, presence: true, uniqueness: true, length: {minimum: 3, maximum: 20}
   validates :password, allow_nil: true, length: {minimum: 8}
@@ -100,5 +103,11 @@ class User < ApplicationRecord
     self.user_availability = user_availability
   rescue ActiveRecord::RecordInvalid => e
     errors.add(:user_availability, "could not be created: #{e.message}")
+  end
+
+  def avatar_type
+    if avatar.attached? && !avatar.content_type.in?(%w(image/jpeg image/png image/gif))
+      errors.add(:avatar, "must be a JPEG, PNG, or GIF")
+    end
   end
 end
