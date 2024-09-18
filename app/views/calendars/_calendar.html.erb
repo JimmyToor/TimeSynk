@@ -1,0 +1,48 @@
+<div class="flex items-center justify-center p-4">
+  <button id="dropdownDefault" data-dropdown-toggle="toggle-dropdown"
+          class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+          type="button">
+    Toggle Calendars
+    <svg class="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+         xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
+  </button>
+  <!-- Dropdown menu -->
+  <div id="toggle-dropdown" data-calendar-target="toggleDropdown" class="z-10 hidden w-56 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
+    <div id="toggle-dropdown-loading" data-calendar-target="toggleDropdownLoading" class="hidden">
+      <p>Loading...</p>
+    </div>
+
+    <div id="calendar-toggles-availability" data-calendar-target="availabilityToggles" class="hidden">
+      <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
+        Availabilities
+      </h6>
+      <ul id="calendar-toggles-availability-list" data-calendar-target="availabilityTogglesList" class="space-y-2 text-sm" aria-labelledby="dropdownDefault">
+        <!-- Toggle buttons will be dynamically added here -->
+      </ul>
+    </div>
+
+    <div id="calendar-toggles-game" data-calendar-target="gameToggles" class="hidden">
+      <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
+        Game Sessions
+      </h6>
+      <ul id="calendar-toggles-game-list" data-calendar-target="gameTogglesList" class="space-y-2 text-sm" aria-labelledby="dropdownDefault">
+        <!-- Toggle buttons will be dynamically added here -->
+      </ul>
+    </div>
+
+    <div id="calendar-toggles-schedule" data-calendar-target="scheduleToggles" class="hidden">
+      <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
+        Schedules
+      </h6>
+      <ul id="calendar-toggles-schedule-list" data-calendar-target="scheduleTogglesList" class="space-y-2 text-sm" aria-labelledby="dropdownDefault">
+        <!-- Toggle buttons will be dynamically added here -->
+      </ul>
+    </div>
+
+  </div>
+</div>
+<div id="calendar" data-calendar-target="calendar">
+</div>
+<%= render partial: 'calendars/toggle_button_template' %>

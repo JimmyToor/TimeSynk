@@ -115,7 +115,7 @@
     <orderEntry type="library" scope="PROVIDED" name="rainbow (v3.1.1, Remote-rbenv: ruby-3.3.1 (-p55) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rake (v13.2.1, Remote-rbenv: ruby-3.3.1 (-p55) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rdoc (v6.7.0, Remote-rbenv: ruby-3.3.1 (-p55) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="recurring_select (v4.2.2@acfeb3, Remote-rbenv: ruby-3.3.1 (-p55) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="recurring_select (v4.2.4@e81a66, Remote-rbenv: ruby-3.3.1 (-p55) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="regexp_parser (v2.9.2, Remote-rbenv: ruby-3.3.1 (-p55) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="reline (v0.5.10, Remote-rbenv: ruby-3.3.1 (-p55) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rexml (v3.3.7, Remote-rbenv: ruby-3.3.1 (-p55) [gem]" level="application" />

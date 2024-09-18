@@ -21,3 +21,11 @@
         }
     }
 }
+
+input:indeterminate + .toggle-slider {
+    background-color: #9ca3af; /* A grayish color for indeterminate state */
+}
+
+input:indeterminate + .toggle-slider::before {
+    transform: translateX(10px); /* Move to the middle for indeterminate state */
+}
