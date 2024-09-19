@@ -42,10 +42,10 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
 
   config.action_mailer.smtp_settings = {
-    address: "smtp.mailersend.net",
+    address: ENV["MAILER_ADDRESS"],
     port: 587,
-    user_name: "MS_MTQg65@trial-z3m5jgrr19mgdpyo.mlsender.net",
-    password: "HFqVAFdv2oimZprG",
+    user_name: ENV["MAILER_USERNAME"],
+    password: ENV["MAILER_PASSWORD"],
     enable_starttls_auto: true
   }
 
