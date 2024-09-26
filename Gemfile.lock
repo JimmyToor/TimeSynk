@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/JimmyToor/recurring_select.git
-  revision: acfeb366802a87b6c93f551ce88252d4c62d330d
+  revision: e81a660f54ba761955ab61bb2defd21649fe7026
   specs:
-    recurring_select (4.2.2)
+    recurring_select (4.2.4)
       flatpickr (>= 4.6.6)
       ice_cube (>= 0.11)
       rails (>= 6.1)

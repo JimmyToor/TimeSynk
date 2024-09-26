@@ -1,31 +1,36 @@
 import {Controller} from "@hotwired/stimulus"
-import {Calendar} from '@fullcalendar/core';
 import rrulePlugin from '@fullcalendar/rrule'
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interaction from '@fullcalendar/interaction';
+import CalendarService from "../services/calendar_service";
+import ModalService from "../services/modal_service";
 
 
-// Connects to data-controller="calendar"
+/**
+ * Main controller class for the calendar functionality.
+ * Mainly concerned with UI interactions and rendering.
+ * Extends the Stimulus Controller class.
+ */
 export default class extends Controller {
 
-  static targets = [ "calendar", "toggles" ]
-  allCalendars = new Map();
-  events = new Map();
-  fullCalendarObj = null;
+  static targets = [ "calendar", "toggleDropdown", "toggleDropdownLoading", "availabilityToggles",
+    "gameToggles", "scheduleToggles", "availabilityTogglesList", "gameTogglesList", "scheduleTogglesList", "toggleButton" ]
 
-  constructor(context) {
-    super(context);
-  }
+  modalId = 'crud_modal';
+  modalFrameId = 'modal_body';
+  modalTitleId = 'modal_title';
 
   connect() {
-    this.fullCalendarObj = this.createFullCalendar();
-    this.fullCalendarObj.render();
+    this.initCalendar();
+    this.initModal();
   }
 
-  // Multiple toggleable (conceptual) calendars, each with their own events, all displayed via one rendered FullCalendar.
-  createFullCalendar() {
+  /**
+   * Initializes the FullCalendar instance with specified options and plugins.
+   */
+  initCalendar() {
     let calendarEl = this.calendarTarget;
     let url = '/calendars';
     let eventSrc = {
@@ -35,7 +40,7 @@ export default class extends Controller {
       id: 'calendarJson',
     }
 
-    return new Calendar(calendarEl, {
+    this.calendarService = new CalendarService(calendarEl, {
       plugins: [rrulePlugin, interaction, dayGridPlugin, timeGridPlugin, listPlugin],
       initialView: 'dayGridMonth',
       headerToolbar: {
@@ -45,25 +50,63 @@ export default class extends Controller {
       },
       timeZone: 'local',
       loading: this.load.bind(this),
-      eventSourceSuccess: this.transformCalendars.bind(this),
-      eventSourceFailure: function (errorObj) {
-        alert('there was an error while fetching events! Error: ' + errorObj.message);
-      },
       events: eventSrc,
-    })
+      eventInteractive: true,
+      eventClick: this.eventClick.bind(this),
+      eventDidMount: this.eventDidMount.bind(this),
+    });
   }
 
+  initModal() {
+    this.modalService = new ModalService(this.modalId, this.modalFrameId, this.modalTitleId);
+  }
+
+  eventDidMount(info) {
+    const el = info.el;
+    el.dataset.turboFrame = this.modalFrameId;
+    el.dataset.href = info.event.extendedProps.route;
+  }
+
+  eventClick(info) {
+    this.modalService.setTitle(info.event.title);
+    this.modalService.setBody('Loading...');
+    this.modalService.openModal();
+
+    Turbo.visit(info.el.dataset.href, { frame: info.el.dataset.turboFrame });
+  }
+
+  /**
+   * Handles the loading state of the calendar.
+   * @param {boolean} isLoading - Indicates if the calendar is currently loading.
+   */
   load(isLoading) {
-    this.resetToggles();
     if (isLoading) {
-      this.togglesTarget.innerHTML = "Loading...";
+      this.resetToggleLists();
+      // Show the loading indicator
+      this.toggleDropdownLoadingTarget.classList.remove('hidden');
     }
     else {
-      this.renderToggles()
+      this.createToggles();
+      this.toggleDropdownLoadingTarget.classList.add('hidden');
+      this.setToggleVisibility();
     }
   }
 
-// Grab extra params to add to the URL and convert them to snake_case for the Rails controller
+  /**
+   * Creates toggle buttons for each calendar type and individual calendar.
+   */
+  createToggles() {
+    this.createTypeToggles();
+    this.calendarService.allCalendars.forEach(calendar => {
+      this.addToggleButton(calendar.type, this.createToggleForCalendar(calendar), false);
+      this.updateToggleStates(calendar, this.calendarService.calendarStates.get(calendar.id));
+    });
+  }
+
+  /**
+   * Extracts additional parameters from data attributes and converts them to snake_case.
+   * @returns {Object} An object containing the extracted parameters.
+   */
   extractParams() {
     let extraParams = {};
     ['scheduleId',
@@ -79,125 +122,112 @@ export default class extends Controller {
     return extraParams;
   }
 
-  transformCalendars(retrievedCalendars) {
-    let events = [];
+  /**
+   * Updates the state of toggle buttons for a specific calendar and its type.
+   * @param {Object} calendar - The calendar object.
+   * @param {boolean} active - The active state of the calendar.
+   * @param {boolean} checkTypeToggle - Whether to update the type toggle button.
+   */
+  updateToggleStates(calendar, active, checkTypeToggle = true) {
+    const toggleButton = this.toggleButtonTargets?.find(input => input.dataset.calendarIdParam === calendar.id);
+    if (toggleButton) {
+      toggleButton.checked = active;
+    }
 
-    retrievedCalendars.forEach(calendar => {
-      this.allCalendars.set(calendar.id, this.fillCalendarEvents(calendar));
-    });
+    if (!checkTypeToggle) return;
 
-    this.allCalendars.forEach(calendar => {
-      if (calendar.active) {
-        calendar.events.forEach(event => {
-          events.push(event);
-        });
+    // Update the type toggle button if needed
+    const typeToggleButton = this.toggleButtonTargets?.find(input => input.dataset.calendarTypeParam === calendar.type);
+    if (typeToggleButton) {
+      const activeCount = this.calendarService.activeCalendarsByType.get(calendar.type)?.size ?? 0;
+      const totalCount = this.calendarService.calendarIdsByType.get(calendar.type)?.size ?? 0;
+
+      // The type toggle button can have three states: checked, unchecked, or indeterminate
+      if (activeCount === totalCount) {     // checked
+        typeToggleButton.checked = true;
+        typeToggleButton.indeterminate = false;
+      } else if (activeCount === 0) {       // unchecked
+        typeToggleButton.checked = false;
+        typeToggleButton.indeterminate = false;
+      } else {                              // indeterminate
+        // While indeterminate, a click should always set it to unchecked
+        typeToggleButton.checked = true;
+        typeToggleButton.indeterminate = true;
       }
-    });
-
-    return events;
-  }
-
-  resetToggles() {
-    this.togglesTarget.innerHTML = '';
-  }
-
-  fillCalendarEvents(calendar) {
-    // Persist existing calendars
-    if (this.allCalendars.has(calendar.id)) {
-      return this.allCalendars.get(calendar.id);
     }
-
-    // Populate calendar with events
-    calendar.active = true;
-    calendar.events = calendar.schedules.map(schedule => {
-      return this.createEvent(schedule, calendar);
-    });
-
-    return calendar;
   }
 
-  createEvent(schedule, calendar) {
-    let event = { // Each event is derived from a hash that includes IceCube::Schedule data
-      start: schedule.start_time.time,
-      end: schedule.end_time.time, // End time for the initial event, not the end of recurrence
-      // If the duration is a multiple of 1440 min (24 hours) and starts at midnight (T07:00:00), it lasts for entire days
-      allDay: (schedule.duration % 1440 === 0) && schedule.start_time.time.includes("T07:00:00"),
-    };
+  /**
+   * Creates toggle buttons for each calendar type (availability, game, schedule).
+   */
+  createTypeToggles() {
+    let types =  [["availability", "Availabilities"],
+      ["game", "Game Sessions"],
+      ["schedule", "Schedules"]];
 
-    switch (calendar.type) {
-      case "availability":
-        event.id = "availability-" + schedule.id;
-        event.title = calendar.username;
-        event.backgroundColor = "green";
-        break;
-      case "game_proposal": // Same as game_session
-      case "game_session":
-        event.id = "gameproposal-" + schedule.id;
-        event.title = schedule.name;
-        event.backgroundColor = "blue";
-        break;
-      default: // Single schedule
-        event.id = "schedule-" + schedule.id;
-        event.title = schedule.name;
-        event.backgroundColor = "orange";
-    }
+    types.forEach(([type, typePlural]) => {
+      const totalCount = this.calendarService.calendarIdsByType.get(type)?.size ?? 0;
 
-    if (schedule.cal_rrule) event.rrule = this.convertRule(schedule.cal_rrule);
-    return event;
-  }
+      if (totalCount > 0) {
+        const activeCount = this.calendarService.activeCalendarsByType.get(type)?.size ?? 0;
+        const indeterminate = activeCount > 0 && activeCount < totalCount;
+        const checked = indeterminate ? true : activeCount === totalCount;
 
-  convertRule(rrule) {
-    // DTEND is not valid for FullCalendar so remove it
-    if (rrule?.includes("DTEND:")) {
-      rrule = rrule.split("DTEND:")[0];
-    }
-
-    return rrule;
-  }
-
-  // When toggled, a calendar's events are added or removed from the rendered FullCalendar's events.
-  toggleCalendar(calendarId) {
-    let calendar = this.allCalendars.get(calendarId);
-    if (!calendar) {
-      return;
-    }
-
-    calendar.active = !calendar.active;
-
-    calendar.events.forEach(event => {
-      let existingEvent = this.fullCalendarObj.getEventById(event.id);
-
-      if (!existingEvent) {
-        this.fullCalendarObj.addEvent(event, "calendarJson")
-      } else {
-        existingEvent.remove();
+        this.addToggleButton(type, this.createToggleForType(type, typePlural, checked, indeterminate), true);
       }
     });
   }
 
-  renderToggles() {
-    this.allCalendars.forEach(calendar => {
-      let button = this.createToggleButton(calendar.name, [calendar.id]);
-      this.addToggleButton(button);
-    });
-
-    let availabilityCalendarIds = this.getCalendarIdsForType("availability");
-    let gameCalendarIds = this.getCalendarIdsForType("game_session") + this.getCalendarIdsForType("game_proposal");
-
-    if (availabilityCalendarIds.length > 0) {
-      let availabilityButton = this.createToggleButton('Availabilities', availabilityCalendarIds);
-      this.addToggleButton(availabilityButton);
-    }
-
-    if (gameCalendarIds.length > 0) {
-      let gameButton = this.createToggleButton('Game Sessions', gameCalendarIds);
-      this.addToggleButton(gameButton);
-    }
+  /**
+   * Resets all toggle lists and updates their visibility.
+   */
+  resetToggleLists() {
+    this.availabilityTogglesListTarget.innerHTML = '';
+    this.gameTogglesListTarget.innerHTML = '';
+    this.scheduleTogglesListTarget.innerHTML = '';
+    this.setToggleVisibility();
   }
 
-  getCalendarIdsForType(type) {
+  /**
+   * Toggles the visibility of a specific calendar's events by adding/removing them from the calendar.
+   * @param {Event} event - The toggle event.
+   */
+  toggleCalendar(event) {
+    const calendarId = event.params.id;
+    const calendar = this.calendarService.allCalendars.get(calendarId);
+
+    this.calendarService.setCalendarActive(calendar, event.target.checked);
+    this.updateToggleStates(calendar, event.target.checked);
+  }
+
+  /**
+   * Toggles all calendars of a specific type.
+   * @param {Event} event - The toggle event.
+   */
+  toggleCalendarType(event) {
+    const calendarType = event.params.type;
+    const calendarIds = this.calendarService.calendarIdsByType.get(calendarType) || this.findCalendarIdsForType(calendarType);
+    const isActive = event.target.indeterminate ? false : event.target.checked;
+
+    event.target.checked = isActive;
+
+    calendarIds?.forEach(id => {
+      const calendar = this.calendarService.allCalendars.get(id);
+      this.calendarService.setCalendarActive(calendar, isActive);
+      this.updateToggleStates(calendar, isActive, false);
+    });
+
+    event.target.indeterminate = false;
+  }
+
+  /**
+   * Finds all calendar IDs for a specific type.
+   * @param {string} type - The calendar type.
+   * @returns {Array} An array of calendar IDs.
+   */
+  findCalendarIdsForType(type) {
     let calendarIds = [];
-    for (const calendar of this.allCalendars.values()) {
+    for (const calendar of this.calendarService.allCalendars.values()) {
       if (calendar.type === type) {
         calendarIds.push(calendar.id);
       }
@@ -205,19 +235,109 @@ export default class extends Controller {
     return calendarIds;
   }
 
-  addToggleButton(button) {
-    this.togglesTarget.appendChild(button);
-    this.togglesTarget.appendChild(document.createElement('br'));
+  /**
+   * Adds a toggle button to the appropriate list based on the calendar type.
+   * @param {string} calendarType - The type of calendar.
+   * @param {DocumentFragment} button - The toggle button element.
+   * @param {boolean} before - Whether to insert the button at the beginning of the list.
+   */
+  addToggleButton(calendarType, button, before = false) {
+    let target;
+
+    switch (calendarType) {
+      case "availability":
+        target = this.availabilityTogglesListTarget;
+        break;
+      case "game":
+        target = this.gameTogglesListTarget;
+        break;
+      default:
+        target = this.scheduleTogglesListTarget;
+    }
+    if (before) {
+      target.insertBefore(button, target.firstChild);
+    } else {
+      target.appendChild(button);
+    }
   }
 
-  createToggleButton(calendarType, calendarIds) {
-    let button = document.createElement('button');
-    button.textContent = `Toggle ${calendarType}`;
-    button.addEventListener('click', () => {
-      calendarIds.forEach(id => this.toggleCalendar(id));
-    });
-    return button;
+  /**
+   * Creates a toggle button for an individual calendar.
+   * @param {Object} calendar - The calendar object.
+   * @param {boolean} checked - The initial checked state of the toggle.
+   * @returns {DocumentFragment} A document fragment containing the toggle button.
+   */
+  createToggleForCalendar(calendar, checked = true) {
+    const template = document.getElementById('toggle_button_template').content.cloneNode(true);
+
+    const input = template.querySelector('input');
+    const label = template.querySelector('label');
+    const span = template.querySelector('span');
+    const title = calendar.title || calendar.name;
+
+    input.id = `toggle_${calendar.id}`;
+    input.checked = checked;
+
+    input.setAttribute('data-calendar-target', `toggleButton`);
+    input.setAttribute('data-calendar-id-param', calendar.id);
+    input.setAttribute('data-action', "change->calendar#toggleCalendar");
+
+    label.htmlFor = input.id;
+    span.textContent = `${title}`;
+
+    return template;
   }
+
+  /**
+   * Creates a toggle button for a calendar type.
+   * @param {string} calendarType - The type of calendar.
+   * @param {string} displayName - The display name for the calendar type.
+   * @param {boolean} checked - The initial checked state of the toggle.
+   * @param {boolean} indeterminate - The initial indeterminate state of the toggle.
+   * @returns {DocumentFragment} A document fragment containing the toggle button.
+   */
+  createToggleForType(calendarType, displayName, checked = true, indeterminate = false) {
+    const template = document.getElementById('toggle_button_template');
+    const clone = template.content.cloneNode(true);
+
+    const input = clone.querySelector('input');
+    const label = clone.querySelector('label');
+    const span = clone.querySelector('span');
+
+    input.id = `toggle_${calendarType.toLowerCase().replace(/\s+/g, '_')}`;
+    input.checked = checked;
+    input.indeterminate = indeterminate;
+
+
+    input.setAttribute('data-calendar-target', `toggleButton`);
+    input.setAttribute('data-calendar-type-param', calendarType);
+    input.setAttribute('data-action', "change->calendar#toggleCalendarType");
+
+    label.htmlFor = input.id
+    span.textContent = `All ${displayName}`;
+    let numCalendars = this.calendarService.calendarIdsByType.get(calendarType)?.size || 0
+    if (numCalendars > 1) {
+      span.textContent += ` (${numCalendars})`;
+    }
+
+    return clone;
+  }
+
+  /**
+   * Sets the visibility of toggle sections based on their content.
+   */
+  setToggleVisibility() {
+    const sections = [
+      { list: this.availabilityTogglesListTarget, target: this.availabilityTogglesTarget },
+      { list: this.gameTogglesListTarget, target: this.gameTogglesTarget },
+      { list: this.scheduleTogglesListTarget, target: this.scheduleTogglesTarget }
+    ];
+
+    sections.forEach(section => {
+      section.target.classList.toggle('hidden', section.list.innerHTML === '');
+    });
+  }
+
 
   //TODO: Use a callback (eventRender?) to resize events in the month view to only render proportionately to the percentage of the day they take up. May need to re-render the calendar after window re-size.
 }

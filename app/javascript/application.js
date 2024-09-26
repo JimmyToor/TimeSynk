@@ -2,4 +2,6 @@
 import "flatpickr/dist/flatpickr.min.js"
 import "@hotwired/turbo-rails"
 import "./controllers"
-import "flowbite/dist/flowbite.turbo.js";
+import 'tailwindcss-stimulus-components'
+import "flowbite/dist/flowbite.turbo.min.js";
+

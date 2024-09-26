@@ -49,20 +49,20 @@ class CalendarCreationService
     Calendar.new(
       schedules: [schedule.make_calendar_schedule],
       name: "Schedule: #{schedule.name}",
-      username: schedule.user.username,
-      id: "calendar-schedule-#{schedule.id}-user-#{schedule.user.id}",
-      type: :schedule,
-      )
+      title: schedule.user.username,
+      id: "calendar_schedule_#{schedule.id}_user_#{schedule.user.id}",
+      type: :schedule
+    )
   end
 
-  def make_availability_calendar(availability)
+  def make_availability_calendar(availability) # TODO: Merge schedules for readability where possible (e.g. if two schedules are adjacent)
     Calendar.new(
       schedules: availability.schedules.map(&:make_calendar_schedule),
       name: "Availability: #{availability.name}",
-      username: availability.user.username,
-      id: "calendar-availability-#{availability.id}-#{availability.user.id}",
-      type: :availability,
-      )
+      title: availability.user.username,
+      id: "calendar_availability_#{availability.id}-#{availability.user.id}",
+      type: :availability
+    )
   end
 
   def make_group_calendars(group)
@@ -82,17 +82,17 @@ class CalendarCreationService
     Calendar.new(
       schedules: [session_schedule],
       name: session_schedule[:name].to_s,
-      id: "calendar-session-#{game_session.id}",
-      type: :game_session,
-      )
+      id: "calendar_session_#{game_session.id}",
+      type: :game
+    )
   end
 
   def make_game_proposal_calendar(game_proposal)
     Calendar.new(
       schedules: game_proposal.make_calendar_schedules,
       name: Game.find(game_proposal.game_id).name.to_s,
-      id: "calendar-proposal-#{game_proposal.id}",
-      type: :game_proposal,
-      )
+      id: "calendar_proposal_#{game_proposal.id}",
+      type: :game
+    )
   end
 end

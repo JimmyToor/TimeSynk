@@ -15,3 +15,10 @@ application.register("game-selection", GameSelectionController)
 
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
+
+import NavController from "./nav_controller"
+application.register("nav", NavController)
+
+// flowbite's modal component breaks if a turbo load is triggered while the modal is open, so we're using this instead.
+import { Modal } from "tailwindcss-stimulus-components"
+application.register("modal-component", Modal)

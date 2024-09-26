@@ -10,7 +10,7 @@
     <%= javascript_include_tag "application", "recurring_select", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body class="bg-gray-50 dark:bg-gray-900">
+  <body class="dark:bg-gray-900 dark:text-white">
     <%= render "shared/navbar" %>
 
     <div class="p-4 sm:ml-64">
@@ -18,5 +18,7 @@
         <%= yield %>
       </div>
     </div>
+
+    <%= render 'shared/modal' %>
   </body>
 </html>

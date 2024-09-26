@@ -126,6 +126,10 @@ export default class CalendarService {
       end: schedule.end_time.time, // End time for the initial event, not the end of recurrence
       // If the duration is a multiple of 1440 min (24 hours) and starts at midnight (T07:00:00), it lasts for entire days
       allDay: (schedule.duration % 1440 === 0) && schedule.start_time.time.includes("T07:00:00"),
+      extendedProps: {
+        recordId: schedule.id,
+        type: calendar.type,
+      },
     };
 
     event.title = calendar.title || calendar.name;
@@ -133,16 +137,19 @@ export default class CalendarService {
     // Set event properties based on calendar type
     switch (calendar.type) {
       case "availability":
-        event.id = `availability-${schedule.id}`;
+        event.id = `availability_${schedule.id}`;
         event.backgroundColor = "green";
+        event.extendedProps.route = `/availabilities/${schedule.id}`;
         break;
       case "game":
-        event.id = `game-${schedule.id}`;
+        event.id = `game_${schedule.id}`;
         event.backgroundColor = "blue";
+        event.extendedProps.route = `/game_sessions/${schedule.id}`;
         break;
       default: // Single schedule
-        event.id = `schedule-${schedule.id}`;
+        event.id = `schedule_${schedule.id}`;
         event.backgroundColor = "orange";
+        event.extendedProps.route = `/schedules/${schedule.id}`;
     }
 
     if (schedule.cal_rrule) event.rrule = this.#convertRule(schedule.cal_rrule);
