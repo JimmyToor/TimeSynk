@@ -24,9 +24,9 @@ class User < ApplicationRecord
   has_one :user_availability, dependent: :destroy
   has_many :group_availabilities, dependent: :destroy
   has_many :proposal_availabilities, dependent: :destroy
-  has_many :user_availability_schedules, through: :user_availability, source: :schedule, dependent: :destroy
-  has_many :group_availability_schedules, through: :group_availabilities, source: :schedule, dependent: :destroy
-  has_many :proposal_availability_schedules, through: :proposal_availabilities, source: :schedule, dependent: :destroy
+  has_many :user_availability_schedules, through: :user_availability, source: :schedules, dependent: :destroy
+  has_many :group_availability_schedules, through: :group_availabilities, source: :schedules, dependent: :destroy
+  has_many :proposal_availability_schedules, through: :proposal_availabilities, source: :schedules, dependent: :destroy
   has_one_attached :avatar
 
   validate :avatar_type
