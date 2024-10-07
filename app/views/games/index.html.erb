@@ -1,4 +1,4 @@
-<%= turbo_frame_tag "games_list" do %>
+<%= turbo_frame_tag "games_index" do %>
 <p style="color: green"><%= notice %></p>
 
 <h1>Games</h1>
@@ -24,7 +24,6 @@
           </tr>
           </thead>
           <tbody>
-            <% render @games %>
             <% @games.each do |game| %>
               <%= render game %>
             <% end %>

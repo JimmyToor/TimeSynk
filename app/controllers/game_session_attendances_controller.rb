@@ -41,13 +41,19 @@ class GameSessionAttendancesController < ApplicationController
   def update
     if game_session_attendance_params[:attending].empty?
       @game_session_attendance.destroy!
-      redirect_to @game_session_attendance.game_session, notice: "GameSession attendance was successfully deleted."
+      redirect_to @game_session, notice: "GameSession attendance was successfully deleted."
       return
     end
     respond_to do |format|
       if @game_session_attendance.update(game_session_attendance_params)
         format.html { redirect_to @game_session, notice: "GameSession attendance was successfully updated." }
         format.json { render :show, status: :ok, location: @game_session_attendance }
+        format.turbo_stream { 
+          render turbo_stream: turbo_stream.replace(@game_session,
+            partial: "game_sessions/game_session",
+            locals: {modal_title: @game_session.game_name}
+          )
+        }
       else
         format.html { redirect_to @game_session, status: :unprocessable_entity }
         format.json { render json: @game_session_attendance.errors, status: :unprocessable_entity }

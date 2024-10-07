@@ -12,9 +12,9 @@
       <li><%= link_to user.username,
                       user_path(user: user, group_id: group.id),
                       class: "btn btn-primary",
-                      data: { turbo_frame: "show_user" } %></li>
+                      data: { turbo_frame: "user_show" } %></li>
   <% end %>
   </ul>
-  <%= turbo_frame_tag "show_user" %>
+  <%= turbo_frame_tag "user_show" %>
 
 </div>

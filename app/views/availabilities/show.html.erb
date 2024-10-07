@@ -1,16 +1,18 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @availability %>
+<%= modal_wrapper(@availability.name) do %>
+  <%= render @availability %>
 
-<div>
-  <%= link_to "Edit this availability", edit_availability_path(@availability) %> |
-  <%= link_to "Back to availabilities", availabilities_path %>
+  <div>
+    <%= link_to "Edit this availability", edit_availability_path(@availability) %> |
+    <%= button_to "Destroy this availability", @availability, method: :delete %>
+  </div>
+<% end %>
 
-  <%= button_to "Destroy this availability", @availability, method: :delete %>
-</div>
+<%= link_to "Back to availabilities", availabilities_path %>
 
 <div data-controller="calendar" data-calendar-availability-id=<%= @availability.id %>>
-  <div id="calendar-toggles" data-calendar-target="toggles">
+  <div id="calendar_toggles" data-calendar-target="toggles">
     <!-- Toggle buttons will be dynamically added here -->
   </div>
   <div id="calendar" data-calendar-target="calendar">

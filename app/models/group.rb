@@ -14,4 +14,8 @@ class Group < ApplicationRecord
   def get_user_group_availability(user)
     group_availabilities.find_by(user: user)
   end
+
+  def is_user_member?(user)
+    users.include?(user)
+  end
 end

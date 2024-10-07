@@ -17,7 +17,7 @@ class CalendarCreationService
     end
 
     if @params[:group_id].present?
-      @calendars.concat(make_group_calendars(Group.find(@params[:group_id])))
+      @calendars.concat(make_group_calendars(Group.find(@params[:group_id]), start_date: @params[:start], end_date: @params[:end]))
     end
 
     if @params[:schedule_id].present?
@@ -57,7 +57,10 @@ class CalendarCreationService
 
   def make_availability_calendar(availability) # TODO: Merge schedules for readability where possible (e.g. if two schedules are adjacent)
     Calendar.new(
-      schedules: availability.schedules.map(&:make_calendar_schedule),
+      schedules: availability.schedules.map { |schedule|
+        icecube_schedule = schedule.make_icecube_schedule
+        schedule.make_calendar_schedule(icecube_schedule) if schedule.in_range(icecube_schedule: icecube_schedule, start_date: @params[:start], end_date: @params[:end])
+      }.compact,
       name: "Availability: #{availability.name}",
       title: availability.user.username,
       id: "calendar_availability_#{availability.id}-#{availability.user.id}",
@@ -65,14 +68,14 @@ class CalendarCreationService
     )
   end
 
-  def make_group_calendars(group)
+  def make_group_calendars(group, start_date: nil, end_date: nil)
     calendars = []
     group.users.each do |user|
       availability = user.get_nearest_group_availability(group)
       calendars << make_availability_calendar(availability)
     end
     group.game_proposals.each do |game_proposal|
-      calendars << make_game_proposal_calendar(game_proposal)
+      calendars << make_game_proposal_calendar(game_proposal, start_date: start_date, end_date: end_date)
     end
     calendars
   end
@@ -87,9 +90,9 @@ class CalendarCreationService
     )
   end
 
-  def make_game_proposal_calendar(game_proposal)
+  def make_game_proposal_calendar(game_proposal, start_date: nil, end_date: nil)
     Calendar.new(
-      schedules: game_proposal.make_calendar_schedules,
+      schedules: game_proposal.make_calendar_schedules(start_date: start_date, end_date: end_date),
       name: Game.find(game_proposal.game_id).name.to_s,
       id: "calendar_proposal_#{game_proposal.id}",
       type: :game

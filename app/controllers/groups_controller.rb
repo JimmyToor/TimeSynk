@@ -12,8 +12,9 @@ class GroupsController < ApplicationController
     authorize(@group)
     @group_membership = GroupMembership.find_by(group: @group, user: Current.user)
     Rails.logger.debug "availability: #{@group.get_user_group_availability(Current.user)}"
-
-    render :show, locals: { group_availability: @group.get_user_group_availability(Current.user) }
+    respond_to do |format|
+      format.html { render :show, locals: { group_availability: @group.get_user_group_availability(Current.user) } }
+    end
   end
 
   # GET /groups/new
@@ -25,6 +26,15 @@ class GroupsController < ApplicationController
   # GET /groups/1/edit
   def edit
     authorize(@group)
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream {
+        render turbo_stream: turbo_stream.update("modal_frame",
+          partial: "groups/edit")
+      }
+    end
+
   end
 
   # POST /groups or /groups.json
@@ -47,12 +57,18 @@ class GroupsController < ApplicationController
   # PATCH/PUT /groups/1 or /groups/1.json
   def update
     authorize(@group)
+    original_name = @group.name
     respond_to do |format|
       if @group.update(group_params)
         format.html { redirect_to group_url(@group), notice: "Group was successfully updated." }
         format.json { render :show, status: :ok, location: @group }
+        format.turbo_stream {
+          render turbo_stream: turbo_stream.replace(@group,
+            partial: "groups/group",
+            locals: { group: @group })
+        }
       else
-        format.html { render :edit, status: :unprocessable_entity }
+        format.html { render :edit, status: :unprocessable_entity, locals: { group: @group, original_name: original_name  } }
         format.json { render json: @group.errors, status: :unprocessable_entity }
       end
     end

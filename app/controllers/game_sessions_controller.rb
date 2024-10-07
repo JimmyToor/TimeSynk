@@ -20,7 +20,7 @@ class GameSessionsController < ApplicationController
 
   # GET /game_sessions/new
   def new
-    @game_session = @game_proposal.game_sessions.build(user_id: Current.user.id)
+    @game_session = @game_proposal.game_sessions.build(user_id: Current.user.id, date: Time.now.iso8601)
   end
 
   # GET /game_sessions/1/edit
@@ -49,6 +49,12 @@ class GameSessionsController < ApplicationController
       if @game_session.update(game_session_params)
         format.html { redirect_to game_session_url(@game_session), notice: "Game session was successfully updated." }
         format.json { render :show, status: :ok, location: @game_session }
+        format.turbo_stream {
+          render turbo_stream: turbo_stream.update(
+             @game_session,
+             partial: "game_sessions/game_session",
+             locals: { game_session: @game_session })
+        }
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @game_session.errors, status: :unprocessable_entity }

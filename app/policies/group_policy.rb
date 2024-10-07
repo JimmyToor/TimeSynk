@@ -1,7 +1,7 @@
 class GroupPolicy < ApplicationPolicy
 
   def edit?
-    user.has_role?(:admin) || user.has_role?(:admin, record)
+    user.has_role?(:owner, record) || user.has_role?(:admin) || user.has_role?(:admin, record)
   end
 
   class Scope < ApplicationPolicy::Scope

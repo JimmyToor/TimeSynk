@@ -1,28 +1,25 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @game_proposal %>
+<%= modal_wrapper(@game_proposal.game_name) do %>
 
-<div>
-  <%= render "proposal_votes/form", game_proposal: @game_proposal, proposal_vote: @proposal_vote %>
+  <%= render @game_proposal %>
 
-  <%= link_to "Edit this game proposal", edit_game_proposal_path(@game_proposal) %>
-  <%= link_to "Back to game proposals", group_game_proposals_path(@game_proposal.group) %>
-  <% if local_assigns[:proposal_availability] %>
-    <%= link_to "Edit Proposal Availability", edit_proposal_availability_path(proposal_availability) %> |
-  <% else %>
-    <%= link_to "Set Proposal Availability", new_game_proposal_proposal_availability_path(@game_proposal) %> |
-  <% end %>
-  <%= link_to "View Game Sessions", game_proposal_game_sessions_path(@game_proposal) %>
-  <%= link_to "New Game Session", new_game_proposal_game_session_path(@game_proposal) %>
+  <div>
+    <%= render "proposal_votes/form", game_proposal: @game_proposal, proposal_vote: @proposal_vote %>
 
-  <%= button_to "Destroy this game proposal", @game_proposal, method: :delete %>
-</div>
+    <%= link_to "Edit this game proposal", edit_game_proposal_path(@game_proposal) %>
+    <% if local_assigns[:proposal_availability] %>
+      <%= link_to "Edit Proposal Availability", edit_proposal_availability_path(proposal_availability) %> |
+    <% else %>
+      <%= link_to "Set Proposal Availability", new_game_proposal_proposal_availability_path(@game_proposal) %> |
+    <% end %>
+    <%= link_to "View Game Sessions", game_proposal_game_sessions_path(@game_proposal) %>
+    <%= link_to "New Game Session", new_game_proposal_game_session_path(@game_proposal), data: { turbo_frame: "modal_body", action:"dialog#open"} %>
 
+    <%= button_to "Destroy this game proposal", @game_proposal, method: :delete %>
+  </div>
+<% end %>
 
 <div data-controller="calendar" data-calendar-game-proposal-id=<%= @game_proposal.id %>>
-  <div id="calendar-toggles" data-calendar-target="toggles">
-    <!-- Toggle buttons will be dynamically added here -->
-  </div>
-  <div id="calendar" data-calendar-target="calendar">
-  </div>
+  <%= render partial: 'calendars/calendar' %>
 </div>

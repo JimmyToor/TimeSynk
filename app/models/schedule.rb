@@ -34,6 +34,12 @@ class Schedule < ApplicationRecord
     end
   end
 
+  def in_range(icecube_schedule: nil, start_date: nil, end_date: nil)
+    return true unless start_date.present? && end_date.present?
+    icecube_schedule = make_icecube_schedule if icecube_schedule.nil?
+    icecube_schedule.occurs_between?(start_date, end_date)
+  end
+
   # Creates an IceCube schedule based on the start date, duration, and schedule pattern.
   # @return [IceCube::Schedule] the created IceCube schedule
   def make_icecube_schedule
@@ -50,10 +56,12 @@ class Schedule < ApplicationRecord
   #
   # Included fields: id, name, duration, user_id, cal_rrule, end_time, extimes, rtimes, start_time.
   # @return [Hash] the calendar data
-  def make_calendar_schedule
-    schedule = make_icecube_schedule
-    rrule = schedule.to_ical if schedule.recurrence_rules.present?
-    schedule = schedule.to_hash
+  def make_calendar_schedule(icecube_schedule = nil)
+    icecube_schedule = make_icecube_schedule if icecube_schedule.nil?
+
+    rrule = icecube_schedule.to_ical if icecube_schedule.recurrence_rules.present?
+
+    schedule = icecube_schedule.to_hash
     schedule[:id] = id
     schedule[:name] = name
     schedule[:duration] = duration

@@ -12,10 +12,10 @@ export default class CalendarService {
    */
   constructor(calendarElement, options ) {
     this.fullCalendarObj = this.#createFullCalendar(calendarElement, options);
-    this.allCalendars = new Map();
-    this.calendarIdsByType = new Map();
-    this.calendarStates = new Map();
-    this.activeCalendarsByType = new Map();
+    this.allCalendars = new Map(); // <calendarId, calendar>
+    this.calendarIdsByType = new Map(); // <calendarType, Set<calendarId>>
+    this.calendarStates = new Map(); // <calendarId, isActive>
+    this.activeCalendarsByType = new Map(); // <calendarType, Set<calendarId>>
     this.fullCalendarObj.render();
   }
 
@@ -49,25 +49,38 @@ export default class CalendarService {
     this.resetData();
 
     retrievedCalendars.forEach(calendar => {
-      let newCalendar = this.#fillCalendarEvents(calendar);
-      this.allCalendars.set(newCalendar.id, newCalendar);
-
-      if (!this.calendarIdsByType.has(newCalendar.type)) {
-        this.calendarIdsByType.set(newCalendar.type, new Set());
-      }
-      this.calendarIdsByType.get(newCalendar.type).add(newCalendar.id);
-
-      const isActive = this.calendarStates.get(calendar.id) ?? true;
-      this.setCalendarActive(newCalendar, isActive, false);
-
-      if (isActive) {
-        newCalendar.events.forEach(event => {
-          events.push(event);
-        });
-      }
+      this.#processCalendar(calendar, events);
     });
 
     return events;
+  }
+
+  /**
+   * Processes a single calendar and updates the events array.
+   * @param {Object} calendar - The calendar object to process.
+   * @param {Array} events - The array to store processed events.
+   * @private
+   */
+  #processCalendar(calendar, events) {
+    let newCalendar = this.#fillCalendarEvents(calendar);
+    if (newCalendar.events.length === 0) return; // Skip empty calendars
+
+    this.allCalendars.set(newCalendar.id, newCalendar);
+
+    if (!this.calendarIdsByType.has(newCalendar.type)) {
+      this.calendarIdsByType.set(newCalendar.type, new Set());
+    }
+
+    this.calendarIdsByType.get(newCalendar.type).add(newCalendar.id);
+
+    const isActive = this.calendarStates.get(calendar.id) ?? true;
+    this.setCalendarActive(newCalendar, isActive, false);
+
+    if (isActive) {
+      newCalendar.events.forEach(event => {
+        events.push(event);
+      });
+    }
   }
 
   /**
@@ -77,7 +90,6 @@ export default class CalendarService {
    * @param {boolean} updateEvents - Whether to update the calendar events.
    */
   setCalendarActive(calendar, active, updateEvents = true) {
-    // Push the id to the activeCalendarsByType map if active, otherwise remove it
     let currentActive = this.activeCalendarsByType.get(calendar.type);
     if (!currentActive) {
       currentActive = new Set();
@@ -106,7 +118,11 @@ export default class CalendarService {
    * @returns {Object} The populated calendar object.
    */
   #fillCalendarEvents(calendar) {
-    // Populate calendar with events
+    if (calendar.schedules.length === 0) {
+      calendar.events = [];
+      return calendar;
+    }
+
     calendar.events = calendar.schedules.map(schedule => {
       return this.#createEvent(schedule, calendar);
     });
@@ -193,5 +209,9 @@ export default class CalendarService {
     this.allCalendars.clear();
     this.activeCalendarsByType.clear();
     this.calendarIdsByType.clear();
+  }
+
+  refresh() {
+    this.fullCalendarObj.refetchEvents();
   }
 }

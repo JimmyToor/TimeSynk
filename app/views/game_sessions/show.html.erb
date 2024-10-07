@@ -1,20 +1,17 @@
-<p style="color: green"><%= notice %></p>
+<%= modal_wrapper(@game_session.game_name) do %>
+  <p style="color: green"><%= notice %></p>
+  <%= render @game_session %>
+  <div>
+    <%= render "game_session_attendances/form", game_session: @game_session, game_session_attendance: @game_session_attendance %>
 
-<%= render @game_session %>
+    <%= link_to "Edit this game session", edit_game_session_path(@game_session), data: { turbo_frame: "modal_frame" } %> |
 
-<div>
-  <%= render "game_session_attendances/form", game_session: @game_session, game_session_attendance: @game_session_attendance %>
-
-  <%= link_to "Edit this game session", edit_game_session_path(@game_session) %> |
-  <%= link_to "Back to game sessions", game_sessions_path %>
-
-  <%= button_to "Destroy this game session", @game_session, method: :delete %>
-</div>
-
-<div data-controller="calendar" data-calendar-game-session-id=<%= @game_session.id %>>
-  <div id="calendar-toggles" data-calendar-target="toggles">
-    <!-- Toggle buttons will be dynamically added here -->
+    <%= button_to "Destroy this game session", @game_session, method: :delete %>
   </div>
-  <div id="calendar" data-calendar-target="calendar">
-  </div>
+<% end %>
+<%= link_to "Back to game sessions", game_sessions_path %>
+
+
+<div data-controller="calendar" data-calendar-interactive="false" data-calendar-game-session-id="<%= @game_session.id %>" >
+  <%= render partial: 'calendars/calendar' %>
 </div>

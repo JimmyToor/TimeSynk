@@ -14,10 +14,9 @@ class AvailabilityCreationService
     ActiveRecord::Base.transaction do
       @schedules = Schedule.find(id: @schedule_ids)
       raise ActiveRecord::RecordNotFound, "No schedules found with the provided IDs." if @schedules.empty?
-      @availability = Availability.build(@params)
+      @availability = @user.availabilities.build(@params)
 
       @availability.schedules << @schedules
-      @availability.save!
     end
     @availability
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound => e

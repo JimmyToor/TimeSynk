@@ -77,10 +77,15 @@ class User < ApplicationRecord
     end
   end
 
-  private
+  def create_default_user_availability
+    return unless user_availability.nil?
 
-  def assign_default_role
-    add_role(:newuser) if roles.blank?
+    schedule = create_default_schedule
+    availability = schedule.availabilities.create!(name: "Default Availability", user: self)
+    user_availability = UserAvailability.create!(user: self, availability: availability)
+    self.user_availability = user_availability
+  rescue ActiveRecord::RecordInvalid => e
+    errors.add(:user_availability, "could not be created: #{e.message}")
   end
 
   def create_default_schedule
@@ -94,15 +99,10 @@ class User < ApplicationRecord
     )
   end
 
-  def create_default_user_availability
-    return unless user_availability.nil?
+  private
 
-    schedule = create_default_schedule
-    availability = schedule.availabilities.create!(name: "Default Availability", user: self)
-    user_availability = UserAvailability.create!(user: self, availability: availability)
-    self.user_availability = user_availability
-  rescue ActiveRecord::RecordInvalid => e
-    errors.add(:user_availability, "could not be created: #{e.message}")
+  def assign_default_role
+    add_role(:newuser) if roles.blank?
   end
 
   def avatar_type

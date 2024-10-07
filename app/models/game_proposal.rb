@@ -33,16 +33,22 @@ class GameProposal < ApplicationRecord
     proposal_availabilities.find_by(user: user)
   end
 
-
-
   def user_get_or_build_vote(user)
     vote = proposal_votes.find_by(user_id: user.id)
     return vote if vote
     proposal_votes.build(user_id: Current.user.id, game_proposal_id: id)
   end
 
-  def make_calendar_schedules
+  def make_calendar_schedules(start_date: nil, end_date: nil)
     game_name = Game.find(game_id).name.to_s
-    game_sessions.map { |session| session.make_calendar_schedule(game_name) }
+    game_sessions.map { |session|
+      icecube_schedule = session.make_icecube_schedule
+      session.make_calendar_schedule(name: game_name, icecube_schedule:icecube_schedule) if session.in_range(icecube_schedule: icecube_schedule, start_date: start_date, end_date: end_date)
+    }.compact
   end
+
+  def game_name
+    game.name
+  end
+
 end

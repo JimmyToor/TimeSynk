@@ -4,6 +4,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Dark mode defaults */
+@media (prefers-color-scheme: dark) {
+     input:not([type="button"]):not([type="submit"]):not([type="reset"]),
+     textarea,
+     select {
+        @apply bg-gray-700;
+    }
+}
+
 .rs_frequency, .rs_interval, .rs_count, .rs_datepicker {
     padding: 0;
 }

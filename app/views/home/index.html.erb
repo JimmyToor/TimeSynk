@@ -2,22 +2,12 @@
   <%= notice %>
 </p>
 
-<h2 class="text-4xl font-extrabold dark:text-white">Login and verification</h2>
-
-<div>
-  <%= link_to "Change password", edit_password_path %>
+<p>Upcoming sessions</p>
+<div data-controller="calendar" data-calendar-user-id=<%= Current.user.id %>>
+  <%= render partial: 'calendars/calendar' %>
 </div>
 
-<div>
-  <%= link_to "Change email address", edit_identity_email_path %>
-</div>
-
-<h2>Access history</h2>
-
-<div>
-  <%= link_to "Devices & Sessions", sessions_path %>
-</div>
-
-<br>
-
-
+<p>Pending Proposals</p>
+<% @proposals.each do |proposal| %>
+  <%= render proposal %>
+<% end %>

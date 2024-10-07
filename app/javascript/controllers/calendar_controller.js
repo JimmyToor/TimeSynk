@@ -5,7 +5,6 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interaction from '@fullcalendar/interaction';
 import CalendarService from "../services/calendar_service";
-import ModalService from "../services/modal_service";
 
 
 /**
@@ -15,16 +14,21 @@ import ModalService from "../services/modal_service";
  */
 export default class extends Controller {
 
-  static targets = [ "calendar", "toggleDropdown", "toggleDropdownLoading", "availabilityToggles",
-    "gameToggles", "scheduleToggles", "availabilityTogglesList", "gameTogglesList", "scheduleTogglesList", "toggleButton" ]
+  static targets = [ "calendar", "toggleDropdown", "toggleDropdownLoading", "toggleDropdownEmpty", "availabilityToggles",
+    "gameToggles", "scheduleToggles", "availabilityTogglesList", "gameTogglesList", "scheduleTogglesList", "toggleButton"]
 
-  modalId = 'crud_modal';
-  modalFrameId = 'modal_body';
-  modalTitleId = 'modal_title';
+  static outlets = [ "dialog" ]
+
+  targetFrameId = 'modal_frame';
 
   connect() {
     this.initCalendar();
-    this.initModal();
+  }
+
+  disconnect() {
+    if (this.hasDialogOutlet) {
+      this.dialogOuterDisconnected(this.dialogOutlet, this.dialogOutlet.element);
+    }
   }
 
   /**
@@ -40,6 +44,8 @@ export default class extends Controller {
       id: 'calendarJson',
     }
 
+    let interactive = this.data.has('interactive') ? !this.data.get('interactive') : true;
+
     this.calendarService = new CalendarService(calendarEl, {
       plugins: [rrulePlugin, interaction, dayGridPlugin, timeGridPlugin, listPlugin],
       initialView: 'dayGridMonth',
@@ -52,25 +58,23 @@ export default class extends Controller {
       loading: this.load.bind(this),
       events: eventSrc,
       eventInteractive: true,
-      eventClick: this.eventClick.bind(this),
-      eventDidMount: this.eventDidMount.bind(this),
+      eventClick: interactive ? this.eventClick.bind(this) : undefined,
+      eventDidMount: interactive ? this.eventDidMount.bind(this) : undefined,
     });
-  }
 
-  initModal() {
-    this.modalService = new ModalService(this.modalId, this.modalFrameId, this.modalTitleId);
+    this.refreshCallback = this.calendarService.refresh.bind(this.calendarService)
   }
 
   eventDidMount(info) {
+    if (info.event.extendedProps.type !== 'game') return
     const el = info.el;
-    el.dataset.turboFrame = this.modalFrameId;
+    el.dataset.turboFrame = this.targetFrameId;
     el.dataset.href = info.event.extendedProps.route;
+    el.classList.add('cursor-pointer');
   }
 
   eventClick(info) {
-    this.modalService.setTitle(info.event.title);
-    this.modalService.setBody('Loading...');
-    this.modalService.openModal();
+    if (info.event.extendedProps.type !== 'game') return
 
     Turbo.visit(info.el.dataset.href, { frame: info.el.dataset.turboFrame });
   }
@@ -96,11 +100,22 @@ export default class extends Controller {
    * Creates toggle buttons for each calendar type and individual calendar.
    */
   createToggles() {
+    let empty = true;
     this.createTypeToggles();
     this.calendarService.allCalendars.forEach(calendar => {
+      if (calendar.events.length === 0) return;
+      empty = false;
       this.addToggleButton(calendar.type, this.createToggleForCalendar(calendar), false);
       this.updateToggleStates(calendar, this.calendarService.calendarStates.get(calendar.id));
     });
+
+    if (empty) {
+      this.toggleDropdownEmptyTarget.classList.remove('hidden');
+    }
+    else {
+      this.toggleDropdownEmptyTarget.classList.add('hidden');
+    }
+
   }
 
   /**
@@ -185,6 +200,7 @@ export default class extends Controller {
     this.availabilityTogglesListTarget.innerHTML = '';
     this.gameTogglesListTarget.innerHTML = '';
     this.scheduleTogglesListTarget.innerHTML = '';
+    this.toggleDropdownEmptyTarget.classList.add('hidden');
     this.setToggleVisibility();
   }
 
@@ -315,10 +331,6 @@ export default class extends Controller {
 
     label.htmlFor = input.id
     span.textContent = `All ${displayName}`;
-    let numCalendars = this.calendarService.calendarIdsByType.get(calendarType)?.size || 0
-    if (numCalendars > 1) {
-      span.textContent += ` (${numCalendars})`;
-    }
 
     return clone;
   }
@@ -338,6 +350,13 @@ export default class extends Controller {
     });
   }
 
+  dialogOutletConnected(dialog, element) {
+    dialog.addSubmitSuccessListener(this.refreshCallback);
+  }
+
+  dialogOuterDisconnected(dialog, element) {
+    dialog.removeSubmitSuccessListener(this.refreshCallback);
+  }
 
   //TODO: Use a callback (eventRender?) to resize events in the month view to only render proportionately to the percentage of the day they take up. May need to re-render the calendar after window re-size.
 }

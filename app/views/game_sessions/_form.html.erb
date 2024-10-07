@@ -1,4 +1,4 @@
-<%= form_with(model: [game_proposal, game_session], data: { controller: "flatpickr" })  do |form| %>
+<%= form_with(model: [game_proposal, game_session]) do |form| %>
   <% if game_session.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(game_session.errors.count, "error") %> prohibited this game_session from being saved:</h2>
@@ -12,22 +12,27 @@
   <% end %>
 
   <div>
+    <%= display_game_art_and_name(game_session.game) %>
+  </div>
+
+  <div>
     <%= form.label :game_proposal_id, style: "display: block" %>
     <%= form.hidden_field :game_proposal_id, value: game_session.game_proposal.id %>
   </div>
 
-  <div
+  <div>
     <%= form.label :user_id, style: "display: block" %>
     <%= form.hidden_field :user_id, value: game_session.user_id %>
+  </div>
 
-  <div>
+  <div data-controller="flatpickr">
     <%= form.label :date, style: "display: block" %>
-    <%= form.datetime_field :date, data: { flatpickr_target: "startDate" } %>
+    <%= form.datetime_field :date, data: { flatpickr_target: "startDate" }, required: true %>
   </div>
 
   <div>
     <%= form.label :duration, style: "display: block" %>
-    <%= form.number_field :duration %>
+    <%= form.number_field :duration, required: true, value: game_session.duration || 60 %>
   </div>
 
   <div>

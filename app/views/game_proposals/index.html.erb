@@ -8,7 +8,8 @@
     <p>
       <%= link_to "Show this game proposal", game_proposal %>
     </p>
-    <%= link_to "New game proposal", new_group_game_proposal_path(game_proposal.group, nil) %>
 <% end %>
 </div>
+<%= link_to "New game proposal", new_group_game_proposal_path(Current.user.groups.first) if Current.user.groups.any? %>
+
 

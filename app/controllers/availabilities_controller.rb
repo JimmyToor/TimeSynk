@@ -1,12 +1,11 @@
 class AvailabilitiesController < ApplicationController
   before_action :set_availability, only: %i[ show edit update destroy ]
   before_action :set_schedules, only: %i[ new edit ]
-  skip_after_action :verify_policy_scoped
-  skip_after_action :verify_authorized
 
   # GET /availabilities or /availabilities.json
   def index
     @availabilities = policy_scope(Availability)
+    authorize(@availabilities)
   end
 
   # GET /availabilities/1 or /availabilities/1.json
@@ -24,7 +23,9 @@ class AvailabilitiesController < ApplicationController
 
   # POST /availabilities or /availabilities.json
   def create
-    @availability = Availability.create!(availability_params)
+    user = User.find(availability_params[:user_id])
+    service = AvailabilityCreationService.new(availability_params, user, availability_params[:schedule_ids])
+    @availability = service.create_availability
 
     respond_to do |format|
       if @availability.save
@@ -64,10 +65,12 @@ class AvailabilitiesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_availability
       @availability = Availability.find(params[:id])
+      authorize(@availability)
     end
 
     def set_schedules
       @schedules = policy_scope(Schedule)
+      authorize(@schedules)
     end
 
     # Only allow a list of trusted parameters through.

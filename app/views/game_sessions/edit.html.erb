@@ -1,6 +1,15 @@
 <h1>Editing game session</h1>
 
-<%= render "form", game_session:@game_session, game_proposal:nil %>
+<%= modal_wrapper(local_assigns[:original_name] || @game_session.game_name) do %>
+  <%= render "form", game_session:@game_session, game_proposal:nil %>
+
+  <br>
+
+  <div>
+    <%= link_to "Cancel", "#", data: {action: "click->dialog#close", turbo: "false"} %>
+  </div>
+
+<% end %>
 
 <br>
 

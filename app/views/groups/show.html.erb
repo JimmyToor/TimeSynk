@@ -14,24 +14,20 @@
   <%= link_to "New game proposal", new_group_game_proposal_path(@group, nil) %> |
   <%= link_to "Show this group's game proposals", group_game_proposals_path(@group) %> |
   <% if local_assigns[:group_availability] %>
-    <%= link_to "Edit Group Availability", edit_group_availability_path(group_availability) %> |
+    <%= link_to "Edit Group Availability", edit_group_availability_path(group_availability)%> |
   <% else %>
     <%= link_to "Set Group Availability", new_group_group_availability_path(@group) %> |
   <% end %>
-  <%= link_to "Edit this group", edit_group_path(@group) %> |
+  <%= link_to "Edit this group", edit_group_path(@group), data: {turbo_frame: "modal_frame"} %> |
   <%= link_to "Invite to this group", new_group_invite_path(@group) %> |
   <%= link_to "Show this group's invites", group_invites_path(@group) %> |
-  <%= link_to "Back to groups", groups_path %>
 
   <%= button_to "Leave this group", @group_membership, method: :delete %>
   <%= button_to "Destroy this group", @group, method: :delete %>
 </div>
 
+<%= link_to "Back to groups", groups_path %>
 
-<div data-controller="calendar" data-calendar-group-id=<%= @group.id %>>
-  <div id="calendar-toggles" data-calendar-target="toggles">
-    <!-- Toggle buttons will be dynamically added here -->
-  </div>
-  <div id="calendar" data-calendar-target="calendar">
-  </div>
+<div data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-group-id=<%= @group.id %>  >
+  <%= render partial: 'calendars/calendar' %>
 </div>

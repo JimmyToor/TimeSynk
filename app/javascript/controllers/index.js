@@ -7,6 +7,9 @@ import { application } from "./application"
 import CalendarController from "./calendar_controller"
 application.register("calendar", CalendarController)
 
+import DialogController from "./dialog_controller"
+application.register("dialog", DialogController)
+
 import FlatpickrController from "./flatpickr_controller"
 application.register("flatpickr", FlatpickrController)
 
@@ -18,7 +21,3 @@ application.register("hello", HelloController)
 
 import NavController from "./nav_controller"
 application.register("nav", NavController)
-
-// flowbite's modal component breaks if a turbo load is triggered while the modal is open, so we're using this instead.
-import { Modal } from "tailwindcss-stimulus-components"
-application.register("modal-component", Modal)

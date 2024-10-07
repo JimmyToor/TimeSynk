@@ -1,4 +1,9 @@
 <div id="<%= dom_id game_session %>">
+
+  <div>
+    <%= display_game_art_and_name(game_session.game) %>
+  </div>
+
   <p>
     <strong>Owner:</strong>
     <%= game_session.user_id %>

@@ -75,6 +75,7 @@ export default class extends Controller {
       onClose: onClose,
       allowInput: false,
       altInputClass: "flatpickr-input form-control input",
+      static:true,
     });
   }
 

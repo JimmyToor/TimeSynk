@@ -1,6 +1,8 @@
 <h1>New availability</h1>
 
-<%= render "form", availability: @availability %>
+<%= modal_wrapper(@availability.name) do %>
+  <%= render "form", availability: @availability %>
+<% end %>
 
 <br>
 
