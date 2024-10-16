@@ -194,7 +194,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
     t.datetime "start_date"
     t.datetime "end_date"
     t.interval "duration"
-    t.text "schedule_pattern", null: false
+    t.jsonb "schedule_pattern", default: {}, null: false
     t.text "name", default: "New Schedule", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -222,7 +222,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "email", null: false
+    t.string "email"
     t.string "username", null: false
     t.string "password_digest", null: false
     t.string "timezone", default: "UTC", null: false

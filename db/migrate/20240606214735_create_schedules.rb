@@ -5,7 +5,7 @@ class CreateSchedules < ActiveRecord::Migration[7.1]
       t.datetime :start_date, index: {unique: false}
       t.datetime :end_date, index: {unique: false}
       t.interval :duration
-      t.text :schedule_pattern, null: false
+      t.jsonb :schedule_pattern, null: false, default: {}
       t.text :name, null: false, default: "New Schedule"
 
       t.timestamps

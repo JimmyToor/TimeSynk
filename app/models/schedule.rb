@@ -4,25 +4,27 @@
 #
 # `duration` is the length of time in seconds that the initial event will last.
 class Schedule < ApplicationRecord
-  has_many :availability_schedules, dependent: :destroy
+  has_many :availability_schedules, dependent: :destroy, inverse_of: :schedule
   has_many :availabilities, through: :availability_schedules
   has_many :user_availabilities, through: :availabilities
   has_many :group_availabilities, through: :availabilities
   has_many :proposal_availabilities, through: :availabilities
   belongs_to :user
 
+  accepts_nested_attributes_for :availability_schedules, allow_destroy: true, reject_if: :all_blank
+
   validates :start_date, timeliness: {on_or_before: :end_date, type: :datetime}, presence: true
   validates :end_date, timeliness: {on_or_after: :start_date, type: :datetime}
 
   scope :group_availabilities_for_group, ->(group) {
-    :group_availabilities.where(group_availabilities: { group: group })
+    group_availabilities.where(group_availabilities: {group: group})
   }
 
   scope :proposal_availabilities_for_proposal, ->(proposal) {
-    :proposal_availabilities.where(proposal_availabilities: { proposal: proposal })
+    proposal_availabilities.where(proposal_availabilities: {proposal: proposal})
   }
 
-  serialize :schedule_pattern, class: Hash, coder: YAML
+  store_accessor :schedule_pattern, :rule_type, :interval, :validations
 
   # Sets the schedule pattern if valid, otherwise sets an empty hash.
   # @param new_schedule_pattern [Hash] the new schedule pattern
@@ -30,7 +32,7 @@ class Schedule < ApplicationRecord
     if RecurringSelect.is_valid_rule?(new_schedule_pattern)
       super(RecurringSelect.dirty_hash_to_rule(new_schedule_pattern).to_hash)
     else
-      super({ })
+      super({})
     end
   end
 
@@ -44,7 +46,7 @@ class Schedule < ApplicationRecord
   # @return [IceCube::Schedule] the created IceCube schedule
   def make_icecube_schedule
     schedule = IceCube::Schedule.new(start_date, {
-      duration: duration.minutes,
+      duration: duration,
     })
     schedule.add_recurrence_rule(IceCube::Rule.from_hash(schedule_pattern)) unless schedule_pattern.empty?
 
@@ -71,7 +73,7 @@ class Schedule < ApplicationRecord
   end
 
   def duration_hours
-    duration / 60
+    duration / 3600
   end
 
 end
