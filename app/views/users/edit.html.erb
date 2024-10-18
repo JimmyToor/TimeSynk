@@ -3,7 +3,7 @@
 <%= form_with(model: Current.user, method: :patch) do |form| %>
   <div>
     <%= form.label :avatar, style: "display:block", class: "text-2xl block mb-2 font-medium text-gray-900 dark:text-white" %>
-    <%= user_avatar(Current.user) %>
+    <%= user_avatar(Current.user, size_x: 64) %>
     <%= form.file_field :avatar, accept: "image/jpeg,image/png,image/gif" %>
     <br>
     <%= form.submit "Update avatar" %>

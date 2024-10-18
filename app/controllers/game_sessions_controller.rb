@@ -21,6 +21,16 @@ class GameSessionsController < ApplicationController
   # GET /game_sessions/new
   def new
     @game_session = @game_proposal.game_sessions.build(user_id: Current.user.id, date: Time.now.iso8601)
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream {
+        render turbo_stream: turbo_stream.update(
+          "game_session_form",
+          partial: "game_sessions/form",
+          locals: {game_session: @game_session})
+      }
+    end
   end
 
   # GET /game_sessions/1/edit
@@ -36,9 +46,31 @@ class GameSessionsController < ApplicationController
       if @game_session.save
         format.html { redirect_to game_session_url(@game_session), notice: "Game session was successfully created." }
         format.json { render :show, status: :created, location: @game_session }
+        format.turbo_stream { 
+          render turbo_stream: [
+            turbo_stream.update(
+              "game_session_form",
+              partial: "game_sessions/form",
+              locals: {game_proposal: @game_proposal, game_session: GameSession.new(game_proposal: @game_proposal),
+                        game_proposals: @game_proposal.group.game_proposals}
+            ),
+            turbo_stream.update(
+              @game_proposal,
+              partial: "game_sessions/game_session",
+              locals: {game_session: @game_session}
+            )
+          ]
+        }
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @game_session.errors, status: :unprocessable_entity }
+        format.turbo_stream {
+          render turbo_stream: turbo_stream.update(
+            "game_session_form",
+            partial: "game_sessions/form",
+            locals: {game_session: @game_session, game_proposal: @game_proposal}
+          ), status: :unprocessable_entity
+        }
       end
     end
   end
@@ -51,9 +83,9 @@ class GameSessionsController < ApplicationController
         format.json { render :show, status: :ok, location: @game_session }
         format.turbo_stream {
           render turbo_stream: turbo_stream.update(
-             @game_session,
-             partial: "game_sessions/game_session",
-             locals: { game_session: @game_session })
+            @game_session,
+            partial: "game_sessions/game_session",
+            locals: {game_session: @game_session})
         }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -69,6 +101,12 @@ class GameSessionsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to game_sessions_url, notice: "Game session was successfully destroyed." }
       format.json { head :no_content }
+      format.turbo_stream {
+        render turbo_stream: turbo_stream.update(
+          @game_session,
+          partial: "game_sessions/game_session",
+          locals: {game_session: @game_session})
+      }
     end
   end
 

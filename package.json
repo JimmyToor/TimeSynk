@@ -11,6 +11,7 @@
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.4",
     "@stimulus-components/dialog": "^1.0.1",
+    "@stimulus-components/rails-nested-form": "^5.0.0",
     "@tailwindcss/typography": "^0.5.13",
     "autoprefixer": "^10.4.19",
     "esbuild": "^0.21.4",
@@ -23,7 +24,7 @@
     "tailwindcss-stimulus-components": "^6.0.2"
   },
   "scripts": {
-    "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets --watch",
-    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify --watch"
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
+    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css"
   }
 }

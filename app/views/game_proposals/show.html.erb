@@ -20,6 +20,6 @@
   </div>
 <% end %>
 
-<div data-controller="calendar" data-calendar-game-proposal-id=<%= @game_proposal.id %>>
-  <%= render partial: 'calendars/calendar' %>
+<div data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-game-proposal-id=<%= @game_proposal.id %>>
+  <%= render partial: 'calendars/calendar', locals: {group: @game_proposal.group, game_proposal: @game_proposal || nil} %>
 </div>

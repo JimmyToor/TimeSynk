@@ -169,6 +169,11 @@
   resolved "https://registry.npmjs.org/@stimulus-components/dialog/-/dialog-1.0.1.tgz"
   integrity sha512-7cpazrXeFKVmmuGnJOrykEvjRNRTOhLuI7SzgDdAlKWxM8ivBKziBHwjJGR96vCvSkoKwlGMGRcDzXgVRnr/7w==
 
+"@stimulus-components/rails-nested-form@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.npmjs.org/@stimulus-components/rails-nested-form/-/rails-nested-form-5.0.0.tgz"
+  integrity sha512-qrmmurT+KBPrz9iBlyrgJa6Di8i0j328kSk2SUR53nK5W0kDhw1YxVC91aUR+7EsFKiwJT1iB7oDSwpDhDQPeA==
+
 "@tailwindcss/typography@^0.5.13":
   version "0.5.15"
   resolved "https://registry.npmjs.org/@tailwindcss/typography/-/typography-0.5.15.tgz"

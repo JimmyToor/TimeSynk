@@ -1,20 +1,26 @@
 <div id="<%= dom_id group %>">
-  <p>
-    <strong>Name:</strong>
-    <%= group.name %>
-  </p>
+  <div class="block max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
 
-  <p>
-    <strong>Members:</strong>
-  </p>
-  <ul>
-    <% group.users.each do |user| %>
-      <li><%= link_to user.username,
-                      user_path(user: user, group_id: group.id),
-                      class: "btn btn-primary",
-                      data: { turbo_frame: "user_show" } %></li>
+    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"><%= group.name %></h5>
+    <h5 class="font-normal text-gray-700 dark:text-gray-400">Members: </h5>
+
+    <div class="flex">
+      <% group.users.each do |user| %>
+        <div class="flex" data-popover-target="popover-user-roles-<%= user.id %>-<%= group.id %>">
+          <%= user_avatar(user, size_x: 32) %>
+        </div>
+
+      <% end %>
+    </div>
+  </div>
+
+  <% group.users.each do |user| %>
+    <div data-popover id="popover-user-roles-<%= user.id %>-<%= group.id %>" role="tooltip" class="absolute z-50 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-600">
+      <div class="p-3">
+        <%= turbo_frame_tag "user_roles_#{user.id}_#{group.id}", src: user_path(user, group_id: group.id) %>
+      </div>
+      <div data-popper-arrow></div>
+    </div>
   <% end %>
-  </ul>
-  <%= turbo_frame_tag "user_show" %>
 
 </div>

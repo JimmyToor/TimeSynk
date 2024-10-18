@@ -30,22 +30,43 @@ class SchedulesController < ApplicationController
   # POST /schedules or /schedules.json
   def create
     @schedule = Schedule.new(schedule_params)
-    set_end_date
+    fill_missing_params
 
     respond_to do |format|
       if @schedule.save
         format.html { redirect_to schedule_url(@schedule), notice: "Schedule was successfully created." }
         format.json { render :show, status: :created, location: @schedule }
+        format.turbo_stream {
+          render turbo_stream: [
+            turbo_stream.update(
+              "schedule_form",
+              partial: "schedules/form",
+              locals: {schedule: Schedule.new(user: Current.user)}
+            ),
+            turbo_stream.update(
+              @schedule,
+              partial: "schedules/schedule",
+              locals: {schedule: @schedule}
+            )
+          ]
+        }
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @schedule.errors, status: :unprocessable_entity }
+        format.turbo_stream {
+          render turbo_stream: turbo_stream.update(
+            "schedule_form",
+            partial: "schedules/form",
+            locals: {schedule: @schedule}
+          ), status: :unprocessable_entity
+        }
       end
     end
   end
 
   # PATCH/PUT /schedules/1 or /schedules/1.json
   def update
-    set_end_date
+    fill_missing_params
     respond_to do |format|
       if @schedule.update(schedule_params)
         format.html { redirect_to schedule_url(@schedule), notice: "Schedule was successfully updated." }
@@ -69,18 +90,29 @@ class SchedulesController < ApplicationController
 
   private
 
+  def fill_missing_params
+    set_end_date
+    set_duration
+  end
+
   def set_end_date
-    if @schedule.schedule_pattern.present?
+    if @schedule.schedule_pattern.present? && @schedule.duration.present? && !@schedule.end_date.present?
       pattern = @schedule.schedule_pattern
       @schedule.end_date = if pattern[:until].present?
         pattern[:until][:time]
       elsif pattern[:count]
         @schedule.make_icecube_schedule.last + schedule_params[:duration].minutes
       else
-        @schedule.start_date + schedule_params[:duration].minutes
+        @schedule.start_date + @schedule.duration.minutes
       end
     else
-      @schedule.end_date = @schedule.start_date + schedule_params[:duration].minutes
+      @schedule.end_date = @schedule.start_date + @schedule.duration.minutes
+    end
+  end
+
+  def set_duration
+    if @schedule.start_date.present? && @schedule.end_date.present? && @schedule.duration.nil?
+      @schedule.duration = ((@schedule.end_date - @schedule.start_date) * 24 * 60).to_i
     end
   end
 
@@ -91,9 +123,12 @@ class SchedulesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def schedule_params
-    params.require(:schedule).permit(:name, :user_id, :start_date, :duration, :schedule_pattern).tap do |schedule_params|
+    params.require(:schedule).permit(:name, :user_id, :start_date, :end_date, :duration, :schedule_pattern,
+      availability_schedules_attributes: [:id, :availability_id, :schedule_id, :_destroy]).tap do |schedule_params|
       if schedule_params[:duration].present?
         schedule_params[:duration] = schedule_params[:duration].to_i
+      elsif schedule_params[:end_date].present?
+        schedule_params[:duration] = ((schedule_params[:end_date].to_datetime - schedule_params[:start_date].to_datetime) * 24 * 60).to_i
       end
     end
   end

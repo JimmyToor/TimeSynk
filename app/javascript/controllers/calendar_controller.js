@@ -15,19 +15,21 @@ import CalendarService from "../services/calendar_service";
 export default class extends Controller {
 
   static targets = [ "calendar", "toggleDropdown", "toggleDropdownLoading", "toggleDropdownEmpty", "availabilityToggles",
-    "gameToggles", "scheduleToggles", "availabilityTogglesList", "gameTogglesList", "scheduleTogglesList", "toggleButton"]
+    "gameToggles", "scheduleToggles", "availabilityTogglesList", "gameTogglesList", "scheduleTogglesList", "toggleButton", "calendarLoading"]
 
-  static outlets = [ "dialog" ]
+  static outlets = ["dialog", "flatpickr"]
 
-  targetFrameId = 'modal_frame';
+  static values = {dialogId: { type: String, default: "modal_creation" }, frameId: { type: String, default: "modal_frame"}, containerId: { type: String, default: "modal_container"}}
 
-  connect() {
+  initialize() {
     this.initCalendar();
   }
 
   disconnect() {
     if (this.hasDialogOutlet) {
-      this.dialogOuterDisconnected(this.dialogOutlet, this.dialogOutlet.element);
+      this.dialogOutlets.forEach(outlet => {
+        this.dialogOuterDisconnected(outlet, outlet.element);
+      })
     }
   }
 
@@ -60,6 +62,10 @@ export default class extends Controller {
       eventInteractive: true,
       eventClick: interactive ? this.eventClick.bind(this) : undefined,
       eventDidMount: interactive ? this.eventDidMount.bind(this) : undefined,
+      selectable: true,
+      selectMirror: true,
+      select: interactive ? this.select.bind(this) : undefined,
+      unselectCancel: '.dialog'
     });
 
     this.refreshCallback = this.calendarService.refresh.bind(this.calendarService)
@@ -68,9 +74,32 @@ export default class extends Controller {
   eventDidMount(info) {
     if (info.event.extendedProps.type !== 'game') return
     const el = info.el;
-    el.dataset.turboFrame = this.targetFrameId;
+    el.dataset.turboFrame = this.frameIdValue;
     el.dataset.href = info.event.extendedProps.route;
     el.classList.add('cursor-pointer');
+  }
+
+  select(info) {
+    if (!this.creationModal) return
+    this.creationModal.open();
+    this.creationModal.setTitle("New")
+    this.creationModal.endLoading();
+
+    this.setModalFormDates(info);
+  }
+
+  setModalFormDates(info) {
+    this.flatpickrOutlets.forEach(outlet => {
+      if (outlet.element.closest(`#${this.containerIdValue}`)) {
+        if (outlet.hasStartDateTarget) {
+          outlet.startDatePicker.setDate(info.start);
+        }
+        // info's end time is expected to be exclusive so subtract a minute to get the actual end day
+        if (outlet.hasEndDateTarget) {
+          outlet.endDatePicker.setDate(new Date(info.end.getTime()));
+        }
+      }
+    })
   }
 
   eventClick(info) {
@@ -86,11 +115,13 @@ export default class extends Controller {
   load(isLoading) {
     if (isLoading) {
       this.resetToggleLists();
-      // Show the loading indicator
+      this.calendarLoadingTarget.classList.remove('hidden');
       this.toggleDropdownLoadingTarget.classList.remove('hidden');
     }
     else {
       this.createToggles();
+      this.calendarLoadingTarget.classList.add('hidden');
+
       this.toggleDropdownLoadingTarget.classList.add('hidden');
       this.setToggleVisibility();
     }
@@ -352,10 +383,16 @@ export default class extends Controller {
 
   dialogOutletConnected(dialog, element) {
     dialog.addSubmitSuccessListener(this.refreshCallback);
+    if (element.id === this.dialogIdValue) {
+      this.creationModal = dialog;
+    }
   }
 
   dialogOuterDisconnected(dialog, element) {
     dialog.removeSubmitSuccessListener(this.refreshCallback);
+    if (element.id === this.dialogIdValue) {
+      this.creationModal = null;
+    }
   }
 
   //TODO: Use a callback (eventRender?) to resize events in the month view to only render proportionately to the percentage of the day they take up. May need to re-render the calendar after window re-size.

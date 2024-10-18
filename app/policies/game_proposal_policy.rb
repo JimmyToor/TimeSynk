@@ -8,7 +8,7 @@ class GameProposalPolicy < ApplicationPolicy
   class Scope < ApplicationPolicy::Scope
     # NOTE: Be explicit about which records you allow access to!
     def resolve
-      user.game_proposals
+      user.groups.includes(:game_proposals).flat_map(&:game_proposals)
     end
   end
 end

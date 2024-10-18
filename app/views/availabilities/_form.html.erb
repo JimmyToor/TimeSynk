@@ -16,15 +16,28 @@
     <%= form.text_area :name %>
   </div>
 
-  <div>
-    <%= form.collection_check_boxes :schedule_ids, @schedules, :id, :name, include_hidden: false do |schedule| %>
-      <%= schedule.check_box(class: "w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600") %>
-      <%= schedule.label { schedule.text }%>
+  <% if local_assigns[:schedules]&.any? %>
+    <h3>Schedules</h3>
+    <%= form.fields_for :availability_schedules do |schedule_subform| %>
+      <div>
+        <%= schedule_subform.check_box :_destroy, {class: "w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600", checked: !schedule_subform.object.marked_for_destruction?}, "0", "1" %>
+        <%= schedule_subform.label :_destroy, schedule_subform.object.schedule.name %>
+        <%= schedule_subform.hidden_field :schedule_id, value: schedule_subform.object.schedule_id %>
+      </div>
     <% end %>
-  </div>
+
+    <% (schedules - availability.schedules).each do |schedule| %>
+      <%= form.fields_for :availability_schedules, availability.availability_schedules.build(schedule: schedule) do |schedule_subform| %>
+        <div>
+          <%= schedule_subform.check_box :_destroy, {class: "w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"}, "0", "1" %>
+          <%= schedule_subform.label :_destroy, schedule.name %>
+          <%= schedule_subform.hidden_field :schedule_id, value: schedule.id %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
 
   <div>
-    <%= form.label :user_id, style: "display: block" %>
     <%= form.hidden_field :user_id, value: Current.user.id %>
   </div>
 

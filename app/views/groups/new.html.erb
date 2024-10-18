@@ -1,6 +1,7 @@
 <h1>New group</h1>
-
-<%= render "form", group: @group %>
+<%= modal_wrapper("New Group") do %>
+  <%= render "form", group: @group %>
+<% end %>
 
 <br>
 

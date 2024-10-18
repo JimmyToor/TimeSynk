@@ -3,9 +3,7 @@ import Dialog from "@stimulus-components/dialog"
 // Connects to data-controller="dialog"
 export default class extends Dialog {
   static targets = ["loadingIndicator", "modalBody", "modalTitle"]
-
-  // Listen for turbo:submit-end events on the document that apply to the modal
-  // When the listener is triggered and the submission succeeded, fire the custom form-submit-success event
+  static values = { title: { type: String, default: "Modal" }, frameId: { type: String, default: "modal_frame" } }
 
   initialize() {
     super.initialize()
@@ -14,7 +12,7 @@ export default class extends Dialog {
     this.submitStartHandler = this.handleSubmitStart.bind(this);
     this.submitEndHandler = this.handleSubmitEnd.bind(this);
     this.beforeFetchRequestHandler = this.handleBeforeFetchRequest.bind(this);
-    this.modalFrameEl = document.getElementById("modal_frame");
+    this.modalFrameEl = document.getElementById(this.frameIdValue);
   }
 
   connect() {
@@ -44,13 +42,16 @@ export default class extends Dialog {
 
   handleSubmitEnd(event) {
     if (!this.isInModal(event)) return
-    this.close();
 
     if (event.detail.success) {
       this.fireSubmitSuccessEvent();
+      this.close();
+      console.log("Form submitted successfully: ", event);
     }
     else {
       this.fireSubmitFailEvent();
+      this.endLoading(this.titleValue);
+      console.log("Form submit failed: ", event);
     }
   }
 
@@ -69,8 +70,7 @@ export default class extends Dialog {
 
   loadSubmit() {
     this.setTitle("Submitting...");
-    this.modalBodyTarget.classList.add("hidden");
-    this.showLoadingSpinner();
+    this.startLoading();
   }
 
   setTitle(title) {
@@ -98,6 +98,17 @@ export default class extends Dialog {
     this.modalFrameEl.removeEventListener("modal-form-submit-success", callback);
   }
 
+  startLoading() {
+    this.showLoadingSpinner();
+    this.hideBody();
+  }
+
+  endLoading(newTitle = null) {
+    this.hideLoadingSpinner();
+    this.showBody();
+    if (newTitle) this.setTitle(newTitle);
+  }
+
   showLoadingSpinner() {
     this.loadingIndicatorTarget.classList.remove("hidden");
   }
@@ -108,8 +119,7 @@ export default class extends Dialog {
 
   dialogTargetConnected(element) {
     if (this.openValue) {
-      this.hideLoadingSpinner();
-      this.showBody();
+      this.endLoading()
       this.open();
     }
   }

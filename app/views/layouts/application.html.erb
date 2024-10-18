@@ -18,8 +18,6 @@
         <%= yield %>
       </div>
     </div>
-    <div id="modal">
-      <%= render partial: 'shared/modal', locals: {loading: true} %>
-    </div>
+    <%= render partial: 'shared/modal', locals: { closed: true} %>
   </body>
 </html>

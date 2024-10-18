@@ -11,25 +11,25 @@
     </div>
   <% end %>
 
-  <%= link_to "Browse Games", games_path, data: { turbo_frame: "games_list" } %>
-  <%= turbo_frame_tag "games_list" %>
+  <%= link_to "Browse Games", games_path, data: { turbo_frame: "games_index" } %>
+  <%= turbo_frame_tag "games_index" %>
 
   <div data-game-selection-target="selectedGame">
     <%= @game.name if @game.present? %>
   </div>
   <div>
     <%= form.label :game_id, style: "display: block" %>
-    <%= form.hidden_field :game_id, data: { game_selection_target: "gameId"} %>
+    <%= form.hidden_field :game_id, data: { game_selection_target: "gameId"}, required:"" %>
   </div>
 
   <div>
     <%= form.label :group_id, style: "display: block" %>
-    <%= form.hidden_field :group_id, value: game_proposal.group_id %>
+    <%= form.collection_select :group_id, Current.user.groups, :id, :name, { prompt: "Select a group" }, required: "" %>
   </div>
 
   <div>
     <%= form.label :user_id, style: "display: block" %>
-    <%= form.hidden_field :user_id, value: Current.user.id %>
+    <%= form.hidden_field :user_id, value: Current.user.id, required:"" %>
   </div>
 
   <div>

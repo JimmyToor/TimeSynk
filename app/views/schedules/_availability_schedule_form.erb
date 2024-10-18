@@ -1,0 +1,7 @@
+<div class="nested-form-wrapper" data-new-record="<%= form.object.new_record? %>" >
+  <%= form.hidden_field :_destroy %>
+
+  <%= form.collection_select :availability_id, Current.user.availabilities, :id, :name, {}, data: { mutually_exclusive_select_target:"collectionSelect"}  %>
+
+  <button type="button" class="btn btn-danger" data-action="rails-nested-form#remove ">Remove</button>
+</div>

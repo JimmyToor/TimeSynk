@@ -1,6 +1,7 @@
 class AvailabilitiesController < ApplicationController
   before_action :set_availability, only: %i[ show edit update destroy ]
-  before_action :set_schedules, only: %i[ new edit ]
+  before_action :set_schedules, only: %i[ new edit create ]
+  before_action :set_user, only: %i[ create ]
 
   # GET /availabilities or /availabilities.json
   def index
@@ -14,7 +15,7 @@ class AvailabilitiesController < ApplicationController
 
   # GET /availabilities/new
   def new
-    @availability = Availability.new
+    @availability = Availability.new(user: @user)
   end
 
   # GET /availabilities/1/edit
@@ -23,10 +24,8 @@ class AvailabilitiesController < ApplicationController
 
   # POST /availabilities or /availabilities.json
   def create
-    user = User.find(availability_params[:user_id])
-    service = AvailabilityCreationService.new(availability_params, user, availability_params[:schedule_ids])
-    @availability = service.create_availability
-
+    @availability = Availability.new(availability_params)
+    authorize(@availability)
     respond_to do |format|
       if @availability.save
         format.html { redirect_to availability_url(@availability), notice: "Availability was successfully created." }
@@ -63,18 +62,27 @@ class AvailabilitiesController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_availability
-      @availability = Availability.find(params[:id])
-      authorize(@availability)
-    end
+  def set_availability
+    @availability = Availability.find(params[:id])
+    authorize(@availability)
+  end
 
-    def set_schedules
-      @schedules = policy_scope(Schedule)
-      authorize(@schedules)
-    end
+  def set_user
+    @user = User.find(params[:availability][:user_id])
+    authorize(@user)
+  end
+
+  def set_schedules
+    @schedules = policy_scope(Schedule)
+    Rails.logger.debug @schedules.inspect
+
+    authorize(@schedules)
+  end
 
     # Only allow a list of trusted parameters through.
-    def availability_params
-      params.require(:availability).permit(:name, :user_id, schedule_ids: [])
-    end
+  def availability_params
+    params.require(:availability).permit(:name,
+      :user_id,
+      availability_schedules_attributes: [:id, :schedule_id, :_destroy])
+  end
 end

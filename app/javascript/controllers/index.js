@@ -19,5 +19,11 @@ application.register("game-selection", GameSelectionController)
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
 
+import MutuallyExclusiveSelectController from "./mutually_exclusive_select_controller"
+application.register("mutually-exclusive-select", MutuallyExclusiveSelectController)
+
 import NavController from "./nav_controller"
 application.register("nav", NavController)
+
+import RailsNestedFormController from "@stimulus-components/rails-nested-form"
+application.register("rails-nested-form", RailsNestedFormController)

@@ -10,8 +10,7 @@ Rails.application.routes.draw do
   resources :game_proposals, only: [:index]
   resources :game_sessions, only: [:index]
   get "calendars", to: "calendars#show"
-  resource :user, only: [:show, :update]
-  resolve("User") { [:user] }
+  resources :users
   shallow do
     resources :groups do
       resources :schedules

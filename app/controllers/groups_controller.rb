@@ -11,9 +11,8 @@ class GroupsController < ApplicationController
   def show
     authorize(@group)
     @group_membership = GroupMembership.find_by(group: @group, user: Current.user)
-    Rails.logger.debug "availability: #{@group.get_user_group_availability(Current.user)}"
     respond_to do |format|
-      format.html { render :show, locals: { group_availability: @group.get_user_group_availability(Current.user) } }
+      format.html { render :show, locals: { group: @group, group_membership: @group_membership, group_availability: @group.get_user_group_availability(Current.user) } }
     end
   end
 
@@ -47,6 +46,7 @@ class GroupsController < ApplicationController
       if @group.persisted?
         format.html { redirect_to group_url(@group), notice: "Group was successfully created." }
         format.json { render :show, status: :created, location: @group }
+        format.turbo_stream
       else
         format.html { render :new, status: :unprocessable_entity, notice: I18n.t("group.group_creation_error") }
         format.json { render json: @group.errors, status: :unprocessable_entity }

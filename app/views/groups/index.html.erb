@@ -1,14 +1,11 @@
 <p style="color: green"><%= notice %></p>
 
-<h1>Groups</h1>
-
 <div id="groups">
-  <% @groups.each do |group| %>
+ <% @groups.each do |group| %>
+  <%= link_to group do %>
     <%= render group %>
-    <p>
-      <%= link_to "Show this group", group %>
-    </p>
   <% end %>
+<% end %>
 </div>
 
-<%= link_to "New group", new_group_path %>
+<%= link_to "New group", new_group_path, data: {turbo_frame: "modal_frame"} %>

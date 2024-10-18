@@ -1,33 +1,26 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @group %>
-
-<div>
-  <h3>Group Invites</h3>
-  <%= render @group.invites %>
-</div>
+<%= render group %>
 
 <div>
   <% if Current.user.has_role?(:admin) %>
-    <%= link_to "Join Group", new_group_group_membership_path(@group) %> |
+    <%= link_to "Join Group", new_group_group_membership_path(group) %> |
   <% end %>
-  <%= link_to "New game proposal", new_group_game_proposal_path(@group, nil) %> |
-  <%= link_to "Show this group's game proposals", group_game_proposals_path(@group) %> |
+  <%= link_to "New game proposal", new_group_game_proposal_path(group, nil) %> |
+  <%= link_to "Show this group's game proposals", group_game_proposals_path(group) %> |
   <% if local_assigns[:group_availability] %>
     <%= link_to "Edit Group Availability", edit_group_availability_path(group_availability)%> |
   <% else %>
-    <%= link_to "Set Group Availability", new_group_group_availability_path(@group) %> |
+    <%= link_to "Set Group Availability", new_group_group_availability_path(group) %> |
   <% end %>
-  <%= link_to "Edit this group", edit_group_path(@group), data: {turbo_frame: "modal_frame"} %> |
-  <%= link_to "Invite to this group", new_group_invite_path(@group) %> |
-  <%= link_to "Show this group's invites", group_invites_path(@group) %> |
+  <%= link_to "Edit this group", edit_group_path(group), data: {turbo_frame: "modal_frame"} %> |
+  <%= link_to "Invite to this group", new_group_invite_path(group) %> |
+  <%= link_to "Show this group's invites", group_invites_path(group) %> |
 
-  <%= button_to "Leave this group", @group_membership, method: :delete %>
-  <%= button_to "Destroy this group", @group, method: :delete %>
+  <%= button_to "Leave this group", group_membership, method: :delete %>
+  <%= button_to "Destroy this group", group, method: :delete, data: { turbo_confirm: "Are you sure you want to destroy this group?" } %>
 </div>
 
-<%= link_to "Back to groups", groups_path %>
-
-<div data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-group-id=<%= @group.id %>  >
-  <%= render partial: 'calendars/calendar' %>
+<div data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-group-id=<%= group.id %>  >
+  <%= render partial: 'calendars/calendar', locals: {group: group, game_proposal: group.game_proposals.first || nil} %>
 </div>

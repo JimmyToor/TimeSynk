@@ -1,7 +1,8 @@
 <h1>Editing schedule</h1>
 
-<%= render "form", schedule: @schedule %>
-
+<%= modal_wrapper(@schedule.name) do %>
+  <%= render "form", schedule: @schedule %>
+<% end %>
 <br>
 
 <div>

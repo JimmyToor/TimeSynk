@@ -9,17 +9,6 @@ class AvailabilityPolicy < ApplicationPolicy
     record.user == user || user.has_role?(:admin)
   end
 
-  def edit?
-    record.user == user || user.has_role?(:admin)
-  end
-
-  def update?
-    edit?
-  end
-
-  def destroy?
-    edit?
-  end
 
   class Scope < ApplicationPolicy::Scope
     def resolve

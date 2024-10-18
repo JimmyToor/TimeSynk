@@ -1,4 +1,4 @@
-<%= form_with(model: schedule, data: { controller: "flatpickr" }) do |form| %>
+<%= form_with(model: schedule, id:"schedule_form", data: { controller: "rails-nested-form", rails_nested_form_wrapper_selector_value: '.nested-form-wrapper' }) do |form| %>
 
   <% if schedule.errors.any? %>
     <div style="color: red">
@@ -21,18 +21,33 @@
       <%= form.hidden_field :user_id, value: Current.user.id %>
     </div>
 
-    <div>
-      <%= form.label :start_date, "Starting on", style: "display: block" %>
-      <%= form.datetime_field :start_date, data: { flatpickr_target: "startDate"}, value: schedule.start_date.iso8601 %>
+    <template data-rails-nested-form-target="template">
+      <%= form.fields_for :availability_schedules, schedule.availability_schedules.build, child_index: "NEW_RECORD" do |availability_schedule_subform| %>
+        <%= render "schedules/availability_schedule_form", form: availability_schedule_subform %>
+      <% end %>
+    </template>
+
+    <div data-controller="mutually-exclusive-select" data-mutually-exclusive-select-rails-nested-form-outlet="#schedule_form">
+      Include in availability
+      <%= form.fields_for :availability_schedules do |availability_schedule_subform| %>
+        <%= render "schedules/availability_schedule_form", form: availability_schedule_subform %>
+      <% end %>
+
+      <div data-rails-nested-form-target="target">
+      </div>
+      <button type="button" data-action="mutually-exclusive-select#cacheSelections rails-nested-form#add" data-mutually-exclusive-select-target="addButton" >Add availability</button>
+    </div>
+
+    <div class="flatpickr" data-controller="flatpickr">
+      <%= form.label :start_date, "Starting on", class: "block" %>
+      <%= form.datetime_field :start_date, data: { flatpickr_target: "startDate"} %>
+
+      <%= form.label :end_date, "Ending on", class: "block" %>
+      <%= form.datetime_field :end_date, data: { flatpickr_target: "endDate"} %>
     </div>
 
     <div>
-      <%= form.label :duration, style: "display: block" %>
-      <%= form.number_field :duration, value: schedule.duration %>
-    </div>
-
-    <div>
-      <%= form.label :schedule_pattern, "Occurs", style: "display: block;" %>
+      <%= form.label :schedule_pattern, "Occurs", class: "block" %>
       <%= form.select_recurring :schedule_pattern, nil, allow_blank: true, initialize_flatpickr: false %>
     </div>
 

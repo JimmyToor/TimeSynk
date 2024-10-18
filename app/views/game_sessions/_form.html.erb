@@ -1,4 +1,4 @@
-<%= form_with(model: [game_proposal, game_session]) do |form| %>
+<%= form_with(model: [game_proposal, game_session], id: "game_session_form") do |form| %>
   <% if game_session.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(game_session.errors.count, "error") %> prohibited this game_session from being saved:</h2>
@@ -11,25 +11,34 @@
     </div>
   <% end %>
 
+
+  <% unless local_assigns[:game_proposals] %>
+    <div>
+      <%= display_game_art_and_name(game_session.game) %>
+    </div>
+  <% end %>
+
+
   <div>
-    <%= display_game_art_and_name(game_session.game) %>
+    <% if local_assigns[:game_proposals] %>
+      <%= form.label :game_proposal_id, style: "display: block" %>
+      <%= form.collection_select :game_proposal_id, local_assigns[:game_proposals], :id, :game_name, value: game_proposal.id %>
+    <% else %>
+      <%= form.label :game_proposal_id, style: "display: block" %>
+      <%= form.text_field :game_proposal_id, value: game_session.game_proposal.id %>
+    <% end %>
   </div>
 
   <div>
-    <%= form.label :game_proposal_id, style: "display: block" %>
-    <%= form.hidden_field :game_proposal_id, value: game_session.game_proposal.id %>
+    <%= form.hidden_field :user_id, value: Current.user.id %>
   </div>
 
-  <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.hidden_field :user_id, value: game_session.user_id %>
-  </div>
-
-  <div data-controller="flatpickr">
+  <div data-controller="flatpickr" class="flatpickr">
     <%= form.label :date, style: "display: block" %>
     <%= form.datetime_field :date, data: { flatpickr_target: "startDate" }, required: true %>
   </div>
 
+  <!--TODO: Change this to hours and minutes-->
   <div>
     <%= form.label :duration, style: "display: block" %>
     <%= form.number_field :duration, required: true, value: game_session.duration || 60 %>
