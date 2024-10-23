@@ -11,14 +11,15 @@ class GroupCreationService
   #
   # @return [Group] The newly created group.
   def create_group_and_membership
+    @group = Group.new(@params)
     ActiveRecord::Base.transaction do
-      @group = Group.create!(@params)
-      @group.users << Current.user
-      @user.add_role :owner, @group
+        @group.save!
+        @group.users << @user
+        @user.add_role :owner, @group
+    rescue ActiveRecord::RecordInvalid => e
+        @group.errors.add(:base, e.message)
+        raise ActiveRecord::Rollback
     end
-    @group
-  rescue ActiveRecord::RecordInvalid => e
-    @group.errors.add(:base, e.message)
     @group
   end
 end
