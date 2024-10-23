@@ -25,5 +25,9 @@ application.register("mutually-exclusive-select", MutuallyExclusiveSelectControl
 import NavController from "./nav_controller"
 application.register("nav", NavController)
 
+import ProposalSelectionController from "./proposal_selection_controller"
+application.register("proposal-selection", ProposalSelectionController)
+
 import RailsNestedFormController from "@stimulus-components/rails-nested-form"
 application.register("rails-nested-form", RailsNestedFormController)
+

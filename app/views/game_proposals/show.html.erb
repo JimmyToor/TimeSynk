@@ -7,16 +7,15 @@
   <div>
     <%= render "proposal_votes/form", game_proposal: @game_proposal, proposal_vote: @proposal_vote %>
 
-    <%= link_to "Edit this game proposal", edit_game_proposal_path(@game_proposal) %>
     <% if local_assigns[:proposal_availability] %>
       <%= link_to "Edit Proposal Availability", edit_proposal_availability_path(proposal_availability) %> |
     <% else %>
       <%= link_to "Set Proposal Availability", new_game_proposal_proposal_availability_path(@game_proposal) %> |
     <% end %>
     <%= link_to "View Game Sessions", game_proposal_game_sessions_path(@game_proposal) %>
-    <%= link_to "New Game Session", new_game_proposal_game_session_path(@game_proposal), data: { turbo_frame: "modal_body", action:"dialog#open"} %>
+    <%= link_to "New Game Session", new_game_proposal_game_session_path(@game_proposal), data: { turbo_frame: "modal_frame"} %>
 
-    <%= button_to "Destroy this game proposal", @game_proposal, method: :delete %>
+    <%= button_to "Destroy this game proposal", @game_proposal, {method: :delete, data: { turbo_method: "delete", turbo_confirm: "Are you sure you want to delete this #{@game_proposal.game_name} proposal?"}} %>
   </div>
 <% end %>
 
