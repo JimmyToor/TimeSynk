@@ -1,7 +1,7 @@
 <h1>Editing game session</h1>
 
-<%= modal_wrapper(local_assigns[:original_name] || @game_session.game_name) do %>
-  <%= render "form", game_session:@game_session, game_proposal:nil %>
+<%= modal_wrapper(local_assigns[:original_name] || game_session.game_name) do %>
+  <%= render "form", game_session: game_session, game_proposal:nil, game_proposals: local_assigns[:game_proposals] %>
 
   <br>
 
@@ -14,6 +14,6 @@
 <br>
 
 <div>
-  <%= link_to "Show this game session", @game_session %> |
+  <%= link_to "Show this game session", game_session %> |
   <%= link_to "Back to game sessions", game_sessions_path %>
 </div>

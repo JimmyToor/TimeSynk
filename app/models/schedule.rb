@@ -13,6 +13,7 @@ class Schedule < ApplicationRecord
 
   accepts_nested_attributes_for :availability_schedules, allow_destroy: true, reject_if: :all_blank
 
+  validates :name, presence: true, uniqueness: {scope: :user}
   validates :start_date, timeliness: {on_or_before: :end_date, type: :datetime}, presence: true
   validates :end_date, timeliness: {on_or_after: :start_date, type: :datetime}
 

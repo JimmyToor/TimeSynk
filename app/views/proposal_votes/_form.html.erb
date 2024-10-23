@@ -1,4 +1,4 @@
-<%= turbo_frame_tag "proposal_vote_#{proposal_vote.id}" do %> <!-- TODO: Add a loading indicator and disable the inputs while loading-->
+<%= turbo_frame_tag dom_id(proposal_vote, :form) do %> <!-- TODO: Add a loading indicator and disable the inputs while loading-->
   <%= form_with(model: proposal_vote.new_record? ?  [game_proposal, proposal_vote] :  proposal_vote) do |form| %>
     <% if proposal_vote.errors.any? %>
       <div style="color: red">

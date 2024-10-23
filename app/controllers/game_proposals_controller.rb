@@ -15,12 +15,18 @@ class GameProposalsController < ApplicationController
 
   # GET /game_proposals/1 or /game_proposals/1.json
   def show
-    render :show, locals: { proposal_availability: @game_proposal.get_user_proposal_availability(Current.user) }
+    respond_to do |format|
+      format.html { render :show, locals: { proposal_availability: @game_proposal.get_user_proposal_availability(Current.user) }}
+      format.json { render :show, status: :ok, location: @game_proposal }
+    end
   end
 
   # GET /game_proposals/new
   def new
     @game_proposal = GameProposal.new(group_id: params[:group_id])
+    respond_to do |format|
+      format.html { render :new, locals: { game_proposal: @game_proposal, group: Group.find(params[:group_id]), game_proposals: @game_proposal.group.game_proposals }}
+    end
   end
 
   # GET /game_proposals/1/edit

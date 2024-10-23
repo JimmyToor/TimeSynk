@@ -30,10 +30,18 @@ class ProposalVotesController < ApplicationController
     Current.user.proposal_votes << @proposal_vote
     @game_proposal.proposal_votes << @proposal_vote
 
+
     respond_to do |format|
       if @proposal_vote.save
+        @game_proposal.reload
         format.html { redirect_to @game_proposal, notice: "Proposal vote was successfully created." }
         format.json { render :show, status: :created, location: @proposal_vote }
+        format.turbo_stream { 
+          render turbo_stream: [
+            turbo_stream.replace("form_proposal_vote", partial: "proposal_votes/form", locals: { game_proposal: @game_proposal, proposal_vote: @proposal_vote }),
+            turbo_stream.update("vote_count_#{helpers.dom_id(@game_proposal)}", partial: "game_proposals/vote_count", locals: { game_proposal: @game_proposal })
+          ]
+        }
       else
         format.html { render @game_proposal, status: :unprocessable_entity }
         format.json { render json: @proposal_vote.errors, status: :unprocessable_entity }
@@ -44,43 +52,60 @@ class ProposalVotesController < ApplicationController
   # PATCH/PUT /proposal_votes/1 or /proposal_votes/1.json
   def update
     if proposal_vote_params[:yes_vote].empty?
-      @proposal_vote.destroy!
-      redirect_to @game_proposal, notice: "Proposal vote was successfully deleted."
-      return
-    end
-    respond_to do |format|
-      if @proposal_vote.update(proposal_vote_params)
-        format.html { redirect_to @game_proposal, notice: "Proposal vote was successfully updated." }
-        format.json { render :show, status: :ok, location: @proposal_vote }
-      else
-        format.html { redirect_to @game_proposal, status: :unprocessable_entity }
-        format.json { render json: @proposal_vote.errors, status: :unprocessable_entity }
+      destroy_vote
+    else
+      respond_to do |format|
+        if @proposal_vote.update(proposal_vote_params)
+          @game_proposal.reload
+          format.html { redirect_to @game_proposal, notice: "Proposal vote was successfully updated." }
+          format.json { render :show, status: :ok, location: @proposal_vote }
+          format.turbo_stream {
+            render turbo_stream:  [
+              turbo_stream.replace(helpers.dom_id(@proposal_vote, :form), partial: "proposal_votes/form", locals: { game_proposal: @game_proposal, proposal_vote: @proposal_vote }),
+              turbo_stream.update("vote_count_#{helpers.dom_id(@game_proposal)}", partial: "game_proposals/vote_count", locals: { game_proposal: @game_proposal })
+            ]
+          }
+        else
+          format.html { redirect_to @game_proposal, status: :unprocessable_entity }
+          format.json { render json: @proposal_vote.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
 
   # DELETE /proposal_votes/1 or /proposal_votes/1.json
   def destroy
-    @proposal_vote.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to proposal_votes_url, notice: "Proposal vote was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    destroy_vote
   end
 
   private
 
+  def destroy_vote
+    @game_proposal = @proposal_vote.game_proposal
+    @proposal_vote.destroy!
+    @game_proposal.reload
+    new_proposal_vote = @game_proposal.proposal_votes.new(user_id: Current.user.id)
+
+    respond_to do |format|
+      format.html { redirect_to @game_proposal, notice: "Proposal vote was successfully removed." }
+      format.json { head :no_content }
+      format.turbo_stream {
+        render turbo_stream: [
+          turbo_stream.replace(helpers.dom_id(@proposal_vote, :form), partial: "proposal_votes/form", locals: { game_proposal: @game_proposal, proposal_vote: new_proposal_vote }),
+          turbo_stream.update("vote_count_#{helpers.dom_id(@game_proposal)}", partial: "game_proposals/vote_count", locals: { game_proposal: @game_proposal })
+                             ]
+      }
+    end
+  end
+
   def set_game_proposal
-    @game_proposal = GameProposal.find_by_id!(proposal_vote_params[:game_proposal_id])
+    @game_proposal = GameProposal.find_by_id!(params[:proposal_vote][:game_proposal_id])
   end
   
-    # Use callbacks to share common setup or constraints between actions.
   def set_proposal_vote
     @proposal_vote = ProposalVote.find_by_id!(params[:id])
   end
 
-    # Only allow a list of trusted parameters through.
   def proposal_vote_params
     params.require(:proposal_vote).permit(:user_id, :game_proposal_id, :yes_vote, :comment)
   end

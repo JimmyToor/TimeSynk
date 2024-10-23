@@ -29,23 +29,26 @@ export default class extends Controller {
     this.startDatePicker = this.initDatePicker(this.startDateTarget, undefined, defaultDate,
       (selectedDates, dateStr, instance) => {
         if (this.endDatePicker) { // Ensure end date is not before start date
-          if (this.endDatePicker.selectedDates[0] < new Date(dateStr)) {
+          this.updateMinEndDate();
+          if (this.endDatePicker.selectedDates[0] < new Date(dateStr) || this.endDatePicker.selectedDates[0] == null) {
             this.endDatePicker.setDate(instance.selectedDates[0]);
           }
-          this.endDatePicker.set('minDate', dateStr);
         }
-      });
+      },
+      (selectedDates, dateStr, instance) => {
+        this.updateMinEndDate();
+      }
+      );
   }
 
   initEndDatePicker() {
     if (!this.hasEndDateTarget) return;
-    // Priority: 1. Current end date, 2. Current start date, 3. Current date
+    // Priority: 1. Starting end date value 2. Current start date 3. Current date
     let defaultDate = this.endDateTarget.value || this.startDatePicker?.selectedDates[0] || new Date().toISOString();
-
     this.endDatePicker = this.initDatePicker(this.endDateTarget, this.startDatePicker?.selectedDates[0], defaultDate);
   }
 
-  initDatePicker(datePickerEl, minDate, defaultDate = undefined, onClose = undefined) {
+  initDatePicker(datePickerEl, minDate, defaultDate = undefined, onClose = undefined, onChange = undefined) {
     return flatpickr(datePickerEl, {
       enableTime: true,
       dateFormat: "Z",
@@ -54,12 +57,20 @@ export default class extends Controller {
       defaultDate: defaultDate || datePickerEl.value,
       minDate: minDate,
       onClose: onClose,
+      onChange: onChange,
       allowInput: false,
       altInputClass: "flatpickr-input form-control input",
       static:true,
       minuteIncrement: 1,
     });
   }
+
+  updateMinEndDate() {
+    if (!this.hasStartDateTarget || !this.hasEndDateTarget) return;
+
+    this.endDatePicker.set('minDate', this.startDatePicker.selectedDates[0]);
+  }
+
 
   startDateTargetConnected(element) {
     this.initStartDatePicker();

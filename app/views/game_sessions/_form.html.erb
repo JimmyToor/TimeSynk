@@ -11,23 +11,17 @@
     </div>
   <% end %>
 
-
-  <% unless local_assigns[:game_proposals] %>
-    <div>
-      <%= display_game_art_and_name(game_session.game) %>
-    </div>
-  <% end %>
-
-
-  <div>
+  <div data-controller="proposal-selection">
+    <%= display_game_art_and_name(game_session.game) %>
     <% if local_assigns[:game_proposals] %>
-      <%= form.label :game_proposal_id, style: "display: block" %>
-      <%= form.collection_select :game_proposal_id, local_assigns[:game_proposals], :id, :game_name, value: game_proposal.id %>
-    <% else %>
-      <%= form.label :game_proposal_id, style: "display: block" %>
-      <%= form.text_field :game_proposal_id, value: game_session.game_proposal.id %>
-    <% end %>
+        <%= form.label :game_proposal_id, style: "display: block" %>
+        <%= form.collection_select :game_proposal_id, local_assigns[:game_proposals], :id, :game_name, {selected: game_session.game_proposal.id}, data: { proposal_selection_target:"collectionSelect", action:"change->proposal-selection#changeProposal" } %>
+      <% else %>
+        <%= form.hidden_field :game_proposal_id, value: game_session.game_proposal.id %>
+      <% end %>
+
   </div>
+
 
   <div>
     <%= form.hidden_field :user_id, value: Current.user.id %>

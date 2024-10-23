@@ -1,0 +1,11 @@
+<%= turbo_frame_tag dom_id(game_proposal, :vote_count) do %>
+  <p>
+    <strong>Yes votes:</strong>
+    <%= game_proposal.yes_votes_count %>
+  </p>
+
+  <p>
+    <strong>No votes:</strong>
+    <%= game_proposal.no_votes_count %>
+  </p>
+<% end %>

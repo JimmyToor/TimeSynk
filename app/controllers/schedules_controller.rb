@@ -54,7 +54,7 @@ class SchedulesController < ApplicationController
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @schedule.errors, status: :unprocessable_entity }
         format.turbo_stream {
-          render turbo_stream: turbo_stream.update(
+          render turbo_stream: turbo_stream.replace(
             "schedule_form",
             partial: "schedules/form",
             locals: {schedule: @schedule}

@@ -21,22 +21,22 @@
       <%= form.hidden_field :user_id, value: Current.user.id %>
     </div>
 
-    <template data-rails-nested-form-target="template">
-      <%= form.fields_for :availability_schedules, schedule.availability_schedules.build, child_index: "NEW_RECORD" do |availability_schedule_subform| %>
-        <%= render "schedules/availability_schedule_form", form: availability_schedule_subform %>
-      <% end %>
-    </template>
-
     <div data-controller="mutually-exclusive-select" data-mutually-exclusive-select-rails-nested-form-outlet="#schedule_form">
       Include in availability
       <%= form.fields_for :availability_schedules do |availability_schedule_subform| %>
         <%= render "schedules/availability_schedule_form", form: availability_schedule_subform %>
       <% end %>
-
       <div data-rails-nested-form-target="target">
       </div>
-      <button type="button" data-action="mutually-exclusive-select#cacheSelections rails-nested-form#add" data-mutually-exclusive-select-target="addButton" >Add availability</button>
+      <button type="button" data-action="mutually-exclusive-select#cacheSelections rails-nested-form#add" data-mutually-exclusive-select-target="addButton">Add availability</button>
     </div>
+
+
+    <template data-rails-nested-form-target="template">
+      <%= form.fields_for :availability_schedules, schedule.availability_schedules.build, child_index: "NEW_RECORD" do |availability_schedule_subform| %>
+        <%= render "schedules/availability_schedule_form", form: availability_schedule_subform %>
+      <% end %>
+    </template>
 
     <div class="flatpickr" data-controller="flatpickr">
       <%= form.label :start_date, "Starting on", class: "block" %>

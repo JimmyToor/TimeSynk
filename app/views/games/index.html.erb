@@ -26,6 +26,14 @@
           <tbody>
             <% @games.each do |game| %>
               <%= render game %>
+              <%= link_to "Select #{game.name}", "#",
+                          data: {
+                            action: "game-selection#select",
+                            game_id: game.id,
+                            game_name: game.name,
+                          },
+                          remote: true,
+                          class: "select-game-btn" %>
             <% end %>
           </tbody>
         </table>

@@ -46,12 +46,11 @@ export default class extends Dialog {
     if (event.detail.success) {
       this.fireSubmitSuccessEvent();
       this.close();
-      console.log("Form submitted successfully: ", event);
+
     }
     else {
       this.fireSubmitFailEvent();
       this.endLoading(this.titleValue);
-      console.log("Form submit failed: ", event);
     }
   }
 

@@ -18,14 +18,6 @@
     <%= game_proposal.user_id %>
   </p>
 
-  <p>
-    <strong>Yes votes:</strong>
-    <%= game_proposal.yes_votes_count %>
-  </p>
-
-  <p>
-    <strong>No votes:</strong>
-    <%= game_proposal.no_votes_count %>
-  </p>
+  <%= render 'game_proposals/vote_count', game_proposal: game_proposal %>
 
 </div>
