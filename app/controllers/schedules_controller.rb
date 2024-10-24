@@ -20,7 +20,7 @@ class SchedulesController < ApplicationController
 
   # GET /schedules/new
   def new
-    @schedule = Schedule.new(start_date: Time.current.utc, duration: 60)
+    @schedule = Schedule.new(start_date: Time.current.utc, end_date: Time.current.utc + 24.hours)
   end
 
   # GET /schedules/1/edit
@@ -30,7 +30,9 @@ class SchedulesController < ApplicationController
   # POST /schedules or /schedules.json
   def create
     @schedule = Schedule.new(schedule_params)
-    fill_missing_params
+    Rails.logger.debug "Schedule#createBefore: schedule_params: #{schedule_params.inspect}"
+    set_missing_values
+    Rails.logger.debug "Schedule#createAfter: schedule_params: #{schedule_params.inspect}"
 
     respond_to do |format|
       if @schedule.save
@@ -66,7 +68,7 @@ class SchedulesController < ApplicationController
 
   # PATCH/PUT /schedules/1 or /schedules/1.json
   def update
-    fill_missing_params
+    set_missing_values
     respond_to do |format|
       if @schedule.update(schedule_params)
         format.html { redirect_to schedule_url(@schedule), notice: "Schedule was successfully updated." }
@@ -90,29 +92,35 @@ class SchedulesController < ApplicationController
 
   private
 
-  def fill_missing_params
+  def set_missing_values
     set_end_date
     set_duration
   end
 
+  # Sets the end date for the schedule if it is not already present.
+  # The end date is calculated based on the schedule pattern, start date, and duration, to be the end of the final occurrence.
   def set_end_date
-    if @schedule.schedule_pattern.present? && @schedule.duration.present? && !@schedule.end_date.present?
+    return if @schedule.end_date.present?
+
+    if @schedule.schedule_pattern.present?
       pattern = @schedule.schedule_pattern
       @schedule.end_date = if pattern[:until].present?
         pattern[:until][:time]
-      elsif pattern[:count]
-        @schedule.make_icecube_schedule.last + schedule_params[:duration].minutes
-      else
-        @schedule.start_date + @schedule.duration.minutes
+      elsif @schedule.duration.present?
+        if pattern[:count]
+          @schedule.make_icecube_schedule.last + @schedule.duration.minutes
+        else
+          @schedule.start_date + @schedule.duration.minutes
+        end
       end
-    else
+    elsif @schedule.duration.present? && @schedule.start_date.present?
       @schedule.end_date = @schedule.start_date + @schedule.duration.minutes
     end
   end
 
   def set_duration
-    if @schedule.start_date.present? && @schedule.end_date.present? && @schedule.duration.nil?
-      @schedule.duration = ((@schedule.end_date - @schedule.start_date) * 24 * 60).to_i
+    if @schedule.start_date.present? && @schedule.end_date.present? && (@schedule.duration.nil? || !@schedule.duration.present?)
+      @schedule.duration = (@schedule.end_date - @schedule.start_date).to_i
     end
   end
 
@@ -127,8 +135,6 @@ class SchedulesController < ApplicationController
       availability_schedules_attributes: [:id, :availability_id, :schedule_id, :_destroy]).tap do |schedule_params|
       if schedule_params[:duration].present?
         schedule_params[:duration] = schedule_params[:duration].to_i
-      elsif schedule_params[:end_date].present?
-        schedule_params[:duration] = ((schedule_params[:end_date].to_datetime - schedule_params[:start_date].to_datetime) * 24 * 60).to_i
       end
     end
   end
