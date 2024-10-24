@@ -29,7 +29,7 @@
 
   <div data-controller="flatpickr" class="flatpickr">
     <%= form.label :date, style: "display: block" %>
-    <%= form.datetime_field :date, data: { flatpickr_target: "startDate" }, required: true %>
+    <%= form.datetime_field :date, data: { flatpickr_target: "startDate" }, required: true, value: game_session.date&.in_time_zone(Current.user.timezone) %>
   </div>
 
   <!--TODO: Change this to hours and minutes-->

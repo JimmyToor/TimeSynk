@@ -20,10 +20,13 @@ class UsersController < ApplicationController
   def update
     @user.avatar.purge if user_params[:avatar] === ""
 
-    if @user.update(user_params)
-      redirect_to settings_path, notice: "Your settings were updated successfully"
-    else
-      render :edit, status: :unprocessable_entity
+    respond_to do |format|
+      if @user.update(user_params)
+        format.html { redirect_to settings_path, notice: "Your settings were updated successfully"}
+        format.turbo_stream { render turbo_stream: turbo_stream.replace(@user, partial: "users/user", locals: { user: @user }) }
+      else
+        render :edit, status: :unprocessable_entity
+      end
     end
   end
 
@@ -37,6 +40,6 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:email, :username, :password, :password_confirmation, :avatar)
+    params.require(:user).permit(:email, :username, :password, :password_confirmation, :avatar, :timezone)
   end
 end

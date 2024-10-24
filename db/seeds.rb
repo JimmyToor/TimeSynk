@@ -13,16 +13,27 @@ User.create(
   email: "test@test.com",
   password: "mypassword123",
   password_confirmation: "mypassword123",
-  username: "tester",
-  verified: true
+  username: "Admin User",
+  verified: true,
+  timezone: "America/Los_Angeles"
 ).add_role(:admin)
 
 User.create(
   email: "normaluser@test.com",
   password: "mypassword123",
   password_confirmation: "mypassword123",
-  username: "normaluser",
-  verified: true
+  username: "Normal User",
+  verified: true,
+  timezone: "America/Los_Angeles"
+)
+
+User.create(
+  email: "europeonperson@test.com",
+  password: "mypassword123",
+  password_confirmation: "mypassword123",
+  username: "European Person",
+  verified: true,
+  timezone: "Europe/London"
 )
 
 file_path = "./db/seeds/games.csv"
@@ -33,7 +44,7 @@ CSV.foreach(file_path, headers: true) do |row|
   game = {
     igdb_id: row["igdb_id"],
     name: row["name"],
-    release_date: row["release_date"],
+    release_date: row["release_date"] ? Time.at(row["release_date"].to_i).to_date : nil,
     platforms: row["platforms"].split(", "),
     cover_image_url: row["cover_image_url"]? "https:#{row["cover_image_url"]}" : nil,
     igdb_url: row["igdb_url"],

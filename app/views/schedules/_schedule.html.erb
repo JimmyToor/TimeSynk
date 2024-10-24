@@ -12,8 +12,8 @@
     <td class="px-4 py-2">
       <span class="bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300"> <%= schedule.schedule_pattern %> </span>
     </td>
-    <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.start_date %></td>
-    <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.end_date %></td>
+    <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.start_date.in_time_zone(Current.user.timezone) %></td>
+    <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.end_date.in_time_zone(Current.user.timezone) %></td>
     <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.duration %> min</td>
   </tr>
 <% end %>

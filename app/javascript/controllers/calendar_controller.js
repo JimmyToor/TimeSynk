@@ -97,7 +97,7 @@ export default class extends Controller {
         // info's end time is expected to be exclusive so subtract a minute to get the actual end day
         if (outlet.hasEndDateTarget) {
           outlet.updateMinEndDate();
-          outlet.endDatePicker.setDate(new Date(info.end.getTime() - 60000));
+          outlet.endDatePicker.setDate(new Date(info.end.getTime()) - 60000);
         }
       }
     })
