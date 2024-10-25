@@ -1,4 +1,4 @@
-<div id="modal_container" data-turbo-temporary>
+<div id="modal_container">
   <%= turbo_frame_tag "modal_frame" do %>
     <dialog id="modal_generic" tabindex="-1" class="dialog overflow-visible relative p-1 rounded-lg shadow bg-white dark:bg-gray-700" data-controller="dialog" data-dialog-title-value="Edit" data-dialog-target="dialog" <%= open_unless_value(local_assigns[:closed]) %> data-action="click->dialog#backdropClose">
 
