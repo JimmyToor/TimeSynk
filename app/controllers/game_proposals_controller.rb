@@ -40,6 +40,7 @@ class GameProposalsController < ApplicationController
 
     respond_to do |format|
       if @game_proposal.save
+        @game_proposal.create_roles
         format.html { redirect_to game_proposal_url(@game_proposal), notice: "Game proposal was successfully created." }
         format.json { render :show, status: :created, location: @game_proposal }
       else

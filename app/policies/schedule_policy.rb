@@ -7,7 +7,7 @@ class SchedulePolicy < ApplicationPolicy
 
   class Scope < ApplicationPolicy::Scope
     def resolve
-      if user.has_role?(:admin)
+      if user.has_role?(:site_admin)
         scope.all
       else
         user.schedules

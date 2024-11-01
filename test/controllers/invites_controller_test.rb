@@ -17,7 +17,7 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
 
   test "should create invite" do
     assert_difference("Invite.count") do
-      post group_invites_url, params: { invite: { expires_at: @invite.expires_at, group_id: @invite.group_id, invite_token: @invite.invite_token, roles: @invite.role_ids, user_id: @invite.user_id } }
+      post group_invites_url, params: { invite: { expires_at: @invite.expires_at, group_id: @invite.group_id, invite_token: @invite.invite_token, roles: @invite.assigned_role_ids, user_id: @invite.user_id } }
     end
 
     assert_redirected_to invite_url(Invite.last)
@@ -34,7 +34,7 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update invite" do
-    patch invite_url(@invite), params: { invite: { expires_at: @invite.expires_at, group_id: @invite.group_id, invite_token: @invite.invite_token, role_ids: @invite.role_ids, user_id: @invite.user_id } }
+    patch invite_url(@invite), params: { invite: { expires_at: @invite.expires_at, group_id: @invite.group_id, invite_token: @invite.invite_token, assigned_role_ids: @invite.assigned_role_ids, user_id: @invite.user_id } }
     assert_redirected_to invite_url(@invite)
   end
 

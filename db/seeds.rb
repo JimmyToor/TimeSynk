@@ -16,7 +16,7 @@ User.create(
   username: "Admin User",
   verified: true,
   timezone: "America/Los_Angeles"
-).add_role(:admin)
+).add_role(:site_admin)
 
 User.create(
   email: "normaluser@test.com",

@@ -47,6 +47,7 @@ class GameSessionsController < ApplicationController
     @game_session = @game_proposal.game_sessions.build(game_session_params)
     respond_to do |format|
       if @game_session.save
+        @game_session.create_roles
         format.html { redirect_to game_session_url(@game_session), notice: "Game session was successfully created." }
         format.json { render :show, status: :created, location: @game_session }
         format.turbo_stream { 

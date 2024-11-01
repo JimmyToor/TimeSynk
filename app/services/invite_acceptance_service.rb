@@ -38,7 +38,7 @@ class InviteAcceptanceService
 
   def new_member(user)
     @group_membership = GroupMembership.create!(user_id: @user_id, group_id: @group_id)
-    roles = Role.where(id: @invite.role_ids).select { |role| role.resource_type == "Group" }
+    roles = Role.where(id: @invite.assigned_role_ids).select { |role| role.resource_type == "Group" }
     roles.each do |role|
       user.add_role(role, @group)
     end

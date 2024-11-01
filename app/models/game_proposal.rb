@@ -57,7 +57,11 @@ class GameProposal < ApplicationRecord
     game.name
   end
 
-  def broadcast_unvoted_count
+  def create_roles
+    Role.create_roles_for_game_proposal(self)
+  end
+
+  def broadcast_pending_proposals_change
     user_ids_to_broadcast = group.users.pluck(:id)
 
     user_ids_to_broadcast.each do |user_id|

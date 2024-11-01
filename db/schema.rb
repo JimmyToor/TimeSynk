@@ -89,7 +89,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
     t.bigint "game_proposal_id", null: false
     t.bigint "user_id", null: false
     t.datetime "date"
-    t.integer "duration"
+    t.interval "duration"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["game_proposal_id"], name: "index_game_sessions_on_game_proposal_id"
@@ -139,7 +139,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
     t.bigint "user_id", null: false
     t.bigint "group_id", null: false
     t.string "invite_token", null: false
-    t.bigint "role_ids", default: [], null: false, array: true
+    t.bigint "assigned_role_ids", default: [], null: false, array: true
     t.datetime "expires_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

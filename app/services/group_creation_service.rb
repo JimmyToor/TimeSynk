@@ -15,6 +15,8 @@ class GroupCreationService
     ActiveRecord::Base.transaction do
         @group.save!
         @group.users << @user
+        @group.create_roles
+
         @user.add_role :owner, @group
     rescue ActiveRecord::RecordInvalid => e
         @group.errors.add(:base, e.message)

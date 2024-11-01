@@ -29,7 +29,7 @@ class InvitesController < ApplicationController
     # TODO: Don't allow users to create an invite to one group from another i.e. group_id in strong params should match the current group's id (from the url params).
     @invite = @group.invites.build(invite_params)
     authorize(@invite)
-
+    Rails.logger.debug "Invite params: #{invite_params.inspect}, invite: #{@invite.inspect}"
     respond_to do |format|
       if @invite.save
         @invite_url = invite_url(@invite)
@@ -44,9 +44,10 @@ class InvitesController < ApplicationController
 
   # PATCH/PUT /invites/1 or /invites/1.json
   def update
+    authorize(@invite)
     respond_to do |format|
       if @invite.update(invite_params)
-        format.html { redirect_to invite_url(@invite), notice: "Group invite was successfully updated." }
+        format.html { redirect_to group_invites_path(@invite.group), notice: "Group invite was successfully updated." }
         format.json { render :show, status: :ok, location: @invite }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -83,6 +84,6 @@ class InvitesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
   def invite_params
-    params.require(:invite).permit(:user_id, :group_id, :invite_token, :expires_at, role_ids: [])
+    params.require(:invite).permit(:user_id, :group_id, :invite_token, :expires_at, assigned_role_ids: [])
   end
 end

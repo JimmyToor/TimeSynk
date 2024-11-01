@@ -6,13 +6,13 @@ class AvailabilityPolicy < ApplicationPolicy
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
   def show?
-    record.user == user || user.has_role?(:admin)
+    record.user == user || user.has_role?(:site_admin)
   end
 
 
   class Scope < ApplicationPolicy::Scope
     def resolve
-      if user.has_role?(:admin)
+      if user.has_role?(:site_admin)
         scope.all
       else
         user.availabilities

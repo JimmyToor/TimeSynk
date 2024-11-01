@@ -16,7 +16,12 @@ class GameSession < ApplicationRecord
     game_session_attendances.find_by(user_id: user.id)
   end
 
-  def user_get_or_build_attendance(user)
+  def create_roles
+    Role.create_roles_for_game_session(self)
+  end
+
+
+  def get_or_build_attendance_for_user(user)
     attendance = user_get_attendance(user)
     return attendance if attendance
     game_session_attendances.build(user_id: Current.user.id, game_session_id: self.id)

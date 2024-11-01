@@ -4,7 +4,7 @@ class CreateInvites < ActiveRecord::Migration[7.1]
       t.references :user, null: false, foreign_key: true
       t.references :group, null: false, foreign_key: true
       t.string :invite_token, null: false
-      t.bigint :role_ids, array: true, null: false, default: []
+      t.bigint :assigned_role_ids, array: true, null: false, default: []
       t.datetime :expires_at, null: false
 
       t.timestamps

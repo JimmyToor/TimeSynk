@@ -12,28 +12,30 @@
   <% end %>
 
   <div>
-    <%= form.label :user_id, style: "display: block" %>
     <%= form.hidden_field :user_id, value: invite.user_id %>
   </div>
 
   <div>
-    <%= form.label :group_id, style: "display: block" %>
     <%= form.hidden_field :group_id, value: invite.group_id %>
   </div>
 
   <div>
-    <%= form.label :invite_token, style: "display: block" %>
-    <%= form.text_field :invite_token %>
+    <%= form.hidden_field :invite_token %>
   </div>
 
   <div>
-    <%= form.label :role_ids, style: "display: block" %>
-    <%= form.collection_check_boxes :role_ids, Role.where(resource_type: :Group), :id, :name, include_hidden: false  %>
+    <%= form.label :assigned_role_ids, "Permissions", style: "display: block" %>
+    <%= form.collection_check_boxes :assigned_role_ids, (group&.roles || invite.group.roles), :id, :name, include_hidden: true do |box| %>
+      <div>
+        <%= box.check_box(checked: invite.assigned_role_ids.include?(box.value.to_i)) %>
+        <%= box.label { format_role_name(box.text) } %>
+      </div>
+    <% end %>
   </div>
 
-  <div>
+  <div class="flatpickr" data-controller="flatpickr" data-flatpickr-timezone-value="<%= Current.user.timezone %>">
     <%= form.label :expires_at, style: "display: block" %>
-    <%= form.datetime_field :expires_at %>
+    <%= form.datetime_field :expires_at, data: { flatpickr_target: "startDate" }, value: (Time.current + 1.week).in_time_zone(Current.user.timezone) %>
   </div>
 
   <div>

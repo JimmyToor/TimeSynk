@@ -18,4 +18,9 @@ class Group < ApplicationRecord
   def is_user_member?(user)
     users.include?(user)
   end
+
+  def create_roles
+    Role.create_roles_for_group(self)
+  end
+
 end
