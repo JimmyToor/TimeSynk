@@ -28,25 +28,25 @@
             </div>
             <div>
               <%= form.label :email, "Email (Optional)", style: "display: block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
-              <%= form.email_field :email, value: params[:email_hint], autofocus: true, autocomplete: "email", class: "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", placeholder: "name@company.com"%>
+              <%= form.email_field :email, value: @user.email, autofocus: true, autocomplete: "email", class: "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", placeholder: "name@company.com"%>
             </div>
             <div>
               <%= form.label :username, style: "display: block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
-              <%= form.text_field :username, value: params[:username_hint], autofocus: true, autocomplete: "username", class: "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: "" %>
+              <%= form.text_field :username, minlength: 3, value: @user.username, autofocus: true, autocomplete: "username", class: "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: "" %>
             </div>
             <div>
               <%= form.label :password, style: "display: block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
-              <%= form.password_field :password, autocomplete: "current-password", placeholder: "••••••••", class: "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: "" %>
+              <%= form.password_field :password, minlength: 8, autocomplete: "current-password", placeholder: "••••••••", class: "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: "" %>
             </div>
             <div>
               <%= form.label "Confirm Password", style: "display: block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
-              <%= form.password_field :password_confirmation, autocomplete: "confirm-password", placeholder: "••••••••", class: "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: "" %>
+              <%= form.password_field :password_confirmation, minlength: 8, autocomplete: "confirm-password", placeholder: "••••••••", class: "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: "" %>
             </div>
 
             <div data-controller="timezone">
-              <%= form.label "Time Zone", style: "display: block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
-              <%= form.select :timezone, ActiveSupport::TimeZone.all.map { |tz| ["(UTC#{tz.formatted_offset}) #{tz.name}", tz.tzinfo.name] }, {}, data: { controller: "timezone", target: "timezoneSelection" }, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+              <%= form.hidden_field :timezone, data: { timezone_target: "timezoneSelection" }, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
             </div>
+
             <div class="flex items-start">
               <div class="flex items-center h-5">
                 <input id="terms" aria-describedby="terms" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" required="">

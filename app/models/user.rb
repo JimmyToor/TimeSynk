@@ -13,11 +13,13 @@ class User < ApplicationRecord
   belongs_to :account
   has_many :sessions, dependent: :destroy
   has_many :group_memberships, dependent: :destroy
-  has_many :groups, through: :group_memberships
+  has_many :groups, through: :group_memberships # user is a member of
   has_many :invites, dependent: :destroy
   has_many :availabilities, dependent: :destroy
-  has_many :game_proposals, dependent: :destroy
-  has_many :game_sessions, dependent: :destroy
+  has_many :game_proposals, dependent: :destroy, through: :groups
+  has_many :created_game_proposals, dependent: :destroy, class_name: "GameProposal", foreign_key: "user_id"
+  has_many :game_sessions, dependent: :destroy, through: :game_proposals
+  has_many :created_game_sessions, dependent: :destroy, class_name: "GameSession", foreign_key: "user_id"
   has_many :game_session_attendances, dependent: :destroy
   has_many :proposal_votes, dependent: :destroy
   has_many :schedules, dependent: :destroy
@@ -32,7 +34,7 @@ class User < ApplicationRecord
   validate :avatar_type
 
 
-  validates :email, uniqueness: true, format: {with: URI::MailTo::EMAIL_REGEXP}, allow_blank: true
+  validates :email, uniqueness: { case_sensitive: false, allow_blank: true }, format: {with: URI::MailTo::EMAIL_REGEXP}, allow_blank: true
   validates :username, presence: true, uniqueness: true, length: {minimum: 3, maximum: 20}
   validates :password, allow_nil: true, length: {minimum: 8}
 
@@ -46,8 +48,6 @@ class User < ApplicationRecord
   before_validation on: :create do
     self.account = Account.new
   end
-
-  after_create :assign_default_role
 
   after_create_commit :create_default_user_availability
 
@@ -82,31 +82,38 @@ class User < ApplicationRecord
 
     schedule = create_default_schedule
     availability = schedule.availabilities.create!(name: "Default Availability", user: self)
-    user_availability = UserAvailability.create!(user: self, availability: availability)
-    self.user_availability = user_availability
+    self.user_availability = UserAvailability.create!(user: self, availability: availability)
   rescue ActiveRecord::RecordInvalid => e
     errors.add(:user_availability, "could not be created: #{e.message}")
   end
 
   def create_default_schedule
     schedule_pattern = IceCube::Rule.daily(1)
-    Rails.logger.debug "Creating default schedule pattern: pattern: #{schedule_pattern}, pattern hash: #{schedule_pattern.to_hash}"
-    schedules.create!(name: "Default Schedule",
-                      start_date: Time.current.utc,
-                      end_date: 10.years.from_now,
-                      duration: 24.hours.to_i,
-                      schedule_pattern: schedule_pattern
+    schedules.create!(
+      name: "Default Schedule",
+      start_date: Time.current.utc,
+      end_date: 10.years.from_now,
+      duration: 24.hours.to_i,
+      schedule_pattern: schedule_pattern
     )
+  end
+
+  def upcoming_game_sessions
+    game_sessions.where("date >= ?", Time.current).sort_by(&:date)
+  end
+  
+  def pending_game_proposals
+    game_proposals.reject { |proposal| proposal.user_voted_yes_or_no?(self)}.sort_by(&:created_at)
+  end
+
+  def pending_game_proposal_count
+    pending_game_proposals.count
   end
 
   private
 
-  def assign_default_role
-    add_role(:newuser) if roles.blank?
-  end
-
   def avatar_type
-    if avatar.attached? && !avatar.content_type.in?(%w(image/jpeg image/png image/gif))
+    if avatar.attached? && !%w(image/jpeg image/png image/gif).include?(avatar.content_type)
       errors.add(:avatar, "must be a JPEG, PNG, or GIF")
     end
   end

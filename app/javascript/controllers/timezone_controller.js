@@ -9,11 +9,6 @@ export default class extends Controller {
   }
 
   timezoneSelectionTargetConnected() {
-    const options = Array.from(this.timezoneSelectionTarget.options);
-    const optionValues = options.map(option => option.value);
-
-    if (optionValues.includes(this.browserTimezone)) {
-      this.timezoneSelectionTarget.value = this.browserTimezone;
-    }
+    this.timezoneSelectionTarget.value = this.browserTimezone;
   }
 }

@@ -20,12 +20,7 @@
   <%= link_to "See availabilities", availabilities_path %>
   <%= link_to "Set default availability", edit_user_availability_path %>
 </div>
-<%= form_with(model: Current.user, method: :patch) do |form| %>
-  <div>
-    <%= form.label "Time Zone", style: "display: block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
-    <%= form.select :timezone, ActiveSupport::TimeZone.all.map { |tz| ["(UTC#{tz.formatted_offset}) #{tz.name}", tz.tzinfo.name] }, {}, {value:Current.user.timezone, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white", onchange: "this.form.requestSubmit();"} %>
-  </div>
-<% end %>
+
 
 <div>
   <%= link_to "Change password", edit_password_path %>
