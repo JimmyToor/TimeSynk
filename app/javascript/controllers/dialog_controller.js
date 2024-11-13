@@ -3,12 +3,13 @@ import Dialog from "@stimulus-components/dialog"
 // Connects to data-controller="dialog"
 export default class extends Dialog {
   static targets = ["loadingIndicator", "modalBody", "modalTitle"]
-  static values = { title: { type: String, default: "Modal" }, frameId: { type: String, default: "modal_frame" } }
+  static values = { title: { type: String, default: "Modal" }, frameId: { type: String, default: "modal_frame" }, open: {
+      type: Boolean,
+      default: false,
+    } }
 
   initialize() {
     super.initialize()
-    this.formSubmitSuccessEvent = new CustomEvent("modal-form-submit-success", { bubbles: true, detail: { success: true } });
-    this.formSubmitFailEvent = new CustomEvent("modal-form-submit-fail", { bubbles: true, detail: { success: false } });
     this.submitStartHandler = this.handleSubmitStart.bind(this);
     this.submitEndHandler = this.handleSubmitEnd.bind(this);
     this.beforeFetchRequestHandler = this.handleBeforeFetchRequest.bind(this);
@@ -17,6 +18,7 @@ export default class extends Dialog {
 
   connect() {
     super.connect();
+    this.modalFrameEl = document.getElementById(this.frameIdValue);
     this.removeTurboListeners(); // Ensure no duplicate listeners
     this.addTurboListeners();
   }
@@ -32,7 +34,7 @@ export default class extends Dialog {
 
   handleBeforeFetchRequest(event) {
     if (event.detail.fetchOptions.headers["X-Sec-Purpose"] === "prefetch") return;
-    if (event.target !== this.modalFrameEl) return;
+    if (event.target !== this.modalFrameEl || !this.hasDialogtarget) return;
 
     this.setTitle("Loading...");
     this.hideBody();
@@ -44,13 +46,12 @@ export default class extends Dialog {
     if (!this.isInModal(event)) return
 
     if (event.detail.success) {
-      this.fireSubmitSuccessEvent();
-      this.close();
-
+      this.endLoading();
+      this.fireSubmitSuccessEvent(event);
     }
     else {
       this.fireSubmitFailEvent();
-      this.endLoading(this.titleValue);
+      this.endLoading();
     }
   }
 
@@ -59,16 +60,15 @@ export default class extends Dialog {
     this.loadSubmit();
   }
 
-  fireSubmitSuccessEvent() {
-    this.modalFrameEl.dispatchEvent(this.formSubmitSuccessEvent);
+  fireSubmitSuccessEvent(event) {
+    this.modalFrameEl.dispatchEvent(new CustomEvent("modal-form-submit-success", { bubbles: true, detail: { success: true, submitEndEvent: event } }));
   }
 
-  fireSubmitFailEvent() {
-    this.modalFrameEl.dispatchEvent(this.formSubmitFailEvent);
+  fireSubmitFailEvent(event) {
+    this.modalFrameEl.dispatchEvent(new CustomEvent("modal-form-submit-fail", { bubbles: true, detail: { success: false, submitEndEvent: event } }));
   }
 
   loadSubmit() {
-    this.setTitle("Submitting...");
     this.startLoading();
   }
 
@@ -99,12 +99,10 @@ export default class extends Dialog {
 
   startLoading() {
     this.showLoadingSpinner();
-    this.hideBody();
   }
 
   endLoading(newTitle = null) {
     this.hideLoadingSpinner();
-    this.showBody();
     if (newTitle) this.setTitle(newTitle);
   }
 
@@ -120,6 +118,7 @@ export default class extends Dialog {
     if (this.openValue) {
       this.endLoading()
       this.open();
+      this.openValue = false; // Prevent dialog from opening on back/forward navigation
     }
   }
 

@@ -19,9 +19,8 @@ class GroupMembershipsController < ApplicationController
     group = @invite.group if @invite
 
     # TODO: Clean this up, role checks should be in the policy
-    if Current.user.has_role?(:admin)
+    if Current.user.has_role?(:site_admin)
       group = @group_membership.group
-      Rails.logger.debug "Admin is creating a group membership"
     end
 
     if !@invite && !group
@@ -31,8 +30,7 @@ class GroupMembershipsController < ApplicationController
 
     @group_membership.group_id = params[:group_id]
     @group_membership.user_id = Current.user.id
-    locals = { group_membership: @group_membership, group: group, invite: @invite }
-    render :new, locals: locals
+    render :new, locals: { group_membership: @group_membership, group: group, invite: @invite }
   end
 
   # GET /group_memberships/1/edit

@@ -1,7 +1,12 @@
 <h1>New game session</h1>
 
 <%= modal_wrapper(game_session.game_name) do %>
-  <%= render "form", game_session: game_session, game_proposal: game_session.game_proposal, game_proposals: local_assigns[:game_proposals] %>
+  <%= content_tag(:div, id:dom_id(@game_session, :content)) do %>
+    <%= render "form", game_session: game_session,
+               game_proposal: game_session.game_proposal,
+               initial_game_proposal: game_session.game_proposal,
+               game_proposals: local_assigns[:game_proposals] %>
+  <% end %>
 <% end %>
 
 <br>

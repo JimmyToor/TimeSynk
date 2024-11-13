@@ -10,8 +10,6 @@ module ApplicationHelper
   def modal_wrapper(modal_title, &)
     if turbo_frame_request_id == "modal_frame"
       render partial: "shared/modal", locals: {modal_title: modal_title, modal_body: capture(&)}
-    elsif turbo_frame_request_id == "creation_modal_frame"
-      render partial: "calendars/creation_modal", locals: {modal_title: modal_title, modal_body: capture(&)}
     else
       capture(&)
     end

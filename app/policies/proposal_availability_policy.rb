@@ -7,7 +7,7 @@ class ProposalAvailabilityPolicy < ApplicationPolicy
 
   class Scope < ApplicationPolicy::Scope
     # NOTE: Be explicit about which records you allow access to!
-    if user.has_role?(:admin)
+    if user.has_role?(:site_admin)
       scope.all
     else
       user.proposal_availability

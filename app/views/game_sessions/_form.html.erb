@@ -1,4 +1,4 @@
-<%= form_with(model: [game_proposal, game_session], id: "game_session_form") do |form| %>
+<%= form_with(model: [game_proposal, game_session], id: dom_id(game_session, :form), data: {controller:"proposal-selection", proposal_selection_target:"form", refresh_calendar_on_submit:""}) do |form| %>
   <% if game_session.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(game_session.errors.count, "error") %> prohibited this game_session from being saved:</h2>
@@ -11,15 +11,29 @@
     </div>
   <% end %>
 
-  <div data-controller="proposal-selection">
-    <%= display_game_art_and_name(game_session.game) %>
-    <% if local_assigns[:game_proposals] %>
-        <%= form.label :game_proposal_id, style: "display: block" %>
-        <%= form.collection_select :game_proposal_id, local_assigns[:game_proposals], :id, :game_name, {selected: game_session.game_proposal.id}, data: { proposal_selection_target:"collectionSelect", action:"change->proposal-selection#changeProposal" } %>
+  <div>
+    <%= display_game_art_and_name(game: game_session.game, only_art: true) if game_session.game.present? %>
+    <% if !local_assigns[:game_proposals].present? || !local_assigns[:game_session].new_record? %>
+      <%= form.hidden_field :game_proposal_id, value: local_assigns[:initial_game_proposal].id %>
+    <% else %>
+      <%= form.label :game_proposal_id, style: "display: block" %>
+      <% if local_assigns[:groups] && local_assigns[:groups].length > 1 %>
+        <%= form.grouped_collection_select :game_proposal_id,
+                                           local_assigns[:groups].reject { |group| group.game_proposals.empty? },
+                                           :game_proposals,
+                                           :name,
+                                           :id,
+                                           :game_name,
+                                           {selected: local_assigns[:initial_game_proposal].id},
+                                           data: { proposal_selection_target:"collectionSelect" } %>
       <% else %>
-        <%= form.hidden_field :game_proposal_id, value: game_session.game_proposal.id %>
+        <%= form.collection_select :game_proposal_id,
+                                   game_proposals,
+                                   :id,
+                                   :game_name,
+                                   {selected: local_assigns[:initial_game_proposal].id}, data: { proposal_selection_target:"collectionSelect" } %>
       <% end %>
-
+    <% end %>
   </div>
 
 
@@ -27,18 +41,28 @@
     <%= form.hidden_field :user_id, value: Current.user.id %>
   </div>
 
-  <div data-controller="flatpickr" class="flatpickr">
-    <%= form.label :date, style: "display: block" %>
+  <div data-controller="flatpickr" class="flatpickr" data-flatpickr-timezone-value="<%= Current.user.timezone %>">
+    <%= form.label :date, class: "block" %>
     <%= form.datetime_field :date, data: { flatpickr_target: "startDate" }, required: true, value: game_session.date&.in_time_zone(Current.user.timezone) %>
   </div>
 
-  <!--TODO: Change this to hours and minutes-->
-  <div>
-    <%= form.label :duration, style: "display: block" %>
-    <%= form.number_field :duration, required: true, value: game_session.duration || 60 %>
+  <div class="flex items-center">
+      <%= form.label :duration, "Duration:", class:"items-center mr-2" %>
+      <div class="flex flex-col items-center">
+        <%= form.label :duration_hours, "Hours", class: "block" %>
+        <%= form.number_field :duration_hours, min:0, required: true, value: (game_session.duration&.parts[:hours] || 1), class: "w-16 p-1 text-center" %>
+      </div>
+      <div class="mx-2 text-4xl h-5 font-bold leading-7">:</div>
+      <div class="flex flex-col items-center">
+        <%= form.label :duration_minutes, "Minutes", class: "block" %>
+        <%= form.number_field :duration_minutes, min: 0, max: 59, required: true, value: (game_session.duration&.parts[:minutes] || 0), class: "w-16 p-1 text-center" %>
+      </div>
   </div>
 
   <div>
-    <%= form.submit %>
+    <%= form.submit data: { turbo_submits_with: "Saving..." } %>
   </div>
+  <p style="color: green"><%= local_assigns[:notice] %></p>
+
+
 <% end %>

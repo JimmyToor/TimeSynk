@@ -1,4 +1,4 @@
-<%= form_with(model: schedule, id:"schedule_form", data: { controller: "rails-nested-form", rails_nested_form_wrapper_selector_value: '.nested-form-wrapper' }) do |form| %>
+<%= form_with(model: schedule, id: dom_id(schedule, :form), data: { controller: "rails-nested-form", rails_nested_form_wrapper_selector_value: '.nested-form-wrapper' }) do |form| %>
 
   <% if schedule.errors.any? %>
     <div style="color: red">
@@ -11,6 +11,7 @@
       </ul>
     </div>
   <% end %>
+
   <div class="dark:bg-gray-800 p-4 rounded-lg shadow-lg">
     <div>
       <%= form.label :name, style: "display: block" %>
@@ -26,8 +27,10 @@
       <%= form.fields_for :availability_schedules do |availability_schedule_subform| %>
         <%= render "schedules/availability_schedule_form", form: availability_schedule_subform %>
       <% end %>
+
       <div data-rails-nested-form-target="target">
       </div>
+
       <button type="button" data-action="mutually-exclusive-select#cacheSelections rails-nested-form#add" data-mutually-exclusive-select-target="addButton">Add availability</button>
     </div>
 
@@ -38,7 +41,7 @@
       <% end %>
     </template>
 
-    <div class="flatpickr" data-controller="flatpickr">
+    <div class="flatpickr" data-controller="flatpickr" data-flatpickr-timezone-value="<%= Current.user.timezone %>">
       <%= form.label :start_date, "Starting on", class: "block" %>
       <%= form.datetime_field :start_date, data: { flatpickr_target: "startDate"}, value: schedule.start_date&.in_time_zone(Current.user.timezone) %>
 
@@ -54,5 +57,7 @@
     <div>
       <%= form.submit %>
     </div>
+    <p style="color: green"><%= local_assigns[:notice] %></p>
+
   </div>
 <% end %>

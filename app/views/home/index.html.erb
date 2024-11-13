@@ -1,13 +1,13 @@
 <p style="color: green">
   <%= notice %>
 </p>
-
-<p>Upcoming sessions</p>
-<div data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr"  data-calendar-user-id=<%= Current.user.id %>>
-  <%= render partial: 'calendars/calendar' %>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+  <%= render partial: "game_sessions/upcoming_game_sessions", locals: {upcoming_game_sessions: local_assigns[:game_sessions]} %>
+  <%= render partial: "game_proposals/pending_game_proposals", locals: {pending_game_proposals: local_assigns[:pending_game_proposals]} %>
+  <%= turbo_stream_from "pending_game_proposals_user_#{Current.user.id}" %>
+  <%= turbo_stream_from "upcoming_game_sessions_user_#{Current.user.id}" %>
 </div>
 
-<p>Pending Proposals</p>
-<% @game_proposals.each do |proposal| %>
-  <%= render proposal %>
-<% end %>
+<div data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr"  data-calendar-user-id=<%= Current.user.id %>>
+  <%= render partial: 'calendars/calendar', locals: {game_proposals: local_assigns[:game_proposals], groups: local_assigns[:groups]} %>
+</div>

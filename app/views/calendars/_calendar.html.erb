@@ -58,11 +58,6 @@
       </div>
       <span class="sr-only">Loading...</span>
   </div>
-
-  <div id="creation_modal">
-    <%= render partial: 'calendars/creation_modal', locals: { group: local_assigns[:group] || Current.user.groups&.first || nil, game_proposal: local_assigns[:game_proposal] || nil } %>
-  </div>
-
   <div id="calendar" data-calendar-target="calendar"></div>
   <%= render partial: 'calendars/toggle_button_template' %>
 </div>

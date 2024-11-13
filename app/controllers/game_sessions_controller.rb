@@ -1,7 +1,7 @@
 class GameSessionsController < ApplicationController
   before_action :set_game_session, only: %i[ show edit update destroy ]
   before_action :set_game_proposal, only: %i[ new create ]
-  before_action :set_game_session_attendance, only: %i[ show ]
+  before_action :set_game_session_attendance, only: %i[ show update ]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
 
@@ -20,15 +20,15 @@ class GameSessionsController < ApplicationController
 
   # GET /game_sessions/new
   def new
-    @game_session = @game_proposal.game_sessions.build(user_id: Current.user.id, date: Time.now.iso8601)
-
+    @game_session = @game_proposal.game_sessions.build(user_id: Current.user.id, date: Time.current.utc.iso8601, duration: 1.hour)
+    game_proposals = params[:single_game_proposal] ? [] : @game_proposal.group.game_proposals
     respond_to do |format|
-      format.html { render :new, locals: {game_session: @game_session, game_proposal: @game_proposal, game_proposals: @game_proposal.group.game_proposals }}
+      format.html { render :new, locals: {game_session: @game_session, initial_game_proposal: @game_proposal, game_proposal: @game_proposal, game_proposals: @game_proposal.group.game_proposals }}
       format.turbo_stream {
-        render turbo_stream: turbo_stream.update(
+        render turbo_stream: turbo_stream.replace(
           "game_session_form",
           partial: "game_sessions/form",
-          locals: {game_session: @game_session, game_proposal: @game_proposal, game_proposals: @game_proposal.group.game_proposals})
+          locals: {game_session: @game_session, game_proposal: @game_proposal, game_proposals: game_proposals})
       }
     end
   end
@@ -36,7 +36,10 @@ class GameSessionsController < ApplicationController
   # GET /game_sessions/1/edit
   def edit
     respond_to do |format|
-      format.html { render :edit, locals: {game_session: @game_session, game_proposal: @game_session.game_proposal, game_proposals: @game_session.game_proposal.group.game_proposals }}
+      format.html { render :edit, locals: {game_session: @game_session,
+                                           initial_game_proposal: @game_session.game_proposal,
+                                           game_proposals: @game_session.game_proposal.group.game_proposals,
+                                           groups: Current.user.groups} }
     end
   end
 
@@ -48,31 +51,18 @@ class GameSessionsController < ApplicationController
     respond_to do |format|
       if @game_session.save
         @game_session.create_roles
+        set_game_session_attendance
         format.html { redirect_to game_session_url(@game_session), notice: "Game session was successfully created." }
         format.json { render :show, status: :created, location: @game_session }
-        format.turbo_stream { 
-          render turbo_stream: [
-            turbo_stream.update(
-              "game_session_form",
-              partial: "game_sessions/form",
-              locals: {game_proposal: @game_proposal, game_session: GameSession.new(game_proposal: @game_proposal),
-                       game_proposals: @game_proposal.group.game_proposals}
-            ),
-            turbo_stream.update(
-              @game_proposal,
-              partial: "game_sessions/game_session",
-              locals: {game_session: @game_session}
-            )
-          ]
-        }
+        format.turbo_stream
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @game_session.errors, status: :unprocessable_entity }
         format.turbo_stream {
-          render turbo_stream: turbo_stream.update(
+          render turbo_stream: turbo_stream.refresh(
             "game_session_form",
             partial: "game_sessions/form",
-            locals: {game_session: @game_session, game_proposal: @game_proposal, game_proposals: @game_proposal.group.game_proposals}
+            locals: {game_session: @game_session, game_proposal: @game_proposal, game_proposals: @game_proposal.group.game_proposals, groups: Current.user.groups}
           ), status: :unprocessable_entity
         }
       end
@@ -85,12 +75,7 @@ class GameSessionsController < ApplicationController
       if @game_session.update(game_session_params)
         format.html { redirect_to game_session_url(@game_session), notice: "Game session was successfully updated." }
         format.json { render :show, status: :ok, location: @game_session }
-        format.turbo_stream {
-          render turbo_stream: turbo_stream.update(
-            @game_session,
-            partial: "game_sessions/game_session",
-            locals: {game_session: @game_session, game_proposals: @game_session.game_proposal.group.game_proposals})
-        }
+        format.turbo_stream
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @game_session.errors, status: :unprocessable_entity }
@@ -103,10 +88,7 @@ class GameSessionsController < ApplicationController
     @game_session.destroy!
     respond_to do |format|
       format.html { redirect_to game_sessions_url, notice: "Game session was successfully destroyed." }
-      format.json { head :no_content }
-      format.turbo_stream {
-        render turbo_stream: turbo_stream.remove(@game_session)
-      }
+      format.turbo_stream
     end
   end
 
@@ -122,15 +104,21 @@ class GameSessionsController < ApplicationController
   end
 
   def set_game_session_attendance
-    @game_session_attendance = @game_session.user_get_or_build_attendance(Current.user)
+    @game_session_attendance = @game_session.get_or_build_attendance_for_user(Current.user)
   end
 
   def set_group
     @group = Group.find(params[:group_id])
   end
 
-    # Only allow a list of trusted parameters through.
+  #`duration` is length of time in minutes
   def game_session_params
-    params.require(:game_session).permit(:game_session_id, :game_proposal_id, :user_id, :date, :duration)
+    params.require(:game_session).permit(:game_proposal_id, :user_id, :date, :duration, :duration_hours, :duration_minutes).tap do |whitelisted|
+      if whitelisted[:duration_hours].present? && whitelisted[:duration_minutes].present? && !whitelisted[:duration].present?
+        whitelisted[:duration] = whitelisted[:duration_hours].to_i.hours + whitelisted[:duration_minutes].to_i.minutes
+      end
+      whitelisted.delete(:duration_hours)
+      whitelisted.delete(:duration_minutes)
+    end
   end
 end

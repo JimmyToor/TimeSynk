@@ -90,12 +90,12 @@
                 <path d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z"/>
               </svg>
               <span class="flex-1 ms-3 whitespace-nowrap">Proposals</span>
-              <div id="game_proposal_unvoted_count">
-                <%= render partial: "game_proposals/unvoted_count", locals: { user: Current.user } %>
+              <div id="pending_game_proposals_count" data-turbo-permanent>
+                <%= render partial: "game_proposals/pending_count", locals: { count: Current.user.pending_game_proposal_count } %>
               </div>
             </div>
           <% end %>
-          <%= turbo_stream_from "game_proposals_user_#{Current.user.id}" %>
+          <%= turbo_stream_from "pending_game_proposals_count_user_#{Current.user.id}" %>
         </li>
         <li>
           <%= link_to availabilities_path, data: {} do %>

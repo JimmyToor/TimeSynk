@@ -9,14 +9,26 @@ class GameProposalsController < ApplicationController
     @game_proposals = if params[:group_id]
       GameProposal.for_group(params[:group_id])
     else
-      GameProposal.for_current_user_groups
+      policy_scope(GameProposal)
+    end
+    @game_proposals = @game_proposals.order(created_at: :desc)
+    authorize @game_proposals
+    respond_to do |format|
+      format.html { render :index, locals: { game_proposals: @game_proposals, groups: Current.user.groups } }
+      format.json { render :index, status: :ok, location: @game_proposals }
     end
   end
 
   # GET /game_proposals/1 or /game_proposals/1.json
   def show
     respond_to do |format|
-      format.html { render :show, locals: { proposal_availability: @game_proposal.get_user_proposal_availability(Current.user) }}
+      format.html {
+        render :show, locals: {
+          proposal_availability: @game_proposal.get_user_proposal_availability(Current.user),
+          game_proposal: @game_proposal,
+          proposal_vote: @proposal_vote
+        }
+      }
       format.json { render :show, status: :ok, location: @game_proposal }
     end
   end
@@ -40,7 +52,6 @@ class GameProposalsController < ApplicationController
 
     respond_to do |format|
       if @game_proposal.save
-        @game_proposal.create_roles
         format.html { redirect_to game_proposal_url(@game_proposal), notice: "Game proposal was successfully created." }
         format.json { render :show, status: :created, location: @game_proposal }
       else
@@ -52,7 +63,6 @@ class GameProposalsController < ApplicationController
 
   # PATCH/PUT /game_proposals/1 or /game_proposals/1.json
   def update
-    Rails.logger.debug "GameProposal Update params: #{game_proposal_params}"
     respond_to do |format|
       if @game_proposal.update(game_proposal_params)
         format.html { redirect_to game_proposal_url(@game_proposal), notice: "Game proposal was successfully updated." }

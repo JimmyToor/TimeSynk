@@ -1,0 +1,9 @@
+<%= turbo_stream.replace("modal_frame",
+                         partial: "game_sessions/show_content",
+                         locals: {game_session: @game_session,
+                                  game_session_attendance: @game_session_attendance,
+                                  notice: "Game session created"}) %>
+
+<%= turbo_stream.replace("upcoming_game_sessions",
+                         partial: "game_sessions/upcoming_game_sessions",
+                         locals:  {upcoming_game_sessions: Current.user.upcoming_game_sessions} ) %>

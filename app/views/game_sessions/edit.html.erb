@@ -1,14 +1,17 @@
 <h1>Editing game session</h1>
 
 <%= modal_wrapper(local_assigns[:original_name] || game_session.game_name) do %>
-  <%= render "form", game_session: game_session, game_proposal:nil, game_proposals: local_assigns[:game_proposals] %>
+  <%= content_tag(:div, id:dom_id(local_assigns[:game_session], :content)) do %>
 
-  <br>
+    <%= render "form", game_session: game_session, game_proposal: nil, initial_game_proposal: game_session.game_proposal, groups: local_assigns[:groups] %>
 
-  <div>
-    <%= link_to "Cancel", "#", data: {action: "click->dialog#close", turbo: "false"} %>
-  </div>
+    <br>
 
+    <div>
+      <%= link_to "Cancel", "#", data: {action: "click->dialog#close", turbo: "false"} %>
+    </div>
+
+  <% end %>
 <% end %>
 
 <br>

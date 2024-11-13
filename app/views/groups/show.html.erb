@@ -3,7 +3,7 @@
 <%= render group %>
 
 <div>
-  <% if Current.user.has_role?(:admin) %>
+  <% if Current.user.has_role?(:site_admin) %>
     <%= link_to "Join Group", new_group_group_membership_path(group) %> |
   <% end %>
   <%= link_to "New game proposal", new_group_game_proposal_path(group, nil) %> |

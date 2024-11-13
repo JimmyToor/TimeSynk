@@ -1,0 +1,12 @@
+<%= turbo_stream.update_all(".vote_count_game_proposal_#{@proposal_vote.game_proposal.id}",
+                            partial: "game_proposals/vote_count",
+                            locals: { game_proposal: @proposal_vote.game_proposal}) %>
+
+<%= turbo_stream.replace("form_proposal_vote_#{@proposal_vote.id}",
+                         partial: "proposal_votes/form",
+                         locals: { proposal_vote: @proposal_vote,
+                                   notice: "Your vote has been saved" }) %>
+
+<%= turbo_stream.update("vote_link",
+                         partial: "game_proposals/vote_link",
+                         locals: { game_proposal: @proposal_vote.game_proposal }) %>

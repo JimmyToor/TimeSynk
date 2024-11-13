@@ -1,22 +1,41 @@
-<div id="<%= dom_id game_session %>">
+<%= turbo_frame_tag dom_id(game_session), class:"flex" do %>
+  <a href="<%= game_session_path(game_session) %>" data-turbo-frame="modal_frame" class="game-display flex flex-col w-full items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+    <%=image_tag(game_session.game.cover_image_url,
+      alt: game_session.game.name,
+      class: "game-art object-cover rounded-lg md:h-auto md:rounded-none mt-4 md:mt-0 md:rounded-s-lg w-24 h-16 ml-2",
+      id: dom_id(game_session.game, :art),
+      data: {proposal_selection_target: "gameArt"},) %>
+    <div class="flex flex-col justify-between p-4 leading-normal">
+      <h5 class="game-name font-semibold text-lg mb-2 tracking-tight text-gray-900 dark:text-white"><%= game_session.game_name %></h5>
 
-  <div>
-    <%= display_game_art_and_name(game_session.game) %>
-  </div>
+      <div id="game_session_details" class="space-y-1.5">
+        <div class="flex mb-3 items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
 
-  <p>
-    <strong>Created by:</strong>
-    <%= game_session.owner_name %>
-  </p>
+          <%= inline_svg_tag "icons/calendar.svg" %>
 
-  <p>
-    <strong>Date:</strong>
-    <%= game_session.date.in_time_zone(Current.user.timezone) %>
-  </p>
+          <% if Current.user.present? %>
+            <%= game_session.date.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %>
+          <% elsif local_assigns[:user] %>
+            <%= game_session.date.in_time_zone(local_assigns[:user].timezone).strftime("%B %d, %I:%M %p") %>
+          <% else %>
+            <%= game_session.date.strftime("%B %d, %I:%M %p") %>
+          <% end %>
 
-  <p>
-    <strong>Duration:</strong>
-    <%= game_session.duration %>
-  </p>
+        </div>
 
-</div>
+        <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
+
+          <%= inline_svg_tag "icons/clock.svg" %>
+
+          <% if game_session.duration.parts[:hours] %>
+            <%= game_session.duration.parts[:hours] %>h
+          <% end %>
+          <% if game_session.duration.parts[:minutes] %>
+            <%= game_session.duration.parts[:minutes] %>m
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </a>
+  <%= turbo_stream_from "game_session_#{game_session.id}" unless turbo_frame_request_id == "modal_frame" %>
+<% end %>

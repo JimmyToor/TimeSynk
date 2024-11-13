@@ -1,0 +1,17 @@
+<%= turbo_frame_tag "upcoming_game_sessions",
+                    class: (!local_assigns[:upcoming_game_sessions] || local_assigns[:upcoming_game_sessions].empty?) ?
+                             "hidden" : nil,
+                    data: {controller:"reload-on-restore"} do %>
+  <section>
+    <% if local_assigns[:upcoming_game_sessions] && local_assigns[:upcoming_game_sessions].any? %>
+      <h2>Upcoming Sessions</h2>
+      <div class="flex rounded-lg dark:border-gray-600 h-128">
+        <ul>
+          <% local_assigns[:upcoming_game_sessions].first(5).each do |game_session| %>
+            <li><%= render game_session, user: Current.user || local_assigns[:user] || nil %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+  </section>
+<% end %>

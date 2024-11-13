@@ -12,7 +12,9 @@ class GroupsController < ApplicationController
     authorize(@group)
     @group_membership = GroupMembership.find_by(group: @group, user: Current.user)
     respond_to do |format|
-      format.html { render :show, locals: { group: @group, group_membership: @group_membership, group_availability: @group.get_user_group_availability(Current.user) } }
+      format.html { render :show, locals: { group: @group,
+                                            group_membership: @group_membership,
+                                            group_availability: @group.get_user_group_availability(Current.user) } }
     end
   end
 
@@ -29,7 +31,7 @@ class GroupsController < ApplicationController
     respond_to do |format|
       format.html
       format.turbo_stream {
-        render turbo_stream: turbo_stream.update("modal_frame",
+        render turbo_stream: turbo_stream.replace("modal_frame",
           partial: "groups/edit")
       }
     end

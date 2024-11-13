@@ -48,12 +48,6 @@ class GameSessionAttendancesController < ApplicationController
       if @game_session_attendance.update(game_session_attendance_params)
         format.html { redirect_to @game_session, notice: "GameSession attendance was successfully updated." }
         format.json { render :show, status: :ok, location: @game_session_attendance }
-        format.turbo_stream { 
-          render turbo_stream: turbo_stream.replace(@game_session,
-            partial: "game_sessions/game_session",
-            locals: {modal_title: @game_session.game_name}
-          )
-        }
       else
         format.html { redirect_to @game_session, status: :unprocessable_entity }
         format.json { render json: @game_session_attendance.errors, status: :unprocessable_entity }
@@ -73,16 +67,16 @@ class GameSessionAttendancesController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_game_session_attendance
-      @game_session_attendance = GameSessionAttendance.find(params[:id])
-    end
+  def set_game_session_attendance
+    @game_session_attendance = GameSessionAttendance.find(params[:id])
+  end
 
-    def set_game_session
-      @game_session = GameSession.find(game_session_attendance_params[:game_session_id])
-    end
+  def set_game_session
+    @game_session = GameSession.find(game_session_attendance_params[:game_session_id])
+  end
 
     # Only allow a list of trusted parameters through.
-    def game_session_attendance_params
-      params.require(:game_session_attendance).permit(:game_session_id, :user_id, :attending)
-    end
+  def game_session_attendance_params
+    params.require(:game_session_attendance).permit(:game_session_id, :user_id, :attending)
+  end
 end

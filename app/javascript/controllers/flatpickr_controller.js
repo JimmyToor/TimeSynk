@@ -5,6 +5,7 @@ import flatpickr from 'flatpickr';
 // noinspection JSValidateTypes
 export default class extends Controller {
   static targets = [ "startDate", "endDate" ]
+  static values = { timezone: String }
   startDatePicker = null;
   endDatePicker = null;
   done = false;
@@ -38,7 +39,9 @@ export default class extends Controller {
       (selectedDates, dateStr, instance) => {
         this.updateMinEndDate();
       }
-      );
+    );
+
+    document.addEventListener('change', this.startDateChanged);
   }
 
   initEndDatePicker() {
@@ -61,7 +64,7 @@ export default class extends Controller {
       allowInput: false,
       altInputClass: "flatpickr-input form-control input",
       static:true,
-      minuteIncrement: 1,
+      minuteIncrement: 1
     });
   }
 

@@ -1,18 +1,7 @@
-<%= modal_wrapper(@game_session.game_name) do %>
-  <p style="color: green"><%= notice %></p>
-  <%= render @game_session %>
-  <div>
-    <%= render "game_session_attendances/form", game_session: @game_session, game_session_attendance: @game_session_attendance %>
-
-    <%= link_to "Edit this game session", edit_game_session_path(@game_session), data: { turbo_frame: "modal_frame" } %>
-
-  <%= button_to "Destroy this game session", @game_session, {method: :delete, data: { turbo_method: "delete", turbo_confirm: "Are you sure you want to delete this #{@game_session.game_name} session?"}} %>
-
-    </div>
-<% end %>
+<%= render partial:"game_sessions/show_content", locals: {game_session: @game_session, game_session_attendance: @game_session_attendance} %>
 <%= link_to "Back to game sessions", game_sessions_path %>
 
 
-<div data-controller="calendar" data-calendar-interactive="false" data-calendar-game-session-id="<%= @game_session.id %>" >
+<div data-controller="calendar" data-calendar-interactive="false" data-calendar-game-session-id="<%= @game_session.id %>" data-turbo-permanent>
   <%= render partial: 'calendars/calendar' %>
 </div>

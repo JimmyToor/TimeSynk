@@ -31,7 +31,9 @@ class RegistrationsController < ApplicationController
   private
 
   def user_params
-    params.permit(:email, :username, :password, :password_confirmation, :avatar, :timezone)
+    params.permit(:email, :username, :password, :password_confirmation, :avatar, :timezone).tap do |user_params|
+      user_params[:email] = nil if user_params[:email].blank?
+    end
   end
 
   def send_email_verification

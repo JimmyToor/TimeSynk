@@ -1,6 +1,8 @@
 class GameProposal < ApplicationRecord
+  resourcify
+
   belongs_to :group
-  belongs_to :user
+  belongs_to :user, inverse_of: :created_game_proposals
   belongs_to :game
   has_many :proposal_votes, dependent: :destroy, inverse_of: :game_proposal
   has_many :game_sessions, dependent: :destroy, inverse_of: :game_proposal
@@ -9,15 +11,29 @@ class GameProposal < ApplicationRecord
   scope :for_current_user_groups, -> { where(group_id: Current.user.groups.ids) }
   scope :for_group, ->(group_id) { where(group_id: group_id) }
 
-  after_create_commit :broadcast_unvoted_count
-  after_destroy_commit :broadcast_unvoted_count
+  after_create_commit :broadcast_user_game_proposals_change
+  after_destroy_commit :broadcast_user_game_proposals_destroy
+
+  after_create :create_initial_votes, :create_roles
+
+  def yes_votes
+    proposal_votes.where(yes_vote: true)
+  end
+
+  def no_votes
+    proposal_votes.where(yes_vote: false)
+  end
+
+  def undecided_votes
+    proposal_votes.where(yes_vote: nil).or(proposal_votes.where(user_id: group.users.where.not(id: proposal_votes.select(:user_id)).select(:id)))
+  end
 
   def user_voted?(user)
     proposal_votes.exists?(user_id: user.id)
   end
 
-  def self.unvoted_count_for_user(user)
-    user.groups.includes(:game_proposals).flat_map(&:game_proposals).select { |proposal| !proposal.user_voted?(user) }.count
+  def user_voted_yes_or_no?(user)
+    proposal_votes.exists?(user_id: user.id, yes_vote: [true, false])
   end
 
   def user_voted_yes?(user)
@@ -57,22 +73,82 @@ class GameProposal < ApplicationRecord
     game.name
   end
 
+  def broadcast_user_game_proposals_change
+    user_ids_to_broadcast = group.users.pluck(:id)
+    users_to_broadcast = User.where(id: user_ids_to_broadcast).includes(:game_proposals)
+    users_to_broadcast.each do |user|
+      broadcast_update_later_to(
+        "pending_game_proposals_count_user_#{user.id}",
+        target: "pending_game_proposals_count",
+        partial: "game_proposals/pending_count",
+        locals: {count: user.pending_game_proposal_count}
+      )
+      broadcast_replace_later_to(
+        "pending_game_proposals_user_#{user.id}",
+        target: "pending_game_proposals",
+        partial: "game_proposals/pending_game_proposals",
+        locals: {pending_game_proposals: user.pending_game_proposals}
+      )
+      broadcast_update_later_to(
+        "game_proposals_user_#{user.id}",
+        target: "game_proposals",
+        partial: "game_proposals/game_proposals_list",
+        locals: {game_proposals: user.game_proposals.to_ary}
+      )
+    end
+  end
+
+  def broadcast_user_game_proposals_destroy
+    user_ids_to_broadcast = group.users.pluck(:id)
+    users_to_broadcast = User.where(id: user_ids_to_broadcast).includes(:game_proposals)
+    users_to_broadcast.each do |user|
+      Turbo::Streams::ActionBroadcastJob.perform_later(
+        "pending_game_proposals_count_user_#{user.id}",
+        action: :update,
+        target: "pending_game_proposals_count",
+        partial: "game_proposals/pending_count",
+        locals: {count: user.pending_game_proposal_count}
+      )
+      Turbo::Streams::ActionBroadcastJob.perform_later(
+        "pending_game_proposals_user_#{user.id}",
+        action: :replace,
+        target: "pending_game_proposals",
+        partial: "game_proposals/pending_game_proposals",
+        locals: {pending_game_proposals: user.pending_game_proposals}
+      )
+      Turbo::Streams::ActionBroadcastJob.perform_later(
+        "game_proposals_user_#{user.id}",
+        action: :replace,
+        target: "game_proposals",
+        partial: "game_proposals/game_proposals_list",
+        locals: {game_proposals: user.game_proposals.to_ary}
+      )
+    end
+  end
+
+  def broadcast_vote_count
+    id = "vote_count_game_proposal_#{self.id}"
+    broadcast_replace_later_to(self,
+      target: id,
+      partial: "game_proposals/vote_count",
+      locals: {game_proposal: self}
+    )
+  end
+
+  private
+
+  def create_initial_votes
+    group.users.each do |user|
+      proposal_votes.create(user: user)
+    end
+  end
+
   def create_roles
     Role.create_roles_for_game_proposal(self)
   end
 
-  def broadcast_pending_proposals_change
-    user_ids_to_broadcast = group.users.pluck(:id)
-
-    user_ids_to_broadcast.each do |user_id|
-      Rails.logger.debug "Broadcasting unvoted count to user #{user_id}"
-      broadcast_update_later_to(
-        "game_proposals_user_#{user_id}",
-        target: "game_proposal_unvoted_count",
-        partial: "game_proposals/unvoted_count",
-        locals: { user: User.find(user_id) }  # No logged-in context here, so we need to find the user by id
-      )
-    end
+  def broadcast_later
+    broadcast_refresh_later_to(self, target: self, partial: "game_proposals/game_proposal", locals: {game_proposal: self})
   end
 
 end

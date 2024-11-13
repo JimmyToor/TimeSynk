@@ -1,39 +1,44 @@
-<%= turbo_frame_tag dom_id(proposal_vote, :form) do %> <!-- TODO: Add a loading indicator and disable the inputs while loading-->
-  <%= form_with(model: proposal_vote.new_record? ?  [game_proposal, proposal_vote] :  proposal_vote) do |form| %>
-    <% if proposal_vote.errors.any? %>
-      <div style="color: red">
-        <h2><%= pluralize(proposal_vote.errors.count, "error") %> prohibited this proposal_vote from being saved:</h2>
+<!-- TODO: Add a loading indicator and disable the inputs while loading-->
+<%= form_with(model: proposal_vote.new_record? ?  [game_proposal, proposal_vote] :  proposal_vote, id:dom_id(proposal_vote, :form)) do |form| %>
+  <% if proposal_vote.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(proposal_vote.errors.count, "error") %> prohibited this proposal_vote from being saved:</h2>
 
-        <ul>
-          <% proposal_vote.errors.each do |error| %>
-            <li><%= error.full_message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
-
-    <div>
-      <%= form.hidden_field :user_id, value: Current.user.id %>
-      <%= form.hidden_field :game_proposal_id, value: proposal_vote.game_proposal_id  %>
+      <ul>
+        <% proposal_vote.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
     </div>
+  <% end %>
 
-    <div>
-      <%= form.label :yes_vote, "Vote", style: "display: block" %>
-      <%= form.radio_button :yes_vote, true,  checked: proposal_vote.yes_vote == true %>
-      <%= form.label :yes_vote_true, "Yes", style: "display: inline" %>
-      <%= form.radio_button :yes_vote, false, checked: proposal_vote.yes_vote == false %>
-      <%= form.label :yes_vote_false, "No", style: "display: inline" %>
-      <%= form.radio_button :yes_vote, "", checked: proposal_vote.new_record? %>
-      <%= form.label :yes_vote_, "Unsure", style: "display: inline" %>
-    </div>
+  <div>
+    <%= form.hidden_field :user_id, value: Current.user.id %>
+    <%= form.hidden_field :game_proposal_id, value: proposal_vote.game_proposal_id  %>
+  </div>
 
-    <div>
-      <%= form.label :comment, style: "display: block" %>
-      <%= form.text_area :comment, placeholder:"Add a comment (optional)", value: proposal_vote.comment %>
-    </div>
+  <div>
+    <%= form.label :yes_vote, "Vote", style: "display: block" %>
+    <%= form.radio_button :yes_vote, true,  checked: proposal_vote.yes_vote == true %>
+    <%= form.label :yes_vote_true, "Yes", style: "display: inline" %>
+    <%= form.radio_button :yes_vote, false, checked: proposal_vote.yes_vote == false %>
+    <%= form.label :yes_vote_false, "No", style: "display: inline" %>
+    <%= form.radio_button :yes_vote, "", checked: proposal_vote.new_record? || proposal_vote.yes_vote == nil %>
+    <%= form.label :yes_vote_, "Unsure", style: "display: inline" %>
+  </div>
 
-    <div>
-      <%= form.submit "Save", style: "display: block"  %>
+  <div>
+    <%= form.label :comment, style: "display: block" %>
+    <%= form.text_area :comment, placeholder:"Add a comment (optional)", value: proposal_vote.comment %>
+  </div>
+
+  <div>
+    <%= form.submit "Save Vote and Comment", style: "display: block"  %>
+  </div>
+
+  <% if local_assigns[:notice] %>
+    <div style="color: green">
+      <h2><%= local_assigns[:notice] %></h2>
     </div>
   <% end %>
 <% end %>

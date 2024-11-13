@@ -1,11 +1,14 @@
-<%= turbo_frame_tag dom_id(game_proposal, :vote_count) do %>
-  <p>
-    <strong>Yes votes:</strong>
-    <%= game_proposal.yes_votes_count %>
-  </p>
+<%= content_tag :div, id:dom_id(game_proposal, :vote_count), class: dom_id(game_proposal, :vote_count) do %>
+  <div>
+    <strong>Yes: <%= game_proposal.yes_votes.count %></strong>
+    <strong>No: <%= game_proposal.no_votes.count %></strong>
+    <strong>Undecided: <%= game_proposal.undecided_votes.count %></strong>
 
-  <p>
-    <strong>No votes:</strong>
-    <%= game_proposal.no_votes_count %>
-  </p>
+    <div class="flex">
+      <% game_proposal.proposal_votes.order(yes_vote: :desc).each do |vote| %>
+        <%= render vote %>
+      <% end %>
+    </div>
+  </div>
+
 <% end %>

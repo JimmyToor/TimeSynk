@@ -19,10 +19,17 @@ export default class extends Controller {
 
   static outlets = ["dialog", "flatpickr"]
 
-  static values = {dialogId: { type: String, default: "modal_creation" }, frameId: { type: String, default: "modal_frame"}, containerId: { type: String, default: "modal_container"}}
+  static values = {frameId: { type: String, default: "modal_frame"}, containerId: { type: String, default: "modal_container"}}
 
   initialize() {
     this.initCalendar();
+    this.morphCallback = this.morphRefresh.bind(this)
+    this.submitSuccessCallback = this.onSubmitSuccess.bind(this);
+    this.debouncedRefreshCallback = this.debounce(this.refreshCallback, 300);
+  }
+
+  connect() {
+    document.addEventListener("turbo:morph-element", this.morphCallback)
   }
 
   disconnect() {
@@ -31,6 +38,23 @@ export default class extends Controller {
         this.dialogOuterDisconnected(outlet, outlet.element);
       })
     }
+    document.removeEventListener("turbo:morph-element", this.morphCallback)
+  }
+
+  morphRefresh(event) {
+    // Refresh the calendar if the morphed element has the data-refresh-calendar attribute
+    if (event.target.hasAttribute('data-refresh-calendar')) {
+      console.log("Morphed element has data-refresh-calendar attribute. Refreshing calendar. Target: ", event.target);
+      this.debouncedRefreshCallback();
+    }
+  }
+
+  debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+    };
   }
 
   /**
@@ -72,7 +96,7 @@ export default class extends Controller {
   }
 
   eventDidMount(info) {
-    if (info.event.extendedProps.type !== 'game') return
+    if (info.event.extendedProps.type !== 'game' && info.event.extendedProps.type !== 'availability' ) return
     const el = info.el;
     el.dataset.turboFrame = this.frameIdValue;
     el.dataset.href = info.event.extendedProps.route;
@@ -80,12 +104,28 @@ export default class extends Controller {
   }
 
   select(info) {
-    if (!this.creationModal) return
-    this.creationModal.open();
-    this.creationModal.setTitle("New")
-    this.creationModal.endLoading();
+    let params = new URLSearchParams();
+    ['groupId', 'userId', 'gameProposalId', 'availabilityId'].some(param => {
+      let value = this.data.get(param);
+      if (value !== null) {
+        const paramKey = param.replace(/([A-Z])/g, '_$1').toLowerCase();
+        params.append(paramKey, value);
+        return true;
+      }
+    });
 
-    this.setModalFormDates(info);
+    Turbo.visit(`/calendars/new?${params.toString()}`, { frame: 'modal_frame' })
+    document.addEventListener('turbo:frame-load', (event) => {
+      if (event.target.id === 'modal_frame' && this.hasFlatpickrOutlet) {
+        this.setModalFormDates(info);
+      }
+    }, { once: true });
+  }
+
+  onSubmitSuccess(event) {
+    if (event.detail.submitEndEvent.target.hasAttribute("data-refresh-calendar-on-submit")) {
+      this.debouncedRefreshCallback();
+    }
   }
 
   setModalFormDates(info) {
@@ -382,16 +422,16 @@ export default class extends Controller {
   }
 
   dialogOutletConnected(dialog, element) {
-    dialog.addSubmitSuccessListener(this.refreshCallback);
-    if (element.id === this.dialogIdValue) {
-      this.creationModal = dialog;
+    dialog.addSubmitSuccessListener(this.submitSuccessCallback);
+    if (element.id === this.frameIdValue) {
+      this.modal = dialog;
     }
   }
 
   dialogOuterDisconnected(dialog, element) {
-    dialog.removeSubmitSuccessListener(this.refreshCallback);
-    if (element.id === this.dialogIdValue) {
-      this.creationModal = null;
+    dialog.removeSubmitSuccessListener(this.submitSuccessCallback);
+    if (element.id === this.frameIdValue) {
+      this.modal = null;
     }
   }
 

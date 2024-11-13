@@ -3,5 +3,6 @@ import "flatpickr/dist/flatpickr.min.js"
 import "@hotwired/turbo-rails"
 import "./controllers"
 import '@stimulus-components/dialog'
+import '@stimulus-components/rails-nested-form'
 import "flowbite/dist/flowbite.turbo.min.js";
 

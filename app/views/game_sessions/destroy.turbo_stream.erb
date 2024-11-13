@@ -1,0 +1,6 @@
+<%= turbo_stream.replace("upcoming_game_sessions",
+                         partial: "game_sessions/upcoming_game_sessions",
+                         locals:  {upcoming_game_sessions: Current.user.upcoming_game_sessions} ) %>
+
+<%= turbo_stream.replace("content_game_session_#{@game_session.id}",
+                         html: raw("<p>Deleted</p>")) %>

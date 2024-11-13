@@ -28,5 +28,11 @@ application.register("nav", NavController)
 import ProposalSelectionController from "./proposal_selection_controller"
 application.register("proposal-selection", ProposalSelectionController)
 
+import ReloadOnRestoreController from "./reload_on_restore_controller"
+application.register("reload-on-restore", ReloadOnRestoreController)
+
 import TimezoneController from "./timezone_controller"
 application.register("timezone", TimezoneController)
+
+import RailsNestedForm from "@stimulus-components/rails-nested-form"
+application.register("rails-nested-form", RailsNestedForm)

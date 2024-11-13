@@ -1,4 +1,6 @@
 class GroupMembership < ApplicationRecord
+  resourcify
+
   belongs_to :group
   belongs_to :user
 

@@ -2,9 +2,14 @@
 <html>
   <head>
     <title>timeSynk</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1" >
+    <%= turbo_refresh_method_tag :morph %>
+    <%= turbo_refresh_scroll_tag :preserve %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <% if content_for?(:head) %>
+      <%= yield(:head) %>
+    <% end %>
 
     <%= stylesheet_link_tag "application", "recurring_select", data: { turbo_track: "reload" } %>
     <%= javascript_include_tag "application", "recurring_select", data: { turbo_track: "reload" }, type: "module" %>
@@ -18,6 +23,9 @@
         <%= yield %>
       </div>
     </div>
-    <%= render partial: 'shared/modal', locals: { closed: true} %>
-  </body>
+    <div id="modal_container">
+      <%= turbo_frame_tag "modal_frame" do %>
+        <!-- Modals will be inserted here -->
+      <% end %>
+    </div>  </body>
 </html>

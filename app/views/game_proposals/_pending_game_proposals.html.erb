@@ -1,0 +1,12 @@
+<%= turbo_frame_tag "pending_game_proposals", data: {controller:"reload-on-restore"} do %>
+  <% if local_assigns[:pending_game_proposals] %>
+    <h2>Pending Proposals</h2>
+    <div class="flex rounded-lg dark:border-gray-600 h-128">
+      <ul>
+        <% local_assigns[:pending_game_proposals].first(5).each do |game_proposal| %>
+          <li><%= render game_proposal %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+<% end %>

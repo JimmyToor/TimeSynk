@@ -1,9 +1,6 @@
 <h1>New proposal vote</h1>
-
-<%= render "form", proposal_vote: @proposal_vote %>
+<%= modal_wrapper(@game_proposal.game_name) do %>
+  <%= render "form", proposal_vote: @proposal_vote, game_proposal: @game_proposal %>
+<% end %>
 
 <br>
-
-<div>
-  <%= link_to "Back to proposal votes", proposal_votes_path %>
-</div>

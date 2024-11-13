@@ -51,7 +51,6 @@ class Schedule < ApplicationRecord
     })
     schedule.add_recurrence_rule(IceCube::Rule.from_hash(schedule_pattern)) unless schedule_pattern.empty?
 
-    Rails.logger.debug "Schedule#make_icecube_schedule: schedule: #{schedule.inspect} used pattern hash: #{schedule_pattern}"
     schedule
   end
 
@@ -71,10 +70,6 @@ class Schedule < ApplicationRecord
     schedule[:user_id] = user_id
     schedule[:cal_rrule] = rrule || ""
     schedule
-  end
-
-  def duration_hours
-    duration / 3600
   end
 
 end
