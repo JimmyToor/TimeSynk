@@ -3,6 +3,8 @@ class SessionsController < ApplicationController
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
 
+  before_action :redirect_if_authenticated, only: %i[ new ]
+
   before_action :set_session, only: :destroy
 
   def index
@@ -34,6 +36,10 @@ class SessionsController < ApplicationController
   end
 
   private
+
+  def redirect_if_authenticated
+    redirect_to root_path if Current.user || Session.find_by_id(cookies.signed[:session_token])
+  end
 
   def set_session
     @session = if params[:id]
