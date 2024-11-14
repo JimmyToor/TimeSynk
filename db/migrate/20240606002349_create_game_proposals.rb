@@ -9,5 +9,7 @@ class CreateGameProposals < ActiveRecord::Migration[7.1]
 
       t.timestamps
     end
+
+    add_index :game_proposals, [:group_id, :game_id], unique: true
   end
 end

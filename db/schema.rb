@@ -71,6 +71,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["game_id"], name: "index_game_proposals_on_game_id"
+    t.index ["group_id", "game_id"], name: "index_game_proposals_on_group_id_and_game_id", unique: true
     t.index ["group_id"], name: "index_game_proposals_on_group_id"
     t.index ["user_id"], name: "index_game_proposals_on_user_id"
   end

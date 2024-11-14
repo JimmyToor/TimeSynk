@@ -16,6 +16,8 @@ class GameProposal < ApplicationRecord
 
   after_create :create_initial_votes, :create_roles
 
+  validates :game, uniqueness: { scope: :group, message: "already has a proposal for this group" }
+
   def yes_votes
     proposal_votes.where(yes_vote: true)
   end

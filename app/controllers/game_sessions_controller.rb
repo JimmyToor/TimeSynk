@@ -21,9 +21,10 @@ class GameSessionsController < ApplicationController
   # GET /game_sessions/new
   def new
     @game_session = @game_proposal.game_sessions.build(user_id: Current.user.id, date: Time.current.utc.iso8601, duration: 1.hour)
-    game_proposals = params[:single_game_proposal] ? [] : @game_proposal.group.game_proposals
+    game_proposals = params[:single_game_proposal] ? nil : @game_proposal.group.game_proposals
+
     respond_to do |format|
-      format.html { render :new, locals: {game_session: @game_session, initial_game_proposal: @game_proposal, game_proposal: @game_proposal, game_proposals: @game_proposal.group.game_proposals }}
+      format.html { render :new, locals: {game_session: @game_session, initial_game_proposal: @game_proposal, game_proposal: @game_proposal, game_proposals: game_proposals }}
       format.turbo_stream {
         render turbo_stream: turbo_stream.replace(
           "game_session_form",
@@ -36,7 +37,8 @@ class GameSessionsController < ApplicationController
   # GET /game_sessions/1/edit
   def edit
     respond_to do |format|
-      format.html { render :edit, locals: {game_session: @game_session,
+      format.html { 
+        render :edit, locals: {game_session: @game_session,
                                            initial_game_proposal: @game_session.game_proposal,
                                            game_proposals: @game_session.game_proposal.group.game_proposals,
                                            groups: Current.user.groups} }
