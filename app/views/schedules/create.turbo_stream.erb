@@ -1,0 +1,4 @@
+<%= turbo_stream.replace("form_schedule",
+                         partial: "schedules/form",
+                         locals: { schedule: @schedule,
+                                   notice: "Your schedule has been created" }) %>

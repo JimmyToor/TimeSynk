@@ -1,11 +1,12 @@
-<%= modal_wrapper(local_assigns[:game_session].game_name) do %>
-  <%= content_tag(:div, id:dom_id(local_assigns[:game_session], :content)) do %>
+<%# locals: (game_session:, game_session_attendance:, notice: nil) %>
+<%= modal_wrapper(game_session.game_name) do %>
+  <%= content_tag(:div, id:dom_id(game_session, :content)) do %>
     <p style="color: green"><%= notice %></p>
-    <%= render local_assigns[:game_session] %>
+    <%= render game_session %>
     <div>
-      <%= render "game_session_attendances/form", game_session: local_assigns[:game_session], game_session_attendance: local_assigns[:game_session_attendance] %>
-      <%= link_to "Edit this game session", edit_game_session_path(local_assigns[:game_session])%>
-      <%= button_to "Delete this game session", local_assigns[:game_session], {method: :delete, data: { turbo_method: "delete", turbo_confirm: "Are you sure you want to delete this #{local_assigns[:game_session].game_name} session?"}} %>
+      <%= render "game_session_attendances/form", game_session: game_session, game_session_attendance: game_session_attendance %>
+      <%= link_to "Edit this game session", edit_game_session_path(game_session)%>
+      <%= button_to "Delete this game session", game_session, {method: :delete, data: { turbo_method: "delete", turbo_confirm: "Are you sure you want to delete this #{game_session.game_name} session?"}} %>
     </div>
   <% end %>
 <% end %>

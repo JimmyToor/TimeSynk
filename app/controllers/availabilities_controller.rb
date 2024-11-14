@@ -74,7 +74,6 @@ class AvailabilitiesController < ApplicationController
 
   def set_schedules
     @schedules = policy_scope(Schedule)
-    Rails.logger.debug @schedules.inspect
 
     authorize(@schedules)
   end

@@ -44,7 +44,6 @@ export default class extends Controller {
   morphRefresh(event) {
     // Refresh the calendar if the morphed element has the data-refresh-calendar attribute
     if (event.target.hasAttribute('data-refresh-calendar')) {
-      console.log("Morphed element has data-refresh-calendar attribute. Refreshing calendar. Target: ", event.target);
       this.debouncedRefreshCallback();
     }
   }
@@ -96,7 +95,7 @@ export default class extends Controller {
   }
 
   eventDidMount(info) {
-    if (info.event.extendedProps.type !== 'game' && info.event.extendedProps.type !== 'availability' ) return
+    if (info.event.extendedProps.type !== 'game' && info.event.extendedProps.type !== 'availability') return
     const el = info.el;
     el.dataset.turboFrame = this.frameIdValue;
     el.dataset.href = info.event.extendedProps.route;
@@ -106,14 +105,13 @@ export default class extends Controller {
   select(info) {
     let params = new URLSearchParams();
     ['groupId', 'userId', 'gameProposalId', 'availabilityId'].some(param => {
-      let value = this.data.get(param);
-      if (value !== null) {
-        const paramKey = param.replace(/([A-Z])/g, '_$1').toLowerCase();
-        params.append(paramKey, value);
+      const value = this.data.get(param);
+      if (value) {
+        params.append(param.replace(/([A-Z])/g, '_$1').toLowerCase(), value);
         return true;
       }
     });
-
+    
     Turbo.visit(`/calendars/new?${params.toString()}`, { frame: 'modal_frame' })
     document.addEventListener('turbo:frame-load', (event) => {
       if (event.target.id === 'modal_frame' && this.hasFlatpickrOutlet) {
@@ -144,7 +142,7 @@ export default class extends Controller {
   }
 
   eventClick(info) {
-    if (info.event.extendedProps.type !== 'game') return
+    if (info.event.extendedProps.type !== 'game' && info.event.extendedProps.type !== 'availability') return
     Turbo.visit(info.el.dataset.href, { frame: info.el.dataset.turboFrame });
   }
 

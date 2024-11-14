@@ -1,0 +1,13 @@
+<%# locals: (schedule:) %>
+<%= modal_wrapper(schedule.name) do %>
+  <%= content_tag(:div, id:dom_id(schedule, :content)) do %>
+
+    <%= render schedule %>
+
+    <div>
+      <%= link_to "Edit this schedule", edit_schedule_path(schedule) %> |
+      <%= button_to "Destroy this schedule", schedule, method: :delete %>
+    </div>
+
+  <% end %>
+<% end %>

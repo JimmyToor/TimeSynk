@@ -6,9 +6,24 @@ class AvailabilityPolicy < ApplicationPolicy
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
   def show?
-    record.user == user || user.has_role?(:site_admin)
+    record.user == user || user.can_see_availability?(record) || user.has_role?(:site_admin)
   end
 
+  def create?
+    user == record.user || user.has_role?(:site_admin)
+  end
+
+  def edit?
+    create?
+  end
+
+  def update?
+    create?
+  end
+
+  def destroy?
+    create?
+  end
 
   class Scope < ApplicationPolicy::Scope
     def resolve

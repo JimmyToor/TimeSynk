@@ -9,9 +9,11 @@
     <%= availability.username %>
   </p>
 
-  <p>
-    <strong>Schedules:</strong>
-    <%= availability.schedules.map(&:name).join(", ") %>
-  </p>
+  <% if policy(availability).edit? %>
+    <p>
+      <strong>Schedules:</strong>
+      <%= availability.schedules.map(&:name).join(", ") %>
+    </p>
+  <% end %>
 
 </div>

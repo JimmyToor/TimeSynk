@@ -39,7 +39,6 @@ class CalendarCreationService
         @calendars << make_availability_calendar(user.get_nearest_proposal_availability(game_proposal))
       end
     end
-
     @calendars
   end
 
@@ -50,7 +49,7 @@ class CalendarCreationService
       schedules: [schedule.make_calendar_schedule],
       name: "Schedule: #{schedule.name}",
       title: schedule.user.username,
-      id: "calendar_schedule_#{schedule.id}_user_#{schedule.user.id}",
+      id: "calendar_schedule_#{schedule.id}",
       type: :schedule
     )
   end
@@ -63,7 +62,7 @@ class CalendarCreationService
       }.compact,
       name: "Availability: #{availability.name}",
       title: availability.user.username,
-      id: "calendar_availability_#{availability.id}-#{availability.user.id}",
+      id: "calendar_availability_#{availability.id}",
       type: :availability
     )
   end

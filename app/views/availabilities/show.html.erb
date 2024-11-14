@@ -1,20 +1,9 @@
 <p style="color: green"><%= notice %></p>
 
-<%= modal_wrapper(@availability.name) do %>
-  <%= render @availability %>
-
-  <div>
-    <%= link_to "Edit this availability", edit_availability_path(@availability) %> |
-    <%= button_to "Destroy this availability", @availability, method: :delete %>
-  </div>
-<% end %>
+<%= render partial: "availabilities/show_content", locals: {availability: @availability } %>
 
 <%= link_to "Back to availabilities", availabilities_path %>
 
-<div data-controller="calendar" data-calendar-availability-id=<%= @availability.id %>>
-  <div id="calendar_toggles" data-calendar-target="toggles">
-    <!-- Toggle buttons will be dynamically added here -->
-  </div>
-  <div id="calendar" data-calendar-target="calendar">
-  </div>
+<div data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr"  data-calendar-availability-id=<%= @availability.id %> data-turbo-permanent>
+  <%= render partial: 'calendars/calendar', locals: {game_proposals: local_assigns[:game_proposals], groups: local_assigns[:groups]} %>
 </div>

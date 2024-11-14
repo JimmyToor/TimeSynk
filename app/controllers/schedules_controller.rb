@@ -16,6 +16,10 @@ class SchedulesController < ApplicationController
 
   # GET /schedules/1 or /schedules/1.json
   def show
+    respond_to do |format|
+      format.html { render :show, locals: {schedule: @schedule} }
+      format.json { render json: @schedule }
+    end
   end
 
   # GET /schedules/new
@@ -30,34 +34,19 @@ class SchedulesController < ApplicationController
   # POST /schedules or /schedules.json
   def create
     @schedule = Schedule.new(schedule_params)
-    Rails.logger.debug "Schedule#createBefore: schedule_params: #{schedule_params.inspect}"
     set_missing_values
-    Rails.logger.debug "Schedule#createAfter: schedule_params: #{schedule_params.inspect}"
 
     respond_to do |format|
       if @schedule.save
         format.html { redirect_to schedule_url(@schedule), notice: "Schedule was successfully created." }
         format.json { render :show, status: :created, location: @schedule }
-        format.turbo_stream {
-          render turbo_stream: [
-            turbo_stream.update(
-              "schedule_form",
-              partial: "schedules/form",
-              locals: {schedule: Schedule.new(user: Current.user)}
-            ),
-            turbo_stream.update(
-              @schedule,
-              partial: "schedules/schedule",
-              locals: {schedule: @schedule}
-            )
-          ]
-        }
+        format.turbo_stream
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @schedule.errors, status: :unprocessable_entity }
         format.turbo_stream {
           render turbo_stream: turbo_stream.replace(
-            "schedule_form",
+            helpers.dom_id(@schedule, :form),
             partial: "schedules/form",
             locals: {schedule: @schedule}
           ), status: :unprocessable_entity
@@ -73,9 +62,17 @@ class SchedulesController < ApplicationController
       if @schedule.update(schedule_params)
         format.html { redirect_to schedule_url(@schedule), notice: "Schedule was successfully updated." }
         format.json { render :show, status: :ok, location: @schedule }
+        format.turbo_stream
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @schedule.errors, status: :unprocessable_entity }
+        format.turbo_stream {
+          render turbo_stream: turbo_stream.replace(
+            helpers.dom_id(@schedule, :form),
+            partial: "schedules/form",
+            locals: {schedule: @schedule}
+          ), status: :unprocessable_entity
+        }
       end
     end
   end
@@ -87,6 +84,7 @@ class SchedulesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to schedules_url, notice: "Schedule was successfully destroyed." }
       format.json { head :no_content }
+      format.turbo_stream
     end
   end
 
@@ -129,13 +127,9 @@ class SchedulesController < ApplicationController
     @schedule = Schedule.find(params[:id])
   end
 
-  # Only allow a list of trusted parameters through.
+  # `duration` is length of time in seconds
   def schedule_params
     params.require(:schedule).permit(:name, :user_id, :start_date, :end_date, :duration, :schedule_pattern,
-      availability_schedules_attributes: [:id, :availability_id, :schedule_id, :_destroy]).tap do |schedule_params|
-      if schedule_params[:duration].present?
-        schedule_params[:duration] = schedule_params[:duration].to_i
-      end
-    end
+      availability_schedules_attributes: [:id, :availability_id, :schedule_id, :_destroy])
   end
 end

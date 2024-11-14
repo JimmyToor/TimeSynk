@@ -47,5 +47,4 @@ class CalendarsController < ApplicationController
   def calendar_params
     params.permit(:start, :end, :user_id, :group_id, :schedule_id, :availability_id, :game_session_id, :game_proposal_id, schedule_ids: [])
   end
-
 end

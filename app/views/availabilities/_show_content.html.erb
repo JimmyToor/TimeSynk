@@ -1,0 +1,16 @@
+<%# locals: (availability:) %>
+<%= modal_wrapper(availability.name) do %>
+  <%= content_tag(:div, id:dom_id(availability, :content)) do %>
+    <%= render availability %>
+
+    <div>
+      <div>
+        <%= link_to "Edit this availability", edit_availability_path(availability) if policy(availability).edit? %>
+      </div>
+      <div>
+        <%= button_to "Destroy this availability", availability, method: :delete if policy(availability).destroy? %>
+      </div>
+    </div>
+
+  <% end %>
+<% end %>
