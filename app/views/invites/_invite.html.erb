@@ -18,7 +18,7 @@
     <strong>Roles:</strong>
     <% if invite.assigned_role_ids.any? %>
       <% Role.where(id: invite.assigned_role_ids).pluck(:name).each do |role_name| %>
-        <div><%= format_role_name(role_name) %></div>
+        <div><%= role_name.humanize %></div>
       <% end %>
     <% else %>
       <em>None</em>
