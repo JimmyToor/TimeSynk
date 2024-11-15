@@ -12,6 +12,7 @@
 
 ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "citext"
   enable_extension "plpgsql"
 
   create_table "accounts", force: :cascade do |t|
@@ -223,8 +224,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "email"
-    t.string "username", null: false
+    t.citext "email"
+    t.citext "username", null: false
     t.string "password_digest", null: false
     t.string "timezone", default: "UTC", null: false
     t.boolean "verified", default: false, null: false
@@ -232,7 +233,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_users_on_account_id"
-    t.index ["email"], name: "index_users_on_email", unique: true, where: "((email IS NOT NULL) AND ((email)::text <> ''::text))"
+    t.index ["email"], name: "index_users_on_email", unique: true, where: "((email IS NOT NULL) AND (email <> ''::citext))"
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 

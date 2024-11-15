@@ -36,6 +36,14 @@ User.create(
   timezone: "Europe/London"
 )
 
+User.create(
+  password: "aaaaaaaa",
+  password_confirmation: "aaaaaaaa",
+  username: "Email-less User",
+  verified: false,
+  timezone: "America/Los_Angeles"
+)
+
 file_path = "./db/seeds/games.csv"
 
 games = []
