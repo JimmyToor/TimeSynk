@@ -45,7 +45,7 @@ CSV.foreach(file_path, headers: true) do |row|
     igdb_id: row["igdb_id"],
     name: row["name"],
     release_date: row["release_date"] ? Time.at(row["release_date"].to_i).to_date : nil,
-    platforms: row["platforms"].split(", "),
+    platforms: row["platforms"],
     cover_image_url: row["cover_image_url"]? "https:#{row["cover_image_url"]}" : nil,
     igdb_url: row["igdb_url"],
     created_at: row["created_at"],
