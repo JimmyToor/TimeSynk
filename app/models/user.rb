@@ -33,7 +33,6 @@ class User < ApplicationRecord
 
   validate :avatar_type
 
-
   validates :email, uniqueness: { case_sensitive: false, allow_blank: true }, format: {with: URI::MailTo::EMAIL_REGEXP}, allow_blank: true
   validates :username, presence: true, uniqueness: true, length: {minimum: 3, maximum: 20}
   validates :password, allow_nil: true, length: {minimum: 8}
@@ -53,6 +52,56 @@ class User < ApplicationRecord
 
   after_update if: :password_digest_previously_changed? do
     sessions.where.not(id: Current.session).delete_all
+  end
+
+  def roles_for_group(group)
+    roles.where(resource: group)
+  end
+
+  def roles_for_game_proposal(proposal)
+    roles.where(resource: proposal)
+  end
+
+  def roles_for_game_session(game_session)
+    roles.where(resource: game_session)
+  end
+
+  def supersedes_user_in_game_proposal?(role_user, game_proposal)
+    highest_role = highest_role_for_game_proposal(game_proposal)
+    highest_role_user_role = role_user.highest_role_for_game_proposal(game_proposal)
+
+    result = RoleHierarchy.supersedes?(highest_role, highest_role_user_role)
+
+    Rails.logger.debug "USER #{username} SUPErSDES USER #{role_user.username} IN GAME PROPOSAL #{game_proposal.id}: #{result}"
+    result
+  end
+
+  # Returns the highest role a user has for a particular game proposal.
+  # This method takes into account the roles the user has for the group the game proposal belongs to.
+  #
+  # @param game_proposal [GameProposal] the game proposal to check roles for
+  # @return [Role] the highest role the user has for the game proposal
+  def highest_role_for_game_proposal(game_proposal)
+    highest_role = highest_role_for_resource(game_proposal)
+
+    # roles for game proposals can be superseded by roles for the group
+    highest_group_role = highest_role_for_resource(game_proposal.group)
+    highest_role = highest_group_role if RoleHierarchy.supersedes?(highest_group_role, highest_role)
+
+    highest_role
+  end
+
+  def supersedes_user_in_group?(role_user, group)
+    RoleHierarchy.supersedes?(highest_role_for_resource(group), role_user.highest_role_for_resource(group))
+  end
+
+  # Returns the highest role a user has for a particular resource.
+  def highest_role_for_resource(resource)
+    roles.where(resource: resource).min_by { |role| RoleHierarchy.role_weight(role) }
+  end
+
+  def membership_for_group(group)
+    group_memberships.find_by(group: group, user: self)
   end
 
   def get_vote_for_proposal(proposal)
