@@ -2,7 +2,7 @@
 
 class GameGateway
   def initialize
-    @client = IGDB::Client.new(ENV["IGDB_CLIENT"], ENV["IGDB_SECRET"])
+    @client = IGDB::Client.new(ENV.fetch("IGDB_CLIENT"), ENV.fetch("IGDB_SECRET"))
   end
 
   def find_by_id(id, fields = {fields: "*"})
@@ -20,7 +20,7 @@ class GameGateway
     @client.get(params)
   end
 
-  def get_popular_game_ids(fields: "game_id,value,popularity_type", limit: 10, sort: "value asc", popularity_type: 1)
+  def get_popular_game_ids(fields: "game_id,value,popularity_type", limit: 10, sort: "value desc", popularity_type: 2)
     params = {fields: fields, limit: limit, sort: sort, where: "popularity_type = #{popularity_type}"}
     @client.endpoint = "popularity_primitives"
     @client.get(params)
