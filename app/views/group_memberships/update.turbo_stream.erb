@@ -1,0 +1,11 @@
+<%= turbo_stream.replace("modal_frame",
+                         partial: "group_memberships/show_content",
+                         locals: {
+                            group_membership: @group_membership,
+                            notice: "Roles updated successfully" }) %>
+
+<%= turbo_stream.update("user_roles_#{@group_membership.user.id}_#{@group_membership.group.id}",
+                        template:"users/show",
+                        locals: {user: @group_membership.user,
+                                 group: @group_membership.group,
+                                 roles: @group_membership.user.roles_for_resource(@group_membership.group) }) %>

@@ -1,15 +1,21 @@
+<%# locals: (game_proposals:, groups: nil, group: nil) %>
 <p style="color: green"><%= notice %></p>
 
 <h1>Game proposals</h1>
-
-<div id="game_proposals">
-  <% @game_proposals.each do |game_proposal| %>
-    <%= render game_proposal %>
-    <p>
-      <%= link_to "Show this game proposal", game_proposal %>
-    </p>
+<% if groups.present? %>
+  <%= turbo_frame_tag "game_proposals", data: {controller:"reload-on-restore", reload_on_restore_src_value:game_proposals_path} do %>
+    <%= render partial: "game_proposals/game_proposals_list", locals:{ game_proposals: game_proposals }%>
+  <% end %>
 <% end %>
-</div>
+<% if group.present? %>
+  <%= turbo_frame_tag "game_proposals", data: {controller:"reload-on-restore", reload_on_restore_src_value:group_game_proposals_path(group)} do %>
+    <%= render partial: "game_proposals/game_proposals_list", locals:{ game_proposals: game_proposals }%>
+  <% end %>
+<% end %>
+
+<%= turbo_stream_from "game_proposals_user_#{Current.user.id}" %>
 <%= link_to "New game proposal", new_group_game_proposal_path(Current.user.groups.first) if Current.user.groups.any? %>
 
-
+<div data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr"  data-calendar-user-id=<%= Current.user.id %> data-turbo-permanent>
+  <%= render partial: 'calendars/calendar', locals: {game_proposals: :game_proposals, groups: :groups} %>
+</div>

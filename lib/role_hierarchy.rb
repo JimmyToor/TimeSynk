@@ -25,8 +25,8 @@ module RoleHierarchy
     return false if role == comparison_role || role.nil?
     return true if comparison_role.nil?
 
-    role_weight = role_weight(role) || 1000
-    comparison_role_weight = role_weight(comparison_role) || 1000
+    role_weight = role_weight(role)
+    comparison_role_weight = role_weight(comparison_role)
 
     role_weight < comparison_role_weight || false
   end

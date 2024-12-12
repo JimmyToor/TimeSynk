@@ -1,0 +1,7 @@
+<%# locals: (group_roles: nil) %>
+<strong class="text-xl font-bold dark:text-white">Group Roles:</strong>
+<% if group_roles.present? %>
+  <%= render group_roles %>
+<% else %>
+  <p>None</p>
+<% end %>

@@ -184,7 +184,6 @@ export default class extends Controller {
     else {
       this.toggleDropdownEmptyTarget.classList.add('hidden');
     }
-
   }
 
   /**

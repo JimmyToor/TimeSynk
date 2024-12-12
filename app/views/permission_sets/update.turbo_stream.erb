@@ -1,0 +1,12 @@
+<% if params.key?("transfer_ownership") %>
+  <%= turbo_stream.refresh request_id:nil %>
+<% else %>
+  <% @affected_users&.each do |affected_user| %>
+    <%= turbo_stream.update_all(".user_roles_#{affected_user.id}_#{@resource.class.name.underscore}_#{@resource.id}",
+                                partial: "#{@resource.class.name.underscore.pluralize}/roles",
+                                locals: {"#{@resource.class.name.underscore}_roles": affected_user.roles_for_resource(@resource) }) %>
+  <% end %>
+  <%= turbo_stream.replace("form_#{@resource.class.name.underscore}_permission_set",
+                           partial:"permission_sets/form",
+                           locals: {permission_set: @permission_set, url: polymorphic_path([@permission_set.resource,:permission_set]), roles: @resource.roles}) %>
+<% end %>

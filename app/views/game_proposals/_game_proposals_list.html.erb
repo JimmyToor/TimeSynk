@@ -1,5 +1,6 @@
-<div id="game_proposals">
+<%# locals: (game_proposals:) %>
+<div>
   <% game_proposals.each do |game_proposal| %>
-    <%= render game_proposal %>
+      <%= render game_proposal, include_link: true %>
   <% end %>
 </div>

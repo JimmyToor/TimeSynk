@@ -105,7 +105,7 @@ export default class CalendarService {
 
     if (this.calendarStates.get(calendar.id) === active) return; // No more work needed if the state is the same
 
-    this.calendarStates.set(calendar.id, active); // Store the state
+    this.calendarStates.set(calendar.id, active); // Store the new state
 
     if (updateEvents) {
       this.#updateCalendarEvents(calendar);
@@ -194,11 +194,13 @@ export default class CalendarService {
   #updateCalendarEvents(calendar) {
     const isActive = this.calendarStates.get(calendar.id);
     calendar.events.forEach(currEvent => {
-      const existingEvent = this.fullCalendarObj.getEventById(currEvent.id);
-      if (isActive && !existingEvent) {
+      if (isActive) {
         this.fullCalendarObj.addEvent(currEvent, "calendarJson");
-      } else if (!isActive && existingEvent) {
-        existingEvent.remove();
+      } else {
+        const existingEvent = this.fullCalendarObj.getEventById(currEvent.id);
+        if (existingEvent) {
+          existingEvent.remove();
+        }
       }
     });
   }

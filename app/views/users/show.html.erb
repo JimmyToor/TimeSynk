@@ -1,17 +1,19 @@
-<%= turbo_frame_tag "user_show_#{@user.id}" do %>
+<%# locals: (user:, group: nil, group_roles:nil, game_proposal:nil, game_proposal_roles: nil, game_session:nil, game_session_roles: nil) %>
+<%= turbo_frame_tag "user_show_#{user.id}" do %>
 
   <p style="color: green"><%= notice %></p>
 
-  <%= render @user %>
-
-  <% if @group.present? %>
-    <%= turbo_frame_tag "user_roles_#{@user.id}_#{@group.id}" do %>
-      <% if @roles.present? %>
-        <strong class="text-xl font-bold dark:text-white">Roles:</strong>
-        <%= render @roles %>
-      <% else %>
-        <p>No roles found</p>
-      <% end %>
+  <%= render user %>
+  <% if group.present? %>
+    <%= turbo_frame_tag "user_roles_#{user.id}" do %>
+      <%= render "roles",
+                 user: user,
+                 group: group,
+                 group_roles: group_roles,
+                 game_proposal: game_proposal,
+                 game_proposal_roles: game_proposal_roles,
+                 game_session:game_session,
+                 game_session_roles: game_session_roles %>
     <% end %>
   <% end %>
 <% end %>

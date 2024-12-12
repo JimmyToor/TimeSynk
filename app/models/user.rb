@@ -17,9 +17,7 @@ class User < ApplicationRecord
   has_many :invites, dependent: :destroy
   has_many :availabilities, dependent: :destroy
   has_many :game_proposals, dependent: :destroy, through: :groups
-  has_many :created_game_proposals, dependent: :destroy, class_name: "GameProposal", foreign_key: "user_id"
   has_many :game_sessions, dependent: :destroy, through: :game_proposals
-  has_many :created_game_sessions, dependent: :destroy, class_name: "GameSession", foreign_key: "user_id"
   has_many :game_session_attendances, dependent: :destroy
   has_many :proposal_votes, dependent: :destroy
   has_many :schedules, dependent: :destroy
@@ -54,8 +52,8 @@ class User < ApplicationRecord
     sessions.where.not(id: Current.session).delete_all
   end
 
-  def roles_for_group(group)
-    roles.where(resource: group)
+  def roles_for_resource(resource)
+    roles.where(resource: resource)
   end
 
   def roles_for_game_proposal(proposal)
@@ -70,10 +68,7 @@ class User < ApplicationRecord
     highest_role = highest_role_for_game_proposal(game_proposal)
     highest_role_user_role = role_user.highest_role_for_game_proposal(game_proposal)
 
-    result = RoleHierarchy.supersedes?(highest_role, highest_role_user_role)
-
-    Rails.logger.debug "USER #{username} SUPErSDES USER #{role_user.username} IN GAME PROPOSAL #{game_proposal.id}: #{result}"
-    result
+    RoleHierarchy.supersedes?(highest_role, highest_role_user_role)
   end
 
   # Returns the highest role a user has for a particular game proposal.
@@ -87,7 +82,6 @@ class User < ApplicationRecord
     # roles for game proposals can be superseded by roles for the group
     highest_group_role = highest_role_for_resource(game_proposal.group)
     highest_role = highest_group_role if RoleHierarchy.supersedes?(highest_group_role, highest_role)
-
     highest_role
   end
 
@@ -100,6 +94,12 @@ class User < ApplicationRecord
     roles.where(resource: resource).min_by { |role| RoleHierarchy.role_weight(role) }
   end
 
+  # Updates the roles for the user
+  # @param
+  def update_roles(add_roles: [], remove_roles: [])
+    RoleUpdateService.new(user: self, add_roles: add_roles, remove_roles: remove_roles).update_roles
+  end
+
   def membership_for_group(group)
     group_memberships.find_by(group: group, user: self)
   end
@@ -108,16 +108,21 @@ class User < ApplicationRecord
     proposal_votes.find_by(game_proposal: proposal)
   end
 
-  def get_nearest_proposal_availability(game_proposal)
+  def nearest_proposal_availability(game_proposal)
     availabilities = game_proposal.proposal_availabilities.for_user(self)
     if availabilities.empty?
-      get_nearest_group_availability(game_proposal.group)
+      nearest_group_availability(game_proposal.group)
     else
       availabilities.first.availability
     end
   end
 
-  def get_nearest_group_availability(group)
+  def make_sole_user_permission_set(resource)
+    raise ArgumentError, "No resource provided for user (#{user.username}) permission set." if resource.nil?
+    resource.make_permission_set([self])
+  end
+
+  def nearest_group_availability(group)
     availabilities = group.group_availabilities.for_user(self)
     if availabilities.empty?
       user_availability.availability
@@ -157,6 +162,22 @@ class User < ApplicationRecord
 
   def pending_game_proposal_count
     pending_game_proposals.count
+  end
+
+  def broadcast_role_change_for_resource(resource)
+    Turbo::Streams::ActionBroadcastJob.perform_later(
+      "user_roles_#{id}_#{resource.class.name.underscore}_#{resource.id}",
+      action: :update,
+      method: :morph,
+      target: nil,
+      targets: ".user_roles_#{id}_#{resource.class.name.underscore}_#{resource.id}",
+      partial: "#{resource.class.name.underscore.pluralize}/roles",
+      locals: {"#{resource.class.name.underscore}_roles": roles_for_resource(resource).to_a}
+    )
+  end
+
+  def has_any_role_for_resource?(roles_to_check, resource)
+    roles_to_check.any? { |role| has_cached_role?(role, resource) }
   end
 
   private

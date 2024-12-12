@@ -6,7 +6,7 @@ class HomeController < ApplicationController
     @groups = policy_scope(Group)
     @game_sessions = policy_scope(GameSession)
     respond_to do |format|
-      format.html { render :index, locals: { game_proposals: @game_proposals, game_proposal: @game_proposals.first, groups: @groups, game_sessions: @game_sessions } }
+      format.html { render :index, locals: { game_proposals: @game_proposals, game_proposal: @game_proposals.first, groups: @groups, game_sessions: @game_sessions, pending_game_proposals: Current.user.pending_game_proposals } }
     end
   end
 end

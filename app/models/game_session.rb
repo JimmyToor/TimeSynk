@@ -3,7 +3,6 @@ class GameSession < ApplicationRecord
   resourcify
 
   belongs_to :game_proposal
-  belongs_to :user, inverse_of: :created_game_sessions
   has_many :game_session_attendances, dependent: :destroy
   has_one :game, through: :game_proposal
 
@@ -13,6 +12,7 @@ class GameSession < ApplicationRecord
 
   validates :duration, presence: true, numericality: { greater_than: 0, allow_nil: true }
 
+  after_create :create_roles
   after_save_commit :broadcast_game_session_create
   after_update_commit :broadcast_game_session_update
   after_destroy_commit :broadcast_game_session_destroy
@@ -67,7 +67,7 @@ class GameSession < ApplicationRecord
     schedule[:id] = id
     schedule[:name] = name
     schedule[:duration] = duration
-    schedule[:user_id] = user_id
+    schedule[:user_id] = User.with_role(:owner, self).take.id
 
     schedule
   end

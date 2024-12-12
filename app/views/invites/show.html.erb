@@ -1,15 +1,6 @@
 <p style="color: green"><%= notice %></p>
-
 <%= render @invite %>
 
-<div>
-  <%= form_with(model: [@invite.group, GroupMembership.new]) do |form| %>
-    <%= form.hidden_field :invite_token, value: @invite.invite_token %>
-    <%= form.hidden_field :user_id, value: Current.user.id %>
-    <%= form.submit "Accept Invite" %>
-  <% end %>
-</div>
-
-
-
+<%= link_to "See all invites for #{@invite.group.name} |", group_invites_path(@invite.group)%>
+<%= link_to "Go to group: #{@invite.group.name}", @invite.group  %>
 

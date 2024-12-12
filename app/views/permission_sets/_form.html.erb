@@ -1,0 +1,61 @@
+<%# locals: (permission_set:, url:, roles:) %>
+<%= form_with(url: url, id:"form_#{permission_set.resource.class.name.underscore}_permission_set", method: :patch) do |form| %>
+  <div class="relative overflow-x-auto" data-controller="role-removal">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        <th scope="col" class="px-6 py-3">
+          User
+        </th>
+        <% roles.reject{|role| role.name == "owner"}.each do |role| %>
+          <th scope="col" class="px-6 py-3">
+            <%= role.name.humanize %>
+          </th>
+        <% end %>
+      </tr>
+      </thead>
+      <tbody>
+      <% can_change_owner = policy(permission_set.resource).change_owner? %>
+      <% policy_class = permission_policy_class_for_resource(permission_set.resource) %>
+      <% permission_set.users_roles.each do |user_id, user_info| %>
+        <% user = user_info[:user] %>
+        <% disabled = !can_update_resource_permissions_for_user?(policy_class, user, permission_set.resource) %>
+        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+
+            <%= username_with_resource_role_icons(user, permission_set.resource) %>
+
+            <% if user.has_cached_role?(:owner, permission_set.resource) %>
+              <span class="text-xs text-gray-500 dark:text-gray-400">Owner</span>
+            <% else %>
+              <% if can_change_owner %>
+                <%= fields_for :permission_set, permission_set do |owner_form| %>
+                  <%= owner_form.hidden_field :new_owner_id, value: user_id %>
+                  <%= owner_form.submit "Transfer Ownership", name: "transfer_ownership", data: { turbo_confirm: "Are you sure you want to transfer ownership?" }, class: "text-xs text-gray-500 dark:text-gray-400 cursor-pointer" %>
+                <% end %>
+              <% end %>
+            <% end %>
+          </th>
+
+          <% roles.reject{|role| role.name == "owner"}.each do |role| %>
+            <td class="px-6 py-4">
+              <%= fields_for "permission_set[role_changes][#{user_id}]" do |subform|  %>
+                <% checked = user_info[:role_ids].include?(role.id) %>
+                <% if checked %>
+                  <%= subform.check_box :remove_roles, { disabled: disabled, multiple: true, checked: true, include_hidden: false, data: {action:"change->role-removal#toggle"} }, "" %>
+                  <%= subform.check_box :remove_roles, { disabled: true, multiple: true, checked: true, include_hidden: false, class:"hidden" }, role.id  %>
+                <% else %>
+                  <%= subform.check_box :add_roles, { disabled: disabled, multiple: true, include_hidden: false }, role.id %>
+                <% end %>
+              <% end %>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <%= form.submit "Save", name: "update_roles", data: { turbo_submits_with: "Saving..." } %>
+
+<% end %>

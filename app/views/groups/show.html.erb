@@ -1,26 +1,31 @@
+<%# locals: (group_membership:, group:, group_availability: nil, group_permission_set:) %>
 <p style="color: green"><%= notice %></p>
 
-<%= render group %>
+<%= render group, group_membership: group_membership %>
 
 <div>
   <% if Current.user.has_role?(:site_admin) %>
-    <%= link_to "Join Group", new_group_group_membership_path(group) %> |
+    <%= link_to "Join Group |", new_group_group_membership_path(group) %>
   <% end %>
-  <%= link_to "New game proposal", new_group_game_proposal_path(group, nil) %> |
-  <%= link_to "Show this group's game proposals", group_game_proposals_path(group) %> |
-  <% if local_assigns[:group_availability] %>
-    <%= link_to "Edit Group Availability", edit_group_availability_path(group_availability)%> |
+  <%= link_to "New game proposal |", new_group_game_proposal_path(group, nil) if policy(group).create_game_proposal? %>
+  <%= link_to "Show this group's game proposals |", group_game_proposals_path(group) %>
+  <%= link_to "Edit Group Permissions |", edit_group_permission_set_path(group), data: { turbo_frame: "modal_frame" } if group_permission_set_policy(group_permission_set).edit? %>
+  <% if group_availability.present? %>
+    <%= link_to "Edit Group Availability |", edit_group_availability_path(group_availability)%>
   <% else %>
-    <%= link_to "Set Group Availability", new_group_group_availability_path(group) %> |
+    <%= link_to "Set Group Availability |", new_group_group_availability_path(group) %>
   <% end %>
-  <%= link_to "Edit this group", edit_group_path(group), data: {turbo_frame: "modal_frame"} %> |
-  <%= link_to "Invite to this group", new_group_invite_path(group) %> |
-  <%= link_to "Show this group's invites", group_invites_path(group) %> |
+  <%= link_to "Edit this group |", edit_group_path(group), data: {turbo_frame: "modal_frame"} if policy(group).edit? %>
+  <%= link_to "Invite to this group |", new_group_invite_path(group) if policy(group.invites.build).new? %>
+  <%= link_to "Show this group's invites", group_invites_path(group) %>
 
   <%= button_to "Leave this group", group_membership, method: :delete %>
-  <%= button_to "Destroy this group", group, method: :delete, data: { turbo_confirm: "Are you sure you want to destroy this group?" } %>
+  <%= button_to "Destroy this group", group, method: :delete, data: { turbo_confirm: "Are you sure you want to destroy this group?" } if policy(group).destroy? %>
 </div>
 
-<div data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-group-id=<%= group.id %>  >
-  <%= render partial: 'calendars/calendar', locals: {group: group, game_proposal: group.game_proposals.first || nil} %>
+<div data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-group-id=<%= group.id %> data-turbo-permanent>
+  <%= render partial: 'calendars/calendar', locals: {group: group,
+                                                     game_proposals: group.game_proposals.any? ? group.game_proposals : nil,
+                                                     game_proposal: group.game_proposals.any? ? group.game_proposals.first : nil}
+  %>
 </div>

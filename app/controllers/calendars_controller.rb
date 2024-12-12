@@ -38,7 +38,6 @@ class CalendarsController < ApplicationController
         locals[:groups] = user.groups
         locals[:game_proposals] = user.game_proposals
         locals[:initial_game_proposal] = user.game_proposals.first
-        Rails.logger.debug locals[:initial_game_proposal].inspect
       end
     end
     locals

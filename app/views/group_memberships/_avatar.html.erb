@@ -1,0 +1,4 @@
+<%# locals: (group_membership:, proposal_vote:,) %>
+<%= link_to group_membership, id: "proposal_vote_#{proposal_vote.id}_group_membership_#{group_membership.id}" , class: "flex group_membership_#{group_membership.id}", data: { turbo_frame:"modal_frame" } do %>
+  <%= user_avatar(proposal_vote.user, size_x: 24, size_y: 24, svg_icon: icon) %>
+<% end %>

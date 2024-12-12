@@ -55,7 +55,7 @@ export default class extends Controller {
     if (!this.hasCollectionSelectTarget || !this.collectionSelectTargets.length) {
       invalid = false;
     } else {
-      invalid = this.allValues.length === this.selections.size;
+      invalid = this.allValues.length <= this.selections.size;
     }
     this.addButtonTarget.disabled = invalid;
     this.addButtonTarget.classList.toggle("hidden", invalid);
@@ -95,7 +95,7 @@ export default class extends Controller {
     this.cacheSelections();
   }
 
-  railsNestedFormOutletConnected() {
+  railsNestedFormOutletConnected(outlet, element) {
     this.removeEventListeners(this.railsNestedFormOutlet.element);
     this.addEventListeners(this.railsNestedFormOutlet.element);
   }

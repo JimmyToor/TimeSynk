@@ -1,4 +1,5 @@
 class Group < ApplicationRecord
+  include Permissionable
   resourcify
 
   has_many :group_memberships, dependent: :destroy
@@ -17,6 +18,10 @@ class Group < ApplicationRecord
 
   def is_user_member?(user)
     users.include?(user)
+  end
+
+  def membership_for_user(user)
+    group_memberships.find_by(user: user)
   end
 
   def create_roles

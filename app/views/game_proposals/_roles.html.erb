@@ -1,0 +1,7 @@
+<%# locals: (game_proposal_roles:nil) %>
+<strong class="text-xl font-bold dark:text-white">Game Proposal Roles:</strong>
+<% if game_proposal_roles.present? %>
+  <%= render game_proposal_roles %>
+<% else %>
+  <p>None</p>
+<% end %>

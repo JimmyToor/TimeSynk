@@ -1,0 +1,2 @@
+<%= turbo_stream.update("#{resource.class.name.underscore}_#{@resource.id}_permission_set_edit_notice",
+                        html: raw("#{@message}")) %>

@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="proposal-selection"
 export default class extends Controller {
-  static targets = ["gameName", "gameArt", "form", "collectionSelect"]
+  static targets = ["gameName", "gameArt", "form", "collectionSelect", "formFrame"]
 
   // Event listener for when a collection is selected
   changeProposal(event) {
@@ -24,9 +24,15 @@ export default class extends Controller {
       });
 
     // Update the form action to use the selected proposal ID
+    const url = new URL(this.formTarget.action);
+
     if (this.hasFormTarget) {
-      const url = new URL(this.formTarget.action);
       this.formTarget.action = url.pathname.replace(/game_proposals\/\d+/, `game_proposals/${proposalId}`);
+    }
+
+    // Switch to the form for the selected proposal
+    if (this.hasFormFrameTarget) {
+      this.formFrameTarget.src = url.pathname.replace(/game_proposals\/\d+\/game_sessions/, `game_proposals/${proposalId}/game_sessions/new`);
     }
   }
 

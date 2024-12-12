@@ -9,10 +9,26 @@ class UsersController < ApplicationController
   def show
     if params[:group_id].present?
       @group = Group.find(params[:group_id])
-      @roles = @user.roles.where(resource: @group) if @group.users.include?(@user)
+      @group_roles = @user.roles_for_resource(@group) if @group.is_user_member?(@user)
+
+      if params[:game_proposal_id].present?
+        @game_proposal = GameProposal.find(params[:game_proposal_id])
+        @game_proposal_roles = @user.roles_for_resource(@game_proposal) if @game_proposal.present?
+      end
+
+      if params[:game_session_id].present?
+        @game_session = GameSession.find(params[:game_session_id])
+        @game_session_roles = @user.roles_for_resource(@game_session) if @game_session.present?
+      end
     end
     respond_to do |format|
-      format.html
+      format.html { render :show, locals: {user: @user,
+                                           group: @group,
+                                           group_roles: @group_roles,
+                                           game_proposal: @game_proposal,
+                                           game_proposal_roles: @game_proposal_roles,
+                                           game_session: @game_session,
+                                           game_session_roles: @game_session_roles} }
       format.turbo_stream
     end
   end
@@ -23,7 +39,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.update(user_params)
         format.html { redirect_to settings_path, notice: "Your settings were updated successfully"}
-        format.turbo_stream { render turbo_stream: turbo_stream.replace(@user, partial: "users/user", locals: { user: @user }) }
+        format.turbo_stream
       else
         render :edit, status: :unprocessable_entity
       end

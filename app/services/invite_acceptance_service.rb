@@ -17,9 +17,13 @@ class InviteAcceptanceService
       @group = Group.find_by(id: @group_id)
       user = User.find_by(id: @user_id)
 
-      return invalid_invite unless @group && @invite && user
+      return invalid_invite if !@group || !user || !(@invite || user.has_role?(:site_admin))
 
       @group_membership = new_member(user)
+
+      @group.game_proposals.each do |game_proposal|
+        game_proposal.proposal_votes.create!(game_proposal: game_proposal, user: user)
+      end
     end
     @group_membership
   rescue ActiveRecord::RecordInvalid => e
@@ -38,10 +42,8 @@ class InviteAcceptanceService
 
   def new_member(user)
     @group_membership = GroupMembership.create!(user_id: @user_id, group_id: @group_id)
-    roles = Role.where(id: @invite.assigned_role_ids).select { |role| role.resource_type == "Group" }
-    roles.each do |role|
-      user.add_role(role, @group)
-    end
+    role_update_service = RoleUpdateService.new(user: user, add_roles: @invite.assigned_role_ids)
+    role_update_service.update_roles
     @group_membership
   end
 

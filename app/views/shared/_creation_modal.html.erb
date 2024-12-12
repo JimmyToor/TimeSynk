@@ -9,16 +9,17 @@
         </h3>
 
         <!-- Tabs -->
+        <% has_proposal = local_assigns[:game_proposal] || local_assigns[:game_proposals] %>
         <div id="modal_tabs">
         <div class="flex border-b border-gray-200 dark:border-gray-700">
           <ul class="flex -mb-px text-sm  font-medium text-center" id="default-tab" data-tabs-toggle="#tab_content" role="tablist">
-            <% if local_assigns[:game_proposal] || local_assigns[:game_proposals]%>
+            <% if has_proposal %>
               <li class="me-2" role="presentation">
                   <button class="inline-block p-4 border-b-2 rounded-t-lg" id="game_session_form_tab" data-tabs-target="#game_session_form" type="button" role="tab" aria-controls="game_session_form" aria-selected="false">Game Session</button>
               </li>
             <% end %>
             <li class="me-2" role="presentation">
-              <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="#schedule_form_tab" data-tabs-target="#schedule_form" type="button" role="tab" aria-controls="schedule_form" aria-selected="false">Schedule</button>
+              <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="schedule_form_tab" data-tabs-target="#schedule_form" type="button" role="tab" aria-controls="schedule_form" aria-selected="false">Schedule</button>
             </li>
           </ul>
         </div>
@@ -37,7 +38,7 @@
 
         <!-- Tab content -->
         <div id="tab_content">
-          <% if local_assigns[:game_proposal] || local_assigns[:game_proposals] %>
+          <% if has_proposal %>
             <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="game_session_form" role="tabpanel" aria-labelledby="new-game-session-tab">
               <%= render partial: "game_sessions/form", locals: { game_proposal: local_assigns[:game_proposal] || game_proposals.first,
                                                                   initial_game_proposal: local_assigns[:initial_game_proposal],

@@ -1,0 +1,5 @@
+<%= turbo_stream.remove("popover-user-roles-#{@group_membership.user.id}-#{@group_membership.group.id}") %>
+<%= turbo_stream.remove("group_membership_#{@group_membership.id}") %>
+
+<%= turbo_stream.replace("content_group_membership_#{@group_membership.id}",
+                         html: raw("<p><%= @group_membership.user.username %\> has been kicked.</p>")) %>

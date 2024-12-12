@@ -36,3 +36,6 @@ application.register("timezone", TimezoneController)
 
 import RailsNestedForm from "@stimulus-components/rails-nested-form"
 application.register("rails-nested-form", RailsNestedForm)
+
+import RoleRemovalController from "./role_removal_controller"
+application.register("role-removal", RoleRemovalController)

@@ -11,5 +11,8 @@ export default class extends Controller {
     if (direction === "back" || direction === "forward") {
       this.element.src = this.srcValue
     }
+    else {
+      console.log("Not reloading frame")
+    }
   }
 }

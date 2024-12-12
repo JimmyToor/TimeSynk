@@ -1,21 +1,24 @@
-<%= render local_assigns[:game_proposal] %>
+<%# locals: (game_proposal:, proposal_availability: nil, game_proposal_permission_set:, alert:nil) %>
+<%= alert if alert.present? %>
+<%= render game_proposal %>
 
 <div>
   <div id="vote_link">
-    <%= render partial: 'game_proposals/vote_link', locals: {game_proposal: local_assigns[:game_proposal]} %>
+    <%= render partial: 'game_proposals/vote_link', locals: {game_proposal: game_proposal} %>
   </div>
-
-  <% if local_assigns[:proposal_availability] %>
-    <%= link_to "Edit Proposal Availability", edit_proposal_availability_path(proposal_availability) %> |
+  <% if proposal_availability.present? %>
+    <%= link_to "Edit Proposal Availability |", edit_proposal_availability_path(proposal_availability) %>
   <% else %>
-    <%= link_to "Set Proposal Availability", new_game_proposal_proposal_availability_path(local_assigns[:game_proposal]) %> |
+    <%= link_to "Set Proposal Availability |", new_game_proposal_proposal_availability_path(game_proposal) %>
   <% end %>
-  <%= link_to "View Game Sessions", game_proposal_game_sessions_path(local_assigns[:game_proposal]) %>
-  <%= link_to "New Game Session", new_game_proposal_game_session_path(local_assigns[:game_proposal], single_game_proposal: true), data: { turbo_frame: "modal_frame"} %>
+  <%= link_to "Edit Proposal Permissions |", edit_game_proposal_permission_set_path(game_proposal), data: { turbo_frame: "modal_frame" } if game_proposal_permission_set_policy(game_proposal_permission_set).edit? %>
+  <%= link_to "View Group: #{game_proposal.group.name} |", group_path(game_proposal.group) %>
+  <%= link_to "View Game Sessions |", game_proposal_game_sessions_path(game_proposal) %>
+  <%= link_to "New Game Session |", new_game_proposal_game_session_path(game_proposal, single_game_proposal: true), data: { turbo_frame: "modal_frame"} if policy(game_proposal).create_game_session? %>
 
-  <%= button_to "Destroy this game proposal", local_assigns[:game_proposal], {method: :delete, data: { turbo_method: "delete", turbo_confirm: "Are you sure you want to delete this #{local_assigns[:game_proposal].game_name} proposal?"}} %>
+  <%= button_to "Destroy this game proposal", game_proposal, {method: :delete, data: { turbo_method: "delete", turbo_confirm: "Are you sure you want to delete this #{game_proposal.game_name} proposal?"}} %>
 </div>
 
-<div data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-game-proposal-id=<%= local_assigns[:game_proposal].id %> data-turbo-permanent>
-  <%= render partial: 'calendars/calendar', locals: {group: local_assigns[:game_proposal].group, game_proposal: local_assigns[:game_proposal] || nil} %>
+<div data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-game-proposal-id=<%= game_proposal.id %> data-turbo-permanent>
+  <%= render partial: 'calendars/calendar', locals: {group: game_proposal.group, game_proposal: game_proposal || nil} %>
 </div>

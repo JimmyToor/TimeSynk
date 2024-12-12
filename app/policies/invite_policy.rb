@@ -5,7 +5,7 @@ class InvitePolicy < ApplicationPolicy
   end
 
   def new?
-    user.has_role?(:site_admin) || record.group.users.include?(user)
+    user.has_role?(:site_admin) || user.has_any_role_for_resource?([:owner, :admin, :manage_invites], record.group)
   end
 
   def show?
@@ -13,15 +13,19 @@ class InvitePolicy < ApplicationPolicy
   end
 
   def create?
-    user.has_role?(:site_admin) || record.group.users.include?(user)
+    new?
   end
 
   def update?
-    user.has_role?(:site_admin) || record.group.users.include?(user)
+    create?
+  end
+
+  def edit?
+    update?
   end
 
   def destroy?
-    user.has_role?(:site_admin) || record.group.users.include?(user)
+    update?
   end
 
   class Scope < ApplicationPolicy::Scope

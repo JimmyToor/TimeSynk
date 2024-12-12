@@ -1,0 +1,7 @@
+<%# locals: (game_session_roles:) %>
+<strong class="text-xl font-bold dark:text-white">Game Session Roles:</strong>
+<% if game_session_roles.present? %>
+  <%= render game_session_roles %>
+<% else %>
+  <p>None</p>
+<% end %>

@@ -1,5 +1,7 @@
 class GroupMembershipsController < ApplicationController
   before_action :set_group_membership, only: %i[ show edit update destroy ]
+  before_action :set_group, only: %i[ new create ]
+  before_action :redirect_if_member, only: %i[ new create ]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
 
@@ -10,27 +12,25 @@ class GroupMembershipsController < ApplicationController
 
   # GET /group_memberships/1 or /group_memberships/1.json
   def show
+    respond_to do |format|
+      format.html { render :show, locals: { group_membership: @group_membership, group_permission_set: @group_membership.group.make_permission_set([@group_membership.user]) } }
+    end
   end
 
   # GET /group_memberships/new
   def new
-    @group_membership = GroupMembership.build(group_id: params[:group_id])
     @invite = Invite.find_by(invite_token: params[:invite_token])
-    group = @invite.group if @invite
+    @group = @invite.group if @invite
+    @group_membership = @group.group_memberships.build
 
-    # TODO: Clean this up, role checks should be in the policy
-    if Current.user.has_role?(:site_admin)
-      group = @group_membership.group
-    end
-
-    if !@invite && !group
+    if !@invite || @invite.expires_at <= Time.current || !@group
       render :error, alert: "Invalid invite"
       return
     end
 
-    @group_membership.group_id = params[:group_id]
+    @group_membership.group_id = @group.id
     @group_membership.user_id = Current.user.id
-    render :new, locals: { group_membership: @group_membership, group: group, invite: @invite }
+    render :new, locals: { group_membership: @group_membership, group: @group, invite: @invite }
   end
 
   # GET /group_memberships/1/edit
@@ -41,7 +41,7 @@ class GroupMembershipsController < ApplicationController
   # POST /group_memberships or /group_memberships.json
   def create # TODO Only let admins create memberships for users that are not themselves
     if group_membership_params[:invite_token].present?
-      service = InviteAcceptanceService.new(group_membership_params.merge(group_id: params[:group_id]))
+      service = InviteAcceptanceService.new(group_membership_params)
       @group_membership = service.accept_invite
     else
       @group_membership = GroupMembership.new(group_membership_params)
@@ -65,6 +65,7 @@ class GroupMembershipsController < ApplicationController
       if @group_membership.update(group_membership_params)
         format.html { redirect_to group_path(@group_membership.group), notice: "Group membership was successfully updated." }
         format.json { render :show, status: :ok, location: @group_membership }
+        format.turbo_stream
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @group_membership.errors, status: :unprocessable_entity }
@@ -75,22 +76,32 @@ class GroupMembershipsController < ApplicationController
   # DELETE /group_memberships/1 or /group_memberships/1.json
   def destroy
     @group = @group_membership.group
+    @user.game_proposals
     @group_membership.destroy!
 
     respond_to do |format|
       format.html { redirect_to groups_path, notice: "Group membership was successfully destroyed." }
       format.json { head :no_content }
+      format.turbo_stream
     end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_group_membership
-      @group_membership = GroupMembership.find(params[:id])
-    end
+  def set_group_membership
+    @group_membership = GroupMembership.find(params[:id])
+  end
 
     # Only allow a list of trusted parameters through.
-    def group_membership_params
-      params.require(:group_membership).permit(:invite_token, :group_id, :user_id)
-    end
+  def group_membership_params
+    params.require(:group_membership).permit(:invite_token, :user_id, assigned_role_ids: []).merge(group_id: params[:group_id])
+  end
+
+  def set_group
+    @group = Invite.find_by(invite_token: params[:invite_token] || params.dig(:group_membership, :invite_token)).group
+  end
+
+  def redirect_if_member
+    redirect_to @group if @group.is_user_member?(Current.user)
+  end
 end

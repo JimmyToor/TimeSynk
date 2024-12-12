@@ -1,0 +1,18 @@
+<%# locals: (group_membership:, notice: nil, group_permission_set:) %>
+<%= modal_wrapper(group_membership.user.username) do %>
+  <%= content_tag(:div, id:dom_id(group_membership, :content)) do %>
+    <p style="color: green"><%= notice %></p>
+
+    <%= render group_membership %>
+
+    <div>
+      <%= link_to "Edit Group Permissions", edit_group_permission_set_path(group_membership.group, user_id: group_membership.user.id) if group_permission_set_policy(group_permission_set).edit? %>
+      <% if can_kick_user?(group_membership) %>
+          <%= button_to "Kick User",
+                        group_membership,
+                        {method: :delete, data: { turbo_method: "delete",
+                                 turbo_confirm: "Are you sure you want to kick #{group_membership.user.username} from the group?"}} %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

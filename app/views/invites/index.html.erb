@@ -5,13 +5,13 @@
 <div id="invites">
   <% @invites.each do |invite| %>
     <%= render invite %>
-    <p>
-      <%= link_to "Edit this group invite", edit_invite_path(invite) %> |
-      <%= button_to "Destroy this group invite", invite, method: :delete %>
+    <p> <%# TODO: Don't let everyone see all invites %>
+      <%= link_to "Edit this group invite |", edit_invite_path(invite) if policy(invite).edit? %>
+      <%= button_to "Destroy this group invite", invite, method: :delete if policy(invite).destroy? %>
     </p>
   <% end %>
 </div>
 
-<%= link_to "New invite", new_group_invite_path(@group) %>
+<%= link_to "New invite", new_group_invite_path(@group) if policy(Invite.new(group:@group)).new? %>
 <%= link_to ("Back to #{@group.name}"), group_path(@group) %>
 

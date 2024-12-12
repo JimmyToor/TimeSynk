@@ -36,7 +36,7 @@ class CalendarCreationService
       game_proposal = GameProposal.find(@params[:game_proposal_id])
       @calendars << make_game_proposal_calendar(game_proposal)
       game_proposal.group.users.each do |user|
-        @calendars << make_availability_calendar(user.get_nearest_proposal_availability(game_proposal))
+        @calendars << make_availability_calendar(user.nearest_proposal_availability(game_proposal))
       end
     end
     @calendars
@@ -70,7 +70,7 @@ class CalendarCreationService
   def make_group_calendars(group, start_date: nil, end_date: nil)
     calendars = []
     group.users.each do |user|
-      availability = user.get_nearest_group_availability(group)
+      availability = user.nearest_group_availability(group)
       calendars << make_availability_calendar(availability)
     end
     group.game_proposals.each do |game_proposal|

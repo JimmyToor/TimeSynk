@@ -1,20 +1,15 @@
 class GameProposalsController < ApplicationController
   before_action :set_game_proposal, :set_game, only: %i[ show edit update destroy ]
-  before_action :set_proposal_vote, only: %i[ show ]
+  before_action :set_group_and_game_proposals, only: %i[ index ]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
 
   # GET /game_proposals or /game_proposals.json
   def index
-    @game_proposals = if params[:group_id]
-      GameProposal.for_group(params[:group_id])
-    else
-      policy_scope(GameProposal)
-    end
     @game_proposals = @game_proposals.order(created_at: :desc)
     authorize @game_proposals
     respond_to do |format|
-      format.html { render :index, locals: { game_proposals: @game_proposals, groups: Current.user.groups } }
+      format.html { render :index, locals: { game_proposals: @game_proposals, groups: @groups || nil, group: @group || nil } }
       format.json { render :index, status: :ok, location: @game_proposals }
     end
   end
@@ -26,7 +21,7 @@ class GameProposalsController < ApplicationController
         render :show, locals: {
           proposal_availability: @game_proposal.get_user_proposal_availability(Current.user),
           game_proposal: @game_proposal,
-          proposal_vote: @proposal_vote
+          game_proposal_permission_set: @game_proposal.make_permission_set(@game_proposal.group.users.to_a)
         }
       }
       format.json { render :show, status: :ok, location: @game_proposal }
@@ -49,9 +44,11 @@ class GameProposalsController < ApplicationController
   # POST /game_proposals or /game_proposals.json
   def create
     @game_proposal = GameProposal.new(game_proposal_params.merge(group_id: params[:group_id]))
+    authorize @game_proposal
 
     respond_to do |format|
       if @game_proposal.save
+        Current.user.add_role(:owner, @game_proposal)
         format.html { redirect_to game_proposal_url(@game_proposal), notice: "Game proposal was successfully created." }
         format.json { render :show, status: :created, location: @game_proposal }
       else
@@ -88,19 +85,26 @@ class GameProposalsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_game_proposal
     @game_proposal = GameProposal.find(params[:id])
-  end
-
-  def set_proposal_vote
-    @proposal_vote = @game_proposal.user_get_or_build_vote(Current.user)
+    authorize @game_proposal
   end
 
   def set_game
     @game = Game.find_by_id!(@game_proposal.game_id)
   end
 
+  def set_group_and_game_proposals
+    if params[:group_id]
+      @group = Group.find(params[:group_id])
+      @game_proposals = GameProposal.for_group(params[:group_id])
+    else
+      @groups = Current.user.groups
+      @game_proposals = policy_scope(GameProposal)
+    end
+  end
+
   # Only allow a list of trusted parameters through.
   def game_proposal_params
-    params.require(:game_proposal).permit(:game_id, :user_id, :yes_votes, :no_votes, :group_id)
+    params.require(:game_proposal).permit(:game_id, :yes_votes, :no_votes, :group_id)
   end
 
 

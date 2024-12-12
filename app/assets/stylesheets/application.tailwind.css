@@ -17,6 +17,10 @@
     padding: 0;
 }
 
+.rs_dialog {
+    overflow:visible !important;
+}
+
 .rs_datepicker {
     width: 210px !important;
     padding-left: .5em;

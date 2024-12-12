@@ -8,7 +8,7 @@ class InvitesController < ApplicationController
   end
 
   def show # Let user accept invite, acceptance leads to create group membership
-    @invite = Invite.find_by(invite_token: params[:invite_token])
+    @invite = Invite.find(params[:id])
     authorize(@invite)
   end
 
@@ -29,11 +29,9 @@ class InvitesController < ApplicationController
     # TODO: Don't allow users to create an invite to one group from another i.e. group_id in strong params should match the current group's id (from the url params).
     @invite = @group.invites.build(invite_params)
     authorize(@invite)
-    Rails.logger.debug "Invite params: #{invite_params.inspect}, invite: #{@invite.inspect}"
     respond_to do |format|
       if @invite.save
-        @invite_url = invite_url(@invite)
-        format.html { redirect_to group_invites_url(@group), notice: "Group invite was successfully created: #{@invite_url}" }
+        format.html { redirect_to invite_path(@invite), notice: "Group invite was successfully created" }
         format.json { render :show, status: :created, location: @invite }
       else
         format.html { render :new, status: :unprocessable_entity }

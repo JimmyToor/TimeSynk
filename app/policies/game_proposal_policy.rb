@@ -5,8 +5,12 @@ class GameProposalPolicy < ApplicationPolicy
   # code, beware of possible changes to the ancestors:
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
+  def new?
+    is_group_owner_or_admin? || user.has_any_role_for_resource?([:manage_all_proposals, :create_game_proposals], record.group)
+  end
+
   def create?
-    user.has_role?(:owner, record.group) || user.has_role?(:site_admin) || user.has_role?(:admin, record.group)
+    new?
   end
 
   def show?
@@ -14,15 +18,23 @@ class GameProposalPolicy < ApplicationPolicy
   end
 
   def edit?
-    create?
+    new?
   end
 
   def update?
-    create?
+    new?
   end
 
   def destroy?
-    create?
+    new?
+  end
+
+  def create_game_session?
+    is_group_owner_or_admin? || user.has_cached_role?(:create_game_sessions, record)
+  end
+
+  def change_owner?
+    user.has_cached_role?(:owner, record) || user.has_any_role_for_resource?([:owner,:admin], record.group) || user.has_cached_role?(:site_admin)
   end
 
   class Scope < ApplicationPolicy::Scope
@@ -30,5 +42,11 @@ class GameProposalPolicy < ApplicationPolicy
     def resolve
       user.game_proposals
     end
+  end
+
+  private
+
+  def is_group_owner_or_admin?
+    user.has_any_role_for_resource?([:admin, :owner], record.group)
   end
 end

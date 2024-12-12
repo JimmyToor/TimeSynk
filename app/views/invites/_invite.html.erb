@@ -1,12 +1,12 @@
 <div id="<%= dom_id invite %>">
   <div>
-    <strong>User:</strong>
-    <%= invite.user_id %>
+    <strong>Created By:</strong>
+    <%= invite.user.username %>
   </div>
 
   <div>
     <strong>Group:</strong>
-    <%= invite.group_id %>
+    <%= invite.group.name %>
   </div>
 
   <div>
@@ -18,7 +18,7 @@
     <strong>Roles:</strong>
     <% if invite.assigned_role_ids.any? %>
       <% Role.where(id: invite.assigned_role_ids).pluck(:name).each do |role_name| %>
-        <div><%= role_name.humanize %></div>
+        <div>-<%= role_name.humanize %></div>
       <% end %>
     <% else %>
       <em>None</em>

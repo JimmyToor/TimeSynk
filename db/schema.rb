@@ -65,7 +65,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
 
   create_table "game_proposals", force: :cascade do |t|
     t.bigint "group_id", null: false
-    t.bigint "user_id", null: false
     t.bigint "game_id", null: false
     t.integer "yes_votes_count", default: 0, null: false
     t.integer "no_votes_count", default: 0, null: false
@@ -74,7 +73,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
     t.index ["game_id"], name: "index_game_proposals_on_game_id"
     t.index ["group_id", "game_id"], name: "index_game_proposals_on_group_id_and_game_id", unique: true
     t.index ["group_id"], name: "index_game_proposals_on_group_id"
-    t.index ["user_id"], name: "index_game_proposals_on_user_id"
   end
 
   create_table "game_session_attendances", force: :cascade do |t|
@@ -89,13 +87,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
 
   create_table "game_sessions", force: :cascade do |t|
     t.bigint "game_proposal_id", null: false
-    t.bigint "user_id", null: false
     t.datetime "date"
     t.interval "duration"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["game_proposal_id"], name: "index_game_sessions_on_game_proposal_id"
-    t.index ["user_id"], name: "index_game_sessions_on_user_id"
   end
 
   create_table "games", force: :cascade do |t|
@@ -252,11 +248,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
   add_foreign_key "availability_schedules", "schedules"
   add_foreign_key "game_proposals", "games"
   add_foreign_key "game_proposals", "groups"
-  add_foreign_key "game_proposals", "users"
   add_foreign_key "game_session_attendances", "game_sessions"
   add_foreign_key "game_session_attendances", "users"
   add_foreign_key "game_sessions", "game_proposals"
-  add_foreign_key "game_sessions", "users"
   add_foreign_key "group_availabilities", "availabilities"
   add_foreign_key "group_availabilities", "groups"
   add_foreign_key "group_availabilities", "users"

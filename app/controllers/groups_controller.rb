@@ -4,6 +4,7 @@ class GroupsController < ApplicationController
   # GET /groups or /groups.json
   def index
     @groups = policy_scope(Group)
+    @group_memberships = Current.user.group_memberships
     authorize @groups
   end
 
@@ -12,9 +13,14 @@ class GroupsController < ApplicationController
     authorize(@group)
     @group_membership = GroupMembership.find_by(group: @group, user: Current.user)
     respond_to do |format|
-      format.html { render :show, locals: { group: @group,
-                                            group_membership: @group_membership,
-                                            group_availability: @group.get_user_group_availability(Current.user) } }
+      format.html {
+        render :show, locals: {
+          group: @group,
+          group_membership: @group_membership,
+          group_availability: @group.get_user_group_availability(Current.user),
+          group_permission_set: @group.make_permission_set(@group.users.to_a)
+        }
+      }
     end
   end
 
@@ -95,6 +101,6 @@ class GroupsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def group_params
-      params.require(:group).permit(:name, :user_id)
+      params.require(:group).permit(:name)
     end
 end

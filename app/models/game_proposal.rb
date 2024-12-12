@@ -1,8 +1,8 @@
 class GameProposal < ApplicationRecord
+  include Permissionable
   resourcify
 
   belongs_to :group
-  belongs_to :user, inverse_of: :created_game_proposals
   belongs_to :game
   has_many :proposal_votes, dependent: :destroy, inverse_of: :game_proposal
   has_many :game_sessions, dependent: :destroy, inverse_of: :game_proposal
@@ -67,7 +67,7 @@ class GameProposal < ApplicationRecord
     game_name = Game.find(game_id).name.to_s
     game_sessions.map { |session|
       icecube_schedule = session.make_icecube_schedule
-      session.make_calendar_schedule(name: game_name, icecube_schedule:icecube_schedule) if session.in_range(icecube_schedule: icecube_schedule, start_date: start_date, end_date: end_date)
+      session.make_calendar_schedule(name: game_name, icecube_schedule: icecube_schedule) if session.in_range(icecube_schedule: icecube_schedule, start_date: start_date, end_date: end_date)
     }.compact
   end
 
@@ -128,15 +128,6 @@ class GameProposal < ApplicationRecord
     end
   end
 
-  def broadcast_vote_count
-    id = "vote_count_game_proposal_#{self.id}"
-    broadcast_replace_later_to(self,
-      target: id,
-      partial: "game_proposals/vote_count",
-      locals: {game_proposal: self}
-    )
-  end
-
   private
 
   def create_initial_votes
@@ -147,10 +138,6 @@ class GameProposal < ApplicationRecord
 
   def create_roles
     Role.create_roles_for_game_proposal(self)
-  end
-
-  def broadcast_later
-    broadcast_refresh_later_to(self, target: self, partial: "game_proposals/game_proposal", locals: {game_proposal: self})
   end
 
 end

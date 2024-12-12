@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'permission_sets/edit'
+  get 'permission_sets/update'
   resources :availability_schedules
   resources :availabilities
   resources :games, only: [:index, :show]
@@ -16,7 +18,7 @@ Rails.application.routes.draw do
     resources :groups do
       resources :schedules
       resources :group_memberships
-      resources :invites, except: [:show]
+      resources :invites
       resources :group_availabilities
       resources :game_proposals do
         resources :game_sessions do
@@ -28,6 +30,10 @@ Rails.application.routes.draw do
     end
   end
   get "invites/join/:invite_token", to: "group_memberships#new", as: :accept_invite
+  get "groups/:group_id/permission_set/edit", to: "permission_sets#edit", as: :edit_group_permission_set
+  match "groups/:group_id/permission_set", to: "permission_sets#update", via: [:patch, :put, :post], as: :group_permission_set
+  get "game_proposals/:game_proposal_id/permission_set/edit", to: "permission_sets#edit", as: :edit_game_proposal_permission_set
+  match "game_proposals/:game_proposal_id/permission_set", to: "permission_sets#update", via: [:patch, :put, :post], as: :game_proposal_permission_set
   namespace :two_factor_authentication do
     namespace :challenge do
       resource :totp,           only: [:new, :create]

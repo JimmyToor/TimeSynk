@@ -1,27 +1,25 @@
-<%= form_with(model: [group, group_membership]) do |form| %>
-  <% if group_membership.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(group_membership.errors.count, "error") %> prohibited this group_membership from being saved:</h2>
+<% if group_membership.errors.any? %>
+  <div style="color: red">
+    <h2><%= pluralize(group_membership.errors.count, "error") %> prohibited this group_membership from being saved:</h2>
 
-      <ul>
-        <% group_membership.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
+    <ul>
+      <% group_membership.errors.each do |error| %>
+        <li><%= error.full_message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<% if local_assigns[:invite]%>
+  <%= form_with(model: [group, group_membership]) do |form| %>
+    <%= form.hidden_field :invite_token, value: @invite.invite_token %>
+    <%= form.hidden_field :user_id, value: Current.user.id %>
+    <%= form.submit "Accept Invite" %>
   <% end %>
-
-  <% if local_assigns[:invite] %>
-    <%= form_with(model: [group, group_membership]) do |form| %>
-      <%= form.hidden_field :invite_token, value: @invite.invite_token %>
-      <%= form.hidden_field :user_id, value: Current.user.id %>
-      <%= form.submit "Accept Invite" %>
-    <% end %>
-  <% else %>
-    <%= form_with(model: [group, group_membership]) do |form| %>
-      <%= form.hidden_field :user_id, value: Current.user.id %>
-      <%= form.hidden_field :group_id, value: group.id %>
-      <%= form.submit "Join Group" %>
-    <% end %>
+<% else %>
+  <%= form_with(model: [group, group_membership]) do |form| %>
+    <%= form.hidden_field :user_id, value: Current.user.id %>
+    <%= form.hidden_field :group_id, value: group_membership.group.id %>
+    <%= form.submit "Join Group: #{group_membership.group.name}" %>
   <% end %>
 <% end %>

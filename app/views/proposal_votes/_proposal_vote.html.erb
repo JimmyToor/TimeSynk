@@ -7,7 +7,10 @@
                 proposal_vote.yes_vote ? 'checkmark.svg' : 'xmark.svg'
               end
     %>
-    <%= user_avatar(proposal_vote.user, size_x: 24, size_y: 24, svg_icon: icon) %>
+    <% group_membership = proposal_vote.user.membership_for_group(proposal_vote.game_proposal.group) %>
+    <%= link_to group_membership, id: "proposal_vote_#{proposal_vote.id}_group_membership_#{group_membership.id}" , class: "flex", data: { turbo_frame:"modal_frame" } do %>
+      <%= user_avatar(proposal_vote.user, size_x: 24, size_y: 24, svg_icon: icon) %>
+    <% end %>
   </div>
 
   <div data-popover id="popover-proposal-vote-<%= proposal_vote.id %>" role="tooltip" class="absolute z-50 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-600">
@@ -22,15 +25,18 @@
         <%= format_vote(proposal_vote.yes_vote) %>
       </p>
 
+      <%# TODO: Make sure this is safe. (sanitized?) %>
       <% unless proposal_vote.comment.blank? %>
         <p>
           <strong>Comment:</strong>
           <%= proposal_vote.comment %>
         </p>
       <% end %>
+
+      <div>
+        <%= turbo_frame_tag "user_roles_#{proposal_vote.user.id}", src: user_path(proposal_vote.user, group_id: proposal_vote.game_proposal.group.id, game_proposal_id: proposal_vote.game_proposal.id, game_proposal_roles: proposal_vote.user.roles_for_resource(proposal_vote.game_proposal)) %>
+      </div>
     </div>
     <div data-popper-arrow></div>
   </div>
-
-
 </div>

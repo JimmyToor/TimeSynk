@@ -22,7 +22,7 @@
       <%= form.hidden_field :user_id, value: Current.user.id %>
     </div>
 
-    <div data-controller="mutually-exclusive-select" data-mutually-exclusive-select-rails-nested-form-outlet="#schedule_form">
+    <div data-controller="mutually-exclusive-select" data-mutually-exclusive-select-rails-nested-form-outlet="#form_schedule">
       Include in availability
       <%= form.fields_for :availability_schedules do |availability_schedule_subform| %>
         <%= render "schedules/availability_schedule_form", form: availability_schedule_subform %>
@@ -51,7 +51,7 @@
 
     <div>
       <%= form.label :schedule_pattern, "Occurs", class: "block" %>
-      <%= form.select_recurring :schedule_pattern, nil, allow_blank: true, initialize_flatpickr: false %>
+      <%= form.select_recurring :schedule_pattern, nil, allow_blank: true, initialize_flatpickr: true, static:true %>
     </div>
 
     <div>

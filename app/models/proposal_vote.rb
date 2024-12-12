@@ -7,7 +7,7 @@ class ProposalVote < ApplicationRecord
 
   validates :game_proposal, uniqueness: { scope: :user, message: I18n.t("proposal_vote.vote_unique") }
 
-  after_commit :broadcast_later
+  after_commit :broadcast_vote_count_later
 
   private
 
@@ -15,7 +15,7 @@ class ProposalVote < ApplicationRecord
     game_proposal.update_vote_counts!
   end
 
-  def broadcast_later
+  def broadcast_vote_count_later
     broadcast_render_later_to(
       "vote_count_game_proposal_#{game_proposal.id}",
       partial: "game_proposals/vote_count",

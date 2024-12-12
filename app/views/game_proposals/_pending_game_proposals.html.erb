@@ -4,7 +4,7 @@
     <div class="flex rounded-lg dark:border-gray-600 h-128">
       <ul>
         <% local_assigns[:pending_game_proposals].first(5).each do |game_proposal| %>
-          <li><%= render game_proposal %></li>
+          <li><%= render game_proposal, include_link: true %></li>
         <% end %>
       </ul>
     </div>
