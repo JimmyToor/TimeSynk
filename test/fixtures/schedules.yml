@@ -1,13 +1,28 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  id: 1
+  user_id: 1
   start_date: 2024-06-06 14:47:35
-  end_date: 2024-06-06 14:47:35
-  duration: 1
-  schedule_pattern: MyText
+  end_date: 2024-06-06 15:47:35
+  duration: 3600
+  schedule_pattern: {"interval": 1, "rule_type": "IceCube::DailyRule", "validations": {}}
+  name: Default Schedule
 
 two:
-  start_date: 2024-06-06 14:47:35
-  end_date: 2024-06-06 14:47:35
-  duration: 1
-  schedule_pattern: MyText
+  id: 2
+  user_id: 1
+  start_date: 2024-12-03 14:47:35
+  end_date: 2024-12-03 17:33:35
+  duration: 10000
+  schedule_pattern: {"interval": 1, "rule_type": "IceCube::DailyRule", "validations": {}}
+  name: Another Schedule
+
+three:
+  id: 3
+  user_id: 2
+  start_date: 2024-07-06 12:45:15
+  end_date: 2024-07-06 13:45:15
+  duration: 3600
+  schedule_pattern: {"interval": 1, "rule_type": "IceCube::DailyRule", "validations": {}}
+  name: Default Schedule

@@ -1,15 +1,25 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  user: one
-  group: one
-  invite_token: 
-  roles: 
-  expires_at: 2024-06-21 19:51:37
+  id: 1
+  user_id: 1
+  group_id: 1
+  invite_token: "KokmVkamrzGDQG1JQ4ZeUfpZ"
+  assigned_role_ids: [""]
+  expires_at: <%= 1.day.from_now %>
 
 two:
-  user: two
-  group: two
-  invite_token: 
-  roles: 
-  expires_at: 2024-06-21 19:51:37
+  id: 2
+  user_id: 2
+  group_id: 1
+  invite_token: "StTcjEw2ZDDcNcMLM4tw2yf6"
+  assigned_role_ids: ["",6]
+  expires_at: <%= 1.day.from_now %>
+
+expired:
+  id: 3
+  user_id: 1
+  group_id: 1
+  invite_token: "yseXyHbgRC1MzDoir3BfBRA2"
+  assigned_role_ids: ["",3]
+  expires_at: <%= 1.day.ago %>

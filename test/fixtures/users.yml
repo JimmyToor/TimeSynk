@@ -1,6 +1,36 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-lazaro_nixon:
-  email: lazaronixon@hotmail.com
+
+admin:
+  id: 1
+  email: AdminUser@admin.com
+  username: AdminUser
   password_digest: <%= BCrypt::Password.create("Secret1*3*5*") %>
   verified: true
+  timezone: "America/Los_Angeles"
+  account_id: 1
+
+two:
+  id: 2
+  email: Cooluserguy@hotmail.com
+  username: CoolUserGuy
+  password_digest: <%= BCrypt::Password.create("Secret1*3*5*") %>
+  verified: true
+  timezone: "America/Los_Angeles"
+  account_id: 2
+
+three:
+  id: 3
+  username: RadPerson
+  password_digest: <%= BCrypt::Password.create("Secret1*3*5*") %>
+  verified: false
+  timezone: "America/Los_Angeles"
+  account_id: 3
+
+four:
+  id: 4
+  username: GroupsMemberUser
+  password_digest: <%= BCrypt::Password.create("Secret1*3*5*") %>
+  verified: true
+  timezone: "America/Los_Angeles"
+  account_id: 4

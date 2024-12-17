@@ -1,7 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyText
+  id: 1
+  user_id: 1
+  name: Default Availability
 
 two:
-  name: MyText
+  id: 2
+  user_id: 2
+  name: Default Availability

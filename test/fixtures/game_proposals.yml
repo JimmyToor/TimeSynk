@@ -1,15 +1,29 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  group: one
+  id: 1
+  group_id: 1
   game_id: 1
-  user: one
-  yes_votes: 1
-  no_votes: 1
+  yes_votes_count: 1
+  no_votes_count: 0
 
 two:
-  group: two
+  id: 2
+  group_id: 2
+  game_id: 2
+  yes_votes_count: 0
+  no_votes_count: 0
+
+three:
+  id: 3
+  group_id: 3
   game_id: 1
-  user: two
-  yes_votes: 1
-  no_votes: 1
+  yes_votes_count: 1
+  no_votes_count: 1
+
+four:
+  id: 4
+  group_id: 3
+  game_id: 2
+  yes_votes_count: 0
+  no_votes_count: 0
