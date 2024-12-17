@@ -35,7 +35,7 @@ module UsersHelper
       highest_role = if resource.is_a?(GameProposal)
         user.highest_role_for_game_proposal(resource)
       else
-        user.highest_role_for_resource(resource)
+        user.most_permissive_role_for_resource(resource)
       end
       unless highest_role.nil? || RoleHierarchy.role_weight(highest_role) >= 1000
         title = highest_role.resource_type.titleize + " " + highest_role.name.titleize

@@ -29,11 +29,11 @@ class User < ApplicationRecord
   has_many :proposal_availability_schedules, through: :proposal_availabilities, source: :schedules, dependent: :destroy
   has_one_attached :avatar
 
-  validate :avatar_type
+  validates :avatar, processable_image: true, content_type: { with: [:png, :jpg, :gif], spoofing_protection: true }, size: { less_than: 1.megabyte }, if: -> { avatar.attached? }
 
   validates :email, uniqueness: { case_sensitive: false, allow_blank: true }, format: {with: URI::MailTo::EMAIL_REGEXP}, allow_blank: true
   validates :username, presence: true, uniqueness: true, length: {minimum: 3, maximum: 20}
-  validates :password, allow_nil: true, length: {minimum: 8}
+  validates :password, allow_nil: false, length: {minimum: 8}, if: :password_digest_changed?
 
 
   normalizes :email, with: -> { _1.strip.downcase }
@@ -77,21 +77,25 @@ class User < ApplicationRecord
   # @param game_proposal [GameProposal] the game proposal to check roles for
   # @return [Role] the highest role the user has for the game proposal
   def highest_role_for_game_proposal(game_proposal)
-    highest_role = highest_role_for_resource(game_proposal)
+    highest_role = most_permissive_role_for_resource(game_proposal)
 
     # roles for game proposals can be superseded by roles for the group
-    highest_group_role = highest_role_for_resource(game_proposal.group)
+    highest_group_role = most_permissive_role_for_resource(game_proposal.group)
     highest_role = highest_group_role if RoleHierarchy.supersedes?(highest_group_role, highest_role)
     highest_role
   end
 
   def supersedes_user_in_group?(role_user, group)
-    RoleHierarchy.supersedes?(highest_role_for_resource(group), role_user.highest_role_for_resource(group))
+    RoleHierarchy.supersedes?(most_permissive_role_for_resource(group), role_user.most_permissive_role_for_resource(group))
   end
 
   # Returns the highest role a user has for a particular resource.
-  def highest_role_for_resource(resource)
+  def most_permissive_role_for_resource(resource)
     roles.where(resource: resource).min_by { |role| RoleHierarchy.role_weight(role) }
+  end
+
+  def most_permissive_role_weight_for_resource(resource)
+    roles.where(resource: resource).map { |role| RoleHierarchy.role_weight(role) }.min || 1000
   end
 
   # Updates the roles for the user
@@ -178,13 +182,5 @@ class User < ApplicationRecord
 
   def has_any_role_for_resource?(roles_to_check, resource)
     roles_to_check.any? { |role| has_cached_role?(role, resource) }
-  end
-
-  private
-
-  def avatar_type
-    if avatar.attached? && !%w(image/jpeg image/png image/gif).include?(avatar.content_type)
-      errors.add(:avatar, "must be a JPEG, PNG, or GIF")
-    end
   end
 end

@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ update show ]
+  before_action :set_user, only: %i[ update show destroy ]
 
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
@@ -34,14 +34,22 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user.avatar.purge if user_params[:avatar] === ""
-
+    @user.avatar.purge if params.key?(:remove_avatar)
     respond_to do |format|
       if @user.update(user_params)
-        format.html { redirect_to settings_path, notice: "Your settings were updated successfully"}
-        format.turbo_stream
+        format.html { render "users/edit", notice: "Your settings were updated successfully", status: :ok }
       else
-        render :edit, status: :unprocessable_entity
+        format.html { render "users/edit", alert: @user.errors.full_messages.join(", "), status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def destroy
+    respond_to do |format|
+      if @user.destroy
+        format.html { redirect_to root_path, notice: "The account has been deleted." }
+      else
+        format.html { redirect_to root_path, alert: "There was an error deleting the account." }
       end
     end
   end
