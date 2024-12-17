@@ -1,4 +1,4 @@
-<%= turbo_stream.replace("modal_frame",
+<%= turbo_stream.update("modal_frame",
                          partial: "game_sessions/show_content",
                          locals: {game_session: @game_session,
                                   game_session_attendance: @game_session_attendance,

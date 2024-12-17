@@ -6,7 +6,29 @@ class GameSessionPolicy < ApplicationPolicy
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
   def create?
-    is_admin_or_owner? || user.has_cached_role?(:create_game_sessions, record.game_proposal)
+    user.has_cached_role?(:site_admin) ||
+      user.has_any_role_for_resource?([:owner], record.game_proposal) ||
+      user.has_any_role_for_resource?([:owner, :admin, :create_game_sessions, :manage_all_game_sessions], record.game_proposal) ||
+      user.has_any_role_for_resource?([:owner, :admin, :manage_all_game_proposals], record.game_proposal.group)
+  end
+
+  def new?
+    create?
+  end
+
+  def edit?
+    user.has_cached_role?(:site_admin) ||
+      user.has_any_role_for_resource?([:owner], record) ||
+      user.has_any_role_for_resource?([:owner, :admin, :manage_all_game_sessions], record.game_proposal) ||
+      user.has_any_role_for_resource?([:owner, :admin, :manage_all_game_proposals], record.game_proposal.group)
+  end
+
+  def update?
+    edit?
+  end
+
+  def destroy?
+    edit?
   end
 
   class Scope < ApplicationPolicy::Scope
@@ -14,11 +36,5 @@ class GameSessionPolicy < ApplicationPolicy
     def resolve
       user.game_sessions
     end
-  end
-
-  private
-
-  def is_admin_or_owner?
-    user.has_any_role_for_resource?([:admin, :owner], record.game_proposal.group) || user.has_any_role_for_resource?([:admin, :owner], record.game_proposal) || user.has_role?(:site_admin)
   end
 end

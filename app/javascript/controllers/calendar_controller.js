@@ -121,7 +121,7 @@ export default class extends Controller {
   }
 
   onSubmitSuccess(event) {
-    if (event.detail.submitEndEvent.target.hasAttribute("data-refresh-calendar-on-submit")) {
+    if (event.detail.submitEndEvent.target.hasAttribute("data-refresh-calendar-on-submit") || event.detail.submitEndEvent.target.querySelector('[data-refresh-calendar-on-submit]')) {
       this.debouncedRefreshCallback();
     }
   }

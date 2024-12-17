@@ -1,3 +1,4 @@
+<%# locals: (initial_game_proposal:, game_session:, game_proposal:nil, game_proposals: nil, groups:nil) %>
 <%= form_with(model: [game_proposal, game_session], id: dom_id(game_session, :form), data: {controller:"proposal-selection", proposal_selection_target:"form", refresh_calendar_on_submit:""}) do |form| %>
   <% if game_session.errors.any? %>
     <div style="color: red">
@@ -13,25 +14,26 @@
 
   <div>
     <%= display_game_art_and_name(game: game_session.game, only_art: true) if game_session.game.present? %>
-    <% if !local_assigns[:game_proposals].present? || !local_assigns[:game_session].new_record? %>
-      <%= form.hidden_field :game_proposal_id, value: local_assigns[:initial_game_proposal].id %>
+    <% if !game_proposals.present? || !game_session.new_record? %>
+      <%= hidden_field_tag :single_game_proposal, true %>
+      <%= form.hidden_field :game_proposal_id, value: initial_game_proposal.id %>
     <% else %>
       <%= form.label :game_proposal_id, style: "display: block" %>
-      <% if local_assigns[:groups] && local_assigns[:groups].length > 1 %>
+      <% if groups.present? && groups.length > 1 %>
         <%= form.grouped_collection_select :game_proposal_id,
-                                         local_assigns[:groups].reject { |group| group.game_proposals.empty? },
+                                         groups.reject { |group| group.game_proposals.empty? },
                                          :game_proposals,
                                          :name,
                                          :id,
                                          :game_name,
-                                         {selected: local_assigns[:initial_game_proposal].id},
+                                         {selected: initial_game_proposal.id},
                                          data: { proposal_selection_target:"collectionSelect" } %>
       <% else %>
         <%= form.collection_select :game_proposal_id,
                              game_proposals,
                              :id,
                              :game_name,
-                             {selected: local_assigns[:initial_game_proposal].id}, data: { proposal_selection_target:"collectionSelect" } %>
+                             {selected: initial_game_proposal.id}, data: { proposal_selection_target:"collectionSelect" } %>
       <% end %>
     <% end %>
   </div>
@@ -57,11 +59,7 @@
       </div>
 
       <div>
-        <% if turbo_frame_request_id.present? %>
-          <%= form.submit data: { turbo_submits_with: "Saving..." } %>
-        <% else %>
-          <%= form.submit data: { turbo: false } %>
-        <% end %>
+        <%= form.submit data: { turbo_submits_with: "Saving..." } %>
       </div>
     <% else %>
       <div>
@@ -70,6 +68,6 @@
     <% end %>
   <% end %>
 
-  <p style="color: green"><%= local_assigns[:notice] %></p>
+  <p style="color: green"><%= notice %></p>
 
 <% end %>

@@ -19,8 +19,13 @@
   <%= link_to "Invite to this group |", new_group_invite_path(group) if policy(group.invites.build).new? %>
   <%= link_to "Show this group's invites", group_invites_path(group) %>
 
-  <%= button_to "Leave this group", group_membership, method: :delete %>
-  <%= button_to "Destroy this group", group, method: :delete, data: { turbo_confirm: "Are you sure you want to destroy this group?" } if policy(group).destroy? %>
+  <%= button_to "Leave this group", group_membership, {
+    method: :delete,
+    data: { turbo_method: "delete",
+      turbo_confirm: "Are you sure you want to leave #{group}?"}
+  } unless Current.user.has_cached_role?(:owner, group) %>
+
+  <%= button_to "Delete this group", group, method: :delete, data: { turbo_confirm: "Are you sure you want to destroy this group?" } if policy(group).destroy? %>
 </div>
 
 <div data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-group-id=<%= group.id %> data-turbo-permanent>

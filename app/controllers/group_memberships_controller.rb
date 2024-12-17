@@ -75,8 +75,7 @@ class GroupMembershipsController < ApplicationController
 
   # DELETE /group_memberships/1 or /group_memberships/1.json
   def destroy
-    @group = @group_membership.group
-    @user.game_proposals
+    @group_membership.user.transfer_resources_to_group_owner
     @group_membership.destroy!
 
     respond_to do |format|

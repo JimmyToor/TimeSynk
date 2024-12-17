@@ -21,12 +21,12 @@ class GameSessionsController < ApplicationController
   # GET /game_sessions/new
   def new
     @game_session = @game_proposal.game_sessions.build(date: Time.current.utc.iso8601, duration: 1.hour)
+    authorize @game_session
     game_proposals = params[:single_game_proposal] ? nil : @game_proposal.group.game_proposals
 
     respond_to do |format|
-      format.html { render :new, locals: {game_session: @game_session, initial_game_proposal: @game_proposal, game_proposal: @game_proposal, game_proposals: game_proposals }}
+      format.html { render :new, locals: {game_session: @game_session, game_proposals: game_proposals }}
       format.turbo_stream {
-        Current.user.add_role(:owner, @game_session)
         render turbo_stream: turbo_stream.replace(
           "game_session_form",
           partial: "game_sessions/form",
@@ -39,32 +39,40 @@ class GameSessionsController < ApplicationController
   def edit
     respond_to do |format|
       format.html { 
-        render :edit, locals: {game_session: @game_session,
-                                           initial_game_proposal: @game_session.game_proposal,
-                                           game_proposals: @game_session.game_proposal.group.game_proposals,
-                                           groups: Current.user.groups} }
+        render :edit, locals: {game_session: @game_session, groups: Current.user.groups} }
     end
   end
 
   # POST /game_sessions or /game_sessions.json
   def create
     # TODO: Don't allow users to make sessions for another proposal i.e. game_proposal_id in strong params should match the current proposal's id (from the url params).
-    @game_session = @game_proposal.game_sessions.build(game_session_params)
+    @game_session = authorize @game_proposal.game_sessions.build(game_session_params)
+    game_proposals = params[:single_game_proposal] ? nil : @game_proposal.group.game_proposals
+
     respond_to do |format|
       if @game_session.save
         set_game_session_attendance
         Current.user.add_role(:owner, @game_session)
-        format.html { redirect_to game_proposal_url(@game_session.game_proposal), notice: "Game session was successfully created." }
+        format.html { redirect_to game_proposal_url(@game_session.game_proposal), notice: "Game session created." }
         format.json { render :show, status: :created, location: @game_session }
         format.turbo_stream
       else
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { 
+          redirect_to new_game_proposal_game_session_path(@game_proposal),
+          game_session: @game_session,
+          game_proposals: game_proposals,
+          status: :unprocessable_entity
+        }
         format.json { render json: @game_session.errors, status: :unprocessable_entity }
         format.turbo_stream {
-          render turbo_stream: turbo_stream.refresh(
-            "game_session_form",
+          render turbo_stream: turbo_stream.replace(
+            "form_game_session",
             partial: "game_sessions/form",
-            locals: {game_session: @game_session, game_proposal: @game_proposal, game_proposals: @game_proposal.group.game_proposals, groups: Current.user.groups}
+            locals: {game_session: @game_session,
+                     initial_game_proposal: @game_proposal,
+                     game_proposal: @game_proposal,
+                     game_proposals: game_proposals,
+                     groups: Current.user.groups}
           ), status: :unprocessable_entity
         }
       end
@@ -75,21 +83,31 @@ class GameSessionsController < ApplicationController
   def update
     respond_to do |format|
       if @game_session.update(game_session_params)
-        format.html { redirect_to game_session_url(@game_session), notice: "Game session was successfully updated." }
+        format.html { redirect_to game_proposal_url(@game_session.game_proposal), notice: "Game session was successfully updated." }
         format.json { render :show, status: :ok, location: @game_session }
         format.turbo_stream
       else
-        format.html { render :edit, status: :unprocessable_entity }
+        format.html { render :edit, game_session: @game_session, groups: Current.user.groups, status: :unprocessable_entity }
         format.json { render json: @game_session.errors, status: :unprocessable_entity }
+        format.turbo_stream {  
+          render turbo_stream: turbo_stream.replace(
+            "form_game_session",
+            partial: "game_sessions/form",
+            locals: {game_session: @game_session,
+                     initial_game_proposal: @game_session.game_proposal,
+                     game_proposals: @game_session.game_proposal.group.game_proposals,
+                     groups: Current.user.groups}
+        ), status: :unprocessable_entity }
       end
     end
   end
 
   # DELETE /game_sessions/1 or /game_sessions/1.json
   def destroy
+    game_proposal = @game_session.game_proposal
     @game_session.destroy!
     respond_to do |format|
-      format.html { redirect_to game_sessions_url, notice: "Game session was successfully destroyed." }
+      format.html { redirect_to game_proposal, notice: "Game session was successfully destroyed." }
       format.turbo_stream
     end
   end
@@ -123,5 +141,10 @@ class GameSessionsController < ApplicationController
       whitelisted.delete(:duration_hours)
       whitelisted.delete(:duration_minutes)
     end
+  end
+
+  def user_not_authorized
+    flash[:alert] = "You are not authorized to perform this action."
+    redirect_to(request.referrer || root_path)
   end
 end

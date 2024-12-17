@@ -1,4 +1,7 @@
 # config/initializers/role_hierarchy.rb
+
+# Provides a way to compare roles based on their hierarchy.
+# Lower weights are more privileged. Useful for determining role editing permissions.
 module RoleHierarchy
   ROLE_WEIGHTS = { # in descending order of privilege
     # Global admin (always top)

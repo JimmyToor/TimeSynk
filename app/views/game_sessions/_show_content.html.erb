@@ -5,8 +5,8 @@
     <%= render game_session %>
     <div>
       <%= render "game_session_attendances/form", game_session: game_session, game_session_attendance: game_session_attendance %>
-      <%= link_to "Edit this game session", edit_game_session_path(game_session)%>
-      <%= button_to "Delete this game session", game_session, {method: :delete, data: { turbo_method: "delete", turbo_confirm: "Are you sure you want to delete this #{game_session.game_name} session?"}} %>
+      <%= link_to "Edit this game session", edit_game_session_path(game_session) if policy(game_session).edit? %>
+      <%= button_to "Delete this game session", game_session, {method: :delete, data: { refresh_calendar_on_submit:"", turbo_method: "delete", turbo_confirm: "Are you sure you want to delete this #{game_session.game_name} session?"}} if policy(game_session).destroy? %>
     </div>
   <% end %>
 <% end %>

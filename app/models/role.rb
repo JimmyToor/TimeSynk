@@ -25,7 +25,7 @@ class Role < ApplicationRecord
     Role.create(name: "owner", resource: proposal)
     Role.create(name: "admin", resource: proposal)
     Role.create(name: "create_game_sessions", resource: proposal)
-    Role.create(name: "manage_game_sessions", resource: proposal)
+    Role.create(name: "manage_all_game_sessions", resource: proposal)
   end
 
   def self.create_roles_for_game_session(game_session)
