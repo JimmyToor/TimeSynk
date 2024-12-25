@@ -7,6 +7,7 @@ class CreateGames < ActiveRecord::Migration[7.1]
       t.text :platforms, array: true, null: false, default: []
       t.text :igdb_url
       t.date :release_date
+      t.boolean :is_popular, default: false
 
       t.timestamps
     end

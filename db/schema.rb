@@ -101,6 +101,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
     t.text "platforms", default: [], null: false, array: true
     t.text "igdb_url"
     t.date "release_date"
+    t.boolean "is_popular", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["igdb_id"], name: "index_games_on_igdb_id", unique: true
