@@ -4,7 +4,13 @@ class GamesController < ApplicationController
 
   # GET /games or /games.json
   def index
-    @games = Game.get_popular
+    @games = params[:query].present? ? Game.search_name(params[:query]) : Game.get_popular
+    @pagy, @games = pagy(@games, items: 30)
+    respond_to do |format|
+      format.html { render :index, locals: { games: @games, pagy: @pagy } }
+      format.turbo_stream
+      format.json { render json: @games }
+    end
   end
 
   def show
@@ -18,11 +24,6 @@ class GamesController < ApplicationController
   end
 
   private
-
-  # Only allow a list of trusted parameters through.
-  def game_params
-    params.fetch(:game, {})
-  end
 
   def set_game
     @game = Game.find(params[:id])

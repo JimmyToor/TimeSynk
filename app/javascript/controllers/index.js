@@ -39,3 +39,6 @@ application.register("rails-nested-form", RailsNestedForm)
 
 import RoleRemovalController from "./role_removal_controller"
 application.register("role-removal", RoleRemovalController)
+
+import PagyInitializerController from "./pagy_initializer_controller"
+application.register("pagy-initializer", PagyInitializerController)

@@ -79,6 +79,12 @@ gem "activesupport"
 
 gem "csv"
 
+gem "pagy", "~> 9.3"
+
+gem "oj", "~> 3.16"
+
+gem "pg_search"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]

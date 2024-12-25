@@ -1,4 +1,6 @@
 module ApplicationHelper
+  include Pagy::Frontend
+
   def match_request_frame_ids(frame_ids, alternate_frame_id)
     if turbo_frame_request? && frame_ids.include?(turbo_frame_request_id)
       turbo_frame_request_id

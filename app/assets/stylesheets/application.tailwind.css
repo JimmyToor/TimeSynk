@@ -42,3 +42,35 @@ input:indeterminate + .toggle-slider {
 input:indeterminate + .toggle-slider::before {
     transform: translateX(10px); /* Move to the middle for indeterminate state */
 }
+
+.pagy {
+    @apply inline-flex items-stretch -space-x-px;
+
+    > *:first-child {
+        @apply rounded-l-lg border-e-0 rounded-s-lg;
+    }
+
+    > *:last-child {
+        @apply rounded-r-lg border-s-0 rounded-e-lg;
+    }
+}
+
+.pagy a:not(.gap) {
+    @apply flex items-center text-sm justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400;
+
+    &:hover {
+        @apply bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-white;
+    }
+
+    &:not([href]) {
+        @apply text-gray-300 bg-gray-500 dark:bg-gray-900 dark:text-gray-500 cursor-default;
+    }
+
+    &.current {
+        @apply flex items-center justify-center z-10 px-4 h-10 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white cursor-default;
+    }
+}
+
+span.pagy.info {
+    @apply text-sm font-normal text-gray-500;
+}
