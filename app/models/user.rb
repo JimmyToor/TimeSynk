@@ -152,7 +152,8 @@ class User < ApplicationRecord
       start_date: Time.current.utc,
       end_date: 10.years.from_now,
       duration: 24.hours.to_i,
-      schedule_pattern: schedule_pattern
+      schedule_pattern: schedule_pattern,
+      description: "Default schedule for #{username}",
     )
   end
 

@@ -129,7 +129,7 @@ class SchedulesController < ApplicationController
 
   # `duration` is length of time in seconds
   def schedule_params
-    params.require(:schedule).permit(:name, :user_id, :start_date, :end_date, :duration, :schedule_pattern,
+    params.require(:schedule).permit(:name, :user_id, :start_date, :end_date, :duration, :frequency, :description, :schedule_pattern,
       availability_schedules_attributes: [:id, :availability_id, :schedule_id, :_destroy])
   end
 end

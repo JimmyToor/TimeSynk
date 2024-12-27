@@ -34,6 +34,10 @@
       <button type="button" data-action="mutually-exclusive-select#cacheSelections rails-nested-form#add" data-mutually-exclusive-select-target="addButton">Add availability</button>
     </div>
 
+    <div>
+      <%= form.label :description, style: "display: block" %>
+      <%= form.text_area :description %>
+    </div>
 
     <template data-rails-nested-form-target="template">
       <%= form.fields_for :availability_schedules, schedule.availability_schedules.build, child_index: "NEW_RECORD" do |availability_schedule_subform| %>
@@ -49,9 +53,10 @@
       <%= form.datetime_field :end_date, data: { flatpickr_target: "endDate"}, value: schedule.end_date&.in_time_zone(Current.user.timezone) %>
     </div>
 
-    <div>
+    <div data-controller="schedule-summary-watcher">
       <%= form.label :schedule_pattern, "Occurs", class: "block" %>
       <%= form.select_recurring :schedule_pattern, nil, allow_blank: true, initialize_flatpickr: true, static:true %>
+      <%= form.text_field :frequency, data: {schedule_summary_watcher_target: "frequencyInput"} %>
     </div>
 
     <div>

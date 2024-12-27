@@ -42,3 +42,6 @@ application.register("role-removal", RoleRemovalController)
 
 import PagyInitializerController from "./pagy_initializer_controller"
 application.register("pagy-initializer", PagyInitializerController)
+
+import ScheduleSummaryWatcherController from "./schedule_summary_watcher_controller"
+application.register("schedule-summary-watcher", ScheduleSummaryWatcherController)

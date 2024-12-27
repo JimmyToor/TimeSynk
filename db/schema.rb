@@ -195,6 +195,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
     t.interval "duration"
     t.jsonb "schedule_pattern", default: {}, null: false
     t.text "name", default: "New Schedule", null: false
+    t.text "description"
+    t.text "frequency", default: "Once", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["end_date"], name: "index_schedules_on_end_date"
