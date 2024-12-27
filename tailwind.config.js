@@ -1,5 +1,6 @@
 const colors = require('tailwindcss/colors')
 module.exports = {
+  mode: 'jit',
   content: [
     './app/views/**/*.html.erb',
     './app/helpers/**/*.rb',
@@ -9,6 +10,20 @@ module.exports = {
   ],
   theme: {
     extend: {
+      animation:  {
+        'slide-down': 'slide-down 0.5s ease forwards',
+        'slide-up': 'slide-up 0.5s ease forwards',
+      },
+      keyframes: {
+        'slide-down': {
+          'from': { transform: 'translateY(0px)'},
+          'to': { transform: 'translateY(50px)'},
+        },
+        'slide-up': {
+          'from': { transform: 'translateY(50px)'},
+          'to': { transform: 'translateY(0px)'},
+        }
+      },
       colors: {
         primary: {
           50: "#eff6ff",
