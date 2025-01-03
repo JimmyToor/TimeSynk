@@ -1,0 +1,53 @@
+<%# locals: (schedules:) %>
+<div class="overflow-x-auto">
+  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+    <tr>
+      <th scope="col" class="p-4">
+        <!--<div class="flex items-center">
+          <input id="checkbox-all" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+          <label for="checkbox-all" class="sr-only">checkbox</label>
+        </div>-->
+      </th>
+      <th scope="col" class="px-4 py-3">Schedule</th>
+      <th scope="col" class="px-4 py-3">Description</th>
+      <th scope="col" class="px-4 py-3">Frequency</th>
+      <th scope="col" class="px-4 py-3">Beginning Date</th>
+      <th scope="col" class="px-4 py-3">End Date</th>
+      <th scope="col" class="px-4 py-3">Duration</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% schedules.each do |schedule| %>
+      <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+        <td class="w-4 px-4 py-3">
+          <!--<div class="flex items-center">
+            <input id="schedule_id" type="checkbox" onclick="event.stopPropagation()" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <label for="schedule_id" class="sr-only">checkbox</label>
+          </div>-->
+          <%= link_to "View", schedule, class: "bg-primary-700 text-blue-500 dark:text-white text-xs font-medium px-2 py-0.5 rounded  hover:underline" %>
+        </td>
+        <th scope="row" class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+          <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= schedule.name %> </span>
+        </th>
+        <td class="px-4 py-2">
+          <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= schedule.description %> </span>
+        </td>
+        <td class="px-4 py-2">
+          <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= schedule.frequency %> </span>
+        </td>
+        <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.start_date.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %></td>
+        <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.end_date.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %></td>
+        <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+          <% if schedule.duration.parts[:hours] %>
+            <%= schedule.duration.parts[:hours] %>h
+          <% end %>
+          <% if schedule.duration.parts[:minutes] %>
+            <%= schedule.duration.parts[:minutes] %>m
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

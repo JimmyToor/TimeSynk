@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
   get 'permission_sets/edit'
   get 'permission_sets/update'
-  resources :availability_schedules
   resources :availabilities
+  resources :availability_schedules
   resources :games, only: [:index, :show]
   resources :schedules
   resources :group_availabilities, only: [:index]

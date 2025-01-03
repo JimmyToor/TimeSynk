@@ -15,11 +15,20 @@ class AvailabilitiesController < ApplicationController
 
   # GET /availabilities/new
   def new
-    @availability = Availability.new(user: @user)
+    @availability = Availability.new(user: Current.user)
+    @pagy, @schedules = pagy(@schedules)
+
+    respond_to do |format|
+      format.html { render :new, locals: { pagy: @pagy, schedules: @schedules, availability: @availability } }
+    end
   end
 
   # GET /availabilities/1/edit
   def edit
+    @pagy, @schedules = pagy(@schedules)
+    respond_to do |format|
+      format.html { render :edit, locals: { pagy: @pagy, schedules: @schedules, availability: @availability } }
+    end
   end
 
   # POST /availabilities or /availabilities.json
@@ -63,8 +72,7 @@ class AvailabilitiesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
   def set_availability
-    @availability = Availability.find(params[:id])
-    authorize(@availability)
+    @availability = authorize(Availability.find(params[:id]))
   end
 
   def set_user
@@ -73,9 +81,7 @@ class AvailabilitiesController < ApplicationController
   end
 
   def set_schedules
-    @schedules = policy_scope(Schedule)
-
-    authorize(@schedules)
+    @schedules = authorize(policy_scope(Schedule))
   end
 
     # Only allow a list of trusted parameters through.

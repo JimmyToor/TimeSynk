@@ -1,9 +1,18 @@
 class AvailabilitySchedulesController < ApplicationController
-  before_action :set_availability_schedule, only: %i[ show edit update destroy ]
+  before_action :set_availability_schedule, only: %i[show edit update destroy]
+  skip_after_action :verify_authorized
+  skip_after_action :verify_policy_scoped
 
   # GET /availability_schedules or /availability_schedules.json
   def index
-    @availability_schedules = AvailabilitySchedule.all
+    @schedules = params[:query].present? ? policy_scope(Schedule).search(params[:query]) : policy_scope(Schedule)
+    @pagy, @schedules = pagy(@schedules)
+    @availability = Availability.find(params[:availability_id]) if params[:availability_id].present?
+    @form_mode = params[:form_mode].present? ? params[:form_mode] : false
+    respond_to do |format|
+      format.html { render :index, locals: {pagy: @pagy, schedules: @schedules, availability: @availability, form_mode: @form_mode } }
+      format.turbo_stream
+    end
   end
 
   # GET /availability_schedules/1 or /availability_schedules/1.json
@@ -58,13 +67,14 @@ class AvailabilitySchedulesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_availability_schedule
-      @availability_schedule = AvailabilitySchedule.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def availability_schedule_params
-      params.require(:availability_schedule).permit(:availability_id, :schedule_id)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_availability_schedule
+    @availability_schedule = AvailabilitySchedule.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def availability_schedule_params
+    params.require(:availability_schedule).permit(:availability_id, :schedule_id, :query)
+  end
 end

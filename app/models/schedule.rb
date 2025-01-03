@@ -4,6 +4,10 @@
 #
 # `duration` is the length of time in seconds that the initial event will last.
 class Schedule < ApplicationRecord
+  include PgSearch::Model
+  pg_search_scope :search,
+                  against: [:name, :description],
+                  using: { tsearch: { prefix: true } }
   has_many :availability_schedules, dependent: :destroy, inverse_of: :schedule
   has_many :availabilities, through: :availability_schedules
   has_many :user_availabilities, through: :availabilities

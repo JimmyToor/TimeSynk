@@ -5,12 +5,17 @@ class SchedulesController < ApplicationController
 
   # GET /schedules or /schedules.json
   def index
-    @schedules = policy_scope(Schedule)
+    @schedules = params[:query].present? ? policy_scope(Schedule).search(params[:query]) : policy_scope(Schedule)
     authorize(@schedules)
+    @pagy, @schedules = pagy(@schedules)
     if params[:start] && params[:end]
       @schedules = @schedules.where("start_date >= ?", params[:start]).select do |schedule|
         schedule if schedule.make_icecube_schedule.occurs_between?(params[:start], params[:end])
       end
+    end
+    respond_to do |format|
+      format.html { render :index, locals: {schedules: @schedules, pagy: @pagy} }
+      format.json { render json: @schedules }
     end
   end
 
@@ -129,7 +134,7 @@ class SchedulesController < ApplicationController
 
   # `duration` is length of time in seconds
   def schedule_params
-    params.require(:schedule).permit(:name, :user_id, :start_date, :end_date, :duration, :frequency, :description, :schedule_pattern,
+    params.require(:schedule).permit(:name, :user_id, :start_date, :end_date, :duration, :frequency, :description, :schedule_pattern, :query,
       availability_schedules_attributes: [:id, :availability_id, :schedule_id, :_destroy])
   end
 end

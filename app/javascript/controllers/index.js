@@ -45,3 +45,6 @@ application.register("pagy-initializer", PagyInitializerController)
 
 import ScheduleSummaryWatcherController from "./schedule_summary_watcher_controller"
 application.register("schedule-summary-watcher", ScheduleSummaryWatcherController)
+
+import ScheduleSelectionController from "./schedule_selection_controller"
+application.register("schedule-selection", ScheduleSelectionController)
