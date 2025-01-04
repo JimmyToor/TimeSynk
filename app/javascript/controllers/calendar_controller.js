@@ -94,6 +94,10 @@ export default class extends Controller {
     this.refreshCallback = this.calendarService.refresh.bind(this.calendarService)
   }
 
+  replaceEventSource(oldSrcId, newSrc) {
+    this.calendarService.replaceEventSource(oldSrcId, newSrc);
+  }
+
   eventDidMount(info) {
     if (info.event.extendedProps.type !== 'game' && info.event.extendedProps.type !== 'availability') return
     const el = info.el;

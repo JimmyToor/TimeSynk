@@ -4,7 +4,7 @@ import {Controller} from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = [ "query", "frame", "form", "spinner", "scheduleIdInput", "scheduleToggle"]
   static values = { src: String }
-  static outlets = [ "rails-nested-form" ]
+  static outlets = [ "rails-nested-form", "calendar" ]
 
   toggleSchedule(event) {
     if (event.target.checked) {
@@ -24,6 +24,8 @@ export default class extends Controller {
     newScheduleInput.dataset.savedScheduleId = event.target.dataset.scheduleId
     newScheduleInput.parentElement.querySelector(".schedule-name").innerText = event.target.dataset.scheduleName
     newScheduleInput.parentElement.querySelector(".remove-schedule-button").dataset.removeId = event.target.dataset.scheduleId
+
+    this.updateCalendar()
   }
 
   removeSchedule(event) {
@@ -41,6 +43,20 @@ export default class extends Controller {
     // If the schedule was removed via button, uncheck the corresponding checkbox
     const checkbox = this.scheduleToggleTargets.find(toggle => toggle.dataset.scheduleId === event.explicitOriginalTarget.dataset.removeId);
     if (checkbox) checkbox.checked = false;
+
+    this.updateCalendar()
+  }
+
+  updateCalendar() {
+    if (this.calendarOutlet) {
+      const id = "calendarJson"
+      this.calendarOutlet.replaceEventSource(id, {
+        url: "/calendars",
+        method: 'GET',
+        extraParams: { schedule_ids: this.scheduleIdInputTargets.map(input => input.dataset.savedScheduleId) },
+        id: id,
+      })
+    }
   }
 
   resetSearch(event) {
@@ -54,5 +70,9 @@ export default class extends Controller {
     const scheduleId = element.dataset.scheduleId
     const existingInput = this.scheduleIdInputTargets.find(scheduleIdInput => scheduleIdInput.dataset.savedScheduleId === scheduleId)
     element.checked = !!existingInput
+  }
+
+  calendarOutletConnected() {
+    this.updateCalendar()
   }
 }

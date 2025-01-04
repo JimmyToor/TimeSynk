@@ -44,6 +44,7 @@ class CalendarsController < ApplicationController
   end
 
   def calendar_params
+    params[:schedule_ids] = params[:schedule_ids].split(",") if params[:schedule_ids].present?
     params.permit(:start, :end, :user_id, :group_id, :schedule_id, :availability_id, :game_session_id, :game_proposal_id, schedule_ids: [])
   end
 end

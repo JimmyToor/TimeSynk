@@ -217,4 +217,9 @@ export default class CalendarService {
   refresh() {
     this.fullCalendarObj.refetchEvents();
   }
+
+  replaceEventSource(oldSrcId, newSrc) {
+    this.fullCalendarObj.getEventSourceById(oldSrcId).remove();
+    this.fullCalendarObj.addEventSource(newSrc);
+  }
 }

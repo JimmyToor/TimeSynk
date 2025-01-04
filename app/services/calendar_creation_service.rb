@@ -2,7 +2,7 @@
 
 class CalendarCreationService
   def initialize(params, user)
-    @params = params.permit(:start, :end, :user_id, :group_id, :schedule_id, :availability_id, :game_session_id, :game_proposal_id)
+    @params = params.permit(:start, :end, :user_id, :group_id, :schedule_id, :availability_id, :game_session_id, :game_proposal_id, schedule_ids: [])
     @user = user
   end
 
@@ -22,6 +22,10 @@ class CalendarCreationService
 
     if @params[:schedule_id].present?
       @calendars << make_schedule_calendar(Schedule.find(@params[:schedule_id]))
+    end
+
+    if @params[:schedule_ids].present?
+      @calendars.concat(@params[:schedule_ids].map { |id| make_schedule_calendar(Schedule.find(id)) })
     end
 
     if @params[:availability_id].present?
@@ -47,8 +51,7 @@ class CalendarCreationService
   def make_schedule_calendar(schedule)
     Calendar.new(
       schedules: [schedule.make_calendar_schedule],
-      name: "Schedule: #{schedule.name}",
-      title: schedule.user.username,
+      name: "#{schedule.name}",
       id: "calendar_schedule_#{schedule.id}",
       type: :schedule
     )
