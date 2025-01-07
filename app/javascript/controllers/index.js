@@ -48,3 +48,6 @@ application.register("schedule-summary-watcher", ScheduleSummaryWatcherControlle
 
 import ScheduleSelectionController from "./schedule_selection_controller"
 application.register("schedule-selection", ScheduleSelectionController)
+
+import ElementToggleController from "./element_toggle_controller"
+application.register("element-toggle", ElementToggleController)

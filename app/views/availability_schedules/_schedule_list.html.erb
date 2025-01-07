@@ -4,79 +4,27 @@
   <div class="overflow-x-auto">
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" data-controller="checkbox-select-all">
       <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-      <tr>
-        <% if form_mode %>
-          <th scope="col" class="px-4 py-3">Include</th>
-        <% end %>
-        <th scope="col" class="px-4 py-3">Schedule</th>
-        <th scope="col" class="px-4 py-3">Description</th>
-        <th scope="col" class="px-4 py-3">Frequency</th>
-        <th scope="col" class="px-4 py-3">Beginning Date</th>
-        <th scope="col" class="px-4 py-3">End Date</th>
-        <th scope="col" class="px-4 py-3">Duration</th>
-      </tr>
-      </thead>
-      <tbody id="schedule_list">
-      <% availability.schedules.select { |schedule| schedules.include?(schedule) }.each do |schedule| %>
-        <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
-          <td class="w-4 px-4 py-3">
-            <%= content_tag :div do %>
-              <%= hidden_field_tag "availability[availability_schedules_attributes][][schedule_id]", schedule.id %>
-              <%= check_box_tag "availability[availability_schedules_attributes][][_destroy]", "1", !schedule.marked_for_destruction?, data:{ action:"change->schedule-selection#toggleSchedule", schedule_selection_target:"scheduleToggle", schedule_id:schedule.id, schedule_name:schedule.name}, class: "w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" %>
-            <% end if form_mode %>
-          </td>
-          <th scope="row" class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-            <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= schedule.name %> </span>
-          </th>
-          <td class="px-4 py-2">
-            <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= schedule.description %> </span>
-          </td>
-          <td class="px-4 py-2">
-            <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= schedule.frequency %> </span>
-          </td>
-          <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.start_date.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %></td>
-          <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.end_date.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %></td>
-          <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-            <% if schedule.duration.parts[:hours] %>
-              <%= schedule.duration.parts[:hours] %>h
-            <% end %>
-            <% if schedule.duration.parts[:minutes] %>
-              <%= schedule.duration.parts[:minutes] %>m
-            <% end %>
-          </td>
-        </tr>
-      <% end if availability.present? %>
-      <% (availability.present? ? (schedules - availability.schedules) : schedules).each do |schedule| %>
-        <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+        <tr>
           <% if form_mode %>
-            <td class="w-4 px-4 py-3">
-              <%= content_tag :div do %>
-                <%= check_box_tag "availability[availability_schedules_attributes][][_destroy]", "1", false, data:{ action:"change->schedule-selection#toggleSchedule", schedule_selection_target:"scheduleToggle", schedule_id:schedule.id, schedule_name:schedule.name}, class: "w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" %>
-                <%= hidden_field_tag "availability[availability_schedules_attributes][][schedule_id]", schedule.id %>
-              <% end %>
-            </td>
+            <th scope="col" class="px-4 py-3">Include</th>
           <% end %>
-          <th scope="row" class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-            <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= schedule.name %> </span>
-          </th>
-          <td class="px-4 py-2">
-            <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= schedule.description %> </span>
-          </td>
-          <td class="px-4 py-2">
-            <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= schedule.frequency %> </span>
-          </td>
-          <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.start_date.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %></td>
-          <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.end_date.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %></td>
-          <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-            <% if schedule.duration.parts[:hours] %>
-              <%= schedule.duration.parts[:hours] %>h
-            <% end %>
-            <% if schedule.duration.parts[:minutes] %>
-              <%= schedule.duration.parts[:minutes] %>m
-            <% end %>
-          </td>
+          <th scope="col" class="px-4 py-3">Schedule</th>
+          <th scope="col" class="px-4 py-3">Description</th>
+          <th scope="col" class="px-4 py-3 hidden lg:table-cell">Frequency</th>
+          <th scope="col" class="px-4 py-3 hidden xl:table-cell">Start Date</th>
+          <th scope="col" class="px-4 py-3 hidden xl:table-cell">End Date</th>
+          <th scope="col" class="px-4 py-3 hidden xl:table-cell">Duration</th>
         </tr>
-      <% end %>
+      </thead>
+      <tbody data-controller="element-toggle" data-element-toggle-display-style-value="table-row" data-element-toggle-element-selector-value=".additional-info">
+        <% availability.schedules.select { |schedule| schedules.include?(schedule) }.each do |schedule| %>
+          <%= render partial:"schedules/schedule_table_row", locals: {form_mode: form_mode, schedule: schedule, checked: true} %>
+        <% end if availability.present? %>
+      </tbody>
+      <tbody data-controller="element-toggle" data-element-toggle-display-style-value="table-row" data-element-toggle-element-selector-value=".additional-info">
+        <% (availability.present? ? (schedules - availability.schedules) : schedules).each do |schedule| %>
+          <%= render partial:"schedules/schedule_table_row", locals: {form_mode: form_mode, schedule: schedule, checked: false} %>
+        <% end %>
       </tbody>
     </table>
   </div>
