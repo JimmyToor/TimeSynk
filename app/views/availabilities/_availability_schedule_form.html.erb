@@ -1,0 +1,7 @@
+<%# locals: (schedule_id:, schedule_name:"", sub_form:) %>
+<div class="nested-form-wrapper" data-new-record="<%= sub_form.object.new_record? %>" >
+  <%= sub_form.hidden_field :_destroy %>
+  <%= sub_form.hidden_field :schedule_id, data: {schedule_selection_target: "scheduleIdInput", saved_schedule_id: schedule_id} %>
+  - <span class="schedule-name"><%= schedule_name %></span>
+  <button type="button" data-action="schedule-selection#removeSchedule" data-remove-id="<%= schedule_id %>" class="remove-schedule-button text-white bg-blue-700 cursor-pointer hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 height-1/2">Remove</button>
+</div>

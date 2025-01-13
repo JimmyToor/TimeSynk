@@ -1,16 +1,21 @@
 class AvailabilitySchedulesController < ApplicationController
   before_action :set_availability_schedule, only: %i[show edit update destroy]
+  before_action :set_availability, only: %i[index]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
 
   # GET /availability_schedules or /availability_schedules.json
   def index
+    authorize @availability, :show?
+    if request.format.json?
+      render json: @availability.schedules, status: :ok
+      return
+    end
+
     @schedules = params[:query].present? ? policy_scope(Schedule).search(params[:query]) : policy_scope(Schedule)
     @pagy, @schedules = pagy(@schedules)
-    @availability = Availability.find(params[:availability_id]) if params[:availability_id].present?
-    @form_mode = params[:form_mode].present? ? params[:form_mode] : false
     respond_to do |format|
-      format.html { render :index, locals: {pagy: @pagy, schedules: @schedules, availability: @availability, form_mode: @form_mode } }
+      format.html { render :index, locals: {pagy: @pagy, schedules: @schedules, availability: @availability} }
       format.turbo_stream
     end
   end
@@ -76,5 +81,9 @@ class AvailabilitySchedulesController < ApplicationController
   # Only allow a list of trusted parameters through.
   def availability_schedule_params
     params.require(:availability_schedule).permit(:availability_id, :schedule_id, :query)
+  end
+
+  def set_availability
+    @availability = Availability.find(params[:availability_id]) if params[:availability_id].present?
   end
 end

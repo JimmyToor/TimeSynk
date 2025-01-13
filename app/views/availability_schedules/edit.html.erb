@@ -1,10 +1,9 @@
-<h1>Editing availability schedule</h1>
+<%# locals: (availability:, schedules:, pagy:) %>
 
-<%= render "form", availability_schedule: @availability_schedule %>
+<%= render "form", availability: availability, schedules: schedules, pagy: pagy %>
 
 <br>
 
 <div>
   <%= link_to "Show this availability schedule", @availability_schedule %> |
-  <%= link_to "Back to availability schedules", availability_schedules_path %>
 </div>

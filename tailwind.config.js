@@ -74,6 +74,9 @@ module.exports = {
           "Segoe UI Symbol",
           "Noto Color Emoji",
         ],
+      },
+      screens: {
+        "xxl": '1650px'
       }
     },
   },

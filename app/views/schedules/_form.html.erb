@@ -56,7 +56,7 @@
     <div data-controller="schedule-summary-watcher">
       <%= form.label :schedule_pattern, "Occurs", class: "block" %>
       <%= form.select_recurring :schedule_pattern, nil, allow_blank: true, initialize_flatpickr: true, static:true %>
-      <%= form.text_field :frequency, data: {schedule_summary_watcher_target: "frequencyInput"} %>
+      <%= form.hidden_field :frequency, data: {schedule_summary_watcher_target: "frequencyInput"} %>
     </div>
 
     <div>

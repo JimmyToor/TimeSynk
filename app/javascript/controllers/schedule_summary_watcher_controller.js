@@ -24,9 +24,8 @@ export default class extends Controller {
   }
 
   updateFrequency() {
-    console.log("Updating frequency")
     if (this.summary != null) {
-      this.frequencyInputTarget.value = this.summary.attributes["data-initial-value-str"].value.replace(/\*/g, "")
+      this.frequencyInputTarget.value = this.summary.attributes["data-initial-value-str"].value.replace(/\*/g, "").trim()
     }
     else {
       this.frequencyInputTarget.value = ""
