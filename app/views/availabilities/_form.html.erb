@@ -27,7 +27,7 @@
       <% end %>
 
       <div>
-        <%= form.label :name, "Schedule Name", style: "display: block" %>
+        <%= form.label :name, "Availability Name", style: "display: block" %>
         <%= form.text_area :name %>
       </div>
 
@@ -58,7 +58,7 @@
   </div>
 
   <h3 class="text-center mt-4 text-4xl font-extrabold dark:text-white">Preview</h3>
-  <div id="calendar_holder" data-controller="calendar" data-calendar-dialog-outlet=".dialog">
+  <div id="calendar_holder" data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr">
     <%= render partial: 'calendars/calendar' %>
   </div>
 </div>
