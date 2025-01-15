@@ -2,7 +2,7 @@
 <p style="color: green"><%= notice %></p>
 <div>
   <div class="overflow-x-auto">
-    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" data-controller="checkbox-select-all">
+    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
         <tr>
           <th scope="col" class="px-2 py-3 text-center">Include</th>
@@ -26,14 +26,6 @@
       </tbody>
     </table>
   </div>
-  <nav class="flex flex-col items-start justify-between p-4 space-y-3 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
-    <ul class="inline-flex items-stretch -space-x-px ">
-      <li data-controller="pagy-initializer">
-        <%== pagy_nav_js(@pagy) if @pagy.pages > 1 %>
-        <noscript><%== pagy_nav(@pagy) if @pagy.pages > 1 %></noscript>
-      </li>
-    </ul>
-    <span class="text-sm font-normal text-gray-500 dark:text-gray-400"> <%== pagy_info @pagy %></span>
-  </nav>
-<% end %>
+  <%= render partial: "shared/table_nav" %>
+</div>
 
