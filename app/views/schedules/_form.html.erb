@@ -15,14 +15,14 @@
   <div class="dark:bg-gray-800 p-4 rounded-lg shadow-lg">
     <div>
       <%= form.label :name, style: "display: block" %>
-      <%= form.text_field :name %>
+      <%= form.text_field :name, pattern:"[A-Za-z0-9 ]*", title:"Numbers, letters, and spaces only" %>
     </div>
 
     <div>
       <%= form.hidden_field :user_id, value: Current.user.id %>
     </div>
 
-    <div data-controller="mutually-exclusive-select" data-mutually-exclusive-select-rails-nested-form-outlet="#form_schedule">
+    <div data-controller="mutually-exclusive-select" data-mutually-exclusive-select-rails-nested-form-outlet="#<%=dom_id(schedule, :form)%>">
       Include in availability
       <%= form.fields_for :availability_schedules do |availability_schedule_subform| %>
         <%= render "schedules/availability_schedule_form", form: availability_schedule_subform %>
@@ -36,7 +36,7 @@
 
     <div>
       <%= form.label :description, style: "display: block" %>
-      <%= form.text_area :description %>
+      <%= form.text_area :description, pattern:"[A-Za-z0-9 ]*", title:"Numbers, letters, and spaces only" %>
     </div>
 
     <template data-rails-nested-form-target="template">
