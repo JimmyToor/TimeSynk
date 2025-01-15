@@ -1,5 +1,5 @@
 <%= form_with(model: schedule, id: dom_id(schedule, :form), data: { controller: "rails-nested-form", rails_nested_form_wrapper_selector_value: '.nested-form-wrapper' }) do |form| %>
-
+  <p style="color: green"><%= local_assigns[:notice] %></p>
   <% if schedule.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(schedule.errors.count, "error") %> prohibited this schedule from being saved:</h2>
@@ -48,10 +48,24 @@
     <div class="flatpickr" data-controller="flatpickr" data-flatpickr-timezone-value="<%= Current.user.timezone %>">
       <%= form.label :start_date, "Starting on", class: "block" %>
       <%= form.datetime_field :start_date, data: { flatpickr_target: "startDate"}, value: schedule.start_date&.in_time_zone(Current.user.timezone) %>
-
-      <%= form.label :end_date, "Ending on", class: "block" %>
-      <%= form.datetime_field :end_date, data: { flatpickr_target: "endDate"}, value: schedule.end_date&.in_time_zone(Current.user.timezone) %>
     </div>
+
+    <%= content_tag :div, class:"flex items-center" do %>
+      <%= form.label :duration, "Duration:", class:"items-center mr-2" %>
+      <div class="flex flex-col items-center">
+        <%= form.label :duration_days, "Days", class: "block" %>
+        <%= form.number_field :duration_days, required: true, value: (schedule.duration&.parts[:days] || 0), class: "w-16 p-1 text-center" %>
+      </div>
+      <div class="flex flex-col items-center">
+        <%= form.label :duration_hours, "Hours", class: "block" %>
+        <%= form.number_field :duration_hours, max: 23, required: true, value: (schedule.duration&.parts[:hours] || 1), class: "w-16 p-1 text-center" %>
+      </div>
+      <div class="mx-2 text-4xl h-5 font-bold leading-7">:</div>
+      <div class="flex flex-col items-center">
+        <%= form.label :duration_minutes, "Minutes", class: "block" %>
+        <%= form.number_field :duration_minutes, max: 59, required: true, value: (schedule.duration&.parts[:minutes] || 0), class: "w-16 p-1 text-center" %>
+      </div>
+    <% end %>
 
     <div data-controller="schedule-summary-watcher">
       <%= form.label :schedule_pattern, "Occurs", class: "block" %>
@@ -62,7 +76,6 @@
     <div>
       <%= form.submit %>
     </div>
-    <p style="color: green"><%= local_assigns[:notice] %></p>
 
   </div>
 <% end %>

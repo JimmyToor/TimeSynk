@@ -1,4 +1,6 @@
 class GameSessionsController < ApplicationController
+  include DurationSaturator
+  before_action -> { saturate_duration_param([:game_session]) }, only: %i[create update]
   before_action :set_game_session, only: %i[ show edit update destroy ]
   before_action :set_game_proposal, only: %i[ new create ]
   before_action :set_game_session_attendance, only: %i[ show update ]
@@ -134,13 +136,7 @@ class GameSessionsController < ApplicationController
 
   #`duration` is length of time in minutes
   def game_session_params
-    params.require(:game_session).permit(:game_proposal_id, :date, :duration, :duration_hours, :duration_minutes).tap do |whitelisted|
-      if whitelisted[:duration_hours].present? && whitelisted[:duration_minutes].present? && !whitelisted[:duration].present?
-        whitelisted[:duration] = whitelisted[:duration_hours].to_i.hours + whitelisted[:duration_minutes].to_i.minutes
-      end
-      whitelisted.delete(:duration_hours)
-      whitelisted.delete(:duration_minutes)
-    end
+    params.require(:game_session).permit(:game_proposal_id, :date, :duration, :duration_days, :duration_hours, :duration_minutes)
   end
 
   def user_not_authorized
