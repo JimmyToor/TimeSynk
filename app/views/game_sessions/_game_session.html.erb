@@ -27,12 +27,7 @@
 
           <%= inline_svg_tag "icons/clock.svg", class:"h-6" %>
 
-          <% if game_session.duration.parts[:hours] %>
-            <%= game_session.duration.parts[:hours] %>h
-          <% end %>
-          <% if game_session.duration.parts[:minutes] %>
-            <%= game_session.duration.parts[:minutes] %>m
-          <% end %>
+          <%= format_interval(game_session.duration) %>
         </div>
       </div>
     </div>

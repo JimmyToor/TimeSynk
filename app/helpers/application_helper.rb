@@ -21,4 +21,12 @@ module ApplicationHelper
     value ? "data-dialog-open-value=false" : "data-dialog-open-value=true"
   end
 
+  def format_interval(interval)
+    parts = []
+    parts << "#{interval.parts[:days]}d" if interval.parts[:days]
+    parts << "#{interval.parts[:hours]}h" if interval.parts[:hours]
+    parts << "#{interval.parts[:minutes]}m" if interval.parts[:minutes]
+    parts.join(" ")
+  end
+
 end
