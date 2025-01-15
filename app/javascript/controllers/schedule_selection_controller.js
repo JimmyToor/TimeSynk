@@ -101,12 +101,6 @@ export default class extends Controller {
     })
   }
 
-  resetSearch(event) {
-    event.preventDefault()
-    this.queryTarget.value = "";
-    this.frameTarget.src = this.srcValue;
-  }
-
   // This ensures that the checkboxes are in sync with the saved schedules.
   scheduleToggleTargetConnected(element) {
     const scheduleId = element.dataset.scheduleId;

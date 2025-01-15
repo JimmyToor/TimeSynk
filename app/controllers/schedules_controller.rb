@@ -1,4 +1,6 @@
 class SchedulesController < ApplicationController
+  include DurationSaturator
+  before_action -> { saturate_duration_param([:schedule]) }, only: %i[create update]
   before_action :set_schedule, only: %i[show edit update destroy]
   skip_after_action :verify_authorized, except: :index
   skip_after_action :verify_policy_scoped, except: :index
@@ -15,6 +17,7 @@ class SchedulesController < ApplicationController
     end
     respond_to do |format|
       format.html { render :index, locals: {schedules: @schedules, pagy: @pagy} }
+      format.turbo_stream
       format.json { render json: @schedules }
     end
   end
@@ -29,7 +32,7 @@ class SchedulesController < ApplicationController
 
   # GET /schedules/new
   def new
-    @schedule = Schedule.new(start_date: Time.current.utc, end_date: Time.current.utc + 24.hours)
+    @schedule = Schedule.new_default
   end
 
   # GET /schedules/1/edit
@@ -39,7 +42,7 @@ class SchedulesController < ApplicationController
   # POST /schedules or /schedules.json
   def create
     @schedule = Schedule.new(schedule_params)
-    set_missing_values
+    @schedule.set_end_date
 
     respond_to do |format|
       if @schedule.save
@@ -62,7 +65,6 @@ class SchedulesController < ApplicationController
 
   # PATCH/PUT /schedules/1 or /schedules/1.json
   def update
-    set_missing_values
     respond_to do |format|
       if @schedule.update(schedule_params)
         format.html { redirect_to schedule_url(@schedule), notice: "Schedule was successfully updated." }
@@ -95,38 +97,6 @@ class SchedulesController < ApplicationController
 
   private
 
-  def set_missing_values
-    set_end_date
-    set_duration
-  end
-
-  # Sets the end date for the schedule if it is not already present.
-  # The end date is calculated based on the schedule pattern, start date, and duration, to be the end of the final occurrence.
-  def set_end_date
-    return if @schedule.end_date.present?
-
-    if @schedule.schedule_pattern.present?
-      pattern = @schedule.schedule_pattern
-      @schedule.end_date = if pattern[:until].present?
-        pattern[:until][:time]
-      elsif @schedule.duration.present?
-        if pattern[:count]
-          @schedule.make_icecube_schedule.last + @schedule.duration.minutes
-        else
-          @schedule.start_date + @schedule.duration.minutes
-        end
-      end
-    elsif @schedule.duration.present? && @schedule.start_date.present?
-      @schedule.end_date = @schedule.start_date + @schedule.duration.minutes
-    end
-  end
-
-  def set_duration
-    if @schedule.start_date.present? && @schedule.end_date.present? && (@schedule.duration.nil? || !@schedule.duration.present?)
-      @schedule.duration = (@schedule.end_date - @schedule.start_date).to_i
-    end
-  end
-
   # Use callbacks to share common setup or constraints between actions.
   def set_schedule
     @schedule = Schedule.find(params[:id])
@@ -134,7 +104,7 @@ class SchedulesController < ApplicationController
 
   # `duration` is length of time in seconds
   def schedule_params
-    params.require(:schedule).permit(:name, :user_id, :start_date, :end_date, :duration, :frequency, :description, :schedule_pattern, :query,
-      availability_schedules_attributes: [:id, :availability_id, :schedule_id, :_destroy])
+    params.require(:schedule).permit(:name, :user_id, :start_date, :end_date, :duration, :duration_days, :duration_hours, :duration_minutes, :frequency, :description, :schedule_pattern, :query,
+                                     availability_schedules_attributes: [:id, :availability_id, :schedule_id, :_destroy])
   end
 end

@@ -6,6 +6,19 @@ class SchedulePolicy < ApplicationPolicy
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
   class Scope < ApplicationPolicy::Scope
+
+    def show?
+      true
+    end
+
+    def edit?
+      user.has_cached_role?(:site_admin) || record.user == user
+    end
+
+    def delete?
+      user.has_cached_role?(:site_admin) || record.user == user
+    end
+
     def resolve
       if user.has_role?(:site_admin)
         scope.all

@@ -51,3 +51,6 @@ application.register("schedule-selection", ScheduleSelectionController)
 
 import ElementToggleController from "./element_toggle_controller"
 application.register("element-toggle", ElementToggleController)
+
+import SearchController from "./search_controller"
+application.register("search", SearchController)

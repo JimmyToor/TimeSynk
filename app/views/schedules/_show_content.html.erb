@@ -5,8 +5,8 @@
     <%= render schedule %>
 
     <div>
-      <%= link_to "Edit this schedule", edit_schedule_path(schedule) %> |
-      <%= button_to "Destroy this schedule", schedule, method: :delete %>
+      <%= link_to "Edit this schedule", edit_schedule_path(schedule) if policy(schedule).edit? %>
+      <%= button_to "Destroy this schedule", schedule, method: :delete, data: { turbo_confirm: "Are you sure you want to delete this schedule?" } if policy(schedule).destroy? %>
     </div>
 
   <% end %>

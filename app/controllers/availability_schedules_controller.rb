@@ -6,13 +6,14 @@ class AvailabilitySchedulesController < ApplicationController
 
   # GET /availability_schedules or /availability_schedules.json
   def index
-    authorize @availability, :show?
+    authorize @availability, :show?, policy_class: AvailabilityPolicy if @availability.present?
     if request.format.json?
       render json: @availability.schedules, status: :ok
       return
     end
 
     @schedules = params[:query].present? ? policy_scope(Schedule).search(params[:query]) : policy_scope(Schedule)
+    authorize @schedules, :show?, policy_class: SchedulePolicy if @schedules.present?
     @pagy, @schedules = pagy(@schedules)
     respond_to do |format|
       format.html { render :index, locals: {pagy: @pagy, schedules: @schedules, availability: @availability} }

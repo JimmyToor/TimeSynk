@@ -76,4 +76,29 @@ class Schedule < ApplicationRecord
     schedule
   end
 
+  # Sets the end date for the schedule if it is not already present.
+  # The end date is calculated to be the end of the final occurrence based on the schedule pattern, start date, and duration.
+  def set_end_date
+    return if end_date.present?
+
+    if schedule_pattern.present?
+      self.pattern = schedule_pattern
+      self.end_date = if pattern[:until].present?
+        pattern[:until][:time]
+      elsif duration.present?
+        if pattern[:count]
+          make_icecube_schedule.last + duration.parts[:minutes]
+        else
+          start_date + duration.minutes
+        end
+      end
+    elsif duration.present? && start_date.present?
+      self.end_date = start_date + duration.minutes
+    end
+  end
+
+  def self.new_default
+    Schedule.new(user_id: Current.user.id, start_date: Time.current.utc, end_date: Time.current.utc + 1.hour, duration: 1.hour)
+  end
+
 end
