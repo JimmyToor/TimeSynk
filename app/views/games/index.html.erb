@@ -4,8 +4,8 @@
 <section class="bg-gray-50 dark:bg-gray-900 py-3 sm:py-5">
   <div class="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-9 gap-4">
       <% games.each do |game| %>
-        <div class="relative">
-          <%= button_tag "Create Proposal", data: { action:"game-selection#submitSelection", game_id:game.id, game_name:game.name}, class:"submit-game-btn z-auto absolute text-white transform top-0 bg-blue-700 cursor-pointer hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" %>
+        <div class="relative w-fit">
+          <%= button_tag "Create Proposal", data: { action:"game-selection#submitSelection", game_id:game.id, game_name:game.name}, class:"submit-game-btn hidden h-14 w-full z-auto absolute text-white transform top-0 bg-blue-700 cursor-pointer hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" %>
           <button type="button"
                   data-action="game-selection#select"
                   data-game-id="<%#= game.id %>"
@@ -16,17 +16,8 @@
         </div>
       <% end %>
   </div>
-  <nav class="flex flex-col items-start justify-between p-4 space-y-3 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
-    <ul class="inline-flex items-stretch -space-x-px ">
-      <li data-controller="pagy-initializer">
-          <%== pagy_nav_js(@pagy) if @pagy.pages > 1 %>
-          <noscript><%== pagy_nav(@pagy) if @pagy.pages > 1 %></noscript>
-      </li>
-    </ul>
-    <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-        <%== pagy_info @pagy %>
-      <div class="text-gray-500">Originally retrieved from IGDB</div>
-    </span>
-  </nav>
+  <%= render "shared/table_nav" do %>
+    <div class="text-gray-500">Originally retrieved from IGDB</div>
+  <% end %>
 </section>
 <% end %>
