@@ -1,6 +1,5 @@
 <%= turbo_frame_tag "modal_frame" do %>
-  <dialog id="modal_creation" tabindex="-1" class="dialog overflow-visible relative p-1 rounded-lg shadow bg-white dark:bg-gray-700" data-controller="dialog" data-dialog-title-value="New" data-dialog-target="dialog" data-action="click->dialog#backdropClose" data-dialog-open-value=true>
-    <div>
+  <dialog id="modal_creation" tabindex="-1" class="dialog overflow-visible relative justify-center items-center md:inset-0 h-fit p-1 rounded-lg shadow bg-white dark:bg-gray-700 max-h-fit" data-controller="dialog" data-dialog-title-value="New" data-dialog-target="dialog" data-action="click->dialog#backdropClose" data-dialog-open-value=true>
       <!-- Modal header -->
 
       <div class="pl-3 flex items-center justify-between border-b rounded-t dark:border-gray-600">
@@ -11,18 +10,18 @@
         <!-- Tabs -->
         <% has_proposal = local_assigns[:game_proposal] || local_assigns[:game_proposals] %>
         <div id="modal_tabs">
-        <div class="flex border-b border-gray-200 dark:border-gray-700">
-          <ul class="flex -mb-px text-sm  font-medium text-center" id="default-tab" data-tabs-toggle="#tab_content" role="tablist">
-            <% if has_proposal %>
+          <div class="flex border-b border-gray-200 dark:border-gray-700">
+            <ul class="flex -mb-px text-sm  font-medium text-center" id="default-tab" data-tabs-toggle="#tab_content" role="tablist">
+              <% if has_proposal %>
+                <li class="me-2" role="presentation">
+                    <button class="inline-block p-4 border-b-2 rounded-t-lg" id="game_session_form_tab" data-tabs-target="#game_session_form" type="button" role="tab" aria-controls="game_session_form" aria-selected="false">Game Session</button>
+                </li>
+              <% end %>
               <li class="me-2" role="presentation">
-                  <button class="inline-block p-4 border-b-2 rounded-t-lg" id="game_session_form_tab" data-tabs-target="#game_session_form" type="button" role="tab" aria-controls="game_session_form" aria-selected="false">Game Session</button>
+                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="schedule_form_tab" data-tabs-target="#schedule_form" type="button" role="tab" aria-controls="schedule_form" aria-selected="false">Schedule</button>
               </li>
-            <% end %>
-            <li class="me-2" role="presentation">
-              <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="schedule_form_tab" data-tabs-target="#schedule_form" type="button" role="tab" aria-controls="schedule_form" aria-selected="false">Schedule</button>
-            </li>
-          </ul>
-        </div>
+            </ul>
+          </div>
         </div>
         <button data-action="dialog#close" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
           <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -54,7 +53,6 @@
 
       </div>
       <%= render "shared/spinner" %>
-    </div>
 
   </dialog>
 <% end %>
