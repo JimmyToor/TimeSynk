@@ -1,3 +1,4 @@
+<%# locals: (game_proposal:, group: nil, groups: []) %>
 <div data-controller="game-selection" data-game-selection-src-value="<%= games_path %>">
   <%= form_with(model: [group, game_proposal], data: {game_selection_target:"form"}) do |form| %>
     <% if game_proposal.errors.any? %>
@@ -18,14 +19,14 @@
 
         <div>
           <%= form.label :group_id, style: "display: block mb-2" %>
-          <%= form.collection_select :group_id, Current.user.groups, :id, :name, { prompt: "Select a group" }, class: "mb-2", required: "" %>
+          <%= form.collection_select :group_id, groups, :id, :name, { prompt: "Select a group" }, class: "mb-2", required: "" %>
         </div>
       </div>
     </div>
   <% end %>
 
   <%= form_with(url:games_path, method: :get) do |form| %>
-    <label for="query" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white overflow-y-scroll">Search</label>
+    <label for="query" class="sr-only">Search</label>
     <div class="relative">
       <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">

@@ -169,6 +169,10 @@ class User < ApplicationRecord
     pending_game_proposals.count
   end
 
+  def groups_user_can_create_proposal_for
+    groups.select { |group| GroupPolicy.new(self, group).create_game_proposal? }
+  end
+
   def broadcast_role_change_for_resource(resource)
     Turbo::Streams::ActionBroadcastJob.perform_later(
       "user_roles_#{id}_#{resource.class.name.underscore}_#{resource.id}",

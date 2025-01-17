@@ -1,21 +1,22 @@
 class GameProposalsController < ApplicationController
   before_action :set_game_proposal, :set_game, only: %i[ show edit update destroy ]
-  before_action :set_group_and_game_proposals, only: %i[ index ]
-  skip_after_action :verify_authorized
+  before_action :set_groups, :set_game_proposals, only: %i[ index ]
   skip_after_action :verify_policy_scoped
 
   # GET /game_proposals or /game_proposals.json
   def index
     @game_proposals = @game_proposals.order(created_at: :desc)
     authorize @game_proposals
+    usable_groups = Current.user.groups_user_can_create_proposal_for
     respond_to do |format|
-      format.html { render :index, locals: { game_proposals: @game_proposals, groups: @groups || nil, group: @group || nil } }
+      format.html { render :index, locals: { game_proposals: @game_proposals, groups: @groups || nil, group: usable_groups.first || nil } }
       format.json { render :index, status: :ok, location: @game_proposals }
     end
   end
 
   # GET /game_proposals/1 or /game_proposals/1.json
   def show
+    authorize @game_proposal
     respond_to do |format|
       format.html {
         render :show, locals: {
@@ -31,13 +32,16 @@ class GameProposalsController < ApplicationController
   # GET /game_proposals/new
   def new
     @game_proposal = GameProposal.new(group_id: params[:group_id])
+    authorize @game_proposal
+    @groups = Current.user.groups_user_can_create_proposal_for
     respond_to do |format|
-      format.html { render :new, locals: { game_proposal: @game_proposal, group: Group.find(params[:group_id]), game_proposals: @game_proposal.group.game_proposals }}
+      format.html { render :new, locals: { game_proposal: @game_proposal, groups: @groups }}
     end
   end
 
   # GET /game_proposals/1/edit
   def edit
+    authorize @game_proposal
     @game = Game.find_by(id: @game_proposal.game_id)
   end
 
@@ -60,6 +64,7 @@ class GameProposalsController < ApplicationController
 
   # PATCH/PUT /game_proposals/1 or /game_proposals/1.json
   def update
+    authorize @game_proposal
     respond_to do |format|
       if @game_proposal.update(game_proposal_params)
         format.html { redirect_to game_proposal_url(@game_proposal), notice: "Game proposal was successfully updated." }
@@ -73,7 +78,7 @@ class GameProposalsController < ApplicationController
 
   # DELETE /game_proposals/1 or /game_proposals/1.json
   def destroy
-    @game_proposal.destroy!
+    authorize(@game_proposal).destroy!
 
     respond_to do |format|
       format.html { redirect_to game_proposals_url, notice: "Game proposal was successfully destroyed." }
@@ -85,20 +90,25 @@ class GameProposalsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_game_proposal
     @game_proposal = GameProposal.find(params[:id])
-    authorize @game_proposal
   end
 
   def set_game
     @game = Game.find_by_id!(@game_proposal.game_id)
   end
 
-  def set_group_and_game_proposals
-    if params[:group_id]
-      @group = Group.find(params[:group_id])
-      @game_proposals = GameProposal.for_group(params[:group_id])
+  def set_game_proposals
+    @game_proposals = if params[:group_id]
+      GameProposal.for_group(params[:group_id])
     else
-      @groups = Current.user.groups
-      @game_proposals = policy_scope(GameProposal)
+      policy_scope(GameProposal)
+    end
+  end
+
+  def set_groups
+    @groups = if params[:group_id]
+      Group.find(params[:group_id])
+    else
+      Current.user.groups
     end
   end
 
