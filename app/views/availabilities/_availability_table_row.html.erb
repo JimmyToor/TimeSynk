@@ -1,0 +1,15 @@
+<%# locals: (availability:) %>
+<tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+  <td class="w-4 px-4 py-3">
+    <%= link_to "View", availability, class: "bg-primary-700 text-blue-500 dark:text-white text-xs font-medium px-2 py-0.5 rounded hover:underline", data: { turbo_frame: "_top" } %>
+  </td>
+  <th scope="row" class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+    <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= availability.name %> </span>
+  </th>
+  <td class="py-2 hidden md:table-cell">
+    <span class="text-xs font-medium px-2 py-0.5 rounded text-wrap"> <%= availability.description %> </span>
+  </td>
+  <td class="py-2 hidden lg:table-cell">
+    <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= availability.schedules.map(&:name).join(",") %> </span>
+  </td>
+</tr>

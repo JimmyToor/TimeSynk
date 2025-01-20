@@ -5,7 +5,7 @@
 
     <div>
       <div>
-        <%= link_to "Edit this availability", edit_availability_path(availability) if policy(availability).edit? %>
+        <%= link_to "Edit this availability", edit_availability_path(availability), data: {turbo_frame:"_top"} if policy(availability).edit? %>
       </div>
       <div>
         <%= button_to "Destroy this availability", availability, method: :delete if policy(availability).destroy? %>

@@ -5,8 +5,13 @@ class AvailabilitiesController < ApplicationController
 
   # GET /availabilities or /availabilities.json
   def index
-    @availabilities = policy_scope(Availability)
+    @availabilities = params[:query].present? ? policy_scope(Availability).search(params[:query]) : policy_scope(Availability)
     authorize(@availabilities)
+    @pagy, @availabilities = pagy(@availabilities)
+    respond_to do |format|
+      format.html { render :index, locals: { pagy: @pagy, availabilities: @availabilities } }
+      format.turbo_stream
+    end
   end
 
   # GET /availabilities/1 or /availabilities/1.json
