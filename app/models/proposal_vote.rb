@@ -16,10 +16,11 @@ class ProposalVote < ApplicationRecord
   end
 
   def broadcast_vote_count_later
-    broadcast_render_later_to(
+    broadcast_replace_later_to(
       "vote_count_game_proposal_#{game_proposal.id}",
+      target: "vote_count_game_proposal_#{game_proposal.id}",
       partial: "game_proposals/vote_count",
-      locals: { proposal_vote: self}
+      locals: { game_proposal: game_proposal }
     )
   end
 end

@@ -1,4 +1,4 @@
-<%= turbo_stream.update_all(".vote_count_game_proposal_#{@proposal_vote.game_proposal.id}",
+<%= turbo_stream.replace_all(".vote_count_game_proposal_#{@proposal_vote.game_proposal.id}",
                             partial: "game_proposals/vote_count",
                             locals: { game_proposal: @proposal_vote.game_proposal}) %>
 
@@ -10,3 +10,7 @@
 <%= turbo_stream.update("vote_link",
                          partial: "game_proposals/vote_link",
                          locals: { game_proposal: @proposal_vote.game_proposal }) %>
+
+<%= turbo_stream.update("pending_game_proposals_count",
+                        partial: "game_proposals/pending_count",
+                        locals: {count: Current.user.pending_game_proposal_count}) %>

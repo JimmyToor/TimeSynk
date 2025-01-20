@@ -34,7 +34,7 @@
       <% end %>
 
       <div>
-        <%= turbo_frame_tag "user_roles_#{proposal_vote.user.id}", src: user_path(proposal_vote.user, group_id: proposal_vote.game_proposal.group.id, game_proposal_id: proposal_vote.game_proposal.id, game_proposal_roles: proposal_vote.user.roles_for_resource(proposal_vote.game_proposal)) %>
+        <%= turbo_frame_tag "user_roles_#{proposal_vote.user.id}", src: user_path(proposal_vote.user, group_id: proposal_vote.game_proposal.group.id, game_proposal_id: proposal_vote.game_proposal.id) %>
       </div>
     </div>
     <div data-popper-arrow></div>

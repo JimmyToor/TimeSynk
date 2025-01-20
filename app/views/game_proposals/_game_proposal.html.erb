@@ -23,7 +23,7 @@
           <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
             <%= inline_svg "icons/votes.svg", class:"h-6 w-6" %>
             <%= render 'game_proposals/vote_count', game_proposal: game_proposal %>
-            <%= turbo_stream_from dom_id(game_proposal, :vote_count) %>
+            <%= turbo_stream_from "vote_count_game_proposal_#{game_proposal.id}" %>
           </div>
         </div>
       </div>

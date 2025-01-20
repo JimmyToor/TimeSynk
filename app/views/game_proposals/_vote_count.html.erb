@@ -1,4 +1,4 @@
-<%# locals: (game_proposal:) %>
+<%# locals: (game_proposal:, proposal_vote: nil) %>
 <%= content_tag(:div, id:dom_id(game_proposal, :vote_count), class: "#{dom_id(game_proposal, :vote_count)}") do %>
   <div>
     <strong>Yes: <%= game_proposal.yes_votes.count %></strong>
