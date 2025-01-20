@@ -17,7 +17,7 @@ class Availability < ApplicationRecord
   validates :user, presence: true
 
   DEFAULT_PARAMS = {
-    name: "Default Availability",
+    name: "New Availability",
     description: ""
   }.freeze
 

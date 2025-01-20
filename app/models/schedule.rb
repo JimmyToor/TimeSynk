@@ -17,8 +17,8 @@ class Schedule < ApplicationRecord
 
   accepts_nested_attributes_for :availability_schedules, allow_destroy: true, reject_if: :all_blank
 
-  validates :name, presence: true, uniqueness: {scope: :user}, format: {with: /\A[a-zA-Z0-9\s]+\z/, message: "only allows letters, numbers, and spaces"}
-  validates :description, allow_blank: true, length: {maximum: 500}, format: {with: /\A[a-zA-Z0-9\s]+\z/, message: "only allows letters, numbers, and spaces"}
+  validates :name, presence: true, uniqueness: {scope: :user}, length: {maximum: 300}, format: {with: /\A[a-zA-Z0-9\s]+\z/, message: "only allows letters, numbers, and spaces"}
+  validates :description, allow_blank: true, length: {maximum: 300}, format: {with: /\A[a-zA-Z0-9\s]+\z/, message: "only allows letters, numbers, and spaces"}
   validates :start_date, timeliness: {on_or_before: :end_date, type: :datetime}, presence: true
   validates :end_date, timeliness: {on_or_after: :start_date, type: :datetime}
 
@@ -31,6 +31,14 @@ class Schedule < ApplicationRecord
   }
 
   store_accessor :schedule_pattern, :rule_type, :interval, :validations
+
+  DEFAULT_PARAMS = {
+    name: "New Schedule",
+    description: "",
+    start_date: Time.current.utc,
+    end_date: Time.current.utc + 1.hour,
+    duration: 1.hour
+  }
 
   # Sets the schedule pattern if valid, otherwise sets an empty hash.
   # @param new_schedule_pattern [Hash] the new schedule pattern
@@ -98,8 +106,8 @@ class Schedule < ApplicationRecord
     end
   end
 
-  def self.new_default
-    Schedule.new(user_id: Current.user.id, start_date: Time.current.utc, end_date: Time.current.utc + 1.hour, duration: 1.hour)
+  def self.new_default(user_id)
+    Schedule.new(DEFAULT_PARAMS.merge(user_id: user_id))
   end
 
 end

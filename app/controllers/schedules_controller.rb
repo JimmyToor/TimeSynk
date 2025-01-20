@@ -32,7 +32,7 @@ class SchedulesController < ApplicationController
 
   # GET /schedules/new
   def new
-    @schedule = Schedule.new_default
+    @schedule = Schedule.new_default(user_id: Current.user.id)
   end
 
   # GET /schedules/1/edit

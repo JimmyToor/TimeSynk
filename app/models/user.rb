@@ -46,7 +46,7 @@ class User < ApplicationRecord
     self.account = Account.new
   end
 
-  after_create_commit :create_default_user_availability
+  after_create_commit :create_initial_user_availability
 
   after_update if: :password_digest_previously_changed? do
     sessions.where.not(id: Current.session).delete_all
@@ -135,25 +135,27 @@ class User < ApplicationRecord
     end
   end
 
-  def create_default_user_availability
+  def create_initial_user_availability
     return unless user_availability.nil?
 
-    schedule = create_default_schedule
-    availability = schedule.availabilities.create!(name: "Default Availability", user: self)
+    availability = Availability.create!(user: self,
+                                        name: "New Availability",
+                                        description: "")
+    availability.schedules << create_initial_schedule
     self.user_availability = UserAvailability.create!(user: self, availability: availability)
   rescue ActiveRecord::RecordInvalid => e
     errors.add(:user_availability, "could not be created: #{e.message}")
   end
 
-  def create_default_schedule
+  def create_initial_schedule
     schedule_pattern = IceCube::Rule.daily(1)
     schedules.create!(
-      name: "Default Schedule",
+      name: "Always Available",
       start_date: Time.current.utc,
       end_date: 10.years.from_now,
-      duration: 24.hours.to_i,
+      duration: 1.day.to_i,
       schedule_pattern: schedule_pattern,
-      description: "Default schedule for #{username}",
+      description: "Default Schedule for #{username}",
     )
   end
 
