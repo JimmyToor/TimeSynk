@@ -49,6 +49,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
   create_table "availabilities", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.text "name", default: "New User Availability", null: false
+    t.text "description", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_availabilities_on_user_id"

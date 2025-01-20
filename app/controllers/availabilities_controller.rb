@@ -88,6 +88,7 @@ class AvailabilitiesController < ApplicationController
   def availability_params
     params.require(:availability).permit(:name,
       :user_id,
+      :description,
       availability_schedules_attributes: [:id, :schedule_id, :_destroy])
   end
 end
