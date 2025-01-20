@@ -7,7 +7,7 @@ class GamesController < ApplicationController
     @games = params[:query].present? ? Game.search_name(params[:query]) : Game.get_popular
     @pagy, @games = pagy(@games, items: 30)
     respond_to do |format|
-      format.html { render :index, locals: { games: @games, pagy: @pagy } }
+      format.html { render :index, locals: { games: @games } }
       format.turbo_stream
       format.json { render json: @games }
     end

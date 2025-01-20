@@ -7,7 +7,7 @@ class GameProposalPolicy < ApplicationPolicy
 
   def new?
     user.has_cached_role?(:site_admin) ||
-      user.has_any_role_for_resource?([:admin, :owner, :manage_all_proposals, :create_game_proposals], record.group)
+      user.has_any_role_for_resource?([:admin, :owner, :create_game_proposals], record.group)
   end
 
   def create?

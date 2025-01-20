@@ -2,42 +2,86 @@ import {Controller} from "@hotwired/stimulus"
 
 // Connects to data-controller="game-selection"
 export default class extends Controller {
-  static targets = [ "gameId", "query", "frame", "form", "spinner"]
+  static targets = [ "gameId", "form", "spinner"]
   static values = { src: String }
 
+  SELECT_ACTION = "game-selection#select"
+
   initialize() {
-    document.addEventListener("turbo:before-cache", this.removeSelection.bind(this))
+    this.deselectListener = this.deselect.bind(this)
+  }
+
+  connect() {
+    document.removeEventListener("turbo:before-cache", this.deselectListener)
+    document.addEventListener("turbo:before-cache", this.deselectListener)
+    const selected = this.element.querySelector(".selected")
+    if (!selected) return;
+
+    this.setGameAndButton(selected)
+    this.triggerSelectAnim(selected)
   }
 
   select(event) {
-    this.gameIdTarget.value = event.currentTarget.dataset.gameId
-
     const newSelected = event.target.closest("button")
-    if (this.selectedGame === newSelected) return
 
-    this.removeSelection()
+    if (this.selectedGame) {
+      const lastSelectionId = this.selectedGame.dataset.gameId
+      this.deselect()
+      if (lastSelectionId === newSelected.dataset.gameId) {
+        this.selectedGame = null
+        this.gameIdTarget.value = ""
+        return
+      }
+    }
+    this.setGameAndButton(newSelected)
+    this.triggerSelectAnim(newSelected)
+  }
+
+  triggerSelectAnim(selected) {
+    selected.classList.remove("animate-slide-down")
+    void selected.offsetWidth // Trigger reflow
+    selected.classList.add("selected", "animate-slide-down")
+  }
+
+  triggerDeselectAnim(selectedGame, submitGameButton) {
+    selectedGame.classList.remove("animate-slide-down", "selected")
+    submitGameButton.setAttribute("aria-hidden", "true")
+    selectedGame.addEventListener("animationend", this.deselectCleanup.bind(this, selectedGame), { once: true })
+    selectedGame.classList.add("animate-slide-up")
+  }
+
+  setGameAndButton(newSelected) {
     this.selectedGame = newSelected
+    this.gameIdTarget.value = this.selectedGame.dataset.gameId
     this.submitGameButton = this.selectedGame.parentElement.querySelector(".submit-game-btn")
-
-    this.submitGameButton.classList.remove("hidden")
-    this.selectedGame.classList.remove("animate-slide-down")
-    void this.selectedGame.offsetWidth // Trigger reflow
-    this.selectedGame.classList.add("selected", "animate-slide-down")
+    this.submitGameButton.setAttribute("aria-hidden", "false")
+    this.submitGameButton.disabled = false
+    this.submitGameButton.focus()
+    this.selectedGame.setAttribute("aria-label", "Deselect " + this.selectedGame.dataset.gameName)
   }
 
-  deselect(selected, submitButton) {
-    if (selected !== this.selectedGame) submitButton.classList.add("hidden")
+  enableSelectAction(selected) {
+    const currAction = selected.getAttribute('data-action') || ""
+    if (currAction.includes(this.SELECT_ACTION)) return
+    selected.setAttribute('data-action', currAction + " " + this.SELECT_ACTION)
+  }
+
+  disableSelectAction(selected) {
+    const currAction = selected.getAttribute('data-action')
+    selected.setAttribute('data-action', currAction.replace(this.SELECT_ACTION, ""))
+  }
+
+  deselectCleanup(selected) {
     selected.classList.remove("animate-slide-up")
-    void this.selectedGame.offsetWidth // Trigger reflow
+    this.enableSelectAction(selected)
   }
 
-  removeSelection() {
+  deselect() {
     if (!this.selectedGame) return;
-
-    this.selectedGame.classList.remove("animate-slide-down", "selected")
-    void this.selectedGame.offsetWidth // Trigger reflow
-    this.selectedGame.addEventListener("animationend", this.deselect.bind(this, this.selectedGame, this.submitGameButton), { once: true })
-    this.selectedGame.classList.add("animate-slide-up")
+    this.submitGameButton.disabled = true
+    this.selectedGame.setAttribute("aria-label", "Select " + this.selectedGame.dataset.gameName)
+    this.disableSelectAction(this.selectedGame)
+    this.triggerDeselectAnim(this.selectedGame, this.submitGameButton)
   }
 
   submitSelection(event) {
@@ -51,9 +95,7 @@ export default class extends Controller {
     this.formTarget.requestSubmit()
   }
 
-  resetSearch(event) {
-    event.preventDefault()
-    this.queryTarget.value = ""
-    this.frameTarget.src = this.srcValue
+  disconnect() {
+    document.removeEventListener("turbo:before-cache", this.deselectListener)
   }
 }

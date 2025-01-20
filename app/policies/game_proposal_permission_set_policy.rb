@@ -6,14 +6,17 @@ class GameProposalPermissionSetPolicy < ApplicationPolicy
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
   def edit?
-    user.has_cached_role?(:site_admin) || is_group_admin_or_owner? || is_game_proposal_owner_or_admin?
+    is_at_least_group_admin? || is_game_proposal_owner_or_admin?
   end
 
   # Expects a PermissionSet object with a resource of a GameProposal and a hash of user IDs. Hash values and other keys are ignored.
   def update?
     # only admins and owners for the group or game proposal can change roles for others, and only for users with lower permissions
     # site_admin > group_owner > group_admin > game_proposal_owner > game_proposal_admin > others
+
+    # Check if the user has the necessary permissions
     return true if is_site_admin_or_group_owner?
+    return false unless user.has_cached_role?(:admin, record.resource.group) || user.has_any_role_for_resource?([:admin,:owner], record.resource)
 
     record.users_roles.each do |user_id, _|
       return false if user_id == user.id
@@ -32,8 +35,8 @@ class GameProposalPermissionSetPolicy < ApplicationPolicy
 
   private
 
-  def is_group_admin_or_owner?
-    user.has_cached_role?(:admin, record.resource.group) || user.has_cached_role?(:owner, record.resource.group)
+  def is_at_least_group_admin?
+    user.has_cached_role?(:site_admin) || user.has_any_role_for_resource?([:admin, :owner], record.resource.group)
   end
 
   def is_game_proposal_owner_or_admin?
