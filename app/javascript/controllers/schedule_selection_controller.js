@@ -16,7 +16,6 @@ export default class extends Controller {
       this.frameTarget.src = this.frameTarget.src;
       const availabilityId = this.frameTarget.dataset.availabilityId;
       if (!availabilityId) {
-        location.reload();
         return;
       }
 
