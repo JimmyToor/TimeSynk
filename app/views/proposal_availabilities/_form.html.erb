@@ -1,3 +1,4 @@
+<%# locals:(proposal_availability:, availabilities:, game_proposal: nil) %>
 <%= form_with(model: proposal_availability.new_record? ? [game_proposal, proposal_availability] : proposal_availability) do |form| %>
   <% if proposal_availability.errors.any? %>
     <div style="color: red">
@@ -13,7 +14,7 @@
 
   <div>
     <div>
-      <%= collection_select :proposal_availability, :availability_id, @availabilities, :id, :name %>
+      <%= form.collection_select :availability_id, availabilities, :id, :name, {}, data:{action: "change->availability-selection#setCalendarAvailability", availability_selection_target:"availabilitySelectInput"} %>
     </div>
   </div>
 
@@ -26,6 +27,6 @@
   </div>
 
   <div>
-    <%= form.submit %>
+    <%= form.submit "Set Availability for Proposal: #{proposal_availability.game_proposal.game_name}" %>
   </div>
 <% end %>

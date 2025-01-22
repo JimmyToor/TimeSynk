@@ -11,15 +11,15 @@ class CalendarsController < ApplicationController
 
   def new
     respond_to do |format|
-      format.html { render partial:"shared/creation_modal", locals: set_locals, turbo_frame: "modal_frame" }
+      format.html { render partial: "shared/creation_modal", locals: get_locals}
     end
   end
 
   private
 
-  def set_locals
+  def get_locals
     locals = {}
-    locals[:schedule] = Schedule.new(user_id: Current.user.id)
+    locals[:schedule] = Schedule.new_default(Current.user.id)
 
     if params[:game_proposal_id].present?
       game_proposal = GameProposal.find(params[:game_proposal_id])

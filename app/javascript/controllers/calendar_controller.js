@@ -6,7 +6,6 @@ import listPlugin from '@fullcalendar/list';
 import interaction from '@fullcalendar/interaction';
 import CalendarService from "../services/calendar_service";
 
-
 /**
  * Main controller class for the calendar functionality.
  * Mainly concerned with UI interactions and rendering.
@@ -19,7 +18,8 @@ export default class extends Controller {
 
   static outlets = ["dialog", "flatpickr"]
 
-  static values = {frameId: { type: String, default: "modal_frame"}, containerId: { type: String, default: "modal_container"}}
+  static values = {frameId: { type: String, default: "modal_frame"}, containerId: { type: String, default: "modal_container"}, sourceId: { type: String, default: "calendarJson"}}
+
 
   initialize() {
     this.initCalendar();
@@ -66,7 +66,7 @@ export default class extends Controller {
       url: url,
       method: 'GET',
       extraParams: this.extractParams(),
-      id: 'calendarJson',
+      id: this.sourceIdValue
     }
 
     let interactive = this.data.has('interactive') ? !this.data.get('interactive') : true;
@@ -85,10 +85,11 @@ export default class extends Controller {
       eventInteractive: true,
       eventClick: interactive ? this.eventClick.bind(this) : undefined,
       eventDidMount: interactive ? this.eventDidMount.bind(this) : undefined,
-      selectable: true,
+      selectable: false,
       selectMirror: true,
-      select: interactive ? this.select.bind(this) : undefined,
-      unselectCancel: '.dialog'
+      dateClick: interactive ? this.dateClick.bind(this) : undefined,
+      unselectCancel: '.dialog',
+      height: "auto"
     });
 
     this.refreshCallback = this.calendarService.refresh.bind(this.calendarService)
@@ -106,7 +107,7 @@ export default class extends Controller {
     el.classList.add('cursor-pointer');
   }
 
-  select(info) {
+  dateClick(info) {
     let params = new URLSearchParams();
     ['groupId', 'userId', 'gameProposalId', 'availabilityId'].some(param => {
       const value = this.data.get(param);
@@ -116,10 +117,10 @@ export default class extends Controller {
       }
     });
     
-    Turbo.visit(`/calendars/new?${params.toString()}`, { frame: 'modal_frame' })
+    Turbo.visit(`/calendars/new?${params.toString()}`, { frame: this.frameIdValue })
     document.addEventListener('turbo:frame-load', (event) => {
-      if (event.target.id === 'modal_frame' && this.hasFlatpickrOutlet) {
-        this.setModalFormDates(info);
+      if (event.target.id === this.frameIdValue && this.hasFlatpickrOutlet) {
+        this.setModalFormDate(info);
       }
     }, { once: true });
   }
@@ -130,16 +131,11 @@ export default class extends Controller {
     }
   }
 
-  setModalFormDates(info) {
+  setModalFormDate(info) {
     this.flatpickrOutlets.forEach(outlet => {
       if (outlet.element.closest(`#${this.containerIdValue}`)) {
         if (outlet.hasStartDateTarget) {
-          outlet.startDatePicker.setDate(info.start);
-        }
-        // info's end time is expected to be exclusive so subtract a minute to get the actual end day
-        if (outlet.hasEndDateTarget) {
-          outlet.updateMinEndDate();
-          outlet.endDatePicker.setDate(new Date(info.end.getTime()) - 60000);
+          outlet.startDatePicker.setDate(info.date);
         }
       }
     })

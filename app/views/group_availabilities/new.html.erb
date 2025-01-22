@@ -1,9 +1,12 @@
-<h1>New group availability</h1>
+<div data-controller="availability-selection" data-availability-selection-calendar-outlet="#calendar_holder" >
 
-<%= render "form", group: @group, group_availability: @group_availability %>
+  <%= render "form", group: @group, group_availability: @group_availability, availabilities: @availabilities %>
 
-<br>
+  <div>
+    <%= link_to "Cancel", @group %>
+  </div>
 
-<div>
-  <%= link_to "Back to group", @group %>
+  <div id="calendar_holder" data-controller="calendar" data-calendar-availability-id="<%= @availabilities.first.id %>" data-turbo-permanent>
+    <%= render partial: 'calendars/calendar' %>
+  </div>
 </div>

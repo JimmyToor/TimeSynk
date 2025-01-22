@@ -1,3 +1,4 @@
+<%# locals:(group_availability:, availabilities:, group: nil %>
 <%= form_with(model: group_availability.new_record? ? [group, group_availability] : group_availability) do |form| %>
   <% if group_availability.errors.any? %>
     <div style="color: red">
@@ -13,7 +14,7 @@
 
   <div>
     <div>
-      <%= collection_select :group_availability, :availability_id, @availabilities, :id, :name %>
+      <%= collection_select :group_availability, :availability_id, @availabilities, :id, :name, {}, data:{action: "change->availability-selection#setCalendarAvailability", availability_selection_target:"availabilitySelectInput"}  %>
     </div>
   </div>
 
@@ -26,6 +27,6 @@
   </div>
 
   <div>
-    <%= form.submit %>
+    <%= form.submit "Set Availability for Group: #{group_availability.group.name}" %>
   </div>
 <% end %>

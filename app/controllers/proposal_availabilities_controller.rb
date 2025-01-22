@@ -16,6 +16,9 @@ class ProposalAvailabilitiesController < ApplicationController
 
   # GET /proposal_availabilities/new
   def new
+    if @game_proposal.proposal_availabilities.where(user_id: Current.user.id).exists?
+      redirect_to edit_proposal_availability_path(@game_proposal.proposal_availabilities.find_by(user_id: Current.user.id))
+    end
     @proposal_availability = @game_proposal.proposal_availabilities.build(user_id: Current.user.id, game_proposal_id: params[:game_proposal_id])
   end
 

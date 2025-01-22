@@ -1,13 +1,14 @@
 <p style="color: green"><%= notice %></p>
 
 <%= render @group_availability %>
-
+<% group = @group_availability.group %>
 <div>
   <%= link_to "Edit this group availability", edit_group_availability_path(@group_availability) %> |
-  <%= link_to "Back to group", group_path(@group_availability.group) %>
+  <%= link_to "Back to #{group.name}", group_path(group) %>
 
   <%= button_to "Destroy this group availability", @group_availability, method: :delete %>
 </div>
 
-<div id="calendar" data-controller="calendar" data-calendar-target="calendar" data-calendar-availability-id=<%= @group_availability.availability_id %>>
+<div data-controller="calendar" data-calendar-availability-id=<%= @group_availability.availability_id %> data-turbo-permanent>
+  <%= render partial: 'calendars/calendar', locals: {group: group} %>
 </div>

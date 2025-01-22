@@ -16,6 +16,9 @@ class GroupAvailabilitiesController < ApplicationController
 
   # GET /group_availabilities/new
   def new
+    if @group.group_availabilities.where(user_id: Current.user.id).exists?
+      redirect_to edit_group_availability_path(@group.group_availabilities.find_by(user_id: Current.user.id))
+    end
     @group_availability = @group.group_availabilities.build(user_id: Current.user.id, group_id: params[:group_id])
   end
 

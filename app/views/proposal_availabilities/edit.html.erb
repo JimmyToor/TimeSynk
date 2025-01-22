@@ -1,11 +1,14 @@
-<h1>Editing proposal availability</h1>
+<div data-controller="availability-selection" data-availability-selection-calendar-outlet="#calendar_holder" >
 
-<%= render "form", proposal_availability: @proposal_availability %>
+  <%= render "form", proposal_availability: @proposal_availability, availabilities: @availabilities %>
 
-<br>
+  <div>
+    <%= button_to "Unset Proposal Availability", @proposal_availability, method: :delete %>
+    <%= link_to "View Availability: #{@proposal_availability.availability.name}", game_proposal_path(@proposal_availability.game_proposal) %>
+    <%= link_to "Cancel", @proposal_availability.game_proposal %>
+  </div>
 
-<div>
-  <%= link_to "Show this proposal availability", @proposal_availability %> |
-  <%= button_to "Unset Proposal Availability", @proposal_availability, method: :delete %> |
-  <%= link_to "Back to proposal", game_proposal_path(@proposal_availability.game_proposal) %>
+  <div id="calendar_holder" data-controller="calendar" data-calendar-availability-id="<%= @availabilities.first.id %>" data-turbo-permanent>
+    <%= render partial: 'calendars/calendar' %>
+  </div>
 </div>

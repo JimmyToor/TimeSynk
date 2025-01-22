@@ -5,7 +5,7 @@
   <div class="mx-auto max-w-screen-xl ">
     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden" data-controller="search" data-search-src-value="<%= availability_schedules_path(availability_id: availability.id, format: :turbo_stream) %>">
       <%= render "availability_schedules/schedule_table_header", availability: availability  %>
-      <%= turbo_frame_tag "availability_schedule_list", src: availability_schedules_path(availability_id: availability.id, format: :turbo_stream)  do %>
+      <%= turbo_frame_tag "availability_schedule_list", src: availability_schedules_path(availability_id: availability.id, format: :turbo_stream), data: {search_target:"frame"} do %>
         Loading...
       <% end %>
     </div>

@@ -54,3 +54,6 @@ application.register("element-toggle", ElementToggleController)
 
 import SearchController from "./search_controller"
 application.register("search", SearchController)
+
+import AvailabilitySelectionController from "./availability_selection_controller"
+application.register("availability-selection", AvailabilitySelectionController)

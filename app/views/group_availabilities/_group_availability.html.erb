@@ -2,17 +2,17 @@
 
   <p>
     <strong>Schedules:</strong>
-    <%= group_availability.schedule_ids %>
+    <%= availability.schedules.map(&:name).join(",") %>
   </p>
 
   <p>
     <strong>User:</strong>
-    <%= group_availability.user_id %>
+    <%= group_availability.user.username %>
   </p>
 
   <p>
     <strong>Group:</strong>
-    <%= group_availability.group_id %>
+    <%= group_availability.group.name %>
   </p>
 
 </div>
