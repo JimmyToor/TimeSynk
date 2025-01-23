@@ -2,14 +2,14 @@
 <section class="bg-gray-50 dark:bg-gray-900 py-3 sm:py-5">
   <div class="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-9 gap-4">
     <% games.each do |game| %>
-      <div class="relative w-fit">
+      <div class="relative">
         <%= button_tag "Create Proposal", data: { action:"game-selection#submitSelection", game_id:game.id, game_name:game.name}, disabled: true, aria: {hidden: true}, class:"submit-game-btn h-14 w-full z-auto absolute text-white transform top-0 bg-blue-700 cursor-pointer hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" %>
         <button type="button"
                 data-action="game-selection#select"
                 data-game-id="<%= game.id %>"
                 data-game-name="<%= game.name %>"
                 aria-label="Select game <%= game.name %>"
-                class="select-game-btn relative hover:brightness-110 z-0 rounded-lg">
+                class="select-game-btn relative w-full hover:brightness-110 z-0 rounded-lg">
           <%= render game %>
         </button>
       </div>
