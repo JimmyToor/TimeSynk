@@ -1,11 +1,11 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 @import 'flatpickr/dist/flatpickr.min.css';
 @import 'flatpickr/dist/themes/dark.css';
-@import 'recurring_select.css';
+@import 'recurring_select_custom.css';
 @import 'calendar.css';
 @import 'pagy.css';
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 /* Dark mode defaults */
 @media (prefers-color-scheme: dark) {
