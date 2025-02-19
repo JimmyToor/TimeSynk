@@ -1,9 +1,10 @@
 class GameSessionsController < ApplicationController
   include DurationSaturator
-  before_action -> { saturate_duration_param([:game_session]) }, only: %i[create update]
-  before_action :set_game_session, only: %i[ show edit update destroy ]
-  before_action :set_game_proposal, only: %i[ new create ]
-  before_action :set_game_session_attendance, only: %i[ show update ]
+  before_action -> { populate_duration_param([:game_session]) }, only: %i[create update]
+  before_action :set_game_session, only: %i[show edit update destroy]
+  before_action :set_game_proposal, only: %i[new create]
+  before_action :set_game_session_attendance, only: %i[show update]
+  before_action :check_param_alignment, only: %i[create]
   skip_after_action :verify_policy_scoped
 
   # GET /game_sessions or /game_sessions.json
@@ -22,17 +23,18 @@ class GameSessionsController < ApplicationController
 
   # GET /game_sessions/new
   def new
-    @game_session = @game_proposal.game_sessions.build(date: Time.current.utc.iso8601, duration: 1.hour)
+    @game_session = @game_proposal.game_sessions.build(GameSession::DEFAULT_PARAMS)
     authorize @game_session
     game_proposals = params[:single_game_proposal] ? nil : @game_proposal.group.game_proposals
 
     respond_to do |format|
-      format.html { render :new, locals: {game_session: @game_session, game_proposals: game_proposals }}
+      format.html { render :new, locals: {game_session: @game_session, game_proposals: game_proposals} }
       format.turbo_stream {
         render turbo_stream: turbo_stream.replace(
           "game_session_form",
           partial: "game_sessions/form",
-          locals: {game_session: @game_session, game_proposal: @game_proposal, game_proposals: game_proposals})
+          locals: {game_session: @game_session, game_proposal: @game_proposal, game_proposals: game_proposals}
+        )
       }
     end
   end
@@ -40,14 +42,14 @@ class GameSessionsController < ApplicationController
   # GET /game_sessions/1/edit
   def edit
     respond_to do |format|
-      format.html { 
-        render :edit, locals: {game_session: @game_session, groups: Current.user.groups} }
+      format.html {
+        render :edit, locals: {game_session: @game_session, groups: Current.user.groups}
+      }
     end
   end
 
   # POST /game_sessions or /game_sessions.json
   def create
-    # TODO: Don't allow users to make sessions for another proposal i.e. game_proposal_id in strong params should match the current proposal's id (from the url params).
     @game_session = authorize @game_proposal.game_sessions.build(game_session_params)
     game_proposals = params[:single_game_proposal] ? nil : @game_proposal.group.game_proposals
 
@@ -59,11 +61,11 @@ class GameSessionsController < ApplicationController
         format.json { render :show, status: :created, location: @game_session }
         format.turbo_stream
       else
-        format.html { 
+        format.html {
           redirect_to new_game_proposal_game_session_path(@game_proposal),
-          game_session: @game_session,
-          game_proposals: game_proposals,
-          status: :unprocessable_entity
+            game_session: @game_session,
+            game_proposals: game_proposals,
+            status: :unprocessable_entity
         }
         format.json { render json: @game_session.errors, status: :unprocessable_entity }
         format.turbo_stream {
@@ -91,7 +93,7 @@ class GameSessionsController < ApplicationController
       else
         format.html { render :edit, game_session: @game_session, groups: Current.user.groups, status: :unprocessable_entity }
         format.json { render json: @game_session.errors, status: :unprocessable_entity }
-        format.turbo_stream {  
+        format.turbo_stream {
           render turbo_stream: turbo_stream.replace(
             "form_game_session",
             partial: "game_sessions/form",
@@ -99,7 +101,8 @@ class GameSessionsController < ApplicationController
                      initial_game_proposal: @game_session.game_proposal,
                      game_proposals: @game_session.game_proposal.group.game_proposals,
                      groups: Current.user.groups}
-        ), status: :unprocessable_entity }
+          ), status: :unprocessable_entity
+        }
       end
     end
   end
@@ -119,11 +122,10 @@ class GameSessionsController < ApplicationController
   def set_game_proposal
     @game_proposal = GameProposal.find(params[:game_proposal_id])
   end
-    
-    # Use callbacks to share common setup or constraints between actions.
+
+  # Use callbacks to share common setup or constraints between actions.
   def set_game_session
-    @game_session = GameSession.find(params[:id])
-    authorize @game_session
+    @game_session = authorize(GameSession.find(params[:id]))
   end
 
   def set_game_session_attendance
@@ -134,7 +136,6 @@ class GameSessionsController < ApplicationController
     @group = Group.find(params[:group_id])
   end
 
-  #`duration` is length of time in minutes
   def game_session_params
     params.require(:game_session).permit(:game_proposal_id, :date, :duration, :duration_days, :duration_hours, :duration_minutes)
   end
@@ -142,5 +143,11 @@ class GameSessionsController < ApplicationController
   def user_not_authorized
     flash[:alert] = "You are not authorized to perform this action."
     redirect_to(request.referrer || root_path)
+  end
+
+  def check_param_alignment
+    if params[:game_session][:game_proposal_id].to_i != @game_proposal.id
+      render json: {error: "Game Proposal ID does not match the current game proposal."}, status: :unprocessable_entity
+    end
   end
 end

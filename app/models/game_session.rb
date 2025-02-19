@@ -1,21 +1,30 @@
-# `duration` is length of time in minutes
 class GameSession < ApplicationRecord
   resourcify
+
+  require "rounding"
 
   belongs_to :game_proposal
   has_many :game_session_attendances, dependent: :destroy
   has_one :game, through: :game_proposal
 
-  scope :for_current_user_groups, -> { joins(game_proposal: :group).where(groups: { id: Current.user.groups.ids }) }
-  scope :for_group, ->(group_id) { joins(game_proposal: :group).where(groups: { id: group_id }) }
+  scope :for_current_user_groups, -> { joins(game_proposal: :group).where(groups: {id: Current.user.groups.ids}) }
+  scope :for_group, ->(group_id) { joins(game_proposal: :group).where(groups: {id: group_id}) }
   scope :for_game_proposal, ->(game_proposal_id) { where(game_proposal_id: game_proposal_id) }
 
-  validates :duration, presence: true, numericality: { greater_than: 0, allow_nil: true }
+  validates :duration, presence: true, numericality: {greater_than: 0, allow_nil: true}
+  validate :validate_duration_length
+
+  attr_readonly :game_proposal_id
 
   after_create :create_roles
   after_save_commit :broadcast_game_session_create
   after_update_commit :broadcast_game_session_update
   after_destroy_commit :broadcast_game_session_destroy
+
+  DEFAULT_PARAMS = {
+    date: Time.current.utc.ceil_to(15.minutes),
+    duration: 1.hour
+  }
 
   def user_get_attendance(user)
     game_session_attendances.find_by(user_id: user.id)
@@ -47,20 +56,19 @@ class GameSession < ApplicationRecord
     user.username
   end
 
-  def in_range(icecube_schedule: nil, start_date: nil, end_date: nil)
-    return true unless start_date.present? && end_date.present?
+  def in_range(icecube_schedule: nil, start_time: nil, end_time: nil)
+    return true unless start_time.present? && end_time.present?
     icecube_schedule = make_icecube_schedule if icecube_schedule.nil?
-    icecube_schedule.occurs_between?(start_date, end_date)
+    icecube_schedule.occurs_between?(start_time, end_time)
   end
 
   def make_icecube_schedule
-    # ice_cube treats duration as minutes and game_session duration is already in minutes so no need to convert to seconds
     IceCube::Schedule.new(date, {
       duration: duration
     })
   end
 
-  def make_calendar_schedule(name: nil, icecube_schedule: nil)
+  def make_calendar_schedule(name: nil, icecube_schedule: nil, selectable: true)
     icecube_schedule = make_icecube_schedule if icecube_schedule.nil?
     name = Game.find(game_proposal.game_id).name if name.nil?
     schedule = icecube_schedule.to_hash
@@ -68,8 +76,12 @@ class GameSession < ApplicationRecord
     schedule[:name] = name
     schedule[:duration] = duration
     schedule[:user_id] = User.with_role(:owner, self).take.id
-
+    schedule[:selectable] = selectable
     schedule
+  end
+
+  def self.new_default(game_proposal_id)
+    GameSession.new(**DEFAULT_PARAMS, game_proposal_id: game_proposal_id)
   end
 
   private
@@ -83,7 +95,7 @@ class GameSession < ApplicationRecord
         "upcoming_game_sessions_user_#{user_id}",
         target: "upcoming_game_sessions",
         partial: "game_sessions/upcoming_game_sessions",
-        locals: { upcoming_game_sessions: user.upcoming_game_sessions, user: user }
+        locals: {upcoming_game_sessions: user.upcoming_game_sessions, user: user}
       )
       broadcast_replace_later_to(
         "game_session_#{id}",
@@ -103,7 +115,7 @@ class GameSession < ApplicationRecord
         "upcoming_game_sessions_user_#{user_id}",
         target: "upcoming_game_sessions",
         partial: "game_sessions/upcoming_game_sessions",
-        locals: { upcoming_game_sessions: user.upcoming_game_sessions, user: user }
+        locals: {upcoming_game_sessions: user.upcoming_game_sessions, user: user}
       )
     end
   end
@@ -117,8 +129,14 @@ class GameSession < ApplicationRecord
         action: :replace,
         target: "upcoming_game_sessions",
         partial: "game_sessions/upcoming_game_sessions",
-        locals: { upcoming_game_sessions: user.upcoming_game_sessions, user: user }
+        locals: {upcoming_game_sessions: user.upcoming_game_sessions, user: user}
       )
+    end
+  end
+
+  def validate_duration_length
+    if !duration.present? || duration.minutes % 15 != 0
+      errors.add(:duration, "must be a multiple of 15 minutes")
     end
   end
 end
