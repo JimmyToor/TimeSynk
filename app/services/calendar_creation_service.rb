@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
+# Service responsible for creating various types of FullCalendar-compatible calendar objects.
 class CalendarCreationService
   def initialize(params, user)
     @params = params.permit(:start, :end, :user_id, :group_id, :schedule_id, :availability_id, :game_session_id, :game_proposal_id, schedule_ids: [])
     @user = user
   end
 
+  # Creates calendars based on the provided parameters.
+  #
+  # @return [Array<Calendar>] the created calendars
   def create_calendars
     @calendars = []
     if @params[:user_id].present?
@@ -17,7 +21,7 @@ class CalendarCreationService
     end
 
     if @params[:group_id].present?
-      @calendars.concat(make_group_calendars(Group.find(@params[:group_id]), start_date: @params[:start], end_date: @params[:end]))
+      @calendars.concat(make_group_calendars(Group.find(@params[:group_id])))
     end
 
     if @params[:schedule_id].present?
@@ -39,16 +43,19 @@ class CalendarCreationService
     if @params[:game_proposal_id].present?
       game_proposal = GameProposal.find(@params[:game_proposal_id])
       @calendars << make_game_proposal_calendar(game_proposal)
-      game_proposal.group.users.each do |user|
-        @calendars << make_availability_calendar(user.nearest_proposal_availability(game_proposal))
-      end
+      @calendars.concat(make_availability_calendars(game_proposal.group.users, game_proposal: game_proposal))
     end
     @calendars
   end
 
   private
 
+  # Creates a calendar for a given schedule.
+  #
+  # @param schedule [Schedule] the schedule to create a calendar for
+  # @return [Calendar] the created calendar
   def make_schedule_calendar(schedule)
+    Pundit.authorize(@user, schedule, :show?)
     Calendar.new(
       schedules: [schedule.make_calendar_schedule],
       name: "#{schedule.name}",
@@ -57,12 +64,38 @@ class CalendarCreationService
     )
   end
 
-  def make_availability_calendar(availability) # TODO: Merge schedules for readability where possible (e.g. if two schedules are adjacent)
+  # Creates calendars for a given group.
+  #
+  # @param group [Group] the group to create calendars for
+  # @return [Array<Calendar>] the created calendars
+  def make_group_calendars(group)
+    Pundit.authorize(@user, group, :edit?)
+    calendars = []
+    calendars.concat(make_availability_calendars(group.users, group: group))
+    group.game_proposals.each do |game_proposal|
+      calendars << make_game_proposal_calendar(game_proposal)
+    end
+    calendars
+  end
+
+  # Creates a calendar for a given availability.
+  #
+  # @param availability [Availability] the availability to create a calendar for
+  # @param calendar_schedules [Array<CalendarSchedule>] the calendar schedules (optional)
+  # @param consolidate [Boolean] whether to consolidate schedules, does not apply if calendar_schedules is passed (optional)
+  # @return [Calendar] the created calendar
+  def make_availability_calendar(availability, calendar_schedules: [], consolidate: false)
+    Pundit.authorize(@user, availability, :show?)
+    if calendar_schedules.empty?
+      calendar_schedules = if consolidate
+        Schedule.consolidate_schedules(availability.schedules, @params[:start], @params[:end]).map { |schedule| schedule.make_calendar_schedule }
+      else
+        make_calendar_schedules(availability.schedules)
+      end
+    end
+
     Calendar.new(
-      schedules: availability.schedules.map { |schedule|
-        icecube_schedule = schedule.make_icecube_schedule
-        schedule.make_calendar_schedule(icecube_schedule) if schedule.in_range(icecube_schedule: icecube_schedule, start_date: @params[:start], end_date: @params[:end])
-      }.compact,
+      schedules: calendar_schedules,
       name: "Availability: #{availability.name}",
       title: availability.user.username,
       id: "calendar_availability_#{availability.id}",
@@ -70,19 +103,85 @@ class CalendarCreationService
     )
   end
 
-  def make_group_calendars(group, start_date: nil, end_date: nil)
+  # Creates availability calendars for each user in the list of users.
+  #
+  # @param users [Array<User>, CollectionProxy] the users to create availability calendars for
+  # @param group [Group] the group to use for availability context (optional)
+  # @param game_proposal [GameProposal] the game proposal to use for availability context (optional)
+  # @return [Array<Calendar>] the created calendars
+  def make_availability_calendars(users, group: nil, game_proposal: nil)
+    all_schedules = []
     calendars = []
-    group.users.each do |user|
-      availability = user.nearest_group_availability(group)
-      calendars << make_availability_calendar(availability)
+    overlap_possible = true
+
+    users.each do |user|
+      availability = if group.present?
+        user.nearest_group_availability(group)
+      elsif game_proposal.present?
+        user.nearest_proposal_availability(game_proposal)
+      else
+        user.user_availability.availability
+      end
+      next if availability.schedules == []
+
+      consolidated_schedules = Schedule.consolidate_schedules(availability.schedules, @params[:start], @params[:end])
+      # If a single user has no availability, there can't be overlapping times
+      if consolidated_schedules.empty?
+        overlap_possible = false
+      else
+        all_schedules.concat(consolidated_schedules)
+      end
+
+      calendar_schedules = consolidated_schedules.map { |schedule| schedule.make_calendar_schedule(selectable: schedule.user_id == @user.id) }
+      calendars << make_availability_calendar(availability, calendar_schedules: calendar_schedules)
     end
-    group.game_proposals.each do |game_proposal|
-      calendars << make_game_proposal_calendar(game_proposal, start_date: start_date, end_date: end_date)
-    end
+    calendars << make_overlap_calendar(all_schedules) if overlap_possible && calendars.length > 1
     calendars
   end
 
+  # Creates calendar schedules for each schedule in the list of schedules.
+  #
+  # @param schedules [Array<Schedule>] the schedules to create calendar schedules for
+  # @return [Array<CalendarSchedule>] the created calendar schedules
+  def make_calendar_schedules(schedules)
+    schedules.map { |schedule|
+      icecube_schedule = schedule.make_icecube_schedule
+
+      if schedule.in_range(icecube_schedule: icecube_schedule)
+        schedule.make_calendar_schedule(icecube_schedule)
+      end
+    }.compact
+  end
+
+  # Creates an overlap calendar for a list of schedules.
+  #
+  # @param schedules [Array<Schedule>] the schedules to find overlaps for
+  # @return [Calendar] the created overlap calendar
+  def make_overlap_calendar(schedules)
+    overlaps = Schedule.find_overlaps(schedules, @params[:start], @params[:end])
+
+    overlap_schedules = overlaps.map.with_index { |overlap, index|
+      Schedule.new(name: "Ideal Time Schedule #{index + 1}",
+        start_time: overlap.start,
+        end_time: overlap.end,
+        duration: ActiveSupport::Duration.build(overlap.end - overlap.start),
+        user_id: nil).make_calendar_schedule(selectable: false)
+    }
+
+    Calendar.new(
+      schedules: overlap_schedules,
+      name: "Everyone Available",
+      id: "calendar_ideal",
+      type: :availability
+    )
+  end
+
+  # Creates a calendar for a given game session.
+  #
+  # @param game_session [GameSession] the game session to create a calendar for
+  # @return [Calendar] the created calendar
   def make_game_session_calendar(game_session)
+    Pundit.authorize(@user, game_session.game_proposal, :show?)
     session_schedule = game_session.make_calendar_schedule
     Calendar.new(
       schedules: [session_schedule],
@@ -92,9 +191,14 @@ class CalendarCreationService
     )
   end
 
-  def make_game_proposal_calendar(game_proposal, start_date: nil, end_date: nil)
+  # Creates a calendar for a given game proposal.
+  #
+  # @param game_proposal [GameProposal] the game proposal to create a calendar for
+  # @return [Calendar] the created calendar
+  def make_game_proposal_calendar(game_proposal)
+    Pundit.authorize(@user, game_proposal, :show?)
     Calendar.new(
-      schedules: game_proposal.make_calendar_schedules(start_date: start_date, end_date: end_date),
+      schedules: game_proposal.make_calendar_schedules(start_time: @params[:start], end_time: @params[:end]),
       name: Game.find(game_proposal.game_id).name.to_s,
       id: "calendar_proposal_#{game_proposal.id}",
       type: :game

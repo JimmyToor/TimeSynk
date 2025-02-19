@@ -1,16 +1,15 @@
-import {Calendar} from '@fullcalendar/core';
+import { Calendar } from "@fullcalendar/core";
 
 /**
  * Service class for managing calendar data and functionality.
  */
 export default class CalendarService {
-
   /**
    * Constructs a new CalendarService instance.
    * @param {HTMLElement} calendarElement - The DOM element to render the calendar in.
    * @param {Object} options - Configuration options for the calendar.
    */
-  constructor(calendarElement, options ) {
+  constructor(calendarElement, options) {
     this.fullCalendarObj = this.#createFullCalendar(calendarElement, options);
     this.allCalendars = new Map(); // <calendarId, calendar>
     this.calendarIdsByType = new Map(); // <calendarType, Set<calendarId>>
@@ -29,13 +28,16 @@ export default class CalendarService {
     const options = {
       eventSourceSuccess: this.#processCalendars.bind(this),
       eventSourceFailure: function (errorObj) {
-        alert('there was an error while fetching events! Error: ' + errorObj.message);
+        alert(
+          "there was an error while fetching events! Error: " +
+            errorObj.message,
+        );
       },
     };
 
     return new Calendar(calendarEl, {
       ...options,
-      ...optionsOverrides
+      ...optionsOverrides,
     });
   }
 
@@ -48,7 +50,7 @@ export default class CalendarService {
     let events = [];
     this.resetData();
 
-    retrievedCalendars.forEach(calendar => {
+    retrievedCalendars.forEach((calendar) => {
       this.#processCalendar(calendar, events);
     });
 
@@ -77,7 +79,7 @@ export default class CalendarService {
     this.setCalendarActive(newCalendar, isActive, false);
 
     if (isActive) {
-      newCalendar.events.forEach(event => {
+      newCalendar.events.forEach((event) => {
         events.push(event);
       });
     }
@@ -98,8 +100,7 @@ export default class CalendarService {
 
     if (active) {
       currentActive.add(calendar.id);
-    }
-    else {
+    } else {
       currentActive.delete(calendar.id);
     }
 
@@ -123,7 +124,7 @@ export default class CalendarService {
       return calendar;
     }
 
-    calendar.events = calendar.schedules.map(schedule => {
+    calendar.events = calendar.schedules.map((schedule) => {
       return this.#createEvent(schedule, calendar);
     });
 
@@ -137,15 +138,20 @@ export default class CalendarService {
    * @returns {Object} A FullCalendar event object.
    */
   #createEvent(schedule, calendar) {
-    let event = { // Each event is derived from a hash that includes IceCube::Schedule data
+    let event = {
+      // Each event is derived from a hash that includes IceCube::Schedule data
       start: schedule.start_time.time,
       end: schedule.end_time.time, // End time for the initial event, not the end of recurrence
       // If the duration is a multiple of 1440 min (24 hours) and starts at midnight (T07:00:00), it lasts for entire days
-      allDay: (schedule.duration % 1440 === 0) && schedule.start_time.time.includes("T07:00:00"),
+      allDay:
+        (schedule.duration / 60) % 1440 === 0 &&
+        schedule.start_time.time.includes("T07:00:00"),
       extendedProps: {
         recordId: schedule.id,
         type: calendar.type,
+        selectable: schedule.selectable,
       },
+      duration: schedule.duration * 1000, // Convert seconds to milliseconds
     };
 
     event.title = calendar.title || calendar.name;
@@ -158,6 +164,11 @@ export default class CalendarService {
         event.backgroundColor = "green";
         event.extendedProps.route = `/availabilities/${id}`;
         break;
+      case "ideal":
+        event.id = `ideal`;
+        event.backgroundColor = "purple";
+        event.extendedProps.route = `/ideals/${schedule.id}`;
+        break;
       case "game":
         event.id = `game_${schedule.id}`;
         event.backgroundColor = "blue";
@@ -169,7 +180,9 @@ export default class CalendarService {
         event.extendedProps.route = `/schedules/${schedule.id}`;
     }
 
-    if (schedule.cal_rrule) event.rrule = this.#convertRule(schedule.cal_rrule);
+    // Don't want to include RRULE if it's not a recurring event
+    if (schedule.cal_rrule && schedule.cal_rrule.includes("RRULE"))
+      event.rrule = this.#convertRule(schedule.cal_rrule);
     return event;
   }
 
@@ -193,7 +206,7 @@ export default class CalendarService {
    */
   #updateCalendarEvents(calendar) {
     const isActive = this.calendarStates.get(calendar.id);
-    calendar.events.forEach(currEvent => {
+    calendar.events.forEach((currEvent) => {
       if (isActive) {
         this.fullCalendarObj.addEvent(currEvent, "calendarJson");
       } else {

@@ -1,3 +1,4 @@
+<%# locals: (user_availability:, availabilities: []) %>
 <%= form_with(model: user_availability) do |form| %>
   <% if user_availability.errors.any? %>
     <div style="color: red">
@@ -12,7 +13,7 @@
   <% end %>
   <div>
     <div>
-      <%= collection_select :user_availability, :availability_id, @availabilities, :id, :name %>
+      <%= collection_select :user_availability, :availability_id, @availabilities, :id, :name, {}, data:{action: "change->availability-selection#setCalendarAvailability", availability_selection_target:"availabilitySelectInput"}  %>
     </div>
   </div>
 

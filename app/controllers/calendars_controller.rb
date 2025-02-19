@@ -11,7 +11,7 @@ class CalendarsController < ApplicationController
 
   def new
     respond_to do |format|
-      format.html { render partial: "shared/creation_modal", locals: get_locals}
+      format.html { render partial: "shared/creation_modal", locals: get_locals }
     end
   end
 
@@ -44,7 +44,13 @@ class CalendarsController < ApplicationController
   end
 
   def calendar_params
-    params[:schedule_ids] = params[:schedule_ids].split(",") if params[:schedule_ids].present?
+    params[:schedule_ids] = params[:schedule_ids].present? ? params[:schedule_ids].split(",") : []
     params.permit(:start, :end, :user_id, :group_id, :schedule_id, :availability_id, :game_session_id, :game_proposal_id, schedule_ids: [])
+  end
+
+  private
+
+  def user_not_authorized
+    render json: {error: "You are not authorized to perform this action."}, status: :unauthorized
   end
 end
