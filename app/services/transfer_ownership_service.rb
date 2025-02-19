@@ -12,7 +12,7 @@ class TransferOwnershipService
   end
 
   def transfer_ownership
-    @current_owner.remove_role(:owner, @resource)
+    @current_owner.remove_role(:owner, @resource) unless @current_owner.nil?
     @new_owner.add_role(:owner, @resource)
   end
 end
