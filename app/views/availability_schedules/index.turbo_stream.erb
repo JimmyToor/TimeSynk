@@ -1,3 +1,3 @@
 <%= turbo_stream.update("availability_schedule_list",
-                        partial:"availability_schedules/availability_schedule_list",
-                        locals: {availability:@availability, schedules:@schedules, pagy:@pagy}) %>
+                        partial:"availability_schedules/table/availability_schedule_list",
+                        locals: {availability:@availability, schedules:@schedules, included_schedules: @included_schedules}) %>

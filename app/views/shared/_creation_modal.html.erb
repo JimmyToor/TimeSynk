@@ -1,7 +1,6 @@
 <%= turbo_frame_tag "modal_frame" do %>
   <dialog id="modal_creation" tabindex="-1" class="dialog overflow-visible relative justify-center items-center md:inset-0 h-fit p-1 rounded-lg shadow bg-white dark:bg-gray-700 max-h-fit" data-controller="dialog" data-dialog-title-value="New" data-dialog-target="dialog" data-action="click->dialog#backdropClose" data-dialog-open-value=true>
       <!-- Modal header -->
-
       <div class="pl-3 flex items-center justify-between border-b rounded-t dark:border-gray-600">
         <h3 id="modal_title_creation" data-dialog-title-value="New" data-dialog-target="modalTitle" class="text-lg font-semibold text-gray-900 dark:text-white">
           <%= local_assigns[:modal_title] || "New" %>

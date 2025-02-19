@@ -1,9 +1,12 @@
-<h1>Editing user availability</h1>
+<div data-controller="availability-selection" data-availability-selection-calendar-outlet="#calendar_holder" >
 
-<%= render "form", user_availability: @user_availability %>
+  <%= render "form", user_availability: @user_availability, availabilities: @availabilities %>
 
-<br>
+  <div>
+    <%= link_to "Cancel", settings_path %>
+  </div>
 
-<div>
-  <%= link_to "Show this users availability", @user_availability %> |
+  <div id="calendar_holder" data-controller="calendar" data-calendar-availability-id="<%= @user_availability&.id || @availabilities.first %>" data-turbo-permanent>
+    <%= render partial: 'calendars/calendar' %>
+  </div>
 </div>

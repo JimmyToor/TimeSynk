@@ -12,7 +12,11 @@
   <% if policy(availability).edit? %>
     <p>
       <strong>Schedules:</strong>
-      <%= availability.schedules.map(&:name).join(", ") %>
+      <% if availability.schedules.empty? %>
+        None
+      <% else %>
+        <%= availability.schedules.map(&:name).join(", ") %>
+      <% end %>
     </p>
   <% end %>
 

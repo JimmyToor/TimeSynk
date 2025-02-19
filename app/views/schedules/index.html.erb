@@ -1,10 +1,20 @@
-<%# locals: (schedules:, pagy:) %>
+<%# locals: (schedules:, availability:nil) %>
+<% frame_path = schedules_path(availability_id: availability&.id, format: :turbo_stream) %>
 <p style="color: green"><%= notice %></p>
 <section class="bg-gray-50 dark:bg-gray-900">
   <div class="mx-auto max-w-screen-xl ">
-    <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden" data-controller="search" data-search-src-value="<%= schedules_path(format: :turbo_stream) %>">
-      <%= render "schedules/schedule_table_header" %>
-      <%= turbo_frame_tag "schedule_list", src: schedules_path(format: :turbo_stream), data: {turbo_prefetch:"false", search_target: "frame"} do %>
+    <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden"
+         data-controller="search frame-reload"
+         data-search-src-value="<%= frame_path %>"
+         data-frame-reload-events-value="turbo:submit-end">
+      <%= render partial:"schedules/table/schedule_table_header" %>
+      <%= turbo_frame_tag "schedule_list",
+                          src: frame_path,
+                          data: { controller:"reload_on_restore",
+                                  reload_on_restore_src_value:frame_path,
+                                  turbo_prefetch:"false",
+                                  search_target: "frame",
+                                  frame_reload_target:"frame"} do %>
         Loading...
       <% end %>
     </div>

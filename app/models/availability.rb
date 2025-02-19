@@ -1,8 +1,8 @@
 class Availability < ApplicationRecord
   include PgSearch::Model
   pg_search_scope :search,
-                  against: [:name, :description],
-                  using: { tsearch: { prefix: true } }
+    against: [:name, :description],
+    using: {tsearch: {prefix: true}}
   belongs_to :user
   has_many :availability_schedules, dependent: :destroy, inverse_of: :availability
   has_many :schedules, through: :availability_schedules
@@ -16,6 +16,9 @@ class Availability < ApplicationRecord
   validates :description, length: {maximum: 300}
   validates :user, presence: true
 
+  before_destroy :ensure_multiple_availabilities
+  after_destroy :transfer_user_availability
+
   DEFAULT_PARAMS = {
     name: "New Availability",
     description: ""
@@ -23,5 +26,22 @@ class Availability < ApplicationRecord
 
   def username
     user.username
+  end
+
+  private
+
+  def transfer_user_availability
+    fallback_availability = user.availabilities.where.not(id: id).first
+    user_availability = User.find(user.id).user_availability
+    if user_availability&.availability == self
+      user_availability.update!(availability: fallback_availability)
+    end
+  end
+
+  def ensure_multiple_availabilities
+    if user.availabilities.count <= 1
+      errors.add(:base, "Cannot delete your only availability")
+      throw(:abort)
+    end
   end
 end

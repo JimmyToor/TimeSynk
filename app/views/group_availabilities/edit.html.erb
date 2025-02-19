@@ -7,7 +7,7 @@
     <%= link_to "Cancel", @group_availability.group %>
   </div>
 
-  <div id="calendar_holder" data-controller="calendar" data-calendar-availability-id="<%= @availabilities.first.id %>" data-turbo-permanent>
+  <div id="calendar_holder" data-controller="calendar" data-calendar-availability-id="<%= @group_availability&.id || @availabilities.first %>" data-turbo-permanent>
     <%= render partial: 'calendars/calendar' %>
   </div>
 </div>

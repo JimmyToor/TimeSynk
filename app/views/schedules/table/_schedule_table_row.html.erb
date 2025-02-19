@@ -1,5 +1,5 @@
 <%# locals: (schedule:) %>
-<tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+<tr class="hover:bg-gray-100 dark:hover:bg-gray-700 text-center">
   <td class="w-4 px-4 py-3">
     <%= link_to "View", schedule, class: "bg-primary-700 text-blue-500 dark:text-white text-xs font-medium px-2 py-0.5 rounded hover:underline", data: { turbo_frame: "_top" } %>
   </td>
@@ -10,13 +10,13 @@
     <% end %>
   </th>
   <td class="py-2 hidden md:table-cell">
-    <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= schedule.description %> </span>
+    <span class="text-xs font-medium px-2 py-0.5 rounded "> <%= schedule.description %> </span>
   </td>
   <td class="py-2 hidden lg:table-cell">
     <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= schedule.frequency %> </span>
   </td>
-  <td class="px-2 py-2 hidden xl:table-cell font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.start_date.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %><%= schedule.start_date.strftime(", %Y") unless schedule.start_date.year == Time.current.year %></td>
-  <td class="px-2 py-2 hidden xl:table-cell font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.end_date.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %><%= schedule.end_date.strftime(", %Y") unless schedule.end_date.year == Time.current.year %></td>
+  <td class="px-2 py-2 hidden xl:table-cell font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.start_time.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %><%= schedule.start_time.strftime(", %Y") unless schedule.start_time.year == Time.current.year %></td>
+  <td class="px-2 py-2 hidden xl:table-cell font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.end_time.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %><%= schedule.end_time.strftime(", %Y") unless schedule.end_time.year == Time.current.year %></td>
   <td class="py-2 hidden 2xl:table-cell font-medium text-gray-900 whitespace-nowrap dark:text-white">
     <%= format_interval(schedule.duration) %>
   </td>
@@ -37,12 +37,12 @@
       </li>
       <li>
         <div class="table-cell xl:hidden">
-          <strong class="font-semibold">Start:</strong> <span><%= schedule.start_date.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %><%= schedule.start_date.strftime(", %Y") unless schedule.start_date.year == Time.current.year %></span>
+          <strong class="font-semibold">Start:</strong> <span><%= schedule.start_time.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %><%= schedule.start_time.strftime(", %Y") unless schedule.start_time.year == Time.current.year %></span>
         </div>
       </li>
       <li>
         <div class="table-cell xl:hidden">
-          <strong class="font-semibold">End:</strong> <span><%= schedule.end_date.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %><%= schedule.end_date.strftime(", %Y") unless schedule.end_date.year == Time.current.year %></span>
+          <strong class="font-semibold">End:</strong> <span><%= schedule.end_time.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %><%= schedule.end_time.strftime(", %Y") unless schedule.end_time.year == Time.current.year %></span>
         </div>
       </li>
       <li>

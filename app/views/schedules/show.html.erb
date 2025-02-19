@@ -1,10 +1,13 @@
 <%# locals: (schedule:) %>
 <p style="color: green"><%= notice %></p>
+<%= content_tag(:div, id:dom_id(schedule, :show)) do %>
 
-<%= render partial: "schedules/show_content", locals: {schedule: schedule} %>
+  <%= render partial: "schedules/show_content", locals: {schedule: schedule} %>
 
-<%= link_to "Back to schedules", schedules_path %>
+  <%= link_to "Back to schedules", schedules_path %>
 
-<div data-controller="calendar" data-calendar-schedule-id=<%= schedule.id %> data-turbo-permanent>
-  <%= render partial: 'calendars/calendar' %>
-</div>
+  <div data-controller="calendar" data-calendar-schedule-id=<%= schedule.id %> data-turbo-permanent>
+    <%= render partial: 'calendars/calendar' %>
+  </div>
+
+<% end %>

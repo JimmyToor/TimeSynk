@@ -1,7 +1,7 @@
 class ProposalAvailabilitiesController < ApplicationController
-  before_action :set_proposal_availability, only: %i[ show edit update destroy ]
-  before_action :set_game_proposal, only: %i[ new create ]
-  before_action :set_availabilities, only: %i[ new edit create ]
+  before_action :set_proposal_availability, only: %i[show edit update destroy]
+  before_action :set_game_proposal, only: %i[new create]
+  before_action :set_availabilities, only: %i[new edit create]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
 
@@ -29,7 +29,7 @@ class ProposalAvailabilitiesController < ApplicationController
   # POST /proposal_availabilities or /proposal_availabilities.json
   def create
     @availability = Availability.find_by!(id: proposal_availability_params[:availability_id])
-    @proposal_availability = ProposalAvailability.new(proposal_availability_params)
+    @proposal_availability = @game_proposal.proposal_availabilities.build(proposal_availability_params)
 
     respond_to do |format|
       if @proposal_availability.save
@@ -67,6 +67,7 @@ class ProposalAvailabilitiesController < ApplicationController
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_proposal_availability
     @proposal_availability = ProposalAvailability.find(params[:id])

@@ -1,7 +1,7 @@
 <%= turbo_frame_tag "modal_frame" do %>
   <dialog id="modal_generic" tabindex="-1" class="dialog overflow-visible relative justify-center items-center md:inset-0 h-fit p-1 rounded-lg shadow bg-white dark:bg-gray-700 max-h-fit" data-controller="dialog" data-dialog-title-value="Edit" data-dialog-target="dialog" data-dialog-open-value=true data-action="click->dialog#backdropClose">
     <!-- Modal header -->
-    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+    <div class="flex items-center justify-between p-2 border-b rounded-t dark:border-gray-600">
       <h3 id="modal_title" data-dialog-target="modalTitle" class="text-lg font-semibold text-gray-900 dark:text-white">
         <%= local_assigns[:modal_title] || "Edit" %>
       </h3>

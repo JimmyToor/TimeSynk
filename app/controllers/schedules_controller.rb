@@ -1,8 +1,9 @@
 class SchedulesController < ApplicationController
   include DurationSaturator
-  before_action -> { saturate_duration_param([:schedule]) }, only: %i[create update]
+  before_action -> { populate_duration_param([:schedule]) }, only: %i[create update]
+  before_action :calc_end_param, only: %i[create update]
   before_action :set_schedule, only: %i[show edit update destroy]
-  skip_after_action :verify_authorized, except: :index
+  skip_after_action :verify_authorized, except: %i[index edit update destroy]
   skip_after_action :verify_policy_scoped, except: :index
 
   # GET /schedules or /schedules.json
@@ -11,12 +12,12 @@ class SchedulesController < ApplicationController
     authorize(@schedules)
     @pagy, @schedules = pagy(@schedules)
     if params[:start] && params[:end]
-      @schedules = @schedules.where("start_date >= ?", params[:start]).select do |schedule|
+      @schedules = @schedules.where("start_time >= ?", params[:start]).select do |schedule|
         schedule if schedule.make_icecube_schedule.occurs_between?(params[:start], params[:end])
       end
     end
     respond_to do |format|
-      format.html { render :index, locals: {schedules: @schedules, pagy: @pagy} }
+      format.html { render :index, locals: {schedules: @schedules} }
       format.turbo_stream
       format.json { render json: @schedules }
     end
@@ -42,7 +43,7 @@ class SchedulesController < ApplicationController
   # POST /schedules or /schedules.json
   def create
     @schedule = Schedule.new(schedule_params)
-    @schedule.set_end_date
+    @schedule.set_end_time(schedule_params[:duration]) if @schedule.duration.nil?
 
     respond_to do |format|
       if @schedule.save
@@ -65,6 +66,7 @@ class SchedulesController < ApplicationController
 
   # PATCH/PUT /schedules/1 or /schedules/1.json
   def update
+    @schedule.set_end_time(schedule_params[:duration])
     respond_to do |format|
       if @schedule.update(schedule_params)
         format.html { redirect_to schedule_url(@schedule), notice: "Schedule was successfully updated." }
@@ -85,7 +87,7 @@ class SchedulesController < ApplicationController
   end
 
   # DELETE /schedules/1 or /schedules/1.json
-  def destroy # TODO: Disallow destroy on default schedule
+  def destroy
     @schedule.destroy!
 
     respond_to do |format|
@@ -99,12 +101,25 @@ class SchedulesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_schedule
-    @schedule = Schedule.find(params[:id])
+    @schedule = authorize(Schedule.find(params[:id]))
   end
 
   # `duration` is length of time in seconds
   def schedule_params
-    params.require(:schedule).permit(:name, :user_id, :start_date, :end_date, :duration, :duration_days, :duration_hours, :duration_minutes, :frequency, :description, :schedule_pattern, :query,
-                                     availability_schedules_attributes: [:id, :availability_id, :schedule_id, :_destroy])
+    params.require(:schedule).permit(:name, :user_id, :start_time, :end_time, :availability_id, :duration, :duration_days, :duration_hours, :duration_minutes, :frequency, :description, :schedule_pattern, :query,
+      availability_schedules_attributes: [:id, :availability_id, :schedule_id, :_destroy])
+  end
+
+  def parts_to_duration
+    if params[:schedule][:duration_days].present? && params[:schedule][:duration_hours].present? && params[:schedule][:duration_minutes].present? && !params[:schedule][:duration].present?
+      params[:schedule][:duration] = Schedule.parts_to_duration(days: params[:schedule][:duration_days], hours: params[:schedule][:duration_hours], minutes: params[:schedule][:duration_minutes])
+    end
+  end
+
+  def calc_end_param
+    unless params[:schedule][:end_time].present?
+      params[:schedule][:end_time] = DateTime.parse(params[:schedule][:start_time]) + params[:schedule][:duration].to_i.seconds
+    end
+    params[:schedule] = params[:schedule].except(:duration_days, :duration_hours, :duration_minutes)
   end
 end

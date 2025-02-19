@@ -1,13 +1,13 @@
 class GroupAvailabilitiesController < ApplicationController
-  before_action :set_group_availability, only: %i[ show edit update destroy ]
-  before_action :set_group, only: %i[ new create ]
-  before_action :set_availabilities, only: %i[ new edit create]
-  skip_after_action :verify_authorized
+  before_action :set_group_availability, only: %i[show edit update destroy]
+  before_action :set_group, only: %i[new create]
+  before_action :set_availabilities, only: %i[new edit create]
+  skip_after_action :verify_authorized, only: %i[index]
   skip_after_action :verify_policy_scoped
 
   # GET /group_availabilities or /group_availabilities.json
   def index
-    @group_availabilities = GroupAvailability.where(group_id: params[:group_id])
+    @group_availabilities = policy_scope(GroupAvailability).where(group_id: params[:group_id])
   end
 
   # GET /group_availabilities/1 or /group_availabilities/1.json
@@ -16,10 +16,10 @@ class GroupAvailabilitiesController < ApplicationController
 
   # GET /group_availabilities/new
   def new
-    if @group.group_availabilities.where(user_id: Current.user.id).exists?
-      redirect_to edit_group_availability_path(@group.group_availabilities.find_by(user_id: Current.user.id))
-    end
-    @group_availability = @group.group_availabilities.build(user_id: Current.user.id, group_id: params[:group_id])
+    group_availability = @group.group_availabilities.find_by(user_id: Current.user.id)
+    redirect_to edit_group_availability_path(authorize(group_availability)) if group_availability.present?
+
+    @group_availability = authorize(@group.group_availabilities.build(user_id: Current.user.id, group_id: params[:group_id]))
   end
 
   # GET /group_availabilities/1/edit
@@ -28,8 +28,8 @@ class GroupAvailabilitiesController < ApplicationController
 
   # POST /group_availabilities or /group_availabilities.json
   def create
-    @availability = Availability.find_by!(id: group_availability_params[:availability_id])
-    @group_availability = GroupAvailability.new(group_availability_params)
+    @availability = authorize(Availability.find_by!(id: group_availability_params[:availability_id]))
+    @group_availability = authorize(@group.group_availabilities.new(group_availability_params))
 
     respond_to do |format|
       if @group_availability.save
@@ -67,9 +67,10 @@ class GroupAvailabilitiesController < ApplicationController
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_group_availability
-    @group_availability = GroupAvailability.find(params[:id])
+    @group_availability = authorize(GroupAvailability.find(params[:id]))
   end
 
   def set_group

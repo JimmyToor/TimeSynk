@@ -1,15 +1,19 @@
-import Dialog from "@stimulus-components/dialog"
+import Dialog from "@stimulus-components/dialog";
 
 // Connects to data-controller="dialog"
 export default class extends Dialog {
-  static targets = ["loadingIndicator", "modalBody", "modalTitle"]
-  static values = { title: { type: String, default: "Modal" }, frameId: { type: String, default: "modal_frame" }, open: {
+  static targets = ["loadingIndicator", "modalBody", "modalTitle"];
+  static values = {
+    title: { type: String, default: "Modal" },
+    frameId: { type: String, default: "modal_frame" },
+    open: {
       type: Boolean,
       default: false,
-    } }
+    },
+  };
 
   initialize() {
-    super.initialize()
+    super.initialize();
     this.submitStartHandler = this.handleSubmitStart.bind(this);
     this.submitEndHandler = this.handleSubmitEnd.bind(this);
     this.beforeFetchRequestHandler = this.handleBeforeFetchRequest.bind(this);
@@ -33,7 +37,8 @@ export default class extends Dialog {
   }
 
   handleBeforeFetchRequest(event) {
-    if (event.detail.fetchOptions.headers["X-Sec-Purpose"] === "prefetch") return;
+    if (event.detail.fetchOptions.headers["X-Sec-Purpose"] === "prefetch")
+      return;
     if (event.target !== this.modalFrameEl || !this.hasDialogtarget) return;
 
     this.setTitle("Loading...");
@@ -43,29 +48,38 @@ export default class extends Dialog {
   }
 
   handleSubmitEnd(event) {
-    if (!this.isInModal(event)) return
+    if (!this.isInModal(event)) return;
 
     if (event.detail.success) {
       this.endLoading();
       this.fireSubmitSuccessEvent(event);
-    }
-    else {
+    } else {
       this.fireSubmitFailEvent();
       this.endLoading();
     }
   }
 
   handleSubmitStart(event) {
-    if (!this.isInModal(event)) return
+    if (!this.isInModal(event)) return;
     this.loadSubmit();
   }
 
   fireSubmitSuccessEvent(event) {
-    this.modalFrameEl.dispatchEvent(new CustomEvent("modal-form-submit-success", { bubbles: true, detail: { success: true, submitEndEvent: event } }));
+    this.modalFrameEl.dispatchEvent(
+      new CustomEvent("modal-form-submit-success", {
+        bubbles: true,
+        detail: { success: true, submitEndEvent: event },
+      }),
+    );
   }
 
   fireSubmitFailEvent(event) {
-    this.modalFrameEl.dispatchEvent(new CustomEvent("modal-form-submit-fail", { bubbles: true, detail: { success: false, submitEndEvent: event } }));
+    this.modalFrameEl.dispatchEvent(
+      new CustomEvent("modal-form-submit-fail", {
+        bubbles: true,
+        detail: { success: false, submitEndEvent: event },
+      }),
+    );
   }
 
   loadSubmit() {
@@ -89,12 +103,18 @@ export default class extends Dialog {
   }
 
   addSubmitSuccessListener(callback) {
-    this.modalFrameEl.removeEventListener("modal-form-submit-success", callback); // Remove duplicate listeners
+    this.modalFrameEl.removeEventListener(
+      "modal-form-submit-success",
+      callback,
+    ); // Remove duplicate listeners
     this.modalFrameEl.addEventListener("modal-form-submit-success", callback);
   }
 
   removeSubmitSuccessListener(callback) {
-    this.modalFrameEl.removeEventListener("modal-form-submit-success", callback);
+    this.modalFrameEl.removeEventListener(
+      "modal-form-submit-success",
+      callback,
+    );
   }
 
   startLoading() {
@@ -116,20 +136,26 @@ export default class extends Dialog {
 
   dialogTargetConnected(element) {
     if (this.openValue) {
-      this.endLoading()
+      this.endLoading();
       this.open();
       this.openValue = false; // Prevent dialog from opening on back/forward navigation
     }
   }
 
   addTurboListeners() {
-    this.modalFrameEl.addEventListener("turbo:before-fetch-request", this.beforeFetchRequestHandler);
+    this.modalFrameEl.addEventListener(
+      "turbo:before-fetch-request",
+      this.beforeFetchRequestHandler,
+    );
     document.addEventListener("turbo:submit-start", this.submitStartHandler);
     document.addEventListener("turbo:submit-end", this.submitEndHandler);
   }
 
   removeTurboListeners() {
-    this.modalFrameEl.removeEventListener("turbo:before-fetch-request", this.beforeFetchRequestHandler);
+    this.modalFrameEl.removeEventListener(
+      "turbo:before-fetch-request",
+      this.beforeFetchRequestHandler,
+    );
     document.removeEventListener("turbo:submit-start", this.submitStartHandler);
     document.removeEventListener("turbo:submit-end", this.submitEndHandler);
   }

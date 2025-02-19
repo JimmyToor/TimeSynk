@@ -1,7 +1,6 @@
 class AvailabilitiesController < ApplicationController
-  before_action :set_availability, only: %i[ show edit update destroy ]
-  before_action :set_schedules, only: %i[ new edit create ]
-  before_action :set_user, only: %i[ create ]
+  before_action :set_availability, only: %i[show edit update destroy]
+  before_action :set_schedules, only: %i[new edit create]
 
   # GET /availabilities or /availabilities.json
   def index
@@ -9,7 +8,7 @@ class AvailabilitiesController < ApplicationController
     authorize(@availabilities)
     @pagy, @availabilities = pagy(@availabilities)
     respond_to do |format|
-      format.html { render :index, locals: { pagy: @pagy, availabilities: @availabilities } }
+      format.html { render :index, locals: {pagy: @pagy, availabilities: @availabilities} }
       format.turbo_stream
     end
   end
@@ -24,7 +23,7 @@ class AvailabilitiesController < ApplicationController
     @pagy, @schedules = pagy(@schedules)
 
     respond_to do |format|
-      format.html { render :new, locals: { pagy: @pagy, schedules: @schedules, availability: @availability } }
+      format.html { render :new, locals: {schedules: @schedules, availability: @availability} }
     end
   end
 
@@ -32,7 +31,7 @@ class AvailabilitiesController < ApplicationController
   def edit
     @pagy, @schedules = pagy(@schedules)
     respond_to do |format|
-      format.html { render :edit, locals: { pagy: @pagy, schedules: @schedules, availability: @availability } }
+      format.html { render :edit, locals: {schedules: @schedules, availability: @availability} }
     end
   end
 
@@ -45,7 +44,7 @@ class AvailabilitiesController < ApplicationController
         format.html { redirect_to availability_url(@availability), notice: "Availability was successfully created." }
         format.json { render :show, status: :created, location: @availability }
       else
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { render :new, locals: {schedules: @schedules, availability: @availability}, status: :unprocessable_entity }
         format.json { render json: @availability.errors, status: :unprocessable_entity }
       end
     end
@@ -65,31 +64,30 @@ class AvailabilitiesController < ApplicationController
   end
 
   # DELETE /availabilities/1 or /availabilities/1.json
-  def destroy # TODO: Disallow destroy on default availability
-    @availability.destroy!
-
+  def destroy
     respond_to do |format|
-      format.html { redirect_to availabilities_url, notice: "Availability was successfully destroyed." }
-      format.json { head :no_content }
+      if @availability.destroy
+        format.html { redirect_to availabilities_url, notice: "Availability was successfully destroyed." }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to availabilities_url, alert: "Availability could not be destroyed." }
+        format.json { render json: @availability.errors, status: :unprocessable_entity }
+      end
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
+  # Use callbacks to share common setup or constraints between actions.
   def set_availability
     @availability = authorize(Availability.find(params[:id]))
-  end
-
-  def set_user
-    @user = User.find(params[:availability][:user_id])
-    authorize(@user)
   end
 
   def set_schedules
     @schedules = authorize(policy_scope(Schedule))
   end
 
-    # Only allow a list of trusted parameters through.
+  # Only allow a list of trusted parameters through.
   def availability_params
     params.require(:availability).permit(:name,
       :user_id,

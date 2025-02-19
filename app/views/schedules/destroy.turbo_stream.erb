@@ -1,2 +1,5 @@
-<%= turbo_stream.replace("content_schedule_#{}",
+<%= turbo_stream.replace("content_schedule_#{@schedule.id}",
                          html: raw("<p>Schedule Deleted</p>")) %>
+
+<%= turbo_stream.replace("show_schedule_#{@schedule.id}",
+                         html: raw("<p>Schedule Deleted</p><p>#{link_to 'Back to schedules', schedules_path}</p>")) %>

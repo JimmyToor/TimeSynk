@@ -1,4 +1,4 @@
-<%# locals: (availability:, schedules:, pagy:) %>
+<%# locals: (availability:, schedules:) %>
 <%= modal_wrapper(@availability.name) do %>
-  <%= render "form", availability: availability, schedules: schedules, pagy: pagy %>
+  <%= render "form", availability: availability, schedules: schedules %>
 <% end %>
