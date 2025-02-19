@@ -18,7 +18,7 @@ class AvailabilityPolicy < ApplicationPolicy
   end
 
   def update?
-    create?
+    edit?
   end
 
   def destroy?

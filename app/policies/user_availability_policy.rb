@@ -7,9 +7,7 @@ class UserAvailabilityPolicy < ApplicationPolicy
 
   class Scope < ApplicationPolicy::Scope
     # NOTE: Be explicit about which records you allow access to!
-    if user.has_role?(:admin)
-      scope.all
-    else
+    def resolve
       user.user_availability
     end
   end

@@ -12,6 +12,10 @@ class GameSessionPolicy < ApplicationPolicy
       user.has_any_role_for_resource?([:owner, :admin, :manage_all_game_proposals], record.game_proposal.group)
   end
 
+  def show?
+    user.groups.include?(record.game_proposal.group)
+  end
+
   def new?
     create?
   end

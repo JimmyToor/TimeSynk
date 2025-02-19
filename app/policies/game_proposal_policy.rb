@@ -28,7 +28,7 @@ class GameProposalPolicy < ApplicationPolicy
   end
 
   def destroy?
-    new?
+    edit?
   end
 
   def create_game_session?

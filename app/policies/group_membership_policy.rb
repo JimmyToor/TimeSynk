@@ -6,11 +6,11 @@ class GroupMembershipPolicy < ApplicationPolicy
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
   def show?
-    user.has_role?(:site_admin) || record.group.is_user_member?(user)
+    user.has_cached_role?(:site_admin) || record.group.is_user_member?(user)
   end
 
   def create?
-    true
+    user.has_cached_role?(:site_admin)
   end
 
   def destroy?
