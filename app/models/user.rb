@@ -9,7 +9,6 @@ class User < ApplicationRecord
     password_salt.last(10)
   end
 
-
   belongs_to :account
   has_many :sessions, dependent: :destroy
   has_many :group_memberships, dependent: :destroy
@@ -29,12 +28,11 @@ class User < ApplicationRecord
   has_many :proposal_availability_schedules, through: :proposal_availabilities, source: :schedules, dependent: :destroy
   has_one_attached :avatar
 
-  validates :avatar, processable_image: true, content_type: { with: [:png, :jpg, :gif], spoofing_protection: true }, size: { less_than: 1.megabyte }, if: -> { avatar.attached? }
+  validates :avatar, processable_image: true, content_type: {with: [:png, :jpg, :gif], spoofing_protection: true}, size: {less_than: 1.megabyte}, if: -> { avatar.attached? }
 
-  validates :email, uniqueness: { case_sensitive: false, allow_blank: true }, format: {with: URI::MailTo::EMAIL_REGEXP}, allow_blank: true
+  validates :email, uniqueness: {case_sensitive: false, allow_blank: true}, format: {with: URI::MailTo::EMAIL_REGEXP}, allow_blank: true
   validates :username, presence: true, uniqueness: true, length: {minimum: 3, maximum: 20}
   validates :password, allow_nil: false, length: {minimum: 8}, if: :password_digest_changed?
-
 
   normalizes :email, with: -> { _1.strip.downcase }
 
@@ -98,8 +96,6 @@ class User < ApplicationRecord
     roles.where(resource: resource).map { |role| RoleHierarchy.role_weight(role) }.min || 1000
   end
 
-  # Updates the roles for the user
-  # @param
   def update_roles(add_roles: [], remove_roles: [])
     RoleUpdateService.new(user: self, add_roles: add_roles, remove_roles: remove_roles).update_roles
   end
@@ -139,32 +135,19 @@ class User < ApplicationRecord
     return unless user_availability.nil?
 
     availability = Availability.create!(user: self,
-                                        name: "New Availability",
-                                        description: "")
-    availability.schedules << create_initial_schedule
+      name: "Default Availability",
+      description: "Default Availability for #{username}")
     self.user_availability = UserAvailability.create!(user: self, availability: availability)
   rescue ActiveRecord::RecordInvalid => e
-    errors.add(:user_availability, "could not be created: #{e.message}")
-  end
-
-  def create_initial_schedule
-    schedule_pattern = IceCube::Rule.daily(1)
-    schedules.create!(
-      name: "Always Available",
-      start_date: Time.current.utc,
-      end_date: 10.years.from_now,
-      duration: 1.day.to_i,
-      schedule_pattern: schedule_pattern,
-      description: "Default Schedule for #{username}",
-    )
+    errors.add(:user_availability, message: "could not be created: #{e.message}")
   end
 
   def upcoming_game_sessions
     game_sessions.where("date >= ?", Time.current).sort_by(&:date)
   end
-  
+
   def pending_game_proposals
-    game_proposals.reject { |proposal| proposal.user_voted_yes_or_no?(self)}.sort_by(&:created_at)
+    game_proposals.reject { |proposal| proposal.user_voted_yes_or_no?(self) }.sort_by(&:created_at)
   end
 
   def pending_game_proposal_count
