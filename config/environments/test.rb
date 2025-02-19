@@ -64,4 +64,7 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   Rails.application.config.active_job.queue_adapter = :test
+
+  # Silently ignore attempts to set readonly attributes.
+  config.active_record.raise_on_assign_to_attr_readonly = false
 end

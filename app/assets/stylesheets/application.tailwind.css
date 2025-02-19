@@ -5,7 +5,7 @@
 @import 'flatpickr/dist/themes/dark.css';
 @import 'recurring_select_custom.css';
 @import 'calendar.css';
-@import 'pagy.css';
+@import 'pagy_custom.css';
 
 /* Dark mode defaults */
 @media (prefers-color-scheme: dark) {

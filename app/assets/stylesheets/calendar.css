@@ -3,3 +3,11 @@
           color: black;
      }
 }
+
+.fc-content {
+     cursor: pointer;
+}
+
+.fc-event-main-frame {
+     display:block !important;
+}

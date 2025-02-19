@@ -1,7 +1,7 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+  config.action_mailer.default_url_options = {host: "localhost", port: 3000}
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded any time
@@ -84,5 +84,8 @@ Rails.application.configure do
 
   config.hosts << /[a-z0-9\-]+\.ngrok-free\.app/
 
-  config.assets.debug = false
+  config.assets.debug = true
+
+  # Silently ignore attempts to set readonly attributes.
+  config.active_record.raise_on_assign_to_attr_readonly = false
 end

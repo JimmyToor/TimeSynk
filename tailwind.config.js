@@ -1,42 +1,81 @@
-const colors = require('tailwindcss/colors')
+const colors = require("tailwindcss/colors");
 module.exports = {
-  mode: 'jit',
+  mode: "jit",
   content: [
-    './app/views/**/*.html.erb',
-    './app/helpers/**/*.rb',
-    './app/assets/stylesheets/**/*.css',
-    './app/javascript/**/*.js',
-    './node_modules/flowbite/**/*.js',
+    "./app/views/**/*.html.erb",
+    "./app/helpers/**/*.rb",
+    "./app/assets/stylesheets/**/*.css",
+    "./app/javascript/**/*.js",
+    "./node_modules/flowbite/**/*.js",
   ],
   theme: {
     extend: {
-      animation:  {
-        'slide-down': 'slide-down 0.5s ease forwards',
-        'slide-up': 'slide-up 0.5s ease forwards',
+      animation: {
+        "slide-down": "slide-down 0.5s ease forwards",
+        "slide-up": "slide-up 0.5s ease forwards",
       },
       keyframes: {
-        'slide-down': {
-          'from': { transform: 'translateY(0px)'},
-          'to': { transform: 'translateY(50px)'},
+        "slide-down": {
+          from: { transform: "translateY(0px)" },
+          to: { transform: "translateY(50px)" },
         },
-        'slide-up': {
-          'from': { transform: 'translateY(50px)'},
-          'to': { transform: 'translateY(0px)'},
-        }
+        "slide-up": {
+          from: { transform: "translateY(50px)" },
+          to: { transform: "translateY(0px)" },
+        },
       },
       colors: {
         primary: {
-          50: "#eff6ff",
-          100: "#dbeafe",
-          200: "#bfdbfe",
-          300: "#93c5fd",
-          400: "#60a5fa",
-          500: "#3b82f6",
-          600: "#2563eb",
-          700: "#1d4ed8",
-          800: "#1e40af",
-          900: "#1e3a8a",
-          950: "#172554",
+          50: "#e0f7fb",
+          100: "#b3eaf5",
+          200: "#80dced",
+          300: "#4dcee5",
+          400: "#2dd0f0",
+          500: "#0fb1d2",
+          600: "#0a8fb0",
+          700: "#076f8e",
+          800: "#054f6c",
+          900: "#03364f",
+          950: "#012233",
+        },
+        secondary: {
+          50: "#eae8f7",
+          100: "#c8c3ed",
+          200: "#a39ce3",
+          300: "#7e75d9",
+          400: "#5f4eca",
+          500: "#4535b1",
+          600: "#372a8e",
+          700: "#291f6b",
+          800: "#1b1448",
+          900: "#0d0925",
+          950: "#060412",
+        },
+        accent: {
+          50: "#e6f9f0",
+          100: "#c1f0db",
+          200: "#99e6c5",
+          300: "#70dcae",
+          400: "#2dd881",
+          500: "#00c65a",
+          600: "#00a34a",
+          700: "#00803a",
+          800: "#005d2a",
+          900: "#003a1a",
+          950: "#00210f",
+        },
+        error: {
+          50: "#ffe5e7",
+          100: "#ffb3b5",
+          200: "#ff8083",
+          300: "#ff4d51",
+          400: "#ff262b",
+          500: "#DF2935",
+          600: "#b0222b",
+          700: "#801921",
+          800: "#501017",
+          900: "#20080d",
+          950: "#100406",
         },
       },
       fontFamily: {
@@ -76,14 +115,11 @@ module.exports = {
         ],
       },
       screens: {
-        "xxl": '1650px'
-      }
+        xs: "475px",
+        xxl: "1650px",
+      },
     },
   },
-  plugins: [
-      require('flowbite/plugin'),
-      require('@tailwindcss/typography'),
-  ],
+  plugins: [require("flowbite/plugin"), require("@tailwindcss/typography")],
   darkMode: "media",
-
-}
+};
