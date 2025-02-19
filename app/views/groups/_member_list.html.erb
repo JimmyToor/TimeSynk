@@ -1,0 +1,14 @@
+<%# locals: (group:) %>
+<h5 class="font-normal text-gray-700 dark:text-gray-400">Members: </h5>
+
+<%= content_tag :div, id:"group_#{group.id}_member_list" do %>
+  <div id="group_member_list" class="flex">
+    <% group.group_memberships.each do |membership| %>
+
+      <%= link_to group_membership_path(membership), id: "member_list_group_membership_#{membership.id}" ,class:"flex", data: { popover_target: "popover-user-roles-#{membership.user.id}-#{group.id}", turbo_frame:"modal_frame" } do %>
+        <%= user_avatar(membership.user, size_x: 32) %>
+      <% end %>
+
+    <% end %>
+  </div>
+<% end %>

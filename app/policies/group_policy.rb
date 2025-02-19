@@ -21,7 +21,7 @@ class GroupPolicy < ApplicationPolicy
   end
 
   def create_game_proposal?
-    user.has_cached_role?(:site_admin) || user.has_any_role_for_resource?([:owner, :admin, :manage_all_proposals, :create_game_proposals], record)
+    user.has_cached_role?(:site_admin) || user.has_any_role_for_resource?([:owner, :admin, :create_game_proposals], record)
   end
 
   def create_invite?

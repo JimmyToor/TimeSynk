@@ -1,0 +1,4 @@
+<%= turbo_stream.replace(@group,
+                         partial: "groups/group",
+                         locals: { group: @group, group_membership: @group_membership }) %>
+<%= turbo_stream.remove("modal_frame") %>

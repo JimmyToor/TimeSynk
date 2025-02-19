@@ -1,31 +1,33 @@
-<%# locals: (group_membership:, group:, include_link: false) %>
-<div id="<%= dom_id group %>">
-  <div class="block max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+<%# locals: (group:, group_availability: nil, group_permission_set: nil) %>
+<%= content_tag :div, id:dom_id(group) do %>
+  <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-md dark:shadow-md
+  dark:bg-gray-800 dark:border-gray-700">
+    <div class="relative flex justify-between">
 
-    <div class="flex items-center justify-between">
-
-    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"><%= group.name %></h5>
-    <%= link_to group, class: "ml-auto", data: {turbo_frame: "_top"} do %>
-      <p class="text-sm text-gray-700 dark:text-gray-400">View -></p>
-    <% end if include_link %>
-    </div>
-    <h5 class="font-normal text-gray-700 dark:text-gray-400">Members: </h5>
-
-    <%= content_tag :div, id:"group_#{group_membership.group.id}_member_list" do %>
-      <div id="group_member_list" class="flex">
-        <% group.group_memberships.each do |membership| %>
-
-          <%= link_to group_membership_path(membership), id: "member_list_group_membership_#{membership.id}" ,class:"flex", data: { popover_target: "popover-user-roles-#{membership.user.id}-#{group.id}", turbo_frame:"modal_frame" } do %>
-            <%= user_avatar(membership.user, size_x: 32) %>
-          <% end %>
-
-        <% end %>
+      <div class="flex items-center justify-between space-x-2 mr-4">
+        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"><%= group.name %></h5>
+        <%= link_to edit_group_path(group), title: "Edit Name", data: {turbo_frame: "modal_frame"} do %>
+          <%= inline_svg_tag "icons/edit.svg" %>
+        <% end if policy(group).edit? %>
       </div>
-    <% end %>
+
+      <div class="flex align-top space-x-1">
+        <%= render partial:"options", locals: { group:group,
+                                                group_availability: group_availability,
+                                                group_permission_set: group_permission_set,
+                                                can_invite: policy(group.invites.build).new?,
+                                                can_propose: policy(group).create_game_proposal? } %>
+      </div>
+    </div>
+
+    <%= render "member_list", group: group %>
   </div>
 
   <% group.users.each do |user| %>
-    <div data-popover id="popover-user-roles-<%= user.id %>-<%= group.id %>" role="tooltip" class="absolute z-50 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-600">
+    <div data-popover id="popover-user-roles-<%= user.id %>-<%= group.id %>" role="tooltip"
+         class="absolute z-50 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300
+          bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400
+          dark:bg-gray-800 dark:border-gray-600">
       <div class="p-3">
         <%= turbo_frame_tag "user_roles_#{user.id}", src: user_path(user, group_id: group.id) %>
         <%= turbo_stream_from "user_roles_#{user.id}_group_#{group.id}" %>
@@ -33,5 +35,4 @@
       <div data-popper-arrow></div>
     </div>
   <% end %>
-
-</div>
+<% end %>

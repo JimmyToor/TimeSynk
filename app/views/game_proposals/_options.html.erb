@@ -1,0 +1,25 @@
+<%# locals: (game_proposal:, proposal_availability: nil, proposal_permission_set: nil) %>
+
+<%= link_to new_game_proposal_game_session_path(game_proposal, single_game_proposal: true), data: { turbo_frame: "modal_frame"} do %>
+  <%= inline_svg_tag "icons/add.svg" %>
+<% end if policy(game_proposal).create_game_session? %>
+
+<%  if proposal_permission_set.present? && game_proposal_permission_set_policy(proposal_permission_set).edit? %>
+  <%= render partial: "permission_sets/edit_button", locals: { permission_set: proposal_permission_set } %>
+<% end %>
+
+<% if proposal_availability.present? %>
+  <%= link_to edit_proposal_availability_path(proposal_availability), title: "Change your game proposal availability",
+              class: "flex h-fit",
+              data: { turbo_frame: "_top" } do %>
+    <%= inline_svg_tag "icons/calendar.svg" %>
+  <% end %>
+<% else %>
+  <%= link_to new_game_proposal_proposal_availability_path(game_proposal), title: "Set your game proposal availability",
+              class: "flex h-fit",
+              data: { turbo_frame: "_top" } do %>
+    <%= inline_svg_tag "icons/calendar.svg" %>
+  <% end %>
+<% end %>
+
+<%= render partial: "game_proposals/misc_dropdown_button", locals: { game_proposal: game_proposal } %>

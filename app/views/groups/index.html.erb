@@ -1,10 +1,17 @@
 <p style="color: green"><%= notice %></p>
 
-<div id="groups">
+<div id="groups" class="relative space-y-4">
   <% @group_memberships.each do |membership| %>
-    <%= link_to membership.group do %>
-      <%= render membership.group, group_membership: membership, include_link: true %>
-    <% end %>
+    <div class="group-container relative flex">
+      <%= render membership.group %>
+      <%= link_to membership.group, class: "bg-secondary-700 text-accent-500 dark:text-white text-xs font-medium px-2
+        py-0.5 rounded hover:underline -translate-x-2", data: { turbo_frame: "_top" } do %>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+             class="h-full size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+        </svg>
+      <% end %>
+    </div>
   <% end %>
 </div>
 

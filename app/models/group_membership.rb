@@ -14,12 +14,6 @@ class GroupMembership < ApplicationRecord
     roles.where(user: user)
   end
 
-  private
-
-  def delete_votes
-    user.proposal_votes.where(game_proposal: group.game_proposals).destroy_all
-  end
-
   def transfer_resources_to_group_owner
     unless user.has_cached_role?(:owner, group)
       group.game_proposals.with_role(:owner, user).each do |proposal|
@@ -29,5 +23,11 @@ class GroupMembership < ApplicationRecord
         TransferOwnershipService.new(group.owner, session).transfer_ownership
       end
     end
+  end
+
+  private
+
+  def delete_votes
+    user.proposal_votes.where(game_proposal: group.game_proposals).destroy_all
   end
 end

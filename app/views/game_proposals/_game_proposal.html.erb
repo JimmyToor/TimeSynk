@@ -1,29 +1,42 @@
-<%# locals: (game_proposal:, notice: nil, include_link: false) %>
-<%= content_tag :div, id:dom_id(game_proposal) do %>
-  <%= turbo_frame_tag dom_id(game_proposal,:content), data: {controller:"reload-on-restore", reload_on_restore_src_value:game_proposal_path(game_proposal)} do %>
-    <p style="color: green"><%= notice %></p>
-    <div class="game-display flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl dark:border-gray-700 dark:bg-gray-800" >
-      <%=image_tag(game_proposal.game.cover_image_url,
-                   alt: game_proposal.game.name,
-                   class: "game-art object-cover rounded-lg md:h-auto md:rounded-none mt-4 md:mt-0 md:rounded-s-lg w-24 h-16 ml-2",
-                   id: dom_id(game_proposal.game, :art),
-                   data: {proposal_selection_target: "gameArt"}) %>
-      <div class="flex flex-col justify-between p-4 leading-normal w-full">
-        <div class="flex items-center justify-between">
-          <h5 class="game-name font-semibold text-lg mb-2 tracking-tight text-gray-900 dark:text-white"><%= game_proposal.game_name %></h5>
-          <%= link_to game_proposal, class: "ml-auto", data: {turbo_frame: "_top"} do %>
-            <p class="text-sm text-gray-700 dark:text-gray-400">View -></p>
-          <% end if include_link %>
-        </div>
-        <div id="game_proposal_details" class="space-y-1.5">
-          <div class="flex mb-3 items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
-            <%= inline_svg "icons/group.svg", class:"h-6 w-6" %>
-            <%= game_proposal.group.name %>
+<%# locals: (game_proposal:, proposal_availability: nil, proposal_permission_set:nil, notice: nil) %>
+<%= content_tag :div, id: dom_id(game_proposal) do %>
+  <%= turbo_frame_tag dom_id(game_proposal, :content),
+                      data: { controller:                  "reload-on-restore",
+                              reload_on_restore_src_value: game_proposal_path(game_proposal) } do %>
+    <div class="game-display flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow
+      md:flex-row dark:border-gray-700 dark:bg-gray-800 w-fit">
+      <%= image_tag(game_proposal.game.cover_image_url,
+                    alt:   game_proposal.game.name,
+                    class: "game-art object-cover rounded-lg md:h-auto md:rounded-none mt-4 md:mt-0 md:rounded-s-lg w-24
+                    h-16 ml-2",
+                    id:    dom_id(game_proposal.game, :art),
+                    data:  { proposal_selection_target: "gameArt" }) %>
+
+      <div class="flex justify-between">
+        <div class="flex flex-col justify-between p-4 leading-normal">
+          <div class="relative flex justify-between">
+            <h5 class="game-name font-semibold text-lg mb-2 mr-2 tracking-tight text-gray-900 dark:text-white">
+              <%= game_proposal.game_name %>
+            </h5>
+            <div class="flex align-top space-x-1 mr-2">
+              <%= render partial: "game_proposals/options",
+                         locals:  { game_proposal:           game_proposal,
+                                    proposal_availability:   proposal_availability,
+                                    proposal_permission_set: proposal_permission_set } %>
+            </div>
           </div>
-          <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
-            <%= inline_svg "icons/votes.svg", class:"h-6 w-6" %>
-            <%= render 'game_proposals/vote_count', game_proposal: game_proposal %>
-            <%= turbo_stream_from "vote_count_game_proposal_#{game_proposal.id}" %>
+
+          <div id="game_proposal_details" class="space-y-1.5">
+            <div class="flex mb-3 items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
+              <%= inline_svg "icons/group.svg", class: "h-6 w-6" %>
+              <%= link_to "#{game_proposal.group.name}", group_path(game_proposal.group), data: {turbo_frame: "_top"} %>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
+              <%= inline_svg "icons/votes.svg", class: "h-6 w-6" %>
+              <%= render 'game_proposals/vote_count', game_proposal: game_proposal %>
+              <%= turbo_stream_from "vote_count_game_proposal_#{game_proposal.id}" %>
+            </div>
           </div>
         </div>
       </div>

@@ -1,3 +1,4 @@
+<%# locals: (proposal_vote:, group_membership:) %>
 <div id="<%= dom_id proposal_vote %>" class="flex">
 
   <div class="flex" data-popover-target="popover-proposal-vote-<%= proposal_vote.id %>">
@@ -7,7 +8,6 @@
                 proposal_vote.yes_vote ? 'checkmark.svg' : 'xmark.svg'
               end
     %>
-    <% group_membership = proposal_vote.user.membership_for_group(proposal_vote.game_proposal.group) %>
     <%= link_to group_membership, id: "proposal_vote_#{proposal_vote.id}_group_membership_#{group_membership.id}" , class: "flex", data: { turbo_frame:"modal_frame" } do %>
       <%= user_avatar(proposal_vote.user, size_x: 24, size_y: 24, svg_icon: icon) %>
     <% end %>

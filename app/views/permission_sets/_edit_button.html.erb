@@ -1,0 +1,6 @@
+<%# locals: (permission_set:) %>
+<%= link_to polymorphic_path([:edit,permission_set.resource,:permission_set]),
+            title:"Edit #{permission_set.resource.class.name} Permissions",
+            data: { turbo_frame: "modal_frame" } do %>
+  <%= inline_svg_tag "icons/shield-check.svg" %>
+<% end %>

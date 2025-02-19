@@ -7,7 +7,7 @@ class GameProposal < ApplicationRecord
   has_many :proposal_votes, dependent: :destroy, inverse_of: :game_proposal
   has_many :game_sessions, dependent: :destroy, inverse_of: :game_proposal
   has_many :proposal_availabilities, dependent: :destroy
-  
+
   scope :for_current_user_groups, -> { where(group_id: Current.user.groups.ids) }
   scope :for_group, ->(group_id) { where(group_id: group_id) }
 
@@ -16,7 +16,7 @@ class GameProposal < ApplicationRecord
 
   after_create :create_initial_votes, :create_roles
 
-  validates :game, uniqueness: { scope: :group, message: "already has a proposal for this group" }
+  validates :game, uniqueness: {scope: :group, message: "already has a proposal for this group"}
 
   def yes_votes
     proposal_votes.where(yes_vote: true)
@@ -43,7 +43,7 @@ class GameProposal < ApplicationRecord
   end
 
   def user_voted_no?(user)
-     proposal_votes.exists?(user_id: user.id, yes_vote: false)
+    proposal_votes.exists?(user_id: user.id, yes_vote: false)
   end
 
   def update_vote_counts!
@@ -57,17 +57,19 @@ class GameProposal < ApplicationRecord
     proposal_availabilities.find_by(user: user)
   end
 
-  def user_get_or_build_vote(user)
+  def user_get_or_build_vote(user, yes_vote: nil)
     vote = proposal_votes.find_by(user_id: user.id)
     return vote if vote
-    proposal_votes.build(user_id: Current.user.id)
+    proposal_votes.build(user_id: user.id, yes_vote: yes_vote)
   end
 
-  def make_calendar_schedules(start_date: nil, end_date: nil)
+  def make_calendar_schedules(start_time: nil, end_time: nil)
     game_name = Game.find(game_id).name.to_s
     game_sessions.map { |session|
       icecube_schedule = session.make_icecube_schedule
-      session.make_calendar_schedule(name: game_name, icecube_schedule: icecube_schedule) if session.in_range(icecube_schedule: icecube_schedule, start_date: start_date, end_date: end_date)
+      if session.in_range(icecube_schedule: icecube_schedule, start_time: start_time, end_time: end_time)
+        session.make_calendar_schedule(name: game_name, icecube_schedule: icecube_schedule)
+      end
     }.compact
   end
 
@@ -128,6 +130,14 @@ class GameProposal < ApplicationRecord
     end
   end
 
+  def broadcast_vote_count
+    broadcast_replace_later_to(
+      "vote_count_game_proposal_#{id}",
+      target: "vote_count_game_proposal_#{id}",
+      partial: "game_proposals/vote_count"
+    )
+  end
+
   private
 
   def create_initial_votes
@@ -139,5 +149,4 @@ class GameProposal < ApplicationRecord
   def create_roles
     Role.create_roles_for_game_proposal(self)
   end
-
 end

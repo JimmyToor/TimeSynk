@@ -1,0 +1,41 @@
+<%# locals: (group:, can_propose: false, can_invite: false) %>
+<div data-controller="dropdown" class="relative">
+
+  <button id="new-dropdown-button"
+          data-action="dropdown#toggle click@window->dropdown#hide"
+          class="relative inline-flex items-center rounded-lg text-center text-sm font-medium focus:ring-4
+            focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+          type="button">
+    <%= inline_svg_tag "icons/add.svg" %>
+  </button>
+
+  <div id="new-dropdown"
+       data-dropdown-target="menu"
+       class="absolute left-1/2 z-10 hidden w-44 origin-top
+        -translate-x-1/2 transform rounded-lg bg-slate-100 shadow transition
+        divide-y divide-gray-100 dark:bg-gray-700"
+       data-transition-enter-from="opacity-0 scale-95"
+       data-transition-enter-to="opacity-100 scale-100"
+       data-transition-leave-from="opacity-100 scale-100"
+       data-transition-leave-to="opacity-0 scale-95">
+    <ul class="py-2 text-sm text-black dark:text-white space-y-2 z-10" aria-labelledby="new-dropdown-button">
+
+      <%= content_tag :li do %>
+        <%= link_to new_group_game_proposal_path(group, nil),
+                    title: "New Game Proposal",
+                    class: "flex px-2",
+                    data:  { action: "dropdown#toggle" } do %>
+          <%= inline_svg_tag "icons/rectangle_stack.svg" %>
+          <span class="ml-2">New Game Proposal</span>
+        <% end %>
+      <% end if can_propose %>
+
+      <%= content_tag :li do %>
+        <%= link_to new_group_invite_path(group), title: "New Invite", class: "flex px-2", data: { action: "dropdown#toggle" } do %>
+          <%= inline_svg_tag "icons/envelope.svg" %>
+          <span class="ml-2">New Invite</span>
+        <% end %>
+      <% end if can_invite %>
+    </ul>
+  </div>
+</div>

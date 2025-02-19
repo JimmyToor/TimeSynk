@@ -1,5 +1,10 @@
-<% if local_assigns[:game_proposal].user_voted?(Current.user) %>
-  <%= link_to "Edit Vote", edit_proposal_vote_path(Current.user.get_vote_for_proposal(game_proposal)),  data: { turbo_frame: "modal_frame"} %>
+<%# locals: (game_proposal:) %>
+<% if game_proposal.user_voted?(Current.user) %>
+  <%= link_to edit_proposal_vote_path(Current.user.get_vote_for_proposal(game_proposal)), title: "Vote", data: { turbo_frame: "modal_frame"} do %>
+    <%= inline_svg_tag "icons/edit.svg" %>
+  <% end %>
 <% else %>
-  <%= link_to "Cast Vote", new_game_proposal_proposal_vote_path(game_proposal), data: { turbo_frame: "modal_frame"} %>
+  <%= link_to new_game_proposal_proposal_vote_path(game_proposal), title: "Vote", data: { turbo_frame: "modal_frame"} do %>
+    <%= inline_svg_tag "icons/edit.svg" %>
+  <% end %>
 <% end %>
