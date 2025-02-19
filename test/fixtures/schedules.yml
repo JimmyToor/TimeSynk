@@ -1,28 +1,55 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
+user_1_default:
   id: 1
   user_id: 1
-  start_date: 2024-06-06 14:47:35
-  end_date: 2024-06-06 15:47:35
+  start_time: 2024-06-06 14:45:00
+  end_time: 2024-06-06 15:45:00
   duration: 3600
   schedule_pattern: {"interval": 1, "rule_type": "IceCube::DailyRule", "validations": {}}
   name: Default Schedule
 
-two:
+user_1_daily_90_minutes:
   id: 2
   user_id: 1
-  start_date: 2024-12-03 14:47:35
-  end_date: 2024-12-03 17:33:35
-  duration: 10000
+  start_time: 2024-12-03 14:30:00
+  end_time: 2024-12-03 16:00:00
+  duration: 5400
   schedule_pattern: {"interval": 1, "rule_type": "IceCube::DailyRule", "validations": {}}
   name: Another Schedule
 
-three:
+user_2_default:
   id: 3
   user_id: 2
-  start_date: 2024-07-06 12:45:15
-  end_date: 2024-07-06 13:45:15
+  start_time: 2024-07-06 12:00:00
+  end_time: 2024-07-06 13:00:00
   duration: 3600
   schedule_pattern: {"interval": 1, "rule_type": "IceCube::DailyRule", "validations": {}}
   name: Default Schedule
+
+user_2_single_hour:
+  id: 4
+  user_id: 2
+  start_time: 2024-07-06 12:30:00
+  end_time: 2024-07-06 13:30:00
+  duration: 3600
+  schedule_pattern: {}
+  name: Default Schedule
+
+user_2_daily_hour:
+  id: 5
+  user_id: 2
+  start_time: 2024-07-06 14:00:00
+  end_time: 2024-07-06 15:00:00
+  duration: 3600
+  schedule_pattern: {"interval": 1, "rule_type": "IceCube::DailyRule", "validations": {}}
+  name: Default Schedule
+
+user_3_unique_name:
+  id: 6
+  user_id: 3
+  start_time: 2024-07-06 12:30:00
+  end_time: 2024-07-06 13:30:00
+  duration: 3600
+  schedule_pattern: {}
+  name: Unique Name Schedule XYZ123

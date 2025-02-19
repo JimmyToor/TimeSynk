@@ -1,6 +1,6 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
+group_1:
   id: 1
   user_id: 1
   group_id: 1
@@ -8,7 +8,7 @@ one:
   assigned_role_ids: [""]
   expires_at: <%= 1.day.from_now %>
 
-two:
+group_2:
   id: 2
   user_id: 2
   group_id: 1
@@ -16,7 +16,7 @@ two:
   assigned_role_ids: ["",6]
   expires_at: <%= 1.day.from_now %>
 
-expired:
+group_1_expired:
   id: 3
   user_id: 1
   group_id: 1

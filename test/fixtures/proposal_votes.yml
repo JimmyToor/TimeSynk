@@ -4,18 +4,16 @@
 # model remove the "{}" from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one_member: # users: 1
+proposal_2_user_2_yes_vote:
   id: 1
-  name: "Only Admin Group"
+  game_proposal_id: 2
+  user_id: 2
+  yes_vote: true
+  comment: "I love this game!"
 
-two_members: # users: 2
+proposal_2_user_3_no_vote:
   id: 2
-  name: "2 Members Group"
-
-three_members: # users: 2,3,4
-  id: 3
-  name: "3 Members Group"
-
-three_members_0_proposals:
-  id: 4
-  name: "3 Members 0 Proposals Group"
+  game_proposal_id: 2
+  user_id: 3
+  yes_vote: false
+  comment: "I hate this game!"

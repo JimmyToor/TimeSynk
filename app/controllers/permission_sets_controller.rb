@@ -1,14 +1,15 @@
 class PermissionSetsController < ApplicationController
-  before_action :set_resource, :set_users, only: %i[ edit update ]
-  before_action :set_role_changes_and_affected_users, only: %i[ update ], if: -> { params.key?("update_roles") }
+  before_action :set_resource, :set_users, only: %i[edit update]
+  before_action :set_role_changes_and_affected_users, only: %i[update], if: -> { params.key?("update_roles") }
   skip_after_action :verify_policy_scoped
   skip_after_action :verify_authorized
+  rescue_from ActionController::ParameterMissing, with: :handle_parameter_missing
 
   def edit
     @permission_set = @resource.make_permission_set(@users)
     authorize(@permission_set, policy_class: "#{@resource.class.name}PermissionSetPolicy".constantize)
 
-    render :edit, locals: { permission_set: @permission_set, roles: @resource.roles, title: @title}
+    render :edit, locals: {permission_set: @permission_set, roles: @resource.roles, title: @title}
   end
 
   def update
@@ -25,7 +26,7 @@ class PermissionSetsController < ApplicationController
       @affected_users&.each do |affected_user|
         affected_user.reload.broadcast_role_change_for_resource(@resource)
       end
-      format.html { redirect_to group_path(@group), notice: "Group permissions were successfully updated." }
+      format.html { redirect_to @resource, notice: "Permissions were successfully updated." }
       format.turbo_stream
     end
   end
@@ -34,8 +35,8 @@ class PermissionSetsController < ApplicationController
 
   def permission_set_params
     params.require(:permission_set).permit(:user_id,
-                                           :new_owner_id,
-                                           role_changes: [add_roles: [], remove_roles: []])
+      :new_owner_id,
+      role_changes: [add_roles: [], remove_roles: []])
   end
 
   def set_resource
@@ -46,7 +47,7 @@ class PermissionSetsController < ApplicationController
       @resource = GameProposal.find(params[:game_proposal_id])
       @title = @resource.game_name
     else
-      raise ActiveRecord::RecordNotFound
+      raise ActionController::ParameterMissing.new("No resource specified")
     end
   end
 
@@ -99,5 +100,9 @@ class PermissionSetsController < ApplicationController
       format.html { redirect_back_or_to @resource, alert: message }
       format.turbo_stream { render "update_fail_auth", status: :forbidden }
     end
+  end
+
+  def handle_parameter_missing(exception)
+    render json: {error: exception.message}, status: :unprocessable_entity
   end
 end

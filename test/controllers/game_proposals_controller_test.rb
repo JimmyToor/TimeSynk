@@ -2,7 +2,7 @@ require "test_helper"
 
 class GameProposalsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @game_proposal = game_proposals(:three)
+    @game_proposal = game_proposals(:group_3_game_1)
     @user = users(:three)
     @group = groups(:three_members)
     sign_in_as @user
@@ -20,14 +20,14 @@ class GameProposalsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create game_proposal" do
     assert_difference("GameProposal.count") do
-      post group_game_proposals_url @group, params: { game_proposal: { game_id: 5, group_id: @group.id} }
+      post group_game_proposals_url @group, params: {game_proposal: {game_id: 5, group_id: @group.id}}
     end
 
     assert_redirected_to game_proposal_url(GameProposal.last)
   end
 
   test "should not create game_proposal for game with existing proposal" do
-    post group_game_proposals_url @group, params: { game_proposal: { game_id: 1, group_id: @group.id} }
+    post group_game_proposals_url @group, params: {game_proposal: {game_id: 1, group_id: @group.id}}
     assert_response :unprocessable_entity
   end
 
@@ -42,7 +42,7 @@ class GameProposalsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update game_proposal" do
-    patch game_proposal_url(@game_proposal), params: { game_proposal: { game_id: @game_proposal.game_id, group_id: @game_proposal.group_id} }
+    patch game_proposal_url(@game_proposal), params: {game_proposal: {game_id: @game_proposal.game_id, group_id: @game_proposal.group_id}}
     assert_redirected_to game_proposal_url(@game_proposal)
   end
 

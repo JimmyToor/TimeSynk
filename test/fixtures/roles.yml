@@ -4,7 +4,7 @@
 # model remove the "{}" from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one:
+site_admin:
   id: 1
   name: "site_admin"
   created_at: 2024-11-15 21:09:13.989530
@@ -68,16 +68,16 @@ manage_all_proposals_1:
 
 create_any_sessions_1:
   id: 9
-  name: "create_any_sessions"
-  resource_type: "Group"
+  name: "create_game_sessions"
+  resource_type: "GameProposal"
   resource_id: 1
   created_at: 2024-11-15 21:41:30.310895
   updated_at: 2024-11-15 21:41:30.310895
 
 manage_all_sessions_1:
   id: 10
-  name: "manage_all_sessions"
-  resource_type: "Group"
+  name: "manage_all_game_sessions"
+  resource_type: "GameProposal"
   resource_id: 1
   created_at: 2024-11-15 21:41:30.314869
   updated_at: 2024-11-15 21:41:30.314869
@@ -140,16 +140,16 @@ manage_all_proposals_2:
 
 create_any_sessions_2:
   id: 18
-  name: "create_any_sessions"
-  resource_type: "Group"
+  name: "create_game_sessions"
+  resource_type: "GameProposal"
   resource_id: 2
   created_at: 2024-11-15 21:41:30.310895
   updated_at: 2024-11-15 21:41:30.310895
 
 manage_all_sessions_2:
   id: 19
-  name: "manage_all_sessions"
-  resource_type: "Group"
+  name: "manage_all_game_sessions"
+  resource_type: "GameProposal"
   resource_id: 2
   created_at: 2024-11-15 21:41:30.314869
   updated_at: 2024-11-15 21:41:30.314869
@@ -212,16 +212,16 @@ manage_all_proposals_3:
 
 create_any_sessions_3:
   id: 27
-  name: "create_any_sessions"
-  resource_type: "Group"
+  name: "create_game_sessions"
+  resource_type: "GameProposal"
   resource_id: 3
   created_at: 2024-11-15 21:41:30.310895
   updated_at: 2024-11-15 21:41:30.310895
 
 manage_all_sessions_3:
   id: 28
-  name: "manage_all_sessions"
-  resource_type: "Group"
+  name: "manage_all_game_sessions"
+  resource_type: "GameProposal"
   resource_id: 3
   created_at: 2024-11-15 21:41:30.314869
   updated_at: 2024-11-15 21:41:30.314869
@@ -279,5 +279,101 @@ game_session_3_owner:
   name: "owner"
   resource_type: "GameSession"
   resource_id: 1
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+owner_4:
+  id: 36
+  name: "owner"
+  resource_type: "Group"
+  resource_id: 4
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+admin_4:
+  id: 37
+  name: "admin"
+  resource_type: "Group"
+  resource_id: 4
+  created_at: 2024-11-15 21:41:30.300073
+  updated_at: 2024-11-15 21:41:30.300073
+
+kick_users_4:
+  id: 38
+  name: "kick_users"
+  resource_type: "Group"
+  resource_id: 4
+  created_at: 2024-11-15 21:41:30.301005
+  updated_at: 2024-11-15 21:41:30.301005
+
+manage_invites_4:
+  id: 39
+  name: "manage_invites"
+  resource_type: "Group"
+  resource_id: 4
+  created_at: 2024-11-15 21:41:30.301899
+  updated_at: 2024-11-15 21:41:30.301899
+
+create_game_proposals_4:
+  id: 40
+  name: "create_game_proposals"
+  resource_type: "Group"
+  resource_id: 4
+  created_at: 2024-11-15 21:41:30.302732
+  updated_at: 2024-11-15 21:41:30.302732
+
+manage_all_proposals_4:
+  id: 41
+  name: "manage_all_proposals"
+  resource_type: "Group"
+  resource_id: 4
+  created_at: 2024-11-15 21:41:30.306994
+  updated_at: 2024-11-15 21:41:30.306994
+
+game_proposal_4_admin:
+  id: 42
+  name: "admin"
+  resource_type: "GameProposal"
+  resource_id: 4
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+create_any_sessions_4:
+  id: 43
+  name: "create_game_sessions"
+  resource_type: "GameProposal"
+  resource_id: 4
+  created_at: 2024-11-15 21:41:30.310895
+  updated_at: 2024-11-15 21:41:30.310895
+
+manage_all_sessions_4:
+  id: 44
+  name: "manage_all_game_sessions"
+  resource_type: "GameProposal"
+  resource_id: 4
+  created_at: 2024-11-15 21:41:30.314869
+  updated_at: 2024-11-15 21:41:30.314869
+
+game_proposal_1_admin:
+  id: 45
+  name: "admin"
+  resource_type: "GameProposal"
+  resource_id: 1
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+game_proposal_2_admin:
+  id: 46
+  name: "admin"
+  resource_type: "GameProposal"
+  resource_id: 2
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+game_proposal_3_admin:
+  id: 47
+  name: "admin"
+  resource_type: "GameProposal"
+  resource_id: 3
   created_at: 2024-11-15 21:41:30.298949
   updated_at: 2024-11-15 21:41:30.298949

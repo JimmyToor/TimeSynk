@@ -10,19 +10,19 @@ class GroupsControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
     get groups_url
     assert_response :success
-    assert_match /First Group/, response.body
-    assert_match /Second Group/, response.body
+    assert_match groups(:two_members).name, response.body
+    assert_match groups(:three_members).name, response.body
   end
 
   test "should get new" do
     get new_group_url
     assert_response :success
-    assert_match /Create Group/, response.body
+    assert_match(/Create Group/, response.body)
   end
 
   test "should create group" do
     assert_difference("Group.count") do
-      post groups_url, params: { group: { name: "New Group Name" } }
+      post groups_url, params: {group: {name: "New Group Name"}}
     end
 
     assert_redirected_to group_url(Group.last)
@@ -31,17 +31,17 @@ class GroupsControllerTest < ActionDispatch::IntegrationTest
   test "should show group" do
     get group_url(@group)
     assert_response :success
-    assert_match /Second Group/, response.body
+    assert_match @group.name, response.body
   end
 
   test "should get edit" do
     get edit_group_url(@group)
     assert_response :success
-    assert_match /Update Group/, response.body
+    assert_match(/Update Group/, response.body)
   end
 
   test "should update group" do
-    patch group_url(@group), params: { group: { name: "different" } }
+    patch group_url(@group), params: {group: {name: "different"}}
     assert_redirected_to group_url(@group)
     assert_equal "different", @group.reload.name
   end

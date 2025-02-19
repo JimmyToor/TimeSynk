@@ -3,15 +3,16 @@ require "application_system_test_case"
 class GameSessionAttendancesTest < ApplicationSystemTestCase
   setup do
     @game_session_attendance = game_session_attendances(:one)
+    @game_session = game_sessions(:proposal_1_session_1)
   end
 
   test "visiting the index" do
-    visit game_session_attendances_url
+    visit game_session_game_session_attendances_url(@game_session)
     assert_selector "h1", text: "Game session attendances"
   end
 
   test "should create game session attendance" do
-    visit game_session_attendances_url
+    visit game_session_game_session_attendances_url(@game_session)
     click_on "New game session attendance"
 
     check "Attending" if @game_session_attendance.attending

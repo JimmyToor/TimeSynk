@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class SchedulesTest < ApplicationSystemTestCase
   setup do
-    @schedule = schedules(:one)
+    @schedule = schedules(:user_1_default)
   end
 
   test "visiting the index" do
@@ -15,9 +15,9 @@ class SchedulesTest < ApplicationSystemTestCase
     click_on "New schedule"
 
     fill_in "Duration", with: @schedule.duration
-    fill_in "End date", with: @schedule.end_date
+    fill_in "End date", with: @schedule.end_time
     fill_in "Schedule pattern", with: @schedule.schedule_pattern
-    fill_in "Start date", with: @schedule.start_date
+    fill_in "Start date", with: @schedule.start_time
     click_on "Create Schedule"
 
     assert_text "Schedule was successfully created"
@@ -29,9 +29,9 @@ class SchedulesTest < ApplicationSystemTestCase
     click_on "Edit this schedule", match: :first
 
     fill_in "Duration", with: @schedule.duration
-    fill_in "End date", with: @schedule.end_date
+    fill_in "End date", with: @schedule.end_time
     fill_in "Schedule pattern", with: @schedule.schedule_pattern
-    fill_in "Start date", with: @schedule.start_date
+    fill_in "Start date", with: @schedule.start_time
     click_on "Update Schedule"
 
     assert_text "Schedule was successfully updated"
