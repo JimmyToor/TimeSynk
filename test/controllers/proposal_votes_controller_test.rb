@@ -15,10 +15,8 @@ class ProposalVotesControllerTest < ActionDispatch::IntegrationTest
 
   test "should create proposal_vote" do
     game_proposal = game_proposals(:group_2_game_1)
-    Rails.logger.debug @user.proposal_votes
-    Rails.logger.debug game_proposal.inspect
     assert_difference("ProposalVote.count") do
-      post game_proposal_proposal_votes_url(game_proposal), params: {proposal_vote: {user_id: @user.id, yes_vote: true}}
+      post game_proposal_proposal_votes_url(game_proposal), params: {proposal_vote: {game_proposal_id: game_proposal.id, user_id: @user.id, yes_vote: true}}
     end
   end
 

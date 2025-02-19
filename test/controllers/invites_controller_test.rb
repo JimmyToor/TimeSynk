@@ -109,7 +109,7 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
                                                                user_id: users(:two).id}}
     end
 
-    assert_redirected_to root_url
+    assert_response :unprocessable_entity
   end
 
   test "should not create invite for another group" do
