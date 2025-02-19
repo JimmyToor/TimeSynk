@@ -1,34 +1,30 @@
 class InvitesController < ApplicationController
-  before_action :set_invite, only: %i[ edit update destroy ]
-  before_action :set_group, only: %i[ index new create ]
+  before_action :set_invite, only: %i[show edit update destroy]
+  before_action :set_group, only: %i[index new create]
+  before_action :set_roles, only: %i[new edit create]
+  before_action :check_param_alignment, only: %i[create]
 
   # GET /invites or /invites.json
   def index # list invites
     @invites = policy_scope(Invite).for_group(params[:group_id])
   end
 
-  def show # Let user accept invite, acceptance leads to create group membership
-    @invite = Invite.find(params[:id])
-    authorize(@invite)
+  def show
   end
 
   # GET /groups/1/invite
   def new
-    @invite = @group.invites.build(user_id: Current.user.id)
-    authorize(@invite)
+    @invite = authorize(@group.invites.build(user_id: Current.user.id))
   end
 
   # GET /invites/1/edit
-  def edit # Let invite owner (or admin?) edit invite
-    authorize(@invite)
+  def edit
   end
 
   # POST /invites or /invites.json
   def create
-    # TODO: Don't allow users to make invites in other users' names i.e. strong params user_id should be the current user's id.
-    # TODO: Don't allow users to create an invite to one group from another i.e. group_id in strong params should match the current group's id (from the url params).
-    @invite = @group.invites.build(invite_params)
-    authorize(@invite)
+    @invite = authorize(@group.invites.build(invite_params))
+
     respond_to do |format|
       if @invite.save
         format.html { redirect_to invite_path(@invite), notice: "Group invite was successfully created" }
@@ -43,6 +39,11 @@ class InvitesController < ApplicationController
   # PATCH/PUT /invites/1 or /invites/1.json
   def update
     authorize(@invite)
+    # Maintain existing assigned roles if user is not allowed to change them
+    if Invite.available_roles(Current.user, @invite.group).empty?
+      params[:invite][:assigned_role_ids] = @invite.assigned_role_ids
+    end
+
     respond_to do |format|
       if @invite.update(invite_params)
         format.html { redirect_to group_invites_path(@invite.group), notice: "Group invite was successfully updated." }
@@ -71,17 +72,31 @@ class InvitesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
+  # Use callbacks to share common setup or constraints between actions.
   def set_invite
     @invite = Invite.find(params[:id])
+    authorize(@invite)
   end
 
   def set_group
     @group = Group.find_by!(id: params[:group_id])
   end
 
-    # Only allow a list of trusted parameters through.
+  def set_roles
+    @group = @invite.group unless @group.present?
+    @roles = Invite.available_roles(Current.user, @group)
+  end
+
+  # Only allow a list of trusted parameters through.
   def invite_params
     params.require(:invite).permit(:user_id, :group_id, :invite_token, :expires_at, assigned_role_ids: [])
+  end
+
+  def check_param_alignment
+    group_param = params[:invite][:group_id].to_i
+    if group_param.present? && group_param != @group.id
+      render json: {error: "Group ID does not match current group."}, status: :unprocessable_entity
+    end
   end
 end

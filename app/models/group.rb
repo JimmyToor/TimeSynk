@@ -8,9 +8,9 @@ class Group < ApplicationRecord
   has_many :group_availabilities, dependent: :destroy
   has_many :invites, dependent: :destroy
 
-  scope :for_user , ->(user) { joins(:group_memberships).where(group_memberships: { user_id: user.id }) }
+  scope :for_user, ->(user) { joins(:group_memberships).where(group_memberships: {user_id: user.id}) }
 
-  validates :name, presence: true, length: { maximum: 50 }
+  validates :name, presence: true, length: {maximum: 50}
 
   def get_user_group_availability(user)
     group_availabilities.find_by(user: user)
@@ -28,4 +28,7 @@ class Group < ApplicationRecord
     Role.create_roles_for_group(self)
   end
 
+  def owner
+    User.with_role(:owner, self).first
+  end
 end

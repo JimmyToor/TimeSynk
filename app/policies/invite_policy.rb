@@ -1,11 +1,10 @@
 class InvitePolicy < ApplicationPolicy
-
   def index?
     user.has_role? :admin
   end
 
   def new?
-    user.has_role?(:site_admin) || user.has_any_role_for_resource?([:owner, :admin, :manage_invites], record.group)
+    user.has_role?(:site_admin) || (user == record.user && user.has_any_role_for_resource?([:owner, :admin, :manage_invites], record.group))
   end
 
   def show?
@@ -16,12 +15,12 @@ class InvitePolicy < ApplicationPolicy
     new?
   end
 
-  def update?
-    create?
+  def edit?
+    record.user == user || create?
   end
 
-  def edit?
-    update?
+  def update?
+    edit?
   end
 
   def destroy?

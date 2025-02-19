@@ -1,13 +1,23 @@
 <p style="color: green"><%= notice %></p>
 <p>Unable to join group.</p>
 
-<% if @group_membership.errors.any? %>
+<% if @group_membership && @group_membership.errors.any? %>
   <div style="color: red">
-    <h2><%= pluralize(@group_membership.errors.count, "error") %> prohibited this group_membership from being saved:</h2>
-
     <ul>
       <% @group_membership.errors.each do |error| %>
         <li><%= error.full_message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+
+<% if @invite && @invite.errors.any? %>
+  <div style="color: red">
+
+    <ul>
+      <% @invite.errors.each do |error| %>
+        <li><%= error.message %></li>
       <% end %>
     </ul>
   </div>

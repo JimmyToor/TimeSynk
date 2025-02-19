@@ -1,6 +1,8 @@
 <%# locals: (group_membership:, group:, invite: nil) %>
-<h1>New group membership</h1>
-
+<h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+  <% if invite.present? %>
+    You've been invited to join
+  <% end %>
+  <span class="text-blue-600 dark:text-blue-500"><%= group_membership.group.name %></span>
+</h1>
 <%= render "form", group_membership: group_membership, group: group, invite: invite %>
-
-<br>

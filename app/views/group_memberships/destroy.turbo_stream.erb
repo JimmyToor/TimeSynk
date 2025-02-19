@@ -2,4 +2,4 @@
 <%= turbo_stream.remove("group_membership_#{@group_membership.id}") %>
 
 <%= turbo_stream.replace("content_group_membership_#{@group_membership.id}",
-                         html: raw("<p><%= @group_membership.user.username %\> has been kicked.</p>")) %>
+                         html: raw("<p><%= @group_membership.user.username %\> is no longer a member.</p>")) %>
