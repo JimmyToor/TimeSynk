@@ -1,10 +1,19 @@
 <%= turbo_frame_tag "pending_game_proposals", data: {controller:"reload-on-restore"} do %>
   <% if local_assigns[:pending_game_proposals]&.any? %>
     <h2>Pending Proposals</h2>
-    <div class="flex rounded-lg dark:border-gray-600 h-128">
+    <div class="flex rounded-lg dark:border-gray-600">
       <ul>
         <% local_assigns[:pending_game_proposals].first(5).each do |game_proposal| %>
-          <li><%= render game_proposal, include_link: true %></li>
+          <li class="flex">
+            <%= render game_proposal %>
+            <%= link_to game_proposal, class: "bg-secondary-700 text-accent-500 dark:text-white text-xs font-medium px-2
+            py-0.5 rounded hover:underline -translate-x-2", data: { turbo_frame: "_top" } do %>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                   class="h-full size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+              </svg>
+            <% end %>
+          </li>
         <% end %>
       </ul>
     </div>

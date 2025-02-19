@@ -1,7 +1,7 @@
 <h1>Editing game proposal</h1>
 
 <%= modal_wrapper(@game_proposal.game_name) do %>
-  <%= render "form", game_proposal: @game_proposal, group: nil %>
+  <%= render "form", game_proposal: @game_proposal, groups: @groups%>
 <% end %>
 
 <br>

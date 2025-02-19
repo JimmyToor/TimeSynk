@@ -1,4 +1,4 @@
-<%# locals: (game_proposal:, group: nil, groups: []) %>
+<%# locals: (game_proposal:, groups:, group:nil) %>
 <div data-controller="game-selection search" data-search-src-value="<%= games_path(format: :turbo_stream) %>">
   <%= form_with(model: [group, game_proposal], data: {game_selection_target:"form"}) do |form| %>
     <% if game_proposal.errors.any? %>
@@ -11,16 +11,19 @@
         </ul>
       </div>
     <% end %>
+
     <div class="flex flex-col items-center">
       <div>
         <%= form.hidden_field :game_id, data: { game_selection_target: "gameId"}, required:"" %>
       </div>
       <div class="flex flex-col items-center">
-
-        <div>
+        <% if groups.length > 1 %>
           <%= form.label :group_id, style: "display: block mb-2" %>
           <%= form.collection_select :group_id, groups, :id, :name, { prompt: "Select a group" }, class: "mb-2", required: "" %>
-        </div>
+        <% else %>
+          <%= form.label :group_id, groups.first.name %>
+          <%= form.hidden_field :group_id, value: groups.first.id %>
+        <% end %>
       </div>
     </div>
   <% end %>
@@ -43,4 +46,5 @@
       <span class="sr-only">Loading...</span>
     </div>
   </div>
+
 </div>

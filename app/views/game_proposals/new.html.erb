@@ -1,5 +1,8 @@
-<%= render "form", game_proposal: @game_proposal, group: @game_proposal.group, groups: @groups %>
-
+<% if @groups.present? %>
+  <%= render "form", game_proposal: @game_proposal, groups: @groups, group: @groups.first %>
+<% else %>
+  You do not have permission to create a game proposal for any of your groups.
+<% end %>
 <br>
 
 <div>

@@ -18,6 +18,8 @@ class GameProposal < ApplicationRecord
 
   validates :game, uniqueness: {scope: :group, message: "already has a proposal for this group"}
 
+  attr_readonly :group_id
+
   def yes_votes
     proposal_votes.where(yes_vote: true)
   end
