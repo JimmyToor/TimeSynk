@@ -16,9 +16,6 @@ application.register("flatpickr", FlatpickrController);
 import GameSelectionController from "./game_selection_controller";
 application.register("game-selection", GameSelectionController);
 
-import HelloController from "./hello_controller";
-application.register("hello", HelloController);
-
 import MutuallyExclusiveSelectController from "./mutually_exclusive_select_controller";
 application.register(
   "mutually-exclusive-select",

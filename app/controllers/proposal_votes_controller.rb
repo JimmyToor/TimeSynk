@@ -1,13 +1,10 @@
 class ProposalVotesController < ApplicationController
-  before_action :set_proposal_vote, only: %i[ show edit update destroy ]
-  before_action :set_game_proposal, only: %i[ new create ]
+  before_action :set_proposal_vote, only: %i[show edit update destroy]
+  before_action :set_game_proposal, only: %i[new create]
+  before_action :set_group_membership, only: %i[show create]
+  before_action :check_param_alignment, only: %i[create]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
-
-  # GET /proposal_votes or /proposal_votes.json
-  def index
-    @proposal_votes = ProposalVote.all
-  end
 
   # GET /proposal_votes/1 or /proposal_votes/1.json
   def show
@@ -24,13 +21,10 @@ class ProposalVotesController < ApplicationController
 
   # POST /proposal_votes or /proposal_votes.json
   def create
-    # TODO: Don't allow users to make votes in other users' names i.e. strong params user_id should be the current user's id.
-    # TODO: Don't allow users to vote on one proposal from another i.e. game_proposal_id in strong params should match the current proposal's id (from the url params).
     @proposal_vote = @game_proposal.proposal_votes.build(proposal_vote_params)
-
     respond_to do |format|
       if @proposal_vote.save
-        format.html { redirect_to :edit, notice: "Proposal vote was successfully created." }
+        format.html { redirect_to edit_proposal_vote_path(@proposal_vote), notice: "Proposal vote was successfully created." }
         format.json { render :show, status: :created, location: @proposal_vote }
         format.turbo_stream
       else
@@ -41,9 +35,9 @@ class ProposalVotesController < ApplicationController
                   turbo_stream.replace("proposal_vote_form",
                     partial: "proposal_votes/form",
                     method: :morph,
-                    locals: { proposal_vote: @proposal_vote,
-                              game_proposal: @game_proposal,
-                              notice: "Your vote could not be saved" })
+                    locals: {proposal_vote: @proposal_vote,
+                             game_proposal: @game_proposal,
+                             notice: "Your vote could not be saved"})
         }
       end
     end
@@ -53,7 +47,7 @@ class ProposalVotesController < ApplicationController
   def update
     respond_to do |format|
       if @proposal_vote.update(proposal_vote_params)
-        format.html { redirect_to :edit, notice: "Proposal vote was successfully updated." }
+        format.html { redirect_to edit_proposal_vote_path, notice: "Proposal vote was successfully updated." }
         format.json { render :show, status: :ok, location: @proposal_vote }
         format.turbo_stream
       else
@@ -64,9 +58,9 @@ class ProposalVotesController < ApplicationController
                    turbo_stream.replace("proposal_vote_form",
                      partial: "proposal_votes/form",
                      method: :morph,
-                     locals: { proposal_vote: @proposal_vote,
-                               game_proposal: @game_proposal,
-                               notice: "Your vote could not be saved" })
+                     locals: {proposal_vote: @proposal_vote,
+                              game_proposal: @game_proposal,
+                              notice: "Your vote could not be saved"})
         }
       end
     end
@@ -78,8 +72,7 @@ class ProposalVotesController < ApplicationController
     @proposal_vote.destroy!
 
     respond_to do |format|
-      format.html { redirect_to :new, notice: "Proposal vote was successfully removed." }
-      format.json { head :no_content }
+      format.html { redirect_to @game_proposal, notice: "Proposal vote was successfully removed." }
       format.turbo_stream
     end
   end
@@ -89,12 +82,31 @@ class ProposalVotesController < ApplicationController
   def set_game_proposal
     @game_proposal = GameProposal.find_by_id!(params[:game_proposal_id])
   end
-  
+
   def set_proposal_vote
     @proposal_vote = ProposalVote.find_by_id!(params[:id])
   end
 
   def proposal_vote_params
     params.require(:proposal_vote).permit(:user_id, :game_proposal_id, :yes_vote, :comment)
+  end
+
+  def set_group_membership
+    group = if @proposal_vote
+      @proposal_vote.game_proposal.group
+    else
+      @game_proposal.group
+    end
+    @group_membership = GroupMembership.find_by(user: Current.user, group: group)
+  end
+
+  def check_param_alignment
+    game_proposal_param = params[:game_proposal_id].to_i
+    user_param = params[:proposal_vote][:user_id].to_i
+    if game_proposal_param.present? && game_proposal_param != params[:proposal_vote][:game_proposal_id]&.to_i
+      render json: {error: "Game Proposal ID did not match the current game proposal."}, status: :unprocessable_entity
+    elsif user_param.present? && user_param != Current.user.id
+      render json: {error: "User ID did not match the current user."}, status: :unprocessable_entity
+    end
   end
 end

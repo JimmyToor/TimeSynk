@@ -1,6 +1,6 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @proposal_vote %>
+<%= render @proposal_vote, group_membership: @group_membership %>
 
 <div>
   <%= link_to "Edit this proposal vote", edit_proposal_vote_path(@proposal_vote) %> |
