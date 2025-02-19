@@ -39,6 +39,7 @@ module RoleHierarchy
   # @param role [Role] the role to get the weight of
   # @return [Integer] the weight of the role. 1000 if no weight is found
   def self.role_weight(role)
+    return 1000 if role.nil?
     ROLE_WEIGHTS[role_to_key(role)] || 1000
   end
 
