@@ -34,18 +34,18 @@
             </button>
           </div>
 
-          <% content_for :modal_body do %>
+          <% content_for :"modal_body_#{game_proposal.id}" do %>
             <%= render partial:"game_proposals/delete_form", locals: { game_proposal: game_proposal } %>
           <% end %>
 
-          <% content_for :modal_title do %>
+          <% content_for :"modal_title_#{game_proposal.id}" do %>
             <div class="flex items-center px-2">
               <span class="text-error-400"><%= inline_svg_tag "icons/exclamation-triangle" %></span>
               <span class="ml-1">Delete Game Proposal</span>
             </div>
           <% end %>
 
-          <%= render "shared/confirmation_modal", title: "Delete Game Proposal" %>
+          <%= render "shared/confirmation_modal", title: "Delete Game Proposal", modal_id: game_proposal.id %>
         </li>
       <% end %>
     </ul>
