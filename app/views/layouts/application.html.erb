@@ -12,10 +12,10 @@
     <% end %>
 
     <%= stylesheet_link_tag "application", "recurring_select", data: { turbo_track: "reload" } %>
-    <%= javascript_include_tag "application", "recurring_select",  data: { turbo_track: "reload" }, type: "module" %>
+    <%= javascript_include_tag "application", "recurring_select", data: { turbo_track: "reload" }, type: "module" %>
   </head>
 
-  <body class="dark:bg-gray-900 dark:text-white">
+  <body class="dark:bg-gray-900 dark:text-white" data-controller="loading-dialog">
     <%= render partial: "shared/navbar" %>
 
     <div class="p-4 sm:ml-44">
@@ -27,5 +27,7 @@
       <%= turbo_frame_tag "modal_frame" do %>
         <!-- Modals will be inserted here -->
       <% end %>
-    </div>  </body>
+      <%= render partial:"shared/loading_modal" %>
+    </div>
+  </body>
 </html>

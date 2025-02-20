@@ -1,6 +1,7 @@
 <%# locals: (game_proposal:, proposal_availability: nil, proposal_permission_set: nil) %>
 
-<%= link_to new_game_proposal_game_session_path(game_proposal, single_game_proposal: true), data: { turbo_frame: "modal_frame"} do %>
+<%= link_to new_game_proposal_game_session_path(game_proposal, single_game_proposal: true),
+            data: { turbo_frame: "modal_frame" } do %>
   <%= inline_svg_tag "icons/add.svg" %>
 <% end if policy(game_proposal).create_game_session? %>
 

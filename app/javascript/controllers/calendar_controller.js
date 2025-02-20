@@ -175,14 +175,18 @@ export default class extends Controller {
       }
     });
 
+    this.displayLoading();
+
     Turbo.visit(`/calendars/new?${params.toString()}`, {
       frame: this.frameIdValue,
     });
+
     document.addEventListener(
       "turbo:frame-load",
       (event) => {
         if (event.target.id === this.frameIdValue && this.hasFlatpickrOutlet) {
           this.setModalFormDate(info);
+          this.hideLoading();
         }
       },
       { once: true },
@@ -220,7 +224,20 @@ export default class extends Controller {
       !info.event.extendedProps.selectable
     )
       return;
+
+    this.displayLoading();
+
     Turbo.visit(info.el.dataset.href, { frame: info.el.dataset.turboFrame });
+
+    document.addEventListener(
+      "turbo:frame-load",
+      (event) => {
+        if (event.target.id === this.frameIdValue) {
+          this.hideLoading();
+        }
+      },
+      { once: true },
+    );
   }
 
   /**
@@ -230,15 +247,22 @@ export default class extends Controller {
   load(isLoading) {
     if (isLoading) {
       this.resetToggleLists();
-      this.calendarLoadingTarget.classList.remove("hidden");
-      this.toggleDropdownLoadingTarget.classList.remove("hidden");
+      this.displayLoading();
     } else {
       this.createToggles();
-      this.calendarLoadingTarget.classList.add("hidden");
-
-      this.toggleDropdownLoadingTarget.classList.add("hidden");
+      this.hideLoading();
       this.setToggleVisibility();
     }
+  }
+
+  displayLoading() {
+    this.calendarLoadingTarget.classList.remove("hidden");
+    this.toggleDropdownLoadingTarget.classList.remove("hidden");
+  }
+
+  hideLoading() {
+    this.calendarLoadingTarget.classList.add("hidden");
+    this.toggleDropdownLoadingTarget.classList.add("hidden");
   }
 
   /**

@@ -72,3 +72,6 @@ application.register("form-change-watcher", FormChangeWatcherController);
 
 import FrameReloadController from "./frame_reload_controller";
 application.register("frame-reload", FrameReloadController);
+
+import LoadingDialogController from "./loading_dialog_controller";
+application.register("loading-dialog", LoadingDialogController);
