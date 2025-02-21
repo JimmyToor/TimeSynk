@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
 
   before_action :set_current_request_details
   before_action :authenticate
+  before_action :check_maintenance_mode
 
   after_action :verify_policy_scoped, only: :index
   after_action :verify_authorized, except: :index
@@ -34,5 +35,14 @@ class ApplicationController < ActionController::Base
   def user_not_authorized
     flash[:alert] = "You are not authorized to perform this action."
     redirect_to request.referrer || root_path
+  end
+
+  def check_maintenance_mode
+    return unless Current.user
+    return if Current.user&.has_role?(:site_admin) || request.path == sign_in_path || request.path == sign_out_path
+
+    if ENV.fetch("MAINTENANCE_MODE") == "true"
+      render "home/maintenance", layout: "guest", status: :service_unavailable
+    end
   end
 end
