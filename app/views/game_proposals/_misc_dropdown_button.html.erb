@@ -1,4 +1,4 @@
-<%# locals: (game_proposal:) %>
+<%# locals: (game_proposal:, proposal_availability: nil) %>
 <div data-controller="dropdown" class="relative">
   <button id="misc-dropdown-button" data-action="dropdown#toggle click@window->dropdown#hide"
           class="relative inline-flex items-center rounded-lg text-center text-sm font-medium focus:ring-4
@@ -18,35 +18,46 @@
     <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 space-y-2" aria-labelledby="misc-dropdown-button">
       <li class="flex">
         <%= link_to game_proposal_game_sessions_path(game_proposal), title: "View Game Sessions", class: "flex items-center px-2",
-                    data: { action: "dropdown#toggle" } do %>
+                    data: { action: "dropdown#toggle", turbo_frame: "_top" } do %>
           <%= inline_svg_tag "icons/rectangle_stack.svg" %>
-          <span class="ml-2">View Game Proposals</span>
+          <span class="ml-2">View Game Sessions</span>
+        <% end %>
+      </li>
+
+      <li class="flex">
+        <% if proposal_availability.present? %>
+          <%= link_to edit_proposal_availability_path(proposal_availability), title: "Change your game proposal availability",
+                      class: "flex items-center px-2",
+                      data: { turbo_frame: "_top" } do %>
+
+            <%= inline_svg_tag "icons/calendar.svg" %>
+            <span class="ml-2">Edit Proposal Availability</span>
+
+          <% end %>
+        <% else %>
+          <%= link_to new_game_proposal_proposal_availability_path(game_proposal), title: "Set your game proposal availability",
+                      class: "flex items-center px-2",
+                      data: { turbo_frame: "_top" } do %>
+
+            <%= inline_svg_tag "icons/calendar.svg" %>
+            <span class="ml-2">Set Proposal Availability</span>
+
+          <% end %>
         <% end %>
       </li>
 
       <% if policy(game_proposal).destroy? %>
-        <li data-controller="dialog" data-action="click->dialog#backdropClose">
 
-          <div class="text-error-600 dark:text-error-400">
+        <% button_content = capture do %>
+          <div class="text-notice-600 dark:text-notice-400">
             <button type="button" data-action="dialog#open" class="flex items-center px-2">
               <%= inline_svg_tag "icons/trash.svg" %>
               <span class="ml-2 text-left">Delete Game Proposal</span>
             </button>
           </div>
+        <% end %>
 
-          <% content_for :"modal_body_#{game_proposal.id}" do %>
-            <%= render partial:"game_proposals/delete_form", locals: { game_proposal: game_proposal } %>
-          <% end %>
-
-          <% content_for :"modal_title_#{game_proposal.id}" do %>
-            <div class="flex items-center px-2">
-              <span class="text-error-400"><%= inline_svg_tag "icons/exclamation-triangle" %></span>
-              <span class="ml-1">Delete Game Proposal</span>
-            </div>
-          <% end %>
-
-          <%= render "shared/confirmation_modal", title: "Delete Game Proposal", modal_id: game_proposal.id %>
-        </li>
+        <%= render "shared/delete_dialog", button_content: button_content, container_tag: :li, form_partial: "game_proposals/delete_form", resource: game_proposal %>
       <% end %>
     </ul>
   </div>

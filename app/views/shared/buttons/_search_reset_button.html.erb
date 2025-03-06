@@ -1,0 +1,8 @@
+<%# locals: (form:, extra_classes: "") %>
+
+<%= form.submit "X",
+  data: {action: "click->search#resetSearch"},
+  title: "Reset search",
+  class: "text-black dark:text-white hover:text-white dark:hover:text-black rounded-full absolute
+          cursor-pointer hover:bg-tertiary-500 focus:ring-4 focus:outline-none focus:ring-tertiary-300 font-medium
+          text-sm px-4 py-2 dark:hover:bg-tertiary-300 dark:focus:ring-tertiary-200 #{extra_classes}" %>

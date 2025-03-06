@@ -1,5 +1,5 @@
 <%= render partial:"game_sessions/show_content", locals: {game_session: @game_session, game_session_attendance: @game_session_attendance} %>
-<%= link_to "Back to game sessions", game_sessions_path %>
+<%= render "shared/buttons/secondary_link", path: game_sessions_path, text: "Back to Game Sessions" %>
 
 
 <div data-controller="calendar" data-calendar-interactive="false" data-calendar-game-session-id="<%= @game_session.id %>" data-turbo-permanent>

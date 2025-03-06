@@ -26,6 +26,7 @@ class GameSession < ApplicationRecord
     duration: 1.hour
   }
 
+  
   def user_get_attendance(user)
     game_session_attendances.find_by(user_id: user.id)
   end
@@ -95,7 +96,7 @@ class GameSession < ApplicationRecord
         "upcoming_game_sessions_user_#{user_id}",
         target: "upcoming_game_sessions",
         partial: "game_sessions/upcoming_game_sessions",
-        locals: {upcoming_game_sessions: user.upcoming_game_sessions, user: user}
+        locals: {upcoming_game_sessions: user.upcoming_game_sessions.sort_by(&:date), user: user}
       )
       broadcast_replace_later_to(
         "game_session_#{id}",
@@ -115,7 +116,7 @@ class GameSession < ApplicationRecord
         "upcoming_game_sessions_user_#{user_id}",
         target: "upcoming_game_sessions",
         partial: "game_sessions/upcoming_game_sessions",
-        locals: {upcoming_game_sessions: user.upcoming_game_sessions, user: user}
+        locals: {upcoming_game_sessions: user.upcoming_game_sessions.sort_by(&:date), user: user}
       )
     end
   end
@@ -129,7 +130,7 @@ class GameSession < ApplicationRecord
         action: :replace,
         target: "upcoming_game_sessions",
         partial: "game_sessions/upcoming_game_sessions",
-        locals: {upcoming_game_sessions: user.upcoming_game_sessions, user: user}
+        locals: {upcoming_game_sessions: user.upcoming_game_sessions.sort_by(&:date), user: user}
       )
     end
   end

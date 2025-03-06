@@ -64,7 +64,7 @@ class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
     get accept_invite_url(invite_token: invite.invite_token)
 
     assert_response :success
-    assert_recognizes({controller: "group_memberships", action: "new", invite_token: invite.invite_token},
+    assert_recognizes({controller: "invites", action: "show", invite_token: invite.invite_token},
       path: accept_invite_url(invite_token: invite.invite_token))
   end
 

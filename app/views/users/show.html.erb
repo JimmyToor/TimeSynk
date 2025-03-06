@@ -4,7 +4,7 @@
   <p style="color: green"><%= notice %></p>
 
   <%= render user %>
-  <% if group.present? %>
+  <% if group.present? || game_proposal.present? || game_session.present? %>
     <%= turbo_frame_tag "user_roles_#{user.id}" do %>
       <%= render "roles",
                  user: user,

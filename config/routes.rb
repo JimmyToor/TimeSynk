@@ -11,8 +11,11 @@ Rails.application.routes.draw do
   resolve("UserAvailability") { [:user_availability] }
   resources :game_proposals, only: [:index]
   resources :game_sessions, only: [:index]
+  resources :group_memberships, only: [:create]
   get "calendars", to: "calendars#show"
   get "calendars/new", to: "calendars#new"
+  get "groups/join", to: "group_memberships#new", as: :join_group_with_token
+  get "invites/accept/:invite_token", to: "invites#show", as: :accept_invite
   resources :users
   shallow do
     resources :groups do
@@ -29,7 +32,6 @@ Rails.application.routes.draw do
       end
     end
   end
-  get "invites/join/:invite_token", to: "group_memberships#new", as: :accept_invite
   get "groups/:group_id/permission_set/edit", to: "permission_sets#edit", as: :edit_group_permission_set
   match "groups/:group_id/permission_set", to: "permission_sets#update", via: [:patch, :put, :post], as: :group_permission_set
   get "game_proposals/:game_proposal_id/permission_set/edit", to: "permission_sets#edit", as: :edit_game_proposal_permission_set

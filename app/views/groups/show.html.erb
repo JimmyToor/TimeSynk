@@ -9,16 +9,15 @@
   <% if Current.user.has_cached_role?(:site_admin) && !group_membership.present? %>
     <%= link_to "Join Group", new_group_group_membership_path(group) %>
   <% end %>
-
-  <%= button_to "Leave this group", group_membership, {
-    method: :delete,
-    data: { turbo_method: "delete",
-      turbo_confirm: "Are you sure you want to leave #{group.name}?"}
-  } unless Current.user.has_cached_role?(:owner, group) || !group_membership.present? %>
-
+  <div class="mt-2">
+    <%= render "shared/buttons/delete_button",
+               resource: group_membership,
+               text: "Leave this group",
+               confirm_text: "Are you sure you want to leave #{group.name}?" unless Current.user.has_cached_role?(:owner, group) || !group_membership.present? %>
+  </div>
 </div>
 
-<div data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-group-id=<%= group.id %> data-turbo-permanent>
+<div data-controller="calendar" data-calendar-interactive="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-group-id=<%= group.id %> data-turbo-permanent>
   <%= render partial: 'calendars/calendar', locals: {group: group,
                                                      game_proposals: group.game_proposals.any? ? group.game_proposals : nil,
                                                      game_proposal: group.game_proposals.any? ? group.game_proposals.first : nil}

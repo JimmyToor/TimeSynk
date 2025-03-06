@@ -47,7 +47,6 @@ export default class extends Controller {
   select(event) {
     const newSelected = event.target.closest("button");
 
-    console.log("selecting", newSelected.dataset.gameName);
     if (this.selectedGame) {
       const lastSelectionId = this.selectedGame.dataset.gameId;
       this.deselect();
@@ -117,7 +116,6 @@ export default class extends Controller {
 
   deselect() {
     if (!this.selectedGame) return;
-    console.log("deselecting", this.selectedGame.dataset.gameName);
     this.submitGameButton.disabled = true;
     this.selectedGame.setAttribute(
       "aria-label",

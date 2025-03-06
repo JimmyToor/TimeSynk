@@ -33,7 +33,7 @@
   </div>
 
   <div>
-    <%= form.submit "Save Vote and Comment", style: "display: block"  %>
+    <%= render "shared/buttons/form_submit_button", form: form, text:"Save Vote and Comment", extra_classes: "m-2" %>
   </div>
 
   <% if local_assigns[:notice] %>

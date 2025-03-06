@@ -5,24 +5,25 @@
   </div>
 
   <div>
-    <strong>Group:</strong>
-    <%= invite.group.name %>
-  </div>
-
-  <div>
     <strong>Invite URL:</strong>
     <%= accept_invite_url(invite_token: invite.invite_token) %>
   </div>
 
-  <div>
-    <strong>Roles:</strong>
-    <% if invite.assigned_role_ids.any? %>
-      <% Role.where(id: invite.assigned_role_ids).pluck(:name).each do |role_name| %>
-        <div>-<%= role_name.humanize %></div>
+  <div class="flex">
+    <div>
+      <strong>Roles:</strong>
+      <% if invite.assigned_role_ids.any? %>
+        <%= render "shared/buttons/icon_link", path: edit_invite_path(invite), title: "Edit Invite", svg_name: "edit" %>
+        <% invite.assigned_roles.map { |role| role.name }.each do |role_name| %>
+          <div>-<%= role_name.humanize %></div>
+        <% end %>
+      <% else %>
+        <em>None</em>
+        <div>
+          <%= render "shared/buttons/icon_link", path: edit_invite_path(invite), title: "Edit Invite", svg_name: "edit" %>
+        </div>
       <% end %>
-    <% else %>
-      <em>None</em>
-    <% end %>
+    </div>
   </div>
 
   <div>

@@ -1,4 +1,4 @@
-<%# locals: (group:) %>
+<%# locals: (group:, group_availability: nil) %>
 <div data-controller="dropdown" class="relative">
   <button id="misc-dropdown-button" data-action="dropdown#toggle click@window->dropdown#hide"
           class="relative inline-flex items-center rounded-lg text-center text-sm font-medium focus:ring-4
@@ -8,7 +8,7 @@
   </button>
 
 
-  <div id="misc-dropdown" data-dropdown-target="menu" class="absolute left-1/2 z-20 hidden w-44 origin-top
+  <div id="misc-dropdown" data-dropdown-target="menu" class="absolute left-1/2 z-20 hidden w-48
       -translate-x-1/2 transform rounded-lg bg-slate-100 shadow transition divide-y
       divide-gray-100 dark:bg-gray-700"
        data-transition-enter-from="opacity-0 scale-95"
@@ -16,7 +16,7 @@
        data-transition-leave-from="opacity-100 scale-100"
        data-transition-leave-to="opacity-0 scale-95">
     <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 space-y-2" aria-labelledby="misc-dropdown-button">
-      <li class="flex">
+      <li class="flex hover:border-gray-600 dark:hover:border-gray-500">
         <%= link_to group_game_proposals_path(group), title: "View Game Proposals", class: "flex items-center px-2",
                     data:                                    { action: "dropdown#toggle" } do %>
           <%= inline_svg_tag "icons/rectangle_stack.svg" %>
@@ -24,36 +24,53 @@
         <% end %>
       </li>
 
-      <li class="flex">
-        <%= link_to group_invites_path(group), title: "View Invites", class: "flex px-2", data: { action: "dropdown#toggle" } do %>
+      <li class="flex py-1">
+        <%= link_to group_invites_path(group), title: "View Invites",
+                    class: "flex px-2 items-center",
+                    data: { action: "dropdown#toggle" } do %>
           <%= inline_svg_tag "icons/envelope.svg" %>
           <span class="ml-2">View Invites</span>
         <% end %>
       </li>
 
-      <% if policy(group).destroy? %>
-        <li data-controller="dialog" data-action="click->dialog#backdropClose">
+      <li class="flex py-1 hover:border-gray-600 dark:hover:border-gray-300">
+        <% if group_availability.present? %>
+          <%= link_to edit_group_availability_path(group_availability), title: "Change your group availability",
+                      class: "flex items-center h-fit px-2" do %>
 
-          <div class="text-error-600 dark:text-error-400">
+            <%= inline_svg_tag "icons/calendar.svg" %>
+            <span class="ml-2">Edit Group Availability</span>
+
+      <% end %>
+        <% else %>
+          <%= link_to new_group_group_availability_path(group), title: "Change your group availability",
+                      class: "flex h-fit px-2 items-center" do %>
+
+            <%= inline_svg_tag "icons/calendar.svg" %>
+            <span class="ml-2">Set Group Availability</span>
+
+      <% end %>
+        <% end %>
+      </li>
+
+      <% if policy(group).destroy? %>
+        <% button_content = capture do %>
+          <div class="text-notice-400">
             <button type="button" data-action="dialog#open" class="flex items-center px-2">
+
               <%= inline_svg_tag "icons/trash.svg" %>
               <span class="ml-2">Delete Group</span>
+
             </button>
           </div>
+        <% end %>
 
-          <% content_for :modal_body do %>
-            <%= render "delete_form", group: group %>
-          <% end %>
-
-          <% content_for :modal_title do %>
-            <div class="flex items-center px-2">
-              <span class="text-error-400"><%= inline_svg_tag "icons/exclamation-triangle" %></span>
-              <span class="ml-1">Delete Group</span>
-            </div>
-          <% end %>
-
-          <%= render "shared/confirmation_modal", title: "Delete Group" %>
-        </li>
+        <%= render "shared/delete_dialog",
+                   button_content: button_content,
+                   container_tag: :li,
+                   container_classes:"py-1 hover:bg-notice-100",
+                   form_partial:"groups/delete_form",
+                   resource: group %>
       <% end %>
     </ul>
   </div>

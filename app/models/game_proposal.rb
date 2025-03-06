@@ -20,6 +20,10 @@ class GameProposal < ApplicationRecord
 
   attr_readonly :group_id
 
+  def get_upcoming_game_sessions
+    game_sessions.where("starts_at > ?", Time.current)
+  end
+
   def yes_votes
     proposal_votes.where(yes_vote: true)
   end

@@ -31,4 +31,8 @@ class Group < ApplicationRecord
   def owner
     User.with_role(:owner, self).first
   end
+
+  def members
+    group_memberships.map { |membership| membership.user }
+  end
 end

@@ -22,4 +22,9 @@ module GameImageSize
   MICRO = "micro"
   HD = "720p"
   FHD = "1080p"
+
+  # Checks if the given size is a valid image size
+  def self.include?(size)
+    constants.include?(size)
+  end
 end

@@ -1,27 +1,30 @@
 <%# locals: (schedule:) %>
-<tr class="hover:bg-gray-100 dark:hover:bg-gray-700 text-center">
+<tr class="text-center hover:bg-gray-100 dark:hover:bg-gray-700">
   <td class="w-4 px-4 py-3">
-    <%= link_to "View", schedule, class: "bg-primary-700 text-blue-500 dark:text-white text-xs font-medium px-2 py-0.5 rounded hover:underline", data: { turbo_frame: "_top" } %>
+    <%= link_to "View", schedule, class: "text-black focus:outline-none dark:text-white bg-primary-400 hover:bg-primary-600
+                  focus:ring-4 focus:ring-primary-300 dark:bg-primary-700 dark:hover:bg-primary-60 text-xs font-medium
+                  px-2 py-0.5 rounded hover:underline",
+                data: { turbo_frame: "_top" } %>
   </td>
-  <th scope="row" class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-    <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= schedule.name %> </span>
+  <th scope="row" class="whitespace-nowrap py-2 font-medium text-gray-900 dark:text-white">
+    <span class="rounded px-2 text-xs font-medium py-0.5"> <%= schedule.name %> </span>
     <%= button_tag 'Button', type: 'button', title: "Details", class:"inline-block 2xl:hidden", data: {action:"click->element-toggle#triggerToggle", id:schedule.id} do %>
       &#9660;
     <% end %>
   </th>
-  <td class="py-2 hidden md:table-cell">
-    <span class="text-xs font-medium px-2 py-0.5 rounded "> <%= schedule.description %> </span>
+  <td class="hidden py-2 md:table-cell">
+    <span class="rounded px-2 text-xs font-medium py-0.5"> <%= schedule.description %> </span>
   </td>
-  <td class="py-2 hidden lg:table-cell">
-    <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= schedule.frequency %> </span>
+  <td class="hidden py-2 lg:table-cell">
+    <span class="rounded px-2 text-xs font-medium py-0.5"> <%= schedule.frequency %> </span>
   </td>
-  <td class="px-2 py-2 hidden xl:table-cell font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.start_time.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %><%= schedule.start_time.strftime(", %Y") unless schedule.start_time.year == Time.current.year %></td>
-  <td class="px-2 py-2 hidden xl:table-cell font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= schedule.end_time.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %><%= schedule.end_time.strftime(", %Y") unless schedule.end_time.year == Time.current.year %></td>
-  <td class="py-2 hidden 2xl:table-cell font-medium text-gray-900 whitespace-nowrap dark:text-white">
+  <td class="hidden whitespace-nowrap px-2 py-2 font-medium text-gray-900 xl:table-cell dark:text-white"><%= schedule.start_time.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %><%= schedule.start_time.strftime(", %Y") unless schedule.start_time.year == Time.current.year %></td>
+  <td class="hidden whitespace-nowrap px-2 py-2 font-medium text-gray-900 xl:table-cell dark:text-white"><%= schedule.end_time.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %><%= schedule.end_time.strftime(", %Y") unless schedule.end_time.year == Time.current.year %></td>
+  <td class="hidden whitespace-nowrap py-2 font-medium text-gray-900 2xl:table-cell dark:text-white">
     <%= format_interval(schedule.duration) %>
   </td>
 </tr>
-<tr class="additional-info border-b-2 dark:border-gray-600">
+<tr class="border-b-2 additional-info dark:border-gray-600">
   <td></td>
   <td colspan="7" class="hidden" data-element-toggle-target="targetElement" data-id=<%= schedule.id %>>
     <ul>

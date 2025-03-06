@@ -5,11 +5,6 @@ export default class extends Controller {
   static targets = ["collectionSelect", "addButton"];
   static outlets = ["rails-nested-form"];
 
-  connect() {
-    this.cacheSelections();
-    this.checkAddButtonValidity();
-  }
-
   initialize() {
     this.cacheSelectionsListener = this.cacheSelections.bind(this);
     this.filterSelectionsListener = this.filterSelections.bind(this);
@@ -18,9 +13,22 @@ export default class extends Controller {
     this.selections = new Set();
   }
 
+  connect() {
+    if (this.hasCollectionSelectTarget) {
+      this.initAllValues();
+    }
+    this.cacheSelections();
+    this.checkAddButtonValidity();
+  }
+
   filterSelections() {
-    if (!this.hasCollectionSelectTarget || !this.collectionSelectTargets.length)
+    if (
+      !this.hasCollectionSelectTarget ||
+      !this.collectionSelectTargets.length
+    ) {
+      this.checkAddButtonValidity();
       return;
+    }
 
     // If there is only one select, enable all options
     if (this.collectionSelectTargets.length === 1) {
@@ -56,6 +64,7 @@ export default class extends Controller {
   }
 
   checkAddButtonValidity() {
+    // Add Button is only valid when we have un-selected values remaining
     let invalid;
     if (
       !this.hasCollectionSelectTarget ||
@@ -69,8 +78,8 @@ export default class extends Controller {
     this.addButtonTarget.classList.toggle("hidden", invalid);
   }
 
-  // Selections should be cached before collection_selects are added, after they are removed, and after they are changed
   cacheSelections() {
+    // Selections should be cached before collection_selects are added, after they are removed, and after they are changed
     if (!this.collectionSelectTargets.length) return;
     this.selections = new Set(
       this.collectionSelectTargets
@@ -82,7 +91,9 @@ export default class extends Controller {
   addEventListeners(element) {
     element.addEventListener("change", this.cacheSelectionsListener);
     element.addEventListener("change", this.filterSelectionsListener);
-    element.addEventListener("rails-nested-form:add", this.lateInitListener);
+    element.addEventListener("rails-nested-form:add", this.lateInitListener, {
+      once: true,
+    });
     element.addEventListener(
       "rails-nested-form:add",
       this.filterSelectionsListener,
@@ -98,9 +109,9 @@ export default class extends Controller {
   }
 
   removeEventListeners(element) {
+    element.removeEventListener("rails-nested-form:add", this.lateInitListener);
     element.removeEventListener("change", this.cacheSelectionsListener);
     element.removeEventListener("change", this.filterSelectionsListener);
-    element.removeEventListener("rails-nested-form:add", this.lateInitListener);
     element.removeEventListener(
       "rails-nested-form:add",
       this.filterSelectionsListener,
@@ -115,8 +126,16 @@ export default class extends Controller {
     );
   }
 
+  /**
+   *  A collectionSelectTarget may not be available by the time connect is called,
+   *  so initialize allValues here instead.
+   */
   lateInit() {
     if (this.collectionSelectTargets.length !== 1) return;
+    this.initAllValues();
+  }
+
+  initAllValues() {
     this.allValues = Array.from(this.collectionSelectTargets[0].options).map(
       (option) => option.value,
     );

@@ -1,15 +1,20 @@
 <%# locals: (games:) %>
-<section class="bg-gray-50 dark:bg-gray-900 py-3 sm:py-5">
-  <div class="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-9 gap-4">
+<section class="py-3 sm:py-5">
+  <div class="grid grid-cols-3 gap-4 md:grid-cols-6 lg:grid-cols-9">
     <% games.each do |game| %>
       <div class="relative">
-        <%= button_tag "Create Proposal", data: { action:"game-selection#submitSelection", game_id:game.id, game_name:game.name}, disabled: true, aria: {hidden: true}, class:"hidden submit-game-btn h-14 w-full z-auto absolute text-white transform top-0 bg-blue-700 cursor-pointer hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" %>
+        <%= button_tag "Create Proposal", data: { action:"game-selection#submitSelection", game_id:game.id, game_name:game.name},
+                       disabled: true, aria: {hidden: true},
+                       class:"hidden submit-game-btn h-14 w-full z-auto absolute text-black dark:text-white transform top-0
+                         cursor-pointer focus:ring-4 focus:outline-none focus:ring-secondary-100
+                         font-medium rounded-lg text-sm px-4 py-2 bg-secondary-200 hover:bg-secondary-300 dark:bg-secondary-500
+                         dark:hover:bg-secondary-400 dark:focus:ring-secondary-300" %>
         <button type="button"
                 data-action="game-selection#select"
                 data-game-id="<%= game.id %>"
                 data-game-name="<%= game.name %>"
                 aria-label="Select game <%= game.name %>"
-                class="select-game-btn relative w-full hover:brightness-110 z-0 rounded-lg">
+                class="relative z-0 w-full rounded-lg select-game-btn hover:brightness-110">
           <%= render game %>
         </button>
       </div>

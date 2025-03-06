@@ -11,7 +11,7 @@
   </div>
 
   <div>
-    <strong>Group Permissions:</strong>
+    <strong>Group Roles:</strong>
     <% roles = group_membership.user.roles_for_resource(group_membership.group) %>
     <% if roles.any? %>
       <% roles.each do |role| %>

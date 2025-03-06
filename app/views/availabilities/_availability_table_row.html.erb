@@ -1,7 +1,9 @@
 <%# locals: (availability:) %>
 <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 border-b-2 dark:border-gray-600">
   <td class="w-4 px-4 py-3">
-    <%= link_to "View", availability, class: "bg-primary-700 text-blue-500 dark:text-white text-xs font-medium px-2 py-0.5 rounded hover:underline", data: { turbo_frame: "_top" } %>
+    <%= link_to "View", availability, class: "text-black focus:outline-none dark:text-white bg-primary-400 hover:bg-primary-600
+                  focus:ring-4 focus:ring-primary-300 dark:bg-primary-700 dark:hover:bg-primary-60 text-xs font-medium
+                  px-2 py-0.5 rounded hover:underline", data: { turbo_frame: "_top" } %>
   </td>
   <th scope="row" class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
     <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= availability.name %> </span>

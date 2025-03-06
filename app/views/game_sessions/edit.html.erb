@@ -6,18 +6,11 @@
 
     <%= render "form", game_session: game_session, game_proposal: nil, initial_game_proposal: game_session.game_proposal, groups: groups %>
 
-    <br>
-
-    <div>
-      <%= link_to "Cancel", "#", data: {action: "click->dialog#close", turbo: "false"} %>
-    </div>
-
   <% end %>
 <% end %>
 
 <br>
 
 <div>
-  <%= link_to "Show this game session", game_session %> |
-  <%= link_to "Back to game sessions", game_sessions_path %>
+  <%= render "shared/buttons/secondary_link", path: game_sessions_path, text: "Back to Game Sessions" %>
 </div>

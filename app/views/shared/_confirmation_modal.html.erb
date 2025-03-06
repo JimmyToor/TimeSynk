@@ -1,9 +1,9 @@
-<%# locals: (title:"", modal_id: nil) %>
+<%# locals: (title:"Confirm Delete", title_content: nil, body_content: nil) %>
 <dialog id="modal_confirmation" tabindex="-1" class="dialog overflow-visible relative justify-center items-center md:inset-0 h-fit p-1 rounded-lg shadow bg-white dark:bg-gray-700 max-h-fit" data-dialog-target="dialog">
   <!-- Modal header -->
   <div class="flex items-center justify-between p-2 border-b rounded-t dark:border-gray-600">
     <h3 id="modal_title" class="text-lg font-semibold text-gray-900 dark:text-white">
-      <%= content_for?(:"modal_title_#{modal_id}") ? yield(:"modal_title_#{modal_id}") : title %>
+      <%= title_content || title %>
     </h3>
     <button data-action="dialog#close" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
       <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -15,7 +15,7 @@
 
   <!-- Modal body -->
   <div id="modal_body" data-dialog-target="modalBody" class="p-4 text-gray-700 dark:text-gray-300">
-    <%= content_for?(:"modal_body_#{modal_id}") ? yield(:"modal_body_#{modal_id}") : "" %>
+    <%= body_content %>
   </div>
   <div id="loading_spinner" data-dialog-target="loadingIndicator" class="hidden p-4 text-center">
     <div role="status">

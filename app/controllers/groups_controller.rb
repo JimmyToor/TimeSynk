@@ -11,7 +11,6 @@ class GroupsController < ApplicationController
 
   # GET /groups/1 or /groups/1.json
   def show
-    authorize(@group)
     @group_membership = GroupMembership.find_by(group: @group, user: Current.user)
     respond_to do |format|
       format.html {
@@ -94,7 +93,7 @@ class GroupsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_group
-    @group = Group.find(params[:id])
+    @group = authorize(Group.find(params[:id]))
   end
 
   def set_group_membership

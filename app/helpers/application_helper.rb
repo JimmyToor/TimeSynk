@@ -17,6 +17,11 @@ module ApplicationHelper
     end
   end
 
+  # check if we're in a modal wrapper
+  def modal_wrapper?
+    turbo_frame_request_id == "modal_frame"
+  end
+
   def open_unless_value(value)
     value ? "data-dialog-open-value=false" : "data-dialog-open-value=true"
   end
@@ -28,5 +33,4 @@ module ApplicationHelper
     parts << "#{interval.parts[:minutes]}m" if interval.parts[:minutes]
     parts.join(" ")
   end
-
 end

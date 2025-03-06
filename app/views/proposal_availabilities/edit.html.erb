@@ -2,13 +2,16 @@
 
   <%= render "form", proposal_availability: @proposal_availability, availabilities: @availabilities %>
 
-  <div>
-    <%= button_to "Unset Proposal Availability", @proposal_availability, method: :delete %>
-    <%= link_to "View Availability: #{@proposal_availability.availability.name}", game_proposal_path(@proposal_availability.game_proposal) %>
-    <%= link_to "Cancel", @proposal_availability.game_proposal %>
+  <div class="my-6">
+    <%= render "shared/buttons/delete_button", resource: @proposal_availability, text: "Unset Proposal Availability" %>
   </div>
 
-  <div id="calendar_holder" data-controller="calendar" data-calendar-availability-id="<%= @availabilities.first.id %>" data-turbo-permanent>
+  <div class="my-6">
+    <%= render "shared/buttons/secondary_link", path: @proposal_availability.game_proposal, text:"Back to Game Proposal" %>
+    <%= render "shared/buttons/secondary_link", path: @proposal_availability.availability, text:"View Current Availability: #{@proposal_availability.availability.name}" %>
+  </div>
+
+  <div id="calendar_holder" data-controller="calendar" data-calendar-interactive="true" data-calendar-availability-id="<%= @availabilities.first.id %>" data-turbo-permanent>
     <%= render partial: 'calendars/calendar' %>
   </div>
 </div>

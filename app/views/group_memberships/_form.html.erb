@@ -1,29 +1,10 @@
-<% if group_membership.errors.any? %>
-  <div style="color: red">
-    <h2><%= pluralize(group_membership.errors.count, "error") %> prohibited this group_membership from being saved:</h2>
-
-    <ul>
-      <% group_membership.errors.each do |error| %>
-        <li><%= error.full_message %></li>
-      <% end %>
-    </ul>
-  </div>
+<% if flash[:alert] %>
+  <div class="text-notice-400"><%= flash[:alert] %></div>
 <% end %>
-
-<% if local_assigns[:invite]%>
-  <%= form_with(model: [group, group_membership]) do |form| %>
-    <%= form.hidden_field :invite_token, value: invite.invite_token %>
-    <%= form.hidden_field :user_id, value: Current.user.id %>
-    <%= form.submit "Accept Invite", class:"cursor-pointer text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700
+<%= form_with(url: group_memberships_path, scope: :group_membership, method: :post) do |form| %>
+  <%= form.hidden_field :user_id, value: Current.user.id %>
+  <%= form.text_field :invite_token, value: (flash[:invite_token] if flash[:invite_token].present?) %>
+  <%= form.submit "Join Group", class:"cursor-pointer text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700
       hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg
       shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" %>
-  <% end %>
-<% else %>
-  <%= form_with(model: [group, group_membership]) do |form| %>
-    <%= form.hidden_field :user_id, value: Current.user.id %>
-    <%= form.submit "Join Group: #{group_membership.group.name}",  class:"cursor-pointer text-white bg-gradient-to-r from-blue-500
-      via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300
-      dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium
-      rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" %>
-  <% end %>
 <% end %>

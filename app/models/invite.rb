@@ -31,6 +31,10 @@ class Invite < ApplicationRecord
     end
   end
 
+  def self.with_token(token)
+    find_by(invite_token: token)
+  end
+
   private
 
   def validate_roles

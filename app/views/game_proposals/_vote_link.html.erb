@@ -1,10 +1,12 @@
 <%# locals: (game_proposal:) %>
 <% if game_proposal.user_voted?(Current.user) %>
-  <%= link_to edit_proposal_vote_path(Current.user.get_vote_for_proposal(game_proposal)), title: "Vote", data: { turbo_frame: "modal_frame"} do %>
+  <%= link_to edit_proposal_vote_path(Current.user.get_vote_for_proposal(game_proposal)), title: "Vote", data: { turbo_frame: "modal_frame"},
+              class:"text-secondary-500 dark:text-secondary-200" do %>
     <%= inline_svg_tag "icons/edit.svg" %>
   <% end %>
 <% else %>
-  <%= link_to new_game_proposal_proposal_vote_path(game_proposal), title: "Vote", data: { turbo_frame: "modal_frame"} do %>
+  <%= link_to new_game_proposal_proposal_vote_path(game_proposal), title: "Vote", data: { turbo_frame: "modal_frame"},
+              class:"text-secondary-500 dark:text-secondary-200" do %>
     <%= inline_svg_tag "icons/edit.svg" %>
   <% end %>
 <% end %>

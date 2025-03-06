@@ -5,7 +5,7 @@
 <% end %>
 <br>
 
-<div>
-  <%= link_to "Show this schedule", @schedule %> |
-  <%= link_to "Back to schedules", schedules_path %>
+<div class="flex space-x-3">
+  <%= render "shared/buttons/secondary_link", path: @schedule, text: "Show this schedule" %>
+  <%= render "shared/buttons/secondary_link", path: schedules_path, text: "Back to schedules" %>
 </div>

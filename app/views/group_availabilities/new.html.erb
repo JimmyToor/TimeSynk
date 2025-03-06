@@ -3,10 +3,10 @@
   <%= render "form", group: @group, group_availability: @group_availability, availabilities: @availabilities %>
 
   <div>
-    <%= link_to "Cancel", @group %>
+    <%= render "shared/buttons/cancel_button", text: "Cancel", path: @group, extra_classes: "mt-2 me-2 mb-2" %>
   </div>
 
-  <div id="calendar_holder" data-controller="calendar" data-calendar-availability-id="<%= @availabilities.first.id %>" data-turbo-permanent>
+  <div id="calendar_holder" data-controller="calendar" data-calendar-interactive="true" data-calendar-availability-id="<%= @availabilities.first.id %>" data-turbo-permanent>
     <%= render partial: 'calendars/calendar' %>
   </div>
 </div>

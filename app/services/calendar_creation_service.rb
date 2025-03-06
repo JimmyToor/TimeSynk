@@ -85,7 +85,6 @@ class CalendarCreationService
   # @param consolidate [Boolean] whether to consolidate schedules, does not apply if calendar_schedules is passed (optional)
   # @return [Calendar] the created calendar
   def make_availability_calendar(availability, calendar_schedules: [], consolidate: false)
-    Pundit.authorize(@user, availability, :show?)
     if calendar_schedules.empty?
       calendar_schedules = if consolidate
         Schedule.consolidate_schedules(availability.schedules, @params[:start], @params[:end]).map { |schedule| schedule.make_calendar_schedule }

@@ -1,5 +1,6 @@
 <%# locals: (initial_game_proposal:, game_session:, game_proposal:nil, game_proposals: nil, groups:nil) %>
-<%= form_with(model: [game_proposal, game_session], id: dom_id(game_session, :form), data: {controller:"proposal-selection", proposal_selection_target:"form", refresh_calendar_on_submit:""}) do |form| %>
+<%= form_with(model: [game_proposal, game_session], id: dom_id(game_session, :form),
+              data: {controller:"proposal-selection", proposal_selection_target:"form", refresh_calendar_on_submit:""}) do |form| %>
   <% if game_session.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(game_session.errors.count, "error") %> prohibited this game_session from being saved:</h2>
@@ -12,65 +13,81 @@
     </div>
   <% end %>
 
-  <div>
-    <%= display_game_art_and_name(game: game_session.game, only_art: true) if game_session.game.present? %>
-    <% if !game_proposals.present? || !game_session.new_record? %>
-      <%= hidden_field_tag :single_game_proposal, true %>
-      <%= form.hidden_field :game_proposal_id, value: initial_game_proposal.id %>
-    <% else %>
-      <%= form.label :game_proposal_id, style: "display: block" %>
-      <% if groups.present? && groups.length > 1 %>
-        <%= form.grouped_collection_select :game_proposal_id,
-                                         groups.reject { |group| group.game_proposals.empty? },
-                                         :game_proposals,
-                                         :name,
-                                         :id,
-                                         :game_name,
-                                         {selected: initial_game_proposal.id},
-                                         data: { proposal_selection_target:"collectionSelect" } %>
+  <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg">
+    <div>
+      <div class="flex justify-center">
+        <%= display_game_art_and_name(game: game_session.game, only_art: true, img_classes: "border-4 border-primary-900", img_size: GameImageSize::COVER_SMALL) if game_session.game.present? %>
+      </div>
+      <% if !game_proposals.present? || !game_session.new_record? %>
+        <%= hidden_field_tag :single_game_proposal, true %>
+        <%= form.hidden_field :game_proposal_id, value: initial_game_proposal.id %>
       <% else %>
-        <%= form.collection_select :game_proposal_id,
-                             game_proposals,
-                             :id,
-                             :game_name,
-                             {selected: initial_game_proposal.id}, data: { proposal_selection_target:"collectionSelect" } %>
+        <%= form.label :game_proposal_id, style: "display: block" %>
+        <% if groups.present? && groups.length > 1 %>
+          <%= form.grouped_collection_select :game_proposal_id,
+                                           groups.reject { |group| group.game_proposals.empty? },
+                                           :game_proposals,
+                                           :name,
+                                           :id,
+                                           :game_name,
+                                           {selected: initial_game_proposal.id},
+                                           data: { proposal_selection_target:"collectionSelect" } %>
+        <% else %>
+          <%= form.collection_select :game_proposal_id,
+                               game_proposals,
+                               :id,
+                               :game_name,
+                               {selected: initial_game_proposal.id}, data: { proposal_selection_target:"collectionSelect" } %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <%= turbo_frame_tag "game_session_form_fields", data: {proposal_selection_target:"formFrame"} do %>
+      <% if policy(game_session).create? %>
+        <div data-controller="flatpickr" class="flatpickr" data-flatpickr-timezone-value="<%= Current.user.timezone %>">
+          <%= form.label :date, class: "block" %>
+          <%= form.datetime_field :date, data: { flatpickr_target: "startDate" }, required: true, value: game_session.date&.in_time_zone(Current.user.timezone) %>
+        </div>
+
+        <div class="flex items-center">
+          <%= form.label :duration, "Duration:", class:"items-center mr-2" %>
+          <div class="flex flex-col items-center">
+            <%= form.label :duration_days, "Days", class: "block" %>
+            <%= form.number_field :duration_days, required: true,
+                                  value: (game_session.duration&.parts[:days] || 0),
+                                  class: "w-16 h-8 p-1 text-center" %>
+          </div>
+          <div class="flex flex-col items-center">
+            <%= form.label :duration_hours, "Hours", class: "block" %>
+            <%= form.number_field :duration_hours, min:0, required: true,
+                                  value: (game_session.duration&.parts[:hours] || 1),
+                                  class: "w-16 h-8 p-1 text-center" %>
+          </div>
+          <div class="mx-2 translate-y-2 text-4xl font-bold leading-7">:</div>
+          <div class="flex flex-col items-center disabled:opacity-50">
+            <%= form.label :duration_minutes, "Minutes", class: "block" %>
+            <%= form.select :duration_minutes,
+                            options_for_select((0..3).map { |i| [i * 15, i * 15] },
+                            selected: (game_session.duration&.parts[:minutes] || 0)),
+                            {},
+                            class: "w-16 h-8 p-1 text-center" %>
+          </div>
+        </div>
+
+        <div>
+          <%= form.submit "Save Game Session", data: { turbo_submits_with: "Saving...",
+                                                        proposal_selection_target:"submitButton" },
+                          class:"text-black mt-2 cursor-pointer focus:outline-none dark:text-white bg-primary-400 hover:bg-primary-600
+                          focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2
+                          dark:bg-primary-700 dark:hover:bg-primary-600 disabled:opacity-20 disabled:cursor-not-allowed disabled" %>
+        </div>
+      <% else %>
+        <div>
+          You don't have permission to create game sessions for <%= game_session.game_proposal.game_name %>
+        </div>
       <% end %>
     <% end %>
   </div>
-
-  <%= turbo_frame_tag "game_session_form_fields", data: {proposal_selection_target:"formFrame"} do %>
-    <% if policy(game_session).create? %>
-      <div data-controller="flatpickr" class="flatpickr" data-flatpickr-timezone-value="<%= Current.user.timezone %>">
-        <%= form.label :date, class: "block" %>
-        <%= form.datetime_field :date, data: { flatpickr_target: "startDate" }, required: true, value: game_session.date&.in_time_zone(Current.user.timezone) %>
-      </div>
-
-      <div class="flex items-center">
-        <%= form.label :duration, "Duration:", class:"items-center mr-2" %>
-        <div class="flex flex-col items-center">
-          <%= form.label :duration_days, "Days", class: "block" %>
-          <%= form.number_field :duration_days, required: true, value: (game_session.duration&.parts[:days] || 0), class: "w-16 p-1 text-center" %>
-        </div>
-        <div class="flex flex-col items-center">
-          <%= form.label :duration_hours, "Hours", class: "block" %>
-          <%= form.number_field :duration_hours, min:0, required: true, value: (game_session.duration&.parts[:hours] || 1), class: "w-16 p-1 text-center" %>
-        </div>
-        <div class="mx-2 text-4xl h-5 font-bold leading-7">:</div>
-        <div class="flex flex-col items-center">
-          <%= form.label :duration_minutes, "Minutes", class: "block" %>
-          <%= form.select :duration_minutes, options_for_select((0..3).map { |i| [i * 15, i * 15] }, selected: (game_session.duration&.parts[:minutes] || 0)), class: "w-16 p-1 text-center" %>
-        </div>
-      </div>
-
-      <div>
-        <%= form.submit data: { turbo_submits_with: "Saving..." }, class:"mt-2 cursor-pointer focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" %>
-      </div>
-    <% else %>
-      <div>
-        You don't have permission to create game sessions for <%= game_session.game_proposal.game_name %>
-      </div>
-    <% end %>
-  <% end %>
 
   <p style="color: green"><%= notice %></p>
 

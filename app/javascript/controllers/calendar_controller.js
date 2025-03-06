@@ -41,6 +41,8 @@ export default class extends Controller {
     this.eventRefreshCallback = this.eventRefresh.bind(this);
     this.submitSuccessCallback = this.onSubmitSuccess.bind(this);
     this.debouncedRefreshCallback = this.debounce(this.refreshCallback, 300);
+    this.eventFrameLoadCallback = null;
+    this.dateFrameLoadCallback = null;
   }
 
   connect() {
@@ -60,25 +62,36 @@ export default class extends Controller {
   removeRefreshListeners() {
     document.removeEventListener(
       "turbo:morph-element",
-      this.debouncedRefreshCallback,
+      this.eventRefreshCallback,
     );
 
     document.removeEventListener(
       "turbo:before-stream-render",
-      this.debouncedRefreshCallback,
+      this.eventRefreshCallback,
     );
+
     document.removeEventListener("turbo:submit-end", this.eventRefreshCallback);
+
+    if (this.eventFrameLoadCallback) {
+      document.removeEventListener(
+        "turbo:frame-load",
+        this.eventFrameLoadCallback,
+      );
+    }
+    if (this.dateFrameLoadCallback) {
+      document.removeEventListener(
+        "turbo:frame-load",
+        this.dateFrameLoadCallback,
+      );
+    }
   }
 
   addRefreshListeners() {
-    document.addEventListener(
-      "turbo:morph-element",
-      this.debouncedRefreshCallback,
-    );
+    document.addEventListener("turbo:morph-element", this.eventRefreshCallback);
 
     document.addEventListener(
       "turbo:before-stream-render",
-      this.debouncedRefreshCallback,
+      this.eventRefreshCallback,
     );
     document.addEventListener("turbo:submit-end", this.eventRefreshCallback);
   }
@@ -111,7 +124,7 @@ export default class extends Controller {
     };
 
     let interactive = this.data.has("interactive")
-      ? !this.data.get("interactive")
+      ? this.data.get("interactive") !== "false"
       : true;
 
     this.calendarService = new CalendarService(calendarEl, {
@@ -131,7 +144,7 @@ export default class extends Controller {
       timeZone: "local",
       loading: this.load.bind(this),
       events: eventSrc,
-      eventInteractive: true,
+      eventInteractive: interactive,
       eventClick: interactive ? this.eventClick.bind(this) : undefined,
       eventDidMount: interactive ? this.eventDidMount.bind(this) : undefined,
       selectable: false,
@@ -163,34 +176,6 @@ export default class extends Controller {
     el.dataset.turboFrame = this.frameIdValue;
     el.dataset.href = info.event.extendedProps.route;
     el.classList.add("cursor-pointer");
-  }
-
-  dateClick(info) {
-    let params = new URLSearchParams();
-    ["groupId", "userId", "gameProposalId", "availabilityId"].some((param) => {
-      const value = this.data.get(param);
-      if (value) {
-        params.append(param.replace(/([A-Z])/g, "_$1").toLowerCase(), value);
-        return true;
-      }
-    });
-
-    this.displayLoading();
-
-    Turbo.visit(`/calendars/new?${params.toString()}`, {
-      frame: this.frameIdValue,
-    });
-
-    document.addEventListener(
-      "turbo:frame-load",
-      (event) => {
-        if (event.target.id === this.frameIdValue && this.hasFlatpickrOutlet) {
-          this.setModalFormDate(info);
-          this.hideLoading();
-        }
-      },
-      { once: true },
-    );
   }
 
   onSubmitSuccess(event) {
@@ -227,17 +212,29 @@ export default class extends Controller {
 
     this.displayLoading();
 
-    Turbo.visit(info.el.dataset.href, { frame: info.el.dataset.turboFrame });
+    const frameId = info.el.dataset.turboFrame;
+    Turbo.visit(info.el.dataset.href, { frame: frameId });
 
-    document.addEventListener(
-      "turbo:frame-load",
-      (event) => {
-        if (event.target.id === this.frameIdValue) {
-          this.hideLoading();
-        }
-      },
-      { once: true },
-    );
+    this.addEventFrameLoadCallback(frameId);
+  }
+
+  dateClick(info) {
+    let params = new URLSearchParams();
+    ["groupId", "userId", "gameProposalId", "availabilityId"].some((param) => {
+      const value = this.data.get(param);
+      if (value) {
+        params.append(param.replace(/([A-Z])/g, "_$1").toLowerCase(), value);
+        return true;
+      }
+    });
+
+    this.displayLoading();
+
+    Turbo.visit(`/calendars/new?${params.toString()}`, {
+      frame: this.frameIdValue,
+    });
+
+    this.addDateFrameLoadCallback(info);
   }
 
   /**
@@ -558,6 +555,73 @@ export default class extends Controller {
     sections.forEach((section) => {
       section.target.classList.toggle("hidden", section.list.innerHTML === "");
     });
+  }
+
+  /**
+   * Adds a callback for when a turbo frame is loaded after an event click. Prevents duplicate listeners.
+   * @param frameId - The ID of the turbo frame to watch for.
+   */
+  addEventFrameLoadCallback(frameId) {
+    if (this.eventFrameLoadCallback) {
+      document.removeEventListener(
+        "turbo:frame-load",
+        this.eventFrameLoadCallback,
+      );
+    }
+
+    this.eventFrameLoadCallback = this.onEventFrameLoad.bind(this, frameId);
+
+    document.addEventListener("turbo:frame-load", this.eventFrameLoadCallback);
+  }
+
+  /**
+   * Adds a callback for when a turbo frame is loaded after a date click. Prevents duplicate listeners.
+   * @param info - The date information. Used to set the date in the modal form.
+   */
+  addDateFrameLoadCallback(info) {
+    if (this.dateFrameLoadCallback) {
+      document.removeEventListener(
+        "turbo:frame-load",
+        this.dateFrameLoadCallback,
+      );
+    }
+
+    this.dateFrameLoadCallback = this.onDateFrameLoad.bind(this, info);
+
+    document.addEventListener("turbo:frame-load", this.dateFrameLoadCallback);
+  }
+
+  /**
+   * Handles the cleanup after loading the turbo frame from an event click.
+   * @param frameId - The ID of the turbo frame to watch for.
+   * @param event - The event object.
+   */
+  onEventFrameLoad(frameId, event) {
+    if (event.target.id === frameId) {
+      this.hideLoading();
+      document.removeEventListener(
+        "turbo:frame-load",
+        this.eventFrameLoadCallback,
+      );
+      this.eventFrameLoadCallback = null;
+    }
+  }
+
+  /**
+   * Handles the cleanup after loading the turbo frame from a data click.
+   * @param info - The date information. Used to set the date in the modal form.
+   * @param event - The event object.
+   */
+  onDateFrameLoad(info, event) {
+    if (event.target.id === this.frameIdValue) {
+      this.setModalFormDate(info);
+      this.hideLoading();
+      document.removeEventListener(
+        "turbo:frame-load",
+        this.dateFrameLoadCallback,
+      );
+      this.dateFrameLoadCallback = null;
+    }
   }
 
   dialogOutletConnected(dialog, element) {

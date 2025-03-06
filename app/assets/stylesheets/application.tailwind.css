@@ -26,14 +26,14 @@ input:indeterminate + .toggle-slider::before {
 
 
 .select-game-btn {
-    @apply hover:bg-primary-950;
+    @apply hover:bg-secondary-300 dark:hover:bg-secondary-400 hover:border-secondary-500 dark:hover:border-secondary-300;
 
     &.selected {
-        @apply bg-primary-700 hover:bg-primary-700;
+        @apply border-b-4 border-x-2 border-secondary-400 bg-secondary-200 dark:border-secondary-400 dark:bg-secondary-500;
     }
 }
 
-turbo-frame[busy] {
+[busy] {
    @apply opacity-20;
 }
 

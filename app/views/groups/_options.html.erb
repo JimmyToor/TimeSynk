@@ -7,15 +7,5 @@
     <%= render partial: "permission_sets/edit_button", locals: { permission_set: group_permission_set } %>
   <% end %>
 
-  <% if group_availability.present? %>
-    <%= link_to edit_group_availability_path(group_availability), title: "Change your group availability", class: "flex h-fit" do %>
-      <%= inline_svg_tag "icons/calendar.svg" %>
-    <% end %>
-  <% else %>
-    <%= link_to new_group_group_availability_path(group), title: "Change your group availability", class: "flex h-fit" do %>
-      <%= inline_svg_tag "icons/calendar.svg" %>
-    <% end %>
-  <% end %>
-
-  <%= render "misc_dropdown_button", group: group %>
+  <%= render "misc_dropdown_button", group: group, group_availability: group_availability %>
 </div>

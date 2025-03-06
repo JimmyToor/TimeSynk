@@ -2,3 +2,7 @@
 <%= modal_wrapper(@availability.name) do %>
   <%= render "form", availability: availability, schedules: schedules %>
 <% end %>
+
+<div>
+  <%= render "shared/buttons/secondary_link", text: "Back to availabilities", path: availabilities_path, extra_classes: "mt-4" %>
+</div>

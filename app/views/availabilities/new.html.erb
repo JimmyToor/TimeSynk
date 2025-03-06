@@ -5,8 +5,6 @@
   <%= render "form", availability: availability, schedules: schedules %>
 <% end %>
 
-<br>
-
-<div>
-  <%= link_to "Back to availabilities", availabilities_path %>
+<div class="mt-3">
+  <%= render "shared/buttons/secondary_link", text: "Back to availabilities", path: availabilities_path %>
 </div>

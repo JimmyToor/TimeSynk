@@ -31,7 +31,9 @@
       <div data-rails-nested-form-target="target">
       </div>
 
-      <button type="button" data-action="mutually-exclusive-select#cacheSelections rails-nested-form#add" data-mutually-exclusive-select-target="addButton">Add availability</button>
+      <%= render "shared/buttons/accent_button", text:"Add Availability",
+                        data: {action:"mutually-exclusive-select#cacheSelections rails-nested-form#add",
+                               mutually_exclusive_select_target:"addButton"} %>
     </div>
 
     <div>
@@ -49,20 +51,28 @@
       <%= form.datetime_field :start_time, data: { flatpickr_target: "startDate"}, value: schedule.start_time&.in_time_zone(Current.user.timezone) %>
     </div>
 
-    <%= content_tag :div, class:"flex items-center" do %>
-      <%= form.label :duration, "Duration:", class:"items-center mr-2" %>
+    <%= content_tag :div, class:"flex items-center justify-center" do %>
+      <%= form.label :duration, "Duration:", class:"mr-2" %>
       <div class="flex flex-col items-center">
         <%= form.label :duration_days, "Days", class: "block" %>
-        <%= form.number_field :duration_days, required: true, value: (schedule.duration&.parts&.[](:days) || 0), class: "w-16 p-1 text-center" %>
+        <%= form.number_field :duration_days, required: true,
+                              value: (schedule.duration&.parts&.[](:days) || 0),
+                              class: "w-16 h-8 p-1 text-center" %>
       </div>
       <div class="flex flex-col items-center">
         <%= form.label :duration_hours, "Hours", class: "block" %>
-        <%= form.number_field :duration_hours, max: 23, required: true, value: (schedule.duration&.parts&.[](:hours) || 1), class: "w-16 p-1 text-center" %>
+        <%= form.number_field :duration_hours, max: 23, required: true,
+                              value: (schedule.duration&.parts&.[](:hours) || 1),
+                              class: "w-16 h-8 p-1 text-center" %>
       </div>
-      <div class="mx-2 text-4xl h-5 font-bold leading-7">:</div>
+      <div class="mx-2 text-4xl translate-y-2 font-bold leading-7">:</div>
       <div class="flex flex-col items-center">
         <%= form.label :duration_minutes, "Minutes", class: "block" %>
-        <%= form.select :duration_minutes, options_for_select((0..3).map { |i| [i * 15, i * 15] }, selected: (schedule.duration&.parts&.[](:minutes) || 0)), class: "w-16 p-1 text-center" %>
+        <%= form.select :duration_minutes,
+                        options_for_select((0..3).map { |i| [i * 15, i * 15] },
+                        selected: (schedule.duration&.parts&.[](:minutes) || 0)),
+                        {},
+                        class: "w-16 h-8 p-1 text-center" %>
       </div>
     <% end %>
 
@@ -73,7 +83,7 @@
     </div>
 
     <div>
-      <%= form.submit %>
+      <%= render "shared/buttons/form_submit_button", form: form, text: "Create Schedule", data: { turbo_submits_with: "Saving..." }, extra_classes: "mt-2 me-2 mb-2" %>
     </div>
 
   </div>

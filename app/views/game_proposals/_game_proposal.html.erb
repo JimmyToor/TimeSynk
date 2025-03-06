@@ -3,11 +3,11 @@
   <%= turbo_frame_tag dom_id(game_proposal, :content),
                       data: { controller:                  "reload-on-restore",
                               reload_on_restore_src_value: game_proposal_path(game_proposal) } do %>
-    <div class="game-display flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow
-      md:flex-row dark:border-gray-700 dark:bg-gray-800 w-fit">
+    <div class="game-display flex flex-col items-center border border-gray-200 rounded-lg shadow
+      md:flex-row bg-white dark:border-gray-700 dark:bg-gray-800 w-fit bg-">
       <%= image_tag(game_proposal.game.cover_image_url,
                     alt:   game_proposal.game.name,
-                    class: "game-art object-cover rounded-lg md:h-auto md:rounded-none mt-4 md:mt-0 md:rounded-s-lg w-24
+                    class: "game-art  object-cover rounded-lg md:h-auto md:rounded-none mt-4 md:mt-0 md:rounded-s-lg w-24
                     h-16 ml-2",
                     id:    dom_id(game_proposal.game, :art),
                     data:  { proposal_selection_target: "gameArt" }) %>
@@ -15,10 +15,10 @@
       <div class="flex justify-between">
         <div class="flex flex-col justify-between p-4 leading-normal">
           <div class="relative flex justify-between">
-            <h5 class="game-name font-semibold text-lg mb-2 mr-2 tracking-tight text-gray-900 dark:text-white">
+            <h5 class="mr-2 mb-2 text-lg font-semibold tracking-tight text-gray-900 game-name dark:text-white">
               <%= game_proposal.game_name %>
             </h5>
-            <div class="flex align-top space-x-1 mr-2">
+            <div class="mr-2 flex align-top space-x-1">
               <%= render partial: "game_proposals/options",
                          locals:  { game_proposal:           game_proposal,
                                     proposal_availability:   proposal_availability,
@@ -27,9 +27,10 @@
           </div>
 
           <div id="game_proposal_details" class="space-y-1.5">
-            <div class="flex mb-3 items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
+            <div class="mb-3 flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400 underline">
               <%= inline_svg "icons/group.svg", class: "h-6 w-6" %>
-              <%= link_to "#{game_proposal.group.name}", group_path(game_proposal.group), data: {turbo_frame: "_top"} %>
+              <%= link_to "#{game_proposal.group.name}", group_path(game_proposal.group), data: {turbo_frame: "_top"},
+                class:"text-secondary-500 dark:text-secondary-200"%>
             </div>
 
             <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400">

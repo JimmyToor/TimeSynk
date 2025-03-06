@@ -8,7 +8,8 @@ class InvitePolicy < ApplicationPolicy
   end
 
   def show?
-    user.has_role?(:site_admin) || record.group.users.include?(user)
+    return true unless record.group.is_user_member?(user)
+    new?
   end
 
   def create?

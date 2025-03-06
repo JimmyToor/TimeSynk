@@ -1,0 +1,8 @@
+<%# locals: (path:, text: "Cancel", data: {}, extra_classes: "") %>
+
+<%= link_to text,
+  path,
+  class: "cursor-pointer text-black dark:text-white bg-notice-300 hover:bg-notice-200 focus:ring-notice-100
+          focus:ring-4 dark:bg-notice-600 dark:hover:bg-notice-700 dark:focus:ring-notice-500 rounded-lg px-5 py-2.5
+          #{extra_classes}",
+  data: data %>

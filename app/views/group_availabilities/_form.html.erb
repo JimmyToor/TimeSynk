@@ -13,20 +13,26 @@
   <% end %>
 
   <div>
-    <div>
-      <%= collection_select :group_availability, :availability_id, @availabilities, :id, :name, {}, data:{action: "change->availability-selection#setCalendarAvailability", availability_selection_target:"availabilitySelectInput"}  %>
-    </div>
-  </div>
-
-  <div>
     <%= form.hidden_field :user_id, value: Current.user.id %>
-  </div>
-
-  <div>
     <%= form.hidden_field :group_id, value: group_availability.group_id %>
   </div>
 
   <div>
-    <%= form.submit "Set Availability for Group: #{group_availability.group.name}" %>
+    <div>
+      <%= collection_select :group_availability,
+                            :availability_id,
+                            @availabilities,
+                            :id,
+                            :name, {},
+                            data:{action: "change->availability-selection#setCalendarAvailability",
+                                  availability_selection_target:"availabilitySelectInput"}  %>
+      <%= render "shared/buttons/form_submit_button",
+                 form: form,
+                 text: "Set Availability for Group: #{group_availability.group.name}",
+                 extra_classes: "mt-2 me-2 mb-2" %>
+    </div>
+  </div>
+
+  <div>
   </div>
 <% end %>

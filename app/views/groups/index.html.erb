@@ -1,18 +1,15 @@
 <p style="color: green"><%= notice %></p>
 
 <div id="groups" class="relative space-y-4">
-  <% @group_memberships.each do |membership| %>
+  <% @group_memberships.map(&:group).each do |group| %>
     <div class="group-container relative flex">
-      <%= render membership.group %>
-      <%= link_to membership.group, class: "bg-secondary-700 text-accent-500 dark:text-white text-xs font-medium px-2
-        py-0.5 rounded hover:underline -translate-x-2", data: { turbo_frame: "_top" } do %>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-             class="h-full size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
-        </svg>
-      <% end %>
+      <%= render group,
+                 group_availability: group.get_user_group_availability(Current.user),
+                 group_permission_set: group.make_permission_set(group.users.to_a)%>
+      <%= card_link_to_group(group) %>
     </div>
   <% end %>
 </div>
-
-<%= link_to "New group", new_group_path, data: {turbo_frame: "modal_frame"} %>
+<div class="mt-4">
+    <%= render "shared/buttons/primary_link", path: new_group_path, text:"New Group", data: {turbo_frame: "modal_frame"} %>
+</div>

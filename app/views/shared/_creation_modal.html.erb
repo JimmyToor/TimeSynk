@@ -37,7 +37,7 @@
         <!-- Tab content -->
         <div id="tab_content">
           <% if has_proposal %>
-            <div class="hidden rounded-lg bg-gray-50 p-4 dark:bg-gray-800" id="game_session_form" role="tabpanel" aria-labelledby="new-game-session-tab">
+            <div class="hidden rounded-lg bg-tertiary-50p-4 dark:bg-gray-800" id="game_session_form" role="tabpanel" aria-labelledby="new-game-session-tab">
               <%= render partial: "game_sessions/form", locals: { game_proposal: local_assigns[:game_proposal] || game_proposals.first,
                                                                   initial_game_proposal: local_assigns[:initial_game_proposal],
                                                                   game_session: GameSession.new(game_proposal: local_assigns[:game_proposal] || game_proposals.first, duration: 1.hour),
@@ -45,7 +45,7 @@
                                                                   groups: local_assigns[:groups] || nil} %>
             </div>
           <% end %>
-            <div class="hidden rounded-lg bg-gray-50 p-4 dark:bg-gray-800" id="schedule_form" role="tabpanel" aria-labelledby="new-schedule-tab">
+            <div class="hidden rounded-lg bg-tertiary-50p-4 dark:bg-gray-800" id="schedule_form" role="tabpanel" aria-labelledby="new-schedule-tab">
               <%= render partial: "schedules/form", locals: { schedule: local_assigns[:schedule] || Schedule.new_default } %>
             </div>
         </div>

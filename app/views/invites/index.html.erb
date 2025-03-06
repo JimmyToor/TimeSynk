@@ -1,15 +1,10 @@
 <p style="color: green"><%= notice %></p>
 
-<h1>Group invites</h1>
+<h1>Invites for <%= @group.name %></h1>
 
 <div id="invites">
-  <% @invites.each do |invite| %>
-    <%= render invite %>
-    <p> <%# TODO: Don't let everyone see all invites %>
-      <%= link_to "Edit this group invite |", edit_invite_path(invite) if policy(invite).edit? %>
-      <%= button_to "Destroy this group invite", invite, method: :delete if policy(invite).destroy? %>
-    </p>
-  <% end %>
+  <%= render partial:"invites/table/invite_table_header", locals: {group: @invites.first.group} if @invites.present? %>
+  <%= render partial:"invites/table/invite_list", locals:{invites: @invites} %>
 </div>
 
 <%= link_to "New invite", new_group_invite_path(@group) if policy(Invite.new(group:@group)).new? %>

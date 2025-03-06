@@ -1,0 +1,20 @@
+<%# locals: (invites:) %>
+<div class="overflow-x-auto text-center">
+  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+    <thead class="text-xs text-gray-700 uppercase bg-tertiary-50dark:bg-gray-700 dark:text-gray-400">
+      <tr class="text-center">
+        <th></th>
+        <th scope="col" class="px-4 py-3">Creator</th>
+        <th scope="col" class="px-4 py-3">URL</th>
+        <th scope="col" class="px-4 py-3 hidden md:table-cell">Roles</th>
+        <th scope="col" class="px-4 py-3 hidden lg:table-cell">Expires</th>
+      </tr>
+    </thead>
+    <tbody data-controller="element-toggle" data-element-toggle-display-style-value="table-row">
+      <% invites.each do |invite| %>
+        <%= render partial:"invites/table/invite_table_row", locals: {invite: invite} %>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<%= render partial: "shared/table_nav" %>

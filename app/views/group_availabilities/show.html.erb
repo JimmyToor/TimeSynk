@@ -9,6 +9,6 @@
   <%= button_to "Destroy this group availability", @group_availability, method: :delete %>
 </div>
 
-<div data-controller="calendar" data-calendar-availability-id=<%= @group_availability.availability_id %> data-turbo-permanent>
+<div data-controller="calendar" data-calendar-interactive="true" data-calendar-availability-id=<%= @group_availability.availability_id %> data-turbo-permanent>
   <%= render partial: 'calendars/calendar', locals: {group: group} %>
 </div>

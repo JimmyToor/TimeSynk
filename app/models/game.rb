@@ -11,4 +11,19 @@ class Game < ApplicationRecord
   def self.get_popular
     @games = Game.where(is_popular: true)
   end
+
+  # Sets the image size for the cover image URL. Does not persist.
+  #
+  # @param size [GameImageSize] The desired image size.
+  def set_image_size(size)
+    if GameImageSize.include?(size)
+      self.cover_image_url = cover_image_url.sub("thumb", GameImageSize.const_get(size))
+    else
+      errors.add(:cover_image_url, "Invalid image size")
+    end
+  end
+
+  def display_html(game, only_art: false, img_size: GameImageSize::THUMB, img_classes: "")
+    helpers.display_game_art_and_name(game: game, only_art: only_art, img_size: img_size, img_classes: img_classes)
+  end
 end

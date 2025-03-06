@@ -143,7 +143,7 @@ class User < ApplicationRecord
   end
 
   def upcoming_game_sessions
-    game_sessions.where("date >= ?", Time.current).sort_by(&:date)
+    game_sessions.where("date >= ?", Time.current)
   end
 
   def pending_game_proposals

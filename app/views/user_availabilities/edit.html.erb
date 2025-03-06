@@ -2,11 +2,11 @@
 
   <%= render "form", user_availability: @user_availability, availabilities: @availabilities %>
 
-  <div>
-    <%= link_to "Cancel", settings_path %>
+  <div class="mt-2">
+    <%= render "shared/buttons/secondary_link", path: settings_path, text: "Back to Settings" %>
   </div>
 
-  <div id="calendar_holder" data-controller="calendar" data-calendar-availability-id="<%= @user_availability&.id || @availabilities.first %>" data-turbo-permanent>
+  <div id="calendar_holder" data-controller="calendar" data-calendar-interactive="true" data-calendar-availability-id="<%= @user_availability&.id || @availabilities.first %>" data-turbo-permanent>
     <%= render partial: 'calendars/calendar' %>
   </div>
 </div>

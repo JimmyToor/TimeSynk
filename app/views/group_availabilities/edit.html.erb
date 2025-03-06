@@ -2,12 +2,20 @@
 
   <%= render "form", group_availability: @group_availability, availabilities: @availabilities %>
 
-  <div>
-    <%= button_to "Unset Proposal Availability", @group_availability, method: :delete %>
-    <%= link_to "Cancel", @group_availability.group %>
+  <div class="my-6">
+    <%= render "shared/buttons/delete_button", resource: @group_availability, text: "Unset Group Availability" %>
   </div>
 
-  <div id="calendar_holder" data-controller="calendar" data-calendar-availability-id="<%= @group_availability&.id || @availabilities.first %>" data-turbo-permanent>
+  <div class="my-6">
+    <%= render "shared/buttons/secondary_link",
+               path: @group_availability.group,
+               text:"Back to Group" %>
+    <%= render "shared/buttons/secondary_link",
+               path: @group_availability.availability,
+               text:"View Current Availability: #{@group_availability.availability.name}" %>
+  </div>
+
+  <div id="calendar_holder"  data-controller="calendar" data-calendar-interactive="true" data-calendar-availability-id="<%= @group_availability&.id || @availabilities.first %>" data-turbo-permanent>
     <%= render partial: 'calendars/calendar' %>
   </div>
 </div>

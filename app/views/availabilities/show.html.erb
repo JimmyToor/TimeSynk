@@ -1,9 +1,11 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render partial: "availabilities/show_content", locals: {availability: @availability } %>
+<%= render partial: "availabilities/show_content", locals: {availability: @availability} %>
 
-<%= link_to "Back to availabilities", availabilities_path %>
+<div class="mt-4">
+  <%= render "shared/buttons/secondary_link", path: availabilities_path, text: "Back to Availabilities" %>
+</div>
 
-<div data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr"  data-calendar-availability-id=<%= @availability.id %> data-turbo-permanent>
+<div data-controller="calendar" data-calendar-interactive="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-availability-id=<%= @availability.id %> data-turbo-permanent>
   <%= render partial: 'calendars/calendar', locals: {game_proposals: local_assigns[:game_proposals], groups: local_assigns[:groups]} %>
 </div>

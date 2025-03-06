@@ -1,2 +1,2 @@
-<%# locals: (game:) %>
-<%= display_game_art_and_name(game: game, img_size: GameImageSize::COVER_BIG, img_classes: "h-auto w-full rounded-lg") %>
+<%# locals: (game:, only_art:false, img_size: GameImageSize::COVER_BIG, img_classes: "h-auto w-full rounded-lg") %>
+<%= display_game_art_and_name(game: game, only_art: only_art, img_size: img_size, img_classes: img_classes) %>

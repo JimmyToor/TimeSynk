@@ -1,0 +1,69 @@
+<%# locals: (invite:) %>
+<tr class="text-center hover:bg-gray-100 dark:hover:bg-gray-700">
+  <td class="w-4 px-4 py-3">
+    <%= render "shared/buttons/delete_link",
+               path: invite_path(invite),
+               title: "Delete Invite",
+               confirm_text: "Are you sure you want to delete this invite",
+               data: {turbo_frame: "_top"} %>
+  </td>
+  <th scope="row" class="whitespace-nowrap py-2 font-medium text-gray-900 dark:text-white">
+    <span class="rounded px-2 text-xs font-medium py-0.5"> <%= invite.user.username %> </span>
+    <%= button_tag 'Button', type: 'button', title: "Details", class:"inline-block lg:hidden text-secondary-500",
+                   data: {action:"click->element-toggle#triggerToggle", id:invite.id} do %>
+      &#9660;
+    <% end %>
+  </th>
+  <td class="py-2 table-cell">
+    <span class="rounded px-2 text-xs font-medium py-0.5"> <%= invite.invite_token %> </span>
+  </td>
+  <td class="hidden py-2 md:table-cell">
+    <ul class="mx-auto w-fit rounded px-2 text-xs font-medium py-0.5">
+      <% if invite.assigned_role_ids.any? %>
+        <% invite.assigned_roles.map { |role| role.name }.each do |role_name| %>
+          <li class="flex whitespace-nowrap">
+            <span class="w-4 inline-block">-</span>
+            <span><%= role_name.humanize %></span>
+          </li>
+        <% end %>
+      <% else %>
+        <li class="text-center">
+          <em>None</em>
+        </li>
+      <% end %>
+    </ul>
+  </td>
+  <td class="hidden whitespace-nowrap px-2 py-2 font-medium text-gray-900 lg:table-cell dark:text-white"><%= invite.expires_at.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p, %Y") %></td>
+  <td>
+    <%= render "shared/buttons/icon_link", path: edit_invite_path(invite), title: "Edit Invite", svg_name: "edit" %>
+  </td>
+</tr>
+
+<tr class="border-b-2 additional-info dark:border-gray-600">
+  <td></td>
+  <td colspan="5" class="hidden" data-element-toggle-target="targetElement" data-id=<%= invite.id %>>
+    <ul class="lg:hidden text-left w-fit">
+      <li>
+        <div class="table-cell lg:hidden">
+          <strong class="font-semibold">Expires:</strong> <span><%= invite.expires_at.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p, %Y") %></span>
+        </div>
+      </li>
+      <li class="table-cell md:hidden">
+        <strong class="font-semibold underline">Roles:</strong>
+        <% if invite.assigned_role_ids.any? %>
+          <ul>
+            <% invite.assigned_roles.map { |role| role.name }.each do |role_name| %>
+              <li class="flex whitespace-nowrap">
+                <span class="w-4 inline-block">-</span>
+                <span><%= role_name.humanize %></span>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <em>None</em>
+        <% end %>
+      </li>
+    </ul>
+
+  </td>
+</tr>

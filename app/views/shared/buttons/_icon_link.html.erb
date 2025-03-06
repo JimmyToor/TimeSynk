@@ -1,0 +1,9 @@
+<%# locals: (path: "#", title: "", svg_name: "plus", data: {}, extra_classes: "") %>
+
+<%= link_to path,
+            data: data,
+            title: title,
+            class: "#{extra_classes}" do %>
+  <%= content_tag(:span, inline_svg("icons/#{svg_name}.svg"),
+                  class: "text-secondary-500 dark:text-secondary-200") %>
+<% end %>

@@ -3,7 +3,7 @@
               data: {controller:"form-change-watcher"}) do |form| %>
   <div class="relative overflow-x-auto" data-controller="role-removal">
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <thead class="text-xs text-gray-700 uppercase bg-tertiary-50dark:bg-gray-700 dark:text-gray-400">
         <tr>
           <th scope="col" class="px-6 py-3">
             User
@@ -64,7 +64,10 @@
     </table>
   </div>
   <%= form.hidden_field :user_id, value: permission_set.users_roles.keys.first if permission_set.users_roles.size == 1%>
-  <%= form.submit "Save", name: "update_roles", disabled:"", class: "disabled disabled:cursor-not-allowed cursor-pointer",
-                  data: { turbo_submits_with: "Saving...", form_change_watcher_target:"submitButton" } %>
+  <%= render "shared/buttons/form_submit_button", form: form, text: "Save", name: "update_roles",
+                         extra_classes: "disabled disabled:cursor-not-allowed cursor-pointer disabled:dark:text-black
+                         disabled:opacity-50 disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:dark:bg-gray-800
+                         disabled:dark:hover:bg-gray-800",
+                         data: { turbo_submits_with: "Saving...", form_change_watcher_target:"submitButton" } %>
 
 <% end %>

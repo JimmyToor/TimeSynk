@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_04_224223) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "plpgsql"
@@ -191,8 +191,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
 
   create_table "schedules", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.datetime "start_date"
-    t.datetime "end_date"
+    t.datetime "start_time"
+    t.datetime "end_time"
     t.interval "duration"
     t.jsonb "schedule_pattern", default: {}, null: false
     t.text "name", default: "New Schedule", null: false
@@ -200,8 +200,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_000308) do
     t.text "frequency", default: "Once", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["end_date"], name: "index_schedules_on_end_date"
-    t.index ["start_date"], name: "index_schedules_on_start_date"
+    t.index ["end_time"], name: "index_schedules_on_end_time"
+    t.index ["start_time"], name: "index_schedules_on_start_time"
     t.index ["user_id"], name: "index_schedules_on_user_id"
   end
 

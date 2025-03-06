@@ -12,8 +12,9 @@ class GameSessionsController < ApplicationController
     @game_sessions = if params[:game_proposal_id]
       GameSession.for_game_proposal(params[:game_proposal_id])
     else
-      policy_scope(GameSession)
+      Current.user.upcoming_game_sessions
     end
+    @pagy, @game_sessions, = pagy(@game_sessions, limit: 8)
     authorize @game_sessions
   end
 

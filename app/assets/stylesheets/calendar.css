@@ -1,7 +1,25 @@
-@media (prefers-color-scheme: dark) {
-     .fc-col-header-cell {
-          color: black;
+@media (prefers-color-scheme: light) {
+     .fc-daygrid-body {
+          background-color: white;
      }
+}
+
+@media (prefers-color-scheme: dark) {
+     .fc-daygrid-day-number {
+          color: white;
+     }
+}
+
+.fc-button {
+     @apply bg-white dark:bg-gray-700 text-black dark:text-white !important;
+}
+
+.fc-icon {
+     @apply text-black dark:text-white !important;
+}
+
+.fc-col-header-cell {
+     color: black;
 }
 
 .fc-content {
@@ -10,4 +28,12 @@
 
 .fc-event-main-frame {
      display:block !important;
+}
+
+.fc-day {
+     @apply hover:bg-gray-200 dark:hover:bg-gray-700;
+}
+
+[data-calendar-interactive="false"] .fc-day {
+     @apply hover:bg-transparent dark:hover:bg-transparent;
 }

@@ -46,7 +46,7 @@
   dependencies:
     "@fullcalendar/daygrid" "~6.1.15"
 
-"@hotwired/stimulus@^3.0.0", "@hotwired/stimulus@^3.2.2", "@hotwired/stimulus@>= 3.0.0":
+"@hotwired/stimulus@^3", "@hotwired/stimulus@^3.0.0", "@hotwired/stimulus@^3.2.2", "@hotwired/stimulus@>= 3", "@hotwired/stimulus@>= 3.0.0":
   version "3.2.2"
   resolved "https://registry.npmjs.org/@hotwired/stimulus/-/stimulus-3.2.2.tgz"
   integrity sha512-eGeIqNOQpXoPAIP7tC1+1Yc1yl1xnwYqg+3mzqxyrbE5pg5YFBZcA6YoTiByJB6DKAEsiWtl6tjTJS4IYtbB7A==
@@ -164,10 +164,22 @@
     estree-walker "^2.0.2"
     picomatch "^4.0.2"
 
+"@stimulus-components/confirmation@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/@stimulus-components/confirmation/-/confirmation-1.0.0.tgz"
+  integrity sha512-DTFreB2yhLezHK9mRmyQByD84dPRVAZ4z2Tr54ZSFVcbD23qQCOL6KySs1iycinwdNsUgWiNx3W6AMvAOdNdLA==
+
 "@stimulus-components/dialog@^1.0.1":
   version "1.0.1"
   resolved "https://registry.npmjs.org/@stimulus-components/dialog/-/dialog-1.0.1.tgz"
   integrity sha512-7cpazrXeFKVmmuGnJOrykEvjRNRTOhLuI7SzgDdAlKWxM8ivBKziBHwjJGR96vCvSkoKwlGMGRcDzXgVRnr/7w==
+
+"@stimulus-components/dropdown@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/@stimulus-components/dropdown/-/dropdown-3.0.0.tgz"
+  integrity sha512-GY9Ez8T5Vbcad702seF4iuKZwv4f+VACtfO527l8vrFDFbGWWFyRljyK9FFXSPEkUC3/4PilVsYfPO2CMikkEg==
+  dependencies:
+    stimulus-use "^0.52.2"
 
 "@stimulus-components/rails-nested-form@^5.0.0":
   version "5.0.0"
@@ -515,6 +527,11 @@ hasown@^2.0.2:
   dependencies:
     function-bind "^1.1.2"
 
+"hotkeys-js@>= 3":
+  version "3.13.9"
+  resolved "https://registry.npmjs.org/hotkeys-js/-/hotkeys-js-3.13.9.tgz"
+  integrity sha512-3TRCj9u9KUH6cKo25w4KIdBfdBfNRjfUwrljCLDC2XhmPDG0SjAZFcFZekpUZFmXzfYoGhFDcdx2gX/vUVtztQ==
+
 is-binary-path@~2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/is-binary-path/-/is-binary-path-2.1.0.tgz"
@@ -820,6 +837,11 @@ preact@~10.12.1:
   resolved "https://registry.npmjs.org/preact/-/preact-10.12.1.tgz"
   integrity sha512-l8386ixSsBdbreOAkqtrwqHwdvR35ID8c3rKPa8lCWuO86dBi32QWHV4vfsZK1utLLFMvw+Z5Ad4XLkZzchscg==
 
+prettier@3.4.2:
+  version "3.4.2"
+  resolved "https://registry.npmjs.org/prettier/-/prettier-3.4.2.tgz"
+  integrity sha512-e9MewbtFo+Fevyuxn/4rrcDAaq0IYxPGLvObpQjiZBMAzB9IGmzlnG9RZy3FFas+eBMu2vA0CszMeduow5dIuQ==
+
 queue-microtask@^1.2.2:
   version "1.2.3"
   resolved "https://registry.npmjs.org/queue-microtask/-/queue-microtask-1.2.3.tgz"
@@ -888,6 +910,11 @@ source-map-js@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.1.tgz"
   integrity sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==
+
+stimulus-use@^0.52.2:
+  version "0.52.3"
+  resolved "https://registry.npmjs.org/stimulus-use/-/stimulus-use-0.52.3.tgz"
+  integrity sha512-stZ5dID6FUrGCR/ChWUa0FT5Z8iqkzT6lputOAb50eF+Ayg7RzJj4U/HoRlp2NV333QfvoRidru9HLbom4hZVw==
 
 "string-width-cjs@npm:string-width@^4.2.0":
   version "4.2.3"

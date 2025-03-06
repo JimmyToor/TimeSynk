@@ -1,15 +1,22 @@
 class InvitesController < ApplicationController
   before_action :set_invite, only: %i[show edit update destroy]
-  before_action :set_group, only: %i[index new create]
+  before_action :set_group, only: %i[show index new create]
   before_action :set_roles, only: %i[new edit create]
   before_action :check_param_alignment, only: %i[create]
 
   # GET /invites or /invites.json
   def index # list invites
     @invites = policy_scope(Invite).for_group(params[:group_id])
+    @pagy, @invites = pagy(@invites)
   end
 
   def show
+    # If the user is not a member of the group, render the accept invite page
+    unless @invite.group.members.include?(Current.user)
+      @group_membership = @group.group_memberships.build
+      @group_membership.user_id = Current.user.id
+      render :accept, locals: {group_membership: @group_membership, group: @invite.group, invite: @invite}
+    end
   end
 
   # GET /groups/1/invite
@@ -75,12 +82,21 @@ class InvitesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_invite
-    @invite = Invite.find(params[:id])
+    @invite = Invite.with_token(params[:invite_token]) || Invite.find(params[:id])
+
+    unless @invite.present? && @invite.expires_at > Time.current
+      error_message = @invite.nil? ? "This invite is invalid" : "This invite has expired"
+      @invite ||= Invite.new
+      @invite.errors.add(:invite_token, message: error_message)
+
+      render :error, status: :unprocessable_entity
+    end
+
     authorize(@invite)
   end
 
   def set_group
-    @group = Group.find_by!(id: params[:group_id])
+    @group = @invite&.group || Group.find_by!(id: params[:group_id])
   end
 
   def set_roles

@@ -16,6 +16,8 @@ export default class extends Dialog {
     this.submitStartHandler = this.handleSubmitStart.bind(this);
     this.submitEndHandler = this.handleSubmitEnd.bind(this);
     this.beforeFetchRequestHandler = this.handleBeforeFetchRequest.bind(this);
+    this.afterFetchRequestHandler = this.handleAfterFetchRequest.bind(this);
+    this.loadListener = this.startLoading.bind(this);
   }
 
   connect() {
@@ -42,6 +44,15 @@ export default class extends Dialog {
       "turbo:submit-end",
       this.submitEndHandler,
     );
+    this.dialogTarget.addEventListener(
+      "fetch-end",
+      this.afterFetchRequestHandler,
+    );
+    this.dialogTarget.addEventListener(
+      "turbo:click",
+      this.beforeFetchRequestHandler,
+    );
+    this.dialogTarget.addEventListener("dialog:load", this.loadListener);
   }
 
   removeTurboListeners() {
@@ -57,6 +68,15 @@ export default class extends Dialog {
       "turbo:submit-end",
       this.submitEndHandler,
     );
+    this.dialogTarget.removeEventListener(
+      "fetch-end",
+      this.afterFetchRequestHandler,
+    );
+    this.dialogTarget.removeEventListener(
+      "turbo:click",
+      this.beforeFetchRequestHandler,
+    );
+    this.dialogTarget.removeEventListener("dialog:load", this.loadListener);
   }
 
   isInModal(event) {
@@ -64,11 +84,19 @@ export default class extends Dialog {
   }
 
   handleBeforeFetchRequest(event) {
-    if (event.detail.fetchOptions.headers["X-Sec-Purpose"] === "prefetch")
+    if (event.detail.fetchOptions?.headers["X-Sec-Purpose"] === "prefetch")
       return;
     if (event.currentTarget !== this.dialogTarget) return;
-
     this.showLoadingSpinner();
+  }
+
+  handleAfterFetchRequest(event) {
+    if (event.detail.success) {
+      this.endLoading();
+    } else {
+      //TODO: Handle error
+      this.endLoading("Error");
+    }
   }
 
   handleSubmitEnd(event) {
@@ -144,7 +172,7 @@ export default class extends Dialog {
 
   endLoading(newTitle = null) {
     this.hideLoadingSpinner();
-    if (newTitle) this.setTitle(newTitle);
+    if (newTitle != null) this.setTitle(newTitle);
   }
 
   showLoadingSpinner() {

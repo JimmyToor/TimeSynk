@@ -22,11 +22,11 @@
     <%= form.label :attending_true, "Attending", style: "display: inline" %>
     <%= form.radio_button :attending, false, checked: game_session_attendance.attending == false %>
     <%= form.label :attending_false, "Not Attending", style: "display: inline" %>
-    <%= form.radio_button :attending, "", checked: game_session_attendance.new_record? %>
+    <%= form.radio_button :attending, "", checked: game_session_attendance.new_record? || game_session_attendance.attending == nil %>
     <%= form.label :attending_, "Unsure", style: "display: inline" %>
   </div>
 
   <div>
-    <%= form.submit "Save", style: "display: block"  %>
+    <%= render "shared/buttons/form_submit_button", form: form, text: "Save Attendance", extra_classes: "block mt-2 mb-2" %>
   </div>
 <% end %>

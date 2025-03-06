@@ -1,14 +1,15 @@
+<%# locals: (user: nil, upcoming_game_sessions: [], limit: 5, game_session:nil)  %>
 <%= turbo_frame_tag "upcoming_game_sessions",
-                    class: (!local_assigns[:upcoming_game_sessions] || local_assigns[:upcoming_game_sessions].empty?) ?
-                             "hidden" : nil,
+                    class: (upcoming_game_sessions.present?) ?
+                             nil : "hidden",
                     data: {controller:"reload-on-restore"} do %>
   <section>
-    <% if local_assigns[:upcoming_game_sessions] && local_assigns[:upcoming_game_sessions].any? %>
+    <% if upcoming_game_sessions.present? %>
       <h2>Upcoming Sessions</h2>
       <div class="flex rounded-lg dark:border-gray-600 h-128">
         <ul>
-          <% local_assigns[:upcoming_game_sessions].first(5).each do |game_session| %>
-            <li><%= render game_session, user: Current.user || local_assigns[:user] || nil %></li>
+          <% upcoming_game_sessions.first(limit).each do |game_session| %>
+            <li><%= render game_session, user: Current.user || user || nil, include_link: true %></li>
         <% end %>
         </ul>
       </div>

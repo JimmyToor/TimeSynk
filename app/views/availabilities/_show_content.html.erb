@@ -4,43 +4,9 @@
     <%= render availability %>
 
     <div class="flex">
-      <div>
-        <%= link_to edit_availability_path(availability), title: "Edit this availability", data: {turbo_frame: "_top"} do %>
-          <%= inline_svg_tag "icons/edit.svg" %>
-        <% end if policy(availability).edit? %>
-      </div>
+      <%= render "shared/buttons/icon_link", path: edit_availability_path(availability), title: "Edit Availability", svg_name:"edit" if policy(availability).edit? %>
       <% if policy(availability).destroy? %>
-        <div data-controller="dialog" data-action="click->dialog#backdropClose">
-          <div class="text-error-600 dark:text-error-400">
-            <button type="button" data-action="dialog#open" class="flex items-center px-2">
-              <%= inline_svg_tag "icons/trash.svg" %>
-            </button>
-          </div>
-
-          <% content_for :modal_body do %>
-            <%= render "delete_form", availability: availability %>
-            <% if availability.errors.any? %>
-              <div style="color: red">
-                <h2><%= pluralize(availability.errors.count, "error") %> prohibited this user from being saved:</h2>
-
-                <ul>
-                  <% availability.errors.each do |error| %>
-                    <li><%= error.full_message %></li>
-                  <% end %>
-                </ul>
-              </div>
-            <% end %>
-          <% end %>
-
-          <% content_for :modal_title do %>
-            <div class="flex items-center px-2">
-              <span class="text-error-400"><%= inline_svg_tag "icons/exclamation-triangle" %></span>
-              <span class="ml-1">Delete Availability</span>
-            </div>
-          <% end %>
-
-          <%= render "shared/confirmation_modal", title: "Delete Availability" %>
-        </div>
+        <%= render "shared/delete_dialog", resource: availability, form_partial: "delete_form" %>
       <% end %>
     </div>
 

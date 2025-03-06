@@ -1,11 +1,7 @@
 <%= turbo_stream.append "groups" do %>
   <div class="flex">
-    <%= render @group, group_membership: @group.membership_for_user(Current.user), group_permission_set: @group_permission_set %>
-    <%= link_to @group, class: "bg-primary-700 text-blue-500 dark:text-white text-xs font-medium px-2 py-0.5 rounded hover:underline", data: { turbo_frame: "_top" } do %>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 h-full">
-        <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5"/>
-      </svg>
-    <% end %>
+    <%= render @group, group_availability: @group.get_user_group_availability(Current.user) %>
+    <%= card_link_to_group(@group) %>
   </div>
 <% end %>
 

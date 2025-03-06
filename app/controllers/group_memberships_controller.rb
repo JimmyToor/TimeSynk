@@ -1,8 +1,8 @@
 class GroupMembershipsController < ApplicationController
   before_action :set_group_membership, only: %i[show edit update destroy]
-  before_action :set_invite, only: %i[new create]
-  before_action :set_group, only: %i[new create]
-  before_action :redirect_if_member, only: %i[new create]
+  before_action :set_invite, only: %i[create]
+  before_action :set_group, only: %i[create]
+  before_action :redirect_if_member, only: %i[create]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
 
@@ -20,10 +20,6 @@ class GroupMembershipsController < ApplicationController
 
   # GET /group_memberships/new
   def new
-    @group_membership = @group.group_memberships.build
-
-    @group_membership.user_id = Current.user.id
-    render :new, locals: {group_membership: @group_membership, group: @group, invite: @invite}
   end
 
   # GET /group_memberships/1/edit
@@ -45,7 +41,7 @@ class GroupMembershipsController < ApplicationController
         format.html { redirect_to group_path(@group_membership.group), notice: "You have joined #{@group_membership.group.name}." }
         format.json { render :show, status: :created, location: @group_membership }
       else
-        format.html { render :error, status: :unprocessable_entity, notice: @group_membership.errors.full_messages.join(", ") }
+        format.html { redirect_to join_group_with_token_path, status: :unprocessable_entity, notice: @group_membership.errors.full_messages.join(", ") }
         format.json { render json: @group_membership.errors, status: :unprocessable_entity }
       end
     end
@@ -71,7 +67,7 @@ class GroupMembershipsController < ApplicationController
     @group_membership.destroy!
 
     respond_to do |format|
-      format.html { redirect_to groups_path, notice: "Group membership was successfully destroyed." }
+      format.html { redirect_to groups_path, notice: "You've left the group." }
       format.json { head :no_content }
     end
   end
@@ -89,27 +85,24 @@ class GroupMembershipsController < ApplicationController
   end
 
   def set_invite
-    @invite = Invite.find_by(invite_token: params[:invite_token] || params.dig(:group_membership, :invite_token))
+    @invite = Invite.with_token(params[:invite_token] || group_membership_params[:invite_token])
+    flash[:invite_token] = params[:invite_token] || group_membership_params[:invite_token]
 
-    return if policy(GroupMembership).create?
-
-    unless @invite && @invite.expires_at > Time.current
-      # if no invite is found, let the user know the invite is invalid via adding an error to a new group membership
-      error_message = @invite.nil? ? "This invite is invalid" : "This invite has expired"
-      @invite ||= Invite.new
-      @invite.errors.add(:invite_token, message: error_message)
-
-      render :error, status: :unprocessable_entity
+    unless @invite.present? && @invite.expires_at > Time.current
+      flash[:alert] = @invite.nil? ? "This invite is invalid" : "This invite has expired"
+      redirect_to join_group_with_token_path and return
     end
+    params[:group_membership][:assigned_role_ids] = @invite.assigned_role_ids if params[:group_membership][:assigned_role_ids].blank?
   end
 
   def set_group
     @group = Group.find(params[:group_id]) if params[:group_id]
-    @group = @invite.group unless @group.present?
+    @group = @invite&.group unless @group.present?
     unless @group
-      @invite.errors.add(:invite_token, message: "This invite is invalid")
-      render :error
+      flash[:alert] = "This invite is invalid"
+      redirect_to join_group_with_token_path and return
     end
+    params[:group_id] = @group.id if params[:group_membership][:group_id].blank?
   end
 
   def redirect_if_member
