@@ -6,7 +6,12 @@
   <h1>Verify your email</h1>
   <p>We sent a verification email to the address below. Check that email and follow those instructions to confirm it's your email address.</p>
   <p><%= Current.user.email %></p>
-  <p><%= button_to "Re-send verification email", identity_email_verification_path %></p>
+
+  <div class="my-4">
+    <%= render "shared/buttons/primary_button_to",
+               path: identity_email_verification_path,
+               text: "Re-send verification email"%>
+  </div>
 <% end %>
 
 <%= form_with(url: identity_email_path, method: :patch) do |form| %>
@@ -33,12 +38,15 @@
   </div>
 
   <div>
-    <%= form.submit "Save changes" %>
+    <%= render "shared/buttons/form_submit_button",
+               form: form,
+               text: "Save Changes",
+               extra_classes: "mt-2 me-2 mb-2" %>
   </div>
 <% end %>
 
 <br>
 
 <div>
-  <%= link_to "Back", settings_path %>
+  <%= render "shared/buttons/cancel_button", path: settings_path  %>
 </div>

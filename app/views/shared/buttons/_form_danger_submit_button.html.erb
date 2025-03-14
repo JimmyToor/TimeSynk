@@ -1,0 +1,8 @@
+<%# locals: (form:, text: "Submit", name: "commit", data: {}, extra_classes: "") %>
+
+<%= form.submit text,
+  name: name,
+  data: data,
+  class: "text-white cursor-pointer bg-notice-300 hover:bg-notice-200 focus:ring-notice-100
+          focus:ring-4 dark:bg-notice-600 dark:hover:bg-notice-700 dark:focus:ring-notice-500 font-medium rounded-lg
+          text-sm px-5 py-2.5 #{extra_classes}" %>
