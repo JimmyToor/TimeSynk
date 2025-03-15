@@ -11,7 +11,7 @@ class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
     group = groups(:two_members)
 
     assert_difference("GroupMembership.count") do
-      post group_group_memberships_url group, params: {group_membership: {user_id: @user.id}, group_id: group.id}
+      post group_group_memberships_url group, params: {group_membership: {user_id: @user.id, invite_token: "admin"}, group_id: group.id}
     end
 
     assert_redirected_to group_url(GroupMembership.last.group)

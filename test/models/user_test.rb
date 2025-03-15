@@ -65,6 +65,30 @@ class UserTest < ActiveSupport::TestCase
     assert_not user.verified
   end
 
+  test "should not update email if email is already verified by another user" do
+    user = users(:three)
+    user.update! verified: false
+
+    assert_raises(ActiveRecord::RecordInvalid) do
+      user.update!(email: users(:admin).email)
+    end
+  end
+
+  test "should clear identical email from other users on verification" do
+    user = users(:three)
+    other_user = users(:four)
+
+    user.update!(email: "newemail@test.com", verified: false)
+    other_user.update!(email: "newemail@test.com", verified: false)
+
+    assert_equal user.email, other_user.email
+
+    other_user.update! verified: true
+    user.reload
+
+    assert_not_equal user.email, other_user.email
+  end
+
   test "membership_for_group returns correct membership" do
     user = users(:two)
     group = groups(:two_members)

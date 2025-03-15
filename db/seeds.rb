@@ -7,39 +7,6 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
-require "csv"
-
-User.create(
-  email: "test@test.com",
-  password: "mypassword123",
-  password_confirmation: "mypassword123",
-  username: "Admin User",
-  verified: true,
-  timezone: "America/Los_Angeles"
-).add_role(:site_admin)
-
-User.create(
-  email: "normaluser@test.com",
-  password: "mypassword123",
-  password_confirmation: "mypassword123",
-  username: "Normal User",
-  verified: true,
-  timezone: "America/Los_Angeles"
-)
-
-User.create(
-  email: "europeonperson@test.com",
-  password: "mypassword123",
-  password_confirmation: "mypassword123",
-  username: "European Person",
-  verified: true,
-  timezone: "Europe/London"
-)
-
-User.create(
-  password: "aaaaaaaa",
-  password_confirmation: "aaaaaaaa",
-  username: "Email-less User",
-  verified: false,
-  timezone: "America/Los_Angeles"
-)
+# Load environment-specific seeds
+seed_file = Rails.root.join("db/seeds/#{Rails.env}.rb")
+load(seed_file) if File.exist?(seed_file)

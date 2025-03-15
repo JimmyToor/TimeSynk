@@ -31,6 +31,6 @@ four:
   id: 4
   username: GroupsMemberUser
   password_digest: <%= BCrypt::Password.create("Secret1*3*5*") %>
-  verified: true
+  verified: false
   timezone: "America/Los_Angeles"
   account_id: 4
