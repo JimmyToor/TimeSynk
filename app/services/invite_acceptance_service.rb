@@ -17,7 +17,7 @@ class InviteAcceptanceService
       @group = Group.find_by(id: @group_id)
       user = User.find_by(id: @user_id)
 
-      return invalid_invite if !@group || !user || !(@invite || user.has_role?(:site_admin))
+      return invalid_invite if !@group || !user || (!@invite && !user.has_role?(:site_admin))
 
       @group_membership = new_member(user)
 
@@ -42,9 +42,8 @@ class InviteAcceptanceService
 
   def new_member(user)
     @group_membership = GroupMembership.create!(user_id: @user_id, group_id: @group_id)
-    role_update_service = RoleUpdateService.new(user: user, add_roles: @invite.assigned_role_ids)
+    role_update_service = RoleUpdateService.new(user: user, add_roles: @invite&.assigned_role_ids || [])
     role_update_service.update_roles
     @group_membership
   end
-
 end

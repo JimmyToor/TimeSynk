@@ -27,13 +27,13 @@ class GroupMembershipsController < ApplicationController
   end
 
   # POST /group_memberships or /group_memberships.json
-  def create # TODO Only let admins create memberships for users that are not themselves
+  def create
     if group_membership_params[:invite_token].present?
       service = InviteAcceptanceService.new(group_membership_params)
       @group_membership = service.accept_invite
     else
-      @group_membership = authorize(GroupMembership.new(group_membership_params))
-      @group_membership.save
+      @group_membership = GroupMembership.new(group_membership_params)
+      @group_membership.errors.add(:base, I18n.t("group_membership.invite_not_valid"))
     end
 
     respond_to do |format|
@@ -85,6 +85,7 @@ class GroupMembershipsController < ApplicationController
   end
 
   def set_invite
+    return if Current.user.has_cached_role?(:site_admin)
     @invite = Invite.with_token(params[:invite_token] || group_membership_params[:invite_token])
     flash[:invite_token] = params[:invite_token] || group_membership_params[:invite_token]
 

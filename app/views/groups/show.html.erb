@@ -7,7 +7,11 @@
 
 <div>
   <% if Current.user.has_cached_role?(:site_admin) && !group_membership.present? %>
-    <%= link_to "Join Group", new_group_group_membership_path(group) %>
+    <%= form_with(url: group_group_memberships_path(group), scope: :group_membership, method: :post) do |form| %>
+      <%= form.hidden_field :user_id, value: Current.user.id %>
+      <%= form.hidden_field :invite_token, value: "admin" %>
+      <%= render "shared/buttons/form_submit_button", form: form, text: "Join Group" %>
+    <% end %>
   <% end %>
   <div class="mt-2">
     <%= render "shared/buttons/delete_button",
