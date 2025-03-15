@@ -1,4 +1,5 @@
 class Identity::EmailsController < ApplicationController
+  before_action :check_if_email_verified_by_other_user, only: %i[update]
   before_action :set_user
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
@@ -15,6 +16,7 @@ class Identity::EmailsController < ApplicationController
   end
 
   private
+
   def set_user
     @user = Current.user
   end
@@ -36,5 +38,11 @@ class Identity::EmailsController < ApplicationController
 
   def resend_email_verification
     UserMailer.with(user: @user).email_verification.deliver_later
+  end
+
+  def check_if_email_verified_by_other_user
+    if User.where(email: params[:email] || @user&.email, verified: true).exists?
+      redirect_to edit_identity_email_path, alert: "This email is already verified by another user."
+    end
   end
 end

@@ -1,4 +1,5 @@
 class Identity::EmailVerificationsController < ApplicationController
+  before_action :check_if_email_verified_by_other_user, only: %i[show create]
   skip_before_action :authenticate, only: :show
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
@@ -12,17 +13,32 @@ class Identity::EmailVerificationsController < ApplicationController
 
   def create
     send_email_verification
-    redirect_to root_path, notice: "We sent a verification email to your email address"
+    redirect_to settings_path, notice: "Verification email sent to #{params[:email]}"
   end
 
   private
+
   def set_user
     @user = User.find_by_token_for!(:email_verification, params[:sid])
-  rescue StandardError
+  rescue
     redirect_to edit_identity_email_path, alert: "That email verification link is invalid"
   end
 
   def send_email_verification
     UserMailer.with(user: Current.user).email_verification.deliver_later
+  end
+
+  def check_if_email_verified_by_other_user
+    email = if params[:email].present?
+      params[:email]
+    else
+      @user&.email
+    end
+
+    redirect_to edit_identity_email_path, alert: "You must enter a valid email address." unless email.present?
+
+    if User.where(email: email, verified: true).exists?
+      redirect_to edit_identity_email_path, alert: "This email is already verified by another user."
+    end
   end
 end

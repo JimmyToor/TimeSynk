@@ -30,7 +30,9 @@ class User < ApplicationRecord
 
   validates :avatar, processable_image: true, content_type: {with: [:png, :jpg, :gif], spoofing_protection: true}, size: {less_than: 1.megabyte}, if: -> { avatar.attached? }
 
-  validates :email, uniqueness: {case_sensitive: false, allow_blank: true}, format: {with: URI::MailTo::EMAIL_REGEXP}, allow_blank: true
+  validates :email, uniqueness: {case_sensitive: false, allow_blank: true, if: :verified?},
+    format: {with: URI::MailTo::EMAIL_REGEXP}, allow_blank: true
+  validate :email_not_verified_by_others, if: -> { email.present? }
   validates :username, presence: true, uniqueness: true, length: {minimum: 3, maximum: 20}
   validates :password, allow_nil: false, length: {minimum: 8}, if: :password_digest_changed?
 
@@ -44,10 +46,24 @@ class User < ApplicationRecord
     self.account = Account.new
   end
 
+  before_validation if: -> { verified_changed? && verified? } do
+    clear_email_from_other_users
+  end
+
   after_create_commit :create_initial_user_availability
 
   after_update if: :password_digest_previously_changed? do
     sessions.where.not(id: Current.session).delete_all
+  end
+
+  def email_not_verified_by_others
+    existing_verified_user = User.where(email: email, verified: true)
+      .where.not(id: id)
+      .exists?
+
+    if existing_verified_user
+      errors.add(:email, "is already taken")
+    end
   end
 
   def roles_for_resource(resource)
@@ -172,5 +188,14 @@ class User < ApplicationRecord
 
   def has_any_role_for_resource?(roles_to_check, resource)
     roles_to_check.any? { |role| has_cached_role?(role, resource) }
+  end
+
+  def clear_email_from_other_users
+    return unless verified? && email.present?
+
+    # Find users with the same email who are not this user
+    User.where(email: email)
+      .where.not(id: id)
+      .update_all(email: nil)
   end
 end
