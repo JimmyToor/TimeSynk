@@ -1,0 +1,18 @@
+#!/bin/bash -e
+
+# Load Rails master key from Docker secret if available
+if [ -f "$RAILS_MASTER_KEY_FILE" ]; then
+  export RAILS_MASTER_KEY=$(cat "$RAILS_MASTER_KEY_FILE")
+else
+  echo "WARNING: Master key file not found!"
+fi
+
+# Setup cron jobs
+  if [ -f /etc/cron.d/games-crontab ]; then
+    chmod 0644 /rails/config/cron/games-crontab
+    crontab /rails/config/cron/games-crontab
+    touch /rails/log/games-cron.log
+    service cron start
+    echo "cron service started"
+  fi
+exec "$@"

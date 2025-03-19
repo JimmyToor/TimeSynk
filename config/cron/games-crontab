@@ -1,0 +1,5 @@
+# minute hour day_of_month month day_of_week command
+0 1 L * * cd /rails && ./bin/rails db:update_games >> /rails/log/cron.log 2>&1 # Update games on the last day of the month at 1 AM
+0 2 1 * * cd /rails && ./bin/rails db:fetch_new_games >> /rails/log/cron.log 2>&1 # Fetch new games every 1st of the month at 2 AM
+0 3 1 * * cd /rails && ./bin/rails db:update_popularity >> /rails/log/cron.log 2>&1 # Update popularity every 1st of the month at 3 AM to make sure new games are included
+0 3 * * 5 cd /rails && ./bin/rails db:update_popularity >> /rails/log/cron.log 2>&1 # Update popularity every Friday at 5 AM

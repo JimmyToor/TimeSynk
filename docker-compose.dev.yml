@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17
+    env_file:
+      - .env.development
+    environment:
+      POSTGRES_USER: ${TIMESYNK_DATABASE_USER:-postgres}
+      POSTGRES_PASSWORD: ${TIMESYNK_DATABASE_PASSWORD:-postgres}
+      POSTGRES_DB: timesynk_development
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_dev_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./.volumes/postgres_dev_data
+      o: bind

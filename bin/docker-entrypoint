@@ -1,8 +1,25 @@
 #!/bin/bash -e
 
+# Load Rails master key from Docker secret if available
+echo "Checking for master key file at $RAILS_MASTER_KEY_FILE"
+if [ -f "$RAILS_MASTER_KEY_FILE" ]; then
+  export RAILS_MASTER_KEY=$(cat "$RAILS_MASTER_KEY_FILE")
+else
+  echo "WARNING: Master key file not found!"
+fi
+
 # If running the rails server then create or migrate existing database
 if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
   ./bin/rails db:prepare
+  ./bin/rails db:seed
+
+  if [ "$(./bin/rails runner "print Game.count.zero?")" = "true" ]; then
+       echo "Database empty, fetching games from IGDB..."
+       ./bin/rails db:fetch_games
+
+       echo "Backing up games data to games.csv..."
+       ./bin/rails db:export_games
+  fi
 fi
 
 exec "${@}"

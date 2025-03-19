@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
     return unless Current.user
     return if Current.user&.has_role?(:site_admin) || request.path == sign_in_path || request.path == sign_out_path
 
-    if ENV.fetch("MAINTENANCE_MODE") == "true"
+    if ENV.fetch("MAINTENANCE_MODE", "false") == "true"
       render "home/maintenance", layout: "guest", status: :service_unavailable
     end
   end

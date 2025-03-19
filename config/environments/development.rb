@@ -1,7 +1,7 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  config.action_mailer.default_url_options = {host: "localhost", port: 3000}
+  config.action_mailer.default_url_options = {host: "127.0.0.1", port: 3000}
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded any time
@@ -41,8 +41,12 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
+  config.action_mailer.delivery_method = :smtp
+
   config.action_mailer.smtp_settings = {
     address: ENV["MAILER_ADDRESS"],
+    from: ENV["MAILER_FROM"],
+    host: ENV["MAILER_HOST"],
     port: 587,
     user_name: ENV["MAILER_USERNAME"],
     password: ENV["MAILER_PASSWORD"],

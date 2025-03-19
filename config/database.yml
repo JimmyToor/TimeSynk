@@ -15,8 +15,8 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  username: <%= ENV.fetch('TIMESYNK_DATABASE_USERNAME') %>
-  password: <%= ENV.fetch('TIMESYNK_DATABASE_PASSWORD') %>
+  username: <%= Rails.env.production? ? Rails.application.credentials.timesynk_database&.user : ENV.fetch("TIMESYNK_DATABASE_USER", "postgres") %>
+  password: <%= Rails.env.production? ? Rails.application.credentials.timesynk_database&.password : ENV.fetch("TIMESYNK_DATABASE_PASSWORD", "postgres") %>
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
@@ -82,5 +82,8 @@ test:
 production:
   <<: *default
   database: timesynk_production
-  username: postgres
-  password: <%= ENV.fetch('TIMESYNK_DATABASE_PASSWORD') %>
+  username: <%= Rails.env.production? ? Rails.application.credentials.timesynk_database&.user : ENV.fetch("TIMESYNK_DATABASE_USER", "postgres") %>
+  password: <%= Rails.env.production? ? Rails.application.credentials.timesynk_database&.password : ENV.fetch("TIMESYNK_DATABASE_PASSWORD", "postgres") %>
+  host: <%= ENV.fetch("TIMESYNK_DATABASE_HOST", 'postgres') %>
+  port: <%= ENV.fetch("TIMESYNK_DATABASE_PORT", '5432') %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
