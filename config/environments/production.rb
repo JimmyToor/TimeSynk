@@ -88,8 +88,8 @@ Rails.application.configure do
     from: ENV["MAILER_FROM"],
     host: ENV["MAILER_HOST"],
     port: 587,
-    user_name: Rails.application.credentials.mailer.username,
-    password: Rails.application.credentials.mailer.password,
+    user_name: Rails.application.credentials.dig(:mailer, :username),
+    password: Rails.application.credentials.dig(:mailer, :password),
     enable_starttls_auto: true
   }
 
