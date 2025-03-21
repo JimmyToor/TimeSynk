@@ -8,18 +8,44 @@ else
   echo "WARNING: Master key file not found!"
 fi
 
+# Parse command-line arguments
+IGNORE_SEED=false
+REMAINING_ARGS=()
+
+for arg in "$@"; do
+  if [ "$arg" = "--ignore-seed" ]; then
+    IGNORE_SEED=true
+  else
+    REMAINING_ARGS+=("$arg")
+  fi
+done
+
+
 # If running the rails server then create or migrate existing database
 if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
   ./bin/rails db:prepare
   ./bin/rails db:seed
 
   if [ "$(./bin/rails runner "print Game.count.zero?")" = "true" ]; then
-       echo "Database empty, fetching games from IGDB..."
-       ./bin/rails db:fetch_games
+      echo "Games table empty, populating..."
 
-       echo "Backing up games data to games.csv..."
-       ./bin/rails db:export_games
+    if [ "$IGNORE_SEED" = "true" ]; then
+      echo "Fetching from IGDB due to --ignore-seed flag."
+      ./bin/rails db:fetch_games
+    else
+      FILE_PATH="./db/seeds/games.csv"
+      if [ -f "$FILE_PATH" ]; then
+        echo "Games data already exists in $FILE_PATH. Skipping fetch."
+        ./bin/rails db:import_games
+      else
+        echo "Games data not found in $FILE_PATH. Fetching from IGDB."
+        ./bin/rails db:fetch_games
+      fi
+    fi
+
+    echo "Backing up games data to games.csv..."
+    ./bin/rails db:export_games
   fi
 fi
 
-exec "${@}"
+exec "${REMAINING_ARGS[@]}"

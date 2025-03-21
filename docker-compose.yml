@@ -3,6 +3,7 @@ services:
     image: timesynk-web:latest
     build:
       context: .
+      target: web
       args:
         - RAILS_ENV=production
     env_file:
@@ -19,6 +20,7 @@ services:
       - rails_master_key
     depends_on:
       - postgres
+    command: ./bin/rails server ${IGNORE_SEED:+--ignore-seed}
 
   postgres: # database
     image: postgres:17
@@ -41,6 +43,7 @@ services:
     image: timesynk-web:latest
     build:
       context: .
+      target: scheduler
       args:
         - RAILS_ENV=production
     env_file:
@@ -48,13 +51,12 @@ services:
     environment:
       RAILS_ENV: production
       RAILS_MASTER_KEY_FILE: /run/secrets/rails_master_key
-    volumes:
-      - storage:/rails/storage
-      - ./config/cron/games-crontab:/rails/config/cron/games-crontab
     restart: unless-stopped
     secrets:
       - rails_master_key
-    entrypoint: ["./bin/docker-scheduler-entrypoint"]
+    volumes:
+      - ./config/cron/games-crontab:/rails/config/cron/games-crontab
+    entrypoint: ["/rails/bin/docker-scheduler-entrypoint"]
     command: ["cron", "-f"]
 
 volumes:

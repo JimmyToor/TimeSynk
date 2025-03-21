@@ -8,11 +8,8 @@ else
 fi
 
 # Setup cron jobs
-  if [ -f /etc/cron.d/games-crontab ]; then
-    chmod 0644 /rails/config/cron/games-crontab
+  if [ -f /rails/config/cron/games-crontab ]; then
     crontab /rails/config/cron/games-crontab
-    touch /rails/log/games-cron.log
-    service cron start
-    echo "cron service started"
+    touch /rails/log/cron.log
   fi
 exec "$@"

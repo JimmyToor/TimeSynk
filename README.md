@@ -114,3 +114,10 @@ Input your available times and TimeSynk will find the best time for everyone to 
 ### Cron
 `/config/cron/games-crontab` holds the cron jobs for the application.
 They update and fetch new games once a month and update popularity once a week.
+
+### Initial Seed
+If the Games table is empty when starting the application, it will be seeded with data from IGDB. 
+If `db/seed/games.csv` is present, it will be used instead. To ignore this file, run the application with `IGNORE_SEED`.
+```bash
+IGNORE_SEED=true docker compose up 
+```

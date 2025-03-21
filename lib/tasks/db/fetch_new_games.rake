@@ -26,7 +26,7 @@ namespace :db do
             }
           end
 
-          Game.upsert_all(games_to_insert, unique_by: :igdb_id)
+          Game.insert_all(games_to_insert, unique_by: :igdb_id, returning: false)
           print "."  # Progress indicator
         rescue => e
           Rails.logger.error "Error batch inserting new games: #{e.message}"
