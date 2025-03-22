@@ -83,8 +83,7 @@ FROM final AS scheduler
 
 RUN mkdir -p /var/run && \
     touch /var/run/crond.pid && \
-    chmod 644 /var/run/crond.pid && \
-    chown root:root /var/run/crond.pid
+    chmod 644 /var/run/crond.pid
 
 # cron daemon needs root
 USER root
