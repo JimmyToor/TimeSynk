@@ -43,10 +43,10 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :smtp
 
+  config.action_mailer.default_options = {host: ENV["MAILER_HOST"], from: ENV["MAILER_FROM"]}
+
   config.action_mailer.smtp_settings = {
     address: ENV["MAILER_ADDRESS"],
-    from: ENV["MAILER_FROM"],
-    host: ENV["MAILER_HOST"],
     port: 587,
     user_name: ENV["MAILER_USERNAME"],
     password: ENV["MAILER_PASSWORD"],

@@ -1,10 +1,9 @@
 class Identity::EmailVerificationsController < ApplicationController
+  before_action :set_user, only: :show
   before_action :check_if_email_verified_by_other_user, only: %i[show create]
   skip_before_action :authenticate, only: :show
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
-
-  before_action :set_user, only: :show
 
   def show
     @user.update! verified: true
@@ -13,7 +12,7 @@ class Identity::EmailVerificationsController < ApplicationController
 
   def create
     send_email_verification
-    redirect_to settings_path, notice: "Verification email sent to #{params[:email]}"
+    redirect_to edit_identity_email_path, notice: "Verification email sent to #{params[:email]}"
   end
 
   private
@@ -35,7 +34,7 @@ class Identity::EmailVerificationsController < ApplicationController
       @user&.email
     end
 
-    redirect_to edit_identity_email_path, alert: "You must enter a valid email address." unless email.present?
+    redirect_to edit_identity_email_path, alert: "You must enter a valid email address." unless email.present? and return
 
     if User.where(email: email, verified: true).exists?
       redirect_to edit_identity_email_path, alert: "This email is already verified by another user."

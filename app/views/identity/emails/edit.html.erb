@@ -9,8 +9,8 @@
 
   <div class="my-4">
     <%= render "shared/buttons/primary_button_to",
-               path: identity_email_verification_path,
-               text: "Re-send verification email"%>
+               path: identity_email_verification_path(email: Current.user.email),
+               text: "Re-send verification email" %>
   </div>
 <% end %>
 
