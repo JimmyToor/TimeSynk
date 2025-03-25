@@ -4,7 +4,7 @@ class InvitePolicy < ApplicationPolicy
   end
 
   def new?
-    user.has_role?(:site_admin) || (user == record.user && user.has_any_role_for_resource?([:owner, :admin, :manage_invites], record.group))
+    user.has_role?(:site_admin) || user.has_any_role_for_resource?([:owner, :admin, :manage_invites], record.group)
   end
 
   def show?
