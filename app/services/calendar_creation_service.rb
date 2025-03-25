@@ -146,7 +146,7 @@ class CalendarCreationService
     schedules.map { |schedule|
       icecube_schedule = schedule.make_icecube_schedule
 
-      if schedule.in_range(icecube_schedule: icecube_schedule)
+      if schedule.in_range(icecube_schedule: icecube_schedule, start_time: @params[:start], end_time: @params[:end])
         schedule.make_calendar_schedule(icecube_schedule)
       end
     }.compact

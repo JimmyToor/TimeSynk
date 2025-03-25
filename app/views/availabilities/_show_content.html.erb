@@ -4,7 +4,7 @@
     <%= render availability %>
 
     <div class="flex">
-      <%= render "shared/buttons/icon_link", path: edit_availability_path(availability), title: "Edit Availability", svg_name:"edit" if policy(availability).edit? %>
+      <%= render "shared/buttons/icon_link", path: edit_availability_path(availability), title: "Edit Availability", svg_name:"edit", data: {turbo_frame: "_top"} if policy(availability).edit? %>
       <% if policy(availability).destroy? %>
         <%= render "shared/delete_dialog", resource: availability, form_partial: "delete_form" %>
       <% end %>

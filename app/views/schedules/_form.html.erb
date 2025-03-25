@@ -51,7 +51,7 @@
       <%= form.datetime_field :start_time, data: { flatpickr_target: "startDate"}, value: schedule.start_time&.in_time_zone(Current.user.timezone) %>
     </div>
 
-    <%= content_tag :div, class:"flex items-center justify-center" do %>
+    <%= content_tag :div, class:"flex items-center" do %>
       <%= form.label :duration, "Duration:", class:"mr-2" %>
       <div class="flex flex-col items-center">
         <%= form.label :duration_days, "Days", class: "block" %>
@@ -62,7 +62,7 @@
       <div class="flex flex-col items-center">
         <%= form.label :duration_hours, "Hours", class: "block" %>
         <%= form.number_field :duration_hours, max: 23, required: true,
-                              value: (schedule.duration&.parts&.[](:hours) || 1),
+                              value: (schedule.duration&.parts&.[](:hours) || schedule.new_record? ? 1 : 0),
                               class: "w-16 h-8 p-1 text-center" %>
       </div>
       <div class="mx-2 text-4xl translate-y-2 font-bold leading-7">:</div>
@@ -83,7 +83,7 @@
     </div>
 
     <div>
-      <%= render "shared/buttons/form_submit_button", form: form, text: "Create Schedule", data: { turbo_submits_with: "Saving..." }, extra_classes: "mt-2 me-2 mb-2" %>
+      <%= render "shared/buttons/form_submit_button", form: form, text: "Save Schedule", data: { turbo_submits_with: "Saving..." }, extra_classes: "mt-2 me-2 mb-2" %>
     </div>
 
   </div>
