@@ -82,9 +82,10 @@ CMD ["./bin/rails", "server"]
 FROM final AS scheduler
 
 RUN mkdir -p /var/run && \
+    chown root:root /var/run && \
     touch /var/run/crond.pid && \
     chmod 644 /var/run/crond.pid && \
-    chown root:root /var/run/crond.pid
+    chmod 755 /var/run
 
 # cron daemon needs root
 USER root
