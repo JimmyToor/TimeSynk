@@ -37,7 +37,13 @@ export default class extends Dialog {
     if (event.detail.fetchOptions.headers["X-Sec-Purpose"] === "prefetch")
       return;
 
-    if (event.target !== this.frameEl || this.frameEl.innerText !== "") return;
+    this.frameEl = document.getElementById(this.frameIdValue);
+    if (
+      event.target !== this.frameEl ||
+      this.frameEl.innerText !== "" ||
+      this.frameEl.querySelector("dialog")?.hasAttribute("open")
+    )
+      return;
     this.open();
   }
 
