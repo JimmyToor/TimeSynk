@@ -60,7 +60,7 @@
           <div class="flex flex-col items-center">
             <%= form.label :duration_hours, "Hours", class: "block" %>
             <%= form.number_field :duration_hours, min:0, required: true,
-                                  value: (game_session.duration&.parts[:hours] || 1),
+                                  value: (game_session.duration&.parts&.[](:hours) || game_session.new_record? ? 1 : 0),
                                   class: "w-16 h-8 p-1 text-center" %>
           </div>
           <div class="mx-2 translate-y-2 text-4xl font-bold leading-7">:</div>
