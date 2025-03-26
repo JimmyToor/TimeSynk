@@ -18,7 +18,7 @@
      @apply text-black dark:text-white !important;
 }
 
-.fc-col-header-cell {
+.fc-col-header-cell, .fc-list-day-text, .fc-list-day-side-text {
      color: black;
 }
 
@@ -31,7 +31,11 @@
 }
 
 .fc-day {
-     @apply hover:bg-gray-200 dark:hover:bg-gray-700;
+     @apply hover:bg-gray-200 dark:hover:bg-gray-700 !important;
+}
+
+.fc-list-event:hover td {
+     @apply bg-gray-200 dark:bg-gray-700 !important;
 }
 
 [data-calendar-interactive="false"] .fc-day {

@@ -6,7 +6,7 @@
       <%= check_box_tag "availability[availability_schedules_attributes][][_destroy]", "1", checked, data:{ action:"change->schedule-selection#toggleSchedule", schedule_selection_target:"scheduleToggle", schedule_id:schedule.id, schedule_name:schedule.name}, class: "w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" %>
     </div>
   </td>
-  <th scope="row" class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+  <th scope="row" class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white text-left">
     <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= schedule.name %> </span>
     <%= button_tag 'Button', type: 'button', title: "Details", class:"inline-block xxl:hidden", data: {action:"click->element-toggle#triggerToggle", id:schedule.id} do %>
       &#9660;

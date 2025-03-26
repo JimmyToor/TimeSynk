@@ -1,7 +1,7 @@
 <%# locals: (game_proposal:, proposal_availability: nil, proposal_permission_set:nil, notice: nil) %>
 <%= content_tag :div, id: dom_id(game_proposal) do %>
   <%= turbo_frame_tag dom_id(game_proposal, :content),
-                      data: { controller:                  "reload-on-restore",
+                      data: { controller: "reload-on-restore",
                               reload_on_restore_src_value: game_proposal_path(game_proposal) } do %>
     <div class="game-display flex flex-col items-center border border-gray-200 rounded-lg shadow
       md:flex-row bg-white dark:border-gray-700 dark:bg-gray-800 w-fit bg-">
@@ -30,7 +30,8 @@
             <div class="mb-3 flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400 underline">
               <%= inline_svg "icons/group.svg", class: "h-6 w-6" %>
               <%= link_to "#{game_proposal.group.name}", group_path(game_proposal.group), data: {turbo_frame: "_top"},
-                class:"text-secondary-500 dark:text-secondary-200"%>
+                class:"text-gray-900 game-name dark:text-white underline
+           decoration-2 hover:decoration-4 decoration-secondary-500 dark:decoration-secondary-200"%>
             </div>
 
             <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
