@@ -1,21 +1,10 @@
 <%= form_with(model: schedule, id: dom_id(schedule, :form), data: { controller: "rails-nested-form", rails_nested_form_wrapper_selector_value: '.nested-form-wrapper' }) do |form| %>
-  <p style="color: green"><%= local_assigns[:notice] %></p>
-  <% if schedule.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(schedule.errors.count, "error") %> prohibited this schedule from being saved:</h2>
-
-      <ul>
-        <% schedule.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= render 'shared/notification', id: schedule.new_record? ? "schedule_new" : "schedule_#{schedule.id}"  %>
 
   <div class="dark:bg-gray-800 p-4 rounded-lg">
     <div>
       <%= form.label :name, style: "display: block" %>
-      <%= form.text_field :name, pattern:"[A-Za-z0-9 ]*", title:"Numbers, letters, and spaces only" %>
+      <%= form.text_field :name %>
     </div>
 
     <div>
@@ -38,7 +27,7 @@
 
     <div>
       <%= form.label :description, style: "display: block" %>
-      <%= form.text_area :description, pattern:"[A-Za-z0-9 ]*", title:"Numbers, letters, and spaces only" %>
+      <%= form.text_area :description %>
     </div>
 
     <template data-rails-nested-form-target="template">

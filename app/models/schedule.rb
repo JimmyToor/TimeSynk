@@ -17,8 +17,8 @@ class Schedule < ApplicationRecord
 
   accepts_nested_attributes_for :availability_schedules, allow_destroy: true, reject_if: :all_blank
 
-  validates :name, presence: true, uniqueness: {scope: :user}, length: {maximum: 300}, format: {with: /\A[a-zA-Z0-9\s]+\z/, message: "only allows letters, numbers, and spaces"}
-  validates :description, allow_blank: true, length: {maximum: 300}, format: {with: /\A[a-zA-Z0-9\s]+\z/, message: "only allows letters, numbers, and spaces"}
+  validates :name, presence: true, uniqueness: {scope: :user}, length: {maximum: 300}
+  validates :description, allow_blank: true, length: {maximum: 300}
   validates :start_time, timeliness: {on_or_before: :end_time, type: :datetime}, presence: true
   validates :end_time, timeliness: {on_or_after: :start_time, type: :datetime}
 
