@@ -1,28 +1,32 @@
 <%# locals: (permission_set:, url:, roles:) %>
+<%= render "shared/notification", id: "permission_set_#{permission_set.resource.id}" %>
+
 <%= form_with(url: url, id:"form_#{permission_set.resource.class.name.underscore}_permission_set", method: :patch,
               data: {controller:"form-change-watcher"}) do |form| %>
-  <div class="relative overflow-x-auto" data-controller="role-removal">
-    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-      <thead class="text-xs text-gray-700 uppercase bg-tertiary-50dark:bg-gray-700 dark:text-gray-400">
-        <tr>
-          <th scope="col" class="px-6 py-3">
-            User
-          </th>
-          <% roles.reject{|role| role.name == "owner"}.each do |role| %>
-            <th scope="col" class="px-6 py-3">
-              <%= role.name.humanize %>
+  <div class="relative max-h-full" data-controller="role-removal">
+    <div class="overflow-y-auto persistent-scrollbar max-h-[calc(100vh-200px)] min-h-24">
+      <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+        <thead class="text-xs uppercase text-gray-700 bg-tertiary-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" class="sticky top-0 left-0 z-20 px-6 py-3 bg-tertiary-50 dark:bg-gray-600">
+              User
             </th>
-          <% end %>
-        </tr>
-      </thead>
-      <tbody>
+            <% roles.reject{|role| role.name == "owner"}.each do |role| %>
+              <th scope="col" class="sticky top-0 z-10 px-6 py-3 bg-tertiary-50 dark:bg-gray-600">
+                <%= role.name.humanize %>
+              </th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
         <% can_change_owner = policy(permission_set.resource).change_owner? %>
         <% policy_class = permission_policy_class_for_resource(permission_set.resource) %>
         <% permission_set.users_roles.each do |user_id, user_info| %>
           <% user = user_info[:user] %>
           <% disabled = !can_update_resource_permissions_for_user?(policy_class, user, permission_set.resource) %>
-          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+          <tr class="border-b bg-white dark:bg-gray-800 dark:border-gray-700 persistent-scrollbar">
+            <th scope="row" class="sticky left-0 z-10 pr-3 pl-5 py-4 font-medium text-gray-900
+              dark:text-white bg-white dark:bg-gray-800 w-32 text-wrap" >
 
               <%= username_with_resource_role_icons(user, permission_set.resource) %>
 
@@ -34,7 +38,8 @@
                     <%= owner_form.hidden_field :new_owner_id, value: user_id %>
                     <%= owner_form.submit "Transfer Ownership", name: "transfer_ownership",
                                           data: { turbo_confirm: "Are you sure you want to transfer ownership?" },
-                                          class: "text-xs text-gray-500 dark:text-gray-400 cursor-pointer" %>
+                                          class: "text-xs text-gray-500 dark:text-gray-400 cursor-pointer dark:text-white
+                                           underline decoration-2 dark:decoration-2 dark:hover:decoration-4 hover:decoration-4 decoration-secondary-500 dark:decoration-secondary-200" %>
                   <% end %>
                 <% end %>
               <% end %>
@@ -61,13 +66,16 @@
           </tr>
         <% end %>
       </tbody>
-    </table>
+      </table>
+    </div>
   </div>
   <%= form.hidden_field :user_id, value: permission_set.users_roles.keys.first if permission_set.users_roles.size == 1%>
-  <%= render "shared/buttons/form_submit_button", form: form, text: "Save", name: "update_roles",
-                         extra_classes: "disabled disabled:cursor-not-allowed cursor-pointer disabled:dark:text-black
-                         disabled:opacity-50 disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:dark:bg-gray-800
-                         disabled:dark:hover:bg-gray-800",
-                         data: { turbo_submits_with: "Saving...", form_change_watcher_target:"submitButton" } %>
+  <div class="mt-2">
+    <%= render "shared/buttons/form_submit_button", form: form, text: "Save", name: "update_roles",
+                           extra_classes: "disabled disabled:cursor-not-allowed cursor-pointer disabled:dark:text-black
+                           disabled:opacity-50 disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:dark:bg-gray-800
+                           disabled:dark:hover:bg-gray-800",
+                           data: { turbo_submits_with: "Saving...", form_change_watcher_target:"submitButton" } %>
+  </div>
 
 <% end %>
