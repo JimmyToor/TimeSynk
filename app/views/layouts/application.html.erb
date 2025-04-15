@@ -23,11 +23,14 @@
         <%= yield %>
       </div>
     </div>
-    <div id="modal_container">
+    <div id="modal_container" class="max-h-screen">
       <%= turbo_frame_tag "modal_frame" do %>
         <!-- Modals will be inserted here -->
       <% end %>
       <%= render partial:"shared/loading_modal" %>
+    </div>
+    <div id="toast_container" class="fixed flex flex-col gap-4 right-5 bottom-5 max-w-xs z-50">
+      <!-- Toast notifications will be inserted here -->
     </div>
   </body>
 </html>

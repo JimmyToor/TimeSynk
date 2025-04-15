@@ -1,45 +1,27 @@
 # frozen_string_literal: true
 
 module NotificationsHelper
-  # Displays a notification message with a dismiss button.
-  # @param [Hash] options Options for customizing the notification. Valid keys are: :highlight, :list_items, :link
+  # Displays a notification message with a dismiss button. Valid options keys are:
   #
   #  - :highlight [String] The text in the message to highlight. Only highlights the first occurrence.
   #  - :list_items [Array] An array of items to display as a list below the message.
   #  - :link [Hash] A hash containing the link text and URL. Example: { text: "Click here", url: "/path" }. Only links the first occurrence.
+  #
+  # @param [Hash] options Hash for customizing the notification. Valid keys are: :highlight, :list_items, :link
   def format_notification_message(message, options = {})
-    Rails.logger.debug "Initial notification message: #{message}, options: #{options}"
     return message unless options.present?
     options = options.with_indifferent_access if options.respond_to?(:with_indifferent_access)
 
-    if options[:list_items].present?
-      Rails.logger.debug "Notification message before list items: #{message}"
-      message = safe_join([
-        message,
-        content_tag(:div) do
-          content_tag(:ul, class: "mt-1.5 list-disc list-inside") do
-            options[:list_items].map do |item|
-              content_tag(:li, item)
-            end
-          end
-        end
-      ])
-      Rails.logger.debug "Notification message after list items: #{message}"
-    end
-
     if options[:highlight]
-      Rails.logger.debug "Notification message before highlight: #{message}"
       parts = message.split(options[:highlight])
       message = safe_join([
         parts.first,
         content_tag(:strong, options[:highlight], class: "font-bold text-primary-600"),
         parts.last
       ])
-      Rails.logger.debug "Notification message after highlight: #{message}"
     end
 
     if options[:link]
-      Rails.logger.debug "Notification message before link: #{message}"
       parts = message.split(options[:link][:text])
       message = safe_join([
         parts.first,
@@ -47,9 +29,22 @@ module NotificationsHelper
            decoration-2 hover:decoration-4 decoration-secondary-500 dark:decoration-secondary-200"),
         parts.last
       ])
-      Rails.logger.debug "Notification message after link: #{message}"
     end
-    Rails.logger.debug "Final notification message: #{message}"
+
+    if options[:list_items].present?
+      message = safe_join([
+        message,
+        content_tag(:div) do
+          content_tag(:ul, class: "mt-1.5 list-disc list-inside") do
+            Rails.logger.debug options[:list_items]
+            options[:list_items].map do |item|
+              concat content_tag(:li, item)
+            end
+          end
+        end
+      ])
+    end
+
     message
   end
 
