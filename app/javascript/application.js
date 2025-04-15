@@ -5,3 +5,5 @@ import "./controllers";
 import "@stimulus-components/dialog";
 import "@stimulus-components/rails-nested-form";
 import "flowbite/dist/flowbite.turbo.min.js";
+import "./stream_actions/frame_reload";
+import "./channels"
