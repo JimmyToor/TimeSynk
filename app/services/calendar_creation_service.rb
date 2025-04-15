@@ -1,16 +1,44 @@
 # frozen_string_literal: true
 
-# Service responsible for creating various types of FullCalendar-compatible calendar objects.
-class CalendarCreationService
+# Creates various types of FullCalendar-compatible calendar data
+# based on different parameters like users, groups, schedules, availabilities,
+# game sessions, or game proposals.
+#
+# @note Contiguous schedules belonging to the same user availability may be consolidated
+#   into fewer events if they are not the sole focus (e.g., when viewing group availability).
+#
+# @example Generating calendars for a user's groups
+#   params = ActionController::Parameters.new(start: "2023-01-01", end: "2023-01-31", user_id: 1)
+#   user = User.find(1)
+#   calendars = CalendarCreationService.call(params, user)
+#
+# @example Generating a calendar for a specific schedule
+#   params = ActionController::Parameters.new(start: "2023-01-01", end: "2023-01-31", schedule_id: 5)
+#   user = User.find(1) # Assuming user 1 has permission to view schedule 5
+#   calendars = CalendarCreationService.call(params, user) # Returns an array with one Calendar object
+class CalendarCreationService < ApplicationService
+  # Initializes the service with permitted parameters and the current user.
+  #
+  # @param params [ActionController::Parameters] Parameters controlling calendar generation.
+  # @option params [String] :start The start date/time for the calendar view (ISO 8601 format).
+  # @option params [String] :end The end date/time for the calendar view (ISO 8601 format).
+  # @option params [Integer] :user_id ID of the user for whom to generate group calendars.
+  # @option params [Integer] :group_id ID of the group for which to generate calendars.
+  # @option params [Integer] :schedule_id ID of a specific schedule to generate a calendar for.
+  # @option params [Array<Integer>] :schedule_ids IDs of multiple schedules to generate calendars for.
+  # @option params [Integer] :availability_id ID of a specific availability to generate a calendar for.
+  # @option params [Integer] :game_session_id ID of a game session to generate a calendar for.
+  # @option params [Integer] :game_proposal_id ID of a game proposal to generate a calendar for (includes proposal availabilities).
+  # @param user [User] The user requesting the calendar data (used for authorization).
   def initialize(params, user)
     @params = params.permit(:start, :end, :user_id, :group_id, :schedule_id, :availability_id, :game_session_id, :game_proposal_id, schedule_ids: [])
     @user = user
   end
 
-  # Creates calendars based on the provided parameters.
+  # Orchestrates the creation of different calendar types based on the initialized parameters.
   #
-  # @return [Array<Calendar>] the created calendars
-  def create_calendars
+  # @return [Array<Calendar>] An array of generated Calendar objects, ready for FullCalendar.
+  def call
     @calendars = []
     if @params[:user_id].present?
       User.find(@params[:user_id]).groups.each do |group|
@@ -69,7 +97,7 @@ class CalendarCreationService
   # @param group [Group] the group to create calendars for
   # @return [Array<Calendar>] the created calendars
   def make_group_calendars(group)
-    Pundit.authorize(@user, group, :edit?)
+    Pundit.authorize(@user, group, :show?)
     calendars = []
     calendars.concat(make_availability_calendars(group.users, group: group))
     group.game_proposals.each do |game_proposal|
