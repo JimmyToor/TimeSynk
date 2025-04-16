@@ -6,6 +6,6 @@
   <%= turbo_stream_from "upcoming_game_sessions_user_#{Current.user.id}" %>
 </div>
 
-<div data-controller="calendar" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-user-id=<%= Current.user.id %>>
-  <%= render partial: 'calendars/calendar', locals: {game_proposals: local_assigns[:game_proposals], groups: local_assigns[:groups]} %>
+<div data-controller="calendar" data-calendar-stream-id="user_<%= Current.user.id %>" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-user-id=<%= Current.user.id %>>
+  <%= render partial: 'calendars/calendar' %>
 </div>

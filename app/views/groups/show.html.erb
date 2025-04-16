@@ -21,9 +21,6 @@
   </div>
 </div>
 
-<div data-controller="calendar" data-calendar-interactive="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-group-id=<%= group.id %> data-turbo-permanent>
-  <%= render partial: 'calendars/calendar', locals: {group: group,
-                                                     game_proposals: group.game_proposals.any? ? group.game_proposals : nil,
-                                                     game_proposal: group.game_proposals.any? ? group.game_proposals.first : nil}
-  %>
+<div data-controller="calendar" data-calendar-interactive="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-group-id="<%= group.id %>" data-turbo-permanent>
+  <%= render partial: 'calendars/calendar' %>
 </div>

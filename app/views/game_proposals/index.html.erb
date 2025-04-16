@@ -11,5 +11,5 @@
 <%= turbo_stream_from "game_proposals_user_#{Current.user.id}" %>
 
 <div data-controller="calendar" data-calendar-interactive="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr"  data-calendar-user-id=<%= Current.user.id %> data-turbo-permanent>
-  <%= render partial: 'calendars/calendar', locals: {game_proposals: :game_proposals, groups: :groups} %>
+  <%= render partial: 'calendars/calendar' %>
 </div>
