@@ -1,4 +1,5 @@
-<p style="color: green"><%= notice %></p>
+<%= render "shared/notification", id: "invite_#{@invite.id}" %>
+
 <%= render @invite %>
 
 <%= link_to "See all invites for #{@invite.group.name} |", group_invites_path(@invite.group)%>

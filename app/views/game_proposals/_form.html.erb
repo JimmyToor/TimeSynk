@@ -1,16 +1,7 @@
 <%# locals: (game_proposal:, groups:, group:nil) %>
 <div data-controller="game-selection search" data-search-src-value="<%= games_path(format: :turbo_stream) %>">
   <%= form_with(model: [group, game_proposal], data: {game_selection_target:"form"}) do |form| %>
-    <% if game_proposal.errors.any? %>
-      <div style="color: red">
-        <h2><%= pluralize(game_proposal.errors.count, "error") %> prohibited this game_proposal from being saved:</h2>
-        <ul>
-          <% game_proposal.errors.each do |error| %>
-            <li><%= error.full_message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
+    <%= render "shared/notification", id: "game_proposal_#{game_proposal.new_record? ? "new" : game_proposal.id}" %>
 
     <div class="flex flex-col items-center">
       <div>

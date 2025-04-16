@@ -1,15 +1,7 @@
-<%= form_with(model: game_session_attendance.new_record? ?  [game_session, game_session_attendance] :  game_session_attendance) do |form| %>
-  <% if game_session_attendance.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(game_session_attendance.errors.count, "error") %> prohibited this game_session_attendance from being saved:</h2>
-
-      <ul>
-        <% game_session_attendance.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+<% new_record = game_session_attendance.new_record? %>
+<%= form_with(model: new_record? ?  [game_session, game_session_attendance] :  game_session_attendance,
+              id: dom_id(game_session_attendance, :form)) do |form| %>
+  <%= render "shared/notification", id: "game_session_attendance_#{new_record ? "new" : game_session_attendance.id}" %>
 
   <div>
     <%= form.hidden_field :game_session_id, value: game_session_attendance.game_session_id %>

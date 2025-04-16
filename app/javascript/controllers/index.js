@@ -75,3 +75,6 @@ application.register("frame-reload", FrameReloadController);
 
 import LoadingDialogController from "./loading_dialog_controller";
 application.register("loading-dialog", LoadingDialogController);
+
+import NotificationController from "@stimulus-components/notification";
+application.register("notification", NotificationController);

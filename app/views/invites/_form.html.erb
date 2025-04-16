@@ -1,16 +1,9 @@
 <%# locals: (invite:, group: nil, roles: [] %>
 <%= form_with(model: [group, invite]) do |form| %>
-  <% if invite.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(invite.errors.count, "error") %> prohibited this group_invite from being saved:</h2>
-
-      <ul>
-        <% invite.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <% id = invite.new_record? ? "invite_new" : "invite_#{invite.id}" %>
+  <div id="notification_container_<%= id %>" role="alert">
+    <%= render "shared/notification", id: id %>
+  </div>
 
   <div>
     <%= form.hidden_field :user_id, value: invite.user_id %>

@@ -1,12 +1,8 @@
-<p style="color: green"><%= notice %></p>
-
-<h1>Invites for <%= @group.name %></h1>
-
+<%= render "shared/notification", id: "notifications" %>
 <div id="invites">
   <%= render partial:"invites/table/invite_table_header", locals: {group: @invites.first.group} if @invites.present? %>
   <%= render partial:"invites/table/invite_list", locals:{invites: @invites} %>
 </div>
 
-<%= link_to "New invite", new_group_invite_path(@group) if policy(Invite.new(group:@group)).new? %>
-<%= link_to ("Back to #{@group.name}"), group_path(@group) %>
+<%= render "shared/buttons/secondary_link", path: group_path(@group), text: "Back to group" %>
 

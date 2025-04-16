@@ -3,6 +3,7 @@
 <%= content_tag(:div, id:dom_id(schedule, :show)) do %>
 
   <%= render partial: "schedules/show_content", locals: {schedule: schedule} %>
+
   <div class="mt-4">
     <%= render "shared/buttons/secondary_link", path: schedules_path, text: "Back to Schedules" %>
   </div>

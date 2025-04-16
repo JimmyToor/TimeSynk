@@ -10,3 +10,5 @@
                            partial:"permission_sets/form",
                            locals: {permission_set: @permission_set, url: polymorphic_path([@permission_set.resource,:permission_set]), roles: @resource.roles}) %>
 <% end %>
+
+<%= turbo_stream_toast(:success, I18n.t("permission_set.update.success"), "permission_set_#{@permission_set.resource.id}") %>

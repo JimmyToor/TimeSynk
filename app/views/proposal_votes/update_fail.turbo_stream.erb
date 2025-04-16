@@ -1,0 +1,2 @@
+<%= turbo_stream.update "notification_container_proposal_vote_#{@proposal_vote.id}", partial: "shared/notification",
+                        locals: { id: "proposal_vote_#{@proposal_vote.id}" } %>

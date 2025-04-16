@@ -1,0 +1,4 @@
+<%= turbo_stream_toast(:error,
+                       I18n.t("availability.destroy.error"),
+                       "availability_#{@availability.id}",
+                       list_items: @availability.errors.full_messages) %>

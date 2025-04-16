@@ -1,7 +1,7 @@
 <%# locals: (schedules:, availability:nil) %>
 <% frame_path = schedules_path(availability_id: availability&.id, format: :turbo_stream) %>
-<p style="color: green"><%= notice %></p>
-<section class="bg-tertiary-50dark:bg-gray-900">
+<%= render "shared/notification", id: "schedules" %>
+<section class="bg-tertiary-50 dark:bg-gray-900">
   <div class="mx-auto max-w-screen-xl ">
     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden"
          data-controller="search frame-reload"

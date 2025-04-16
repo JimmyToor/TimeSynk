@@ -51,9 +51,9 @@ class GameProposalsController < ApplicationController
         format.json { render :show, status: :created, location: @game_proposal }
       else
         @groups = Current.user.groups_user_can_create_proposal_for
-        # TODO: The game list turbo frame does not handle this well. Just turbo stream in a notification instead.
         format.html { render :new, locals: {game_proposal: @game_proposal, groups: @groups}, status: :unprocessable_entity }
         format.json { render json: @game_proposal.errors, status: :unprocessable_entity }
+        format.turbo_stream { render "create_fail" }
       end
     end
   end
@@ -77,7 +77,10 @@ class GameProposalsController < ApplicationController
     authorize(@game_proposal).destroy!
 
     respond_to do |format|
-      format.html { redirect_to game_proposals_url, notice: "Game proposal was successfully destroyed." }
+      format.html {
+        redirect_to game_proposals_url, success: {message: I18n.t("game_proposal.destroy.success", name: @game_proposal.game.name),
+                                                  options: {highlight: " #{@game_proposal.game.name}"}}
+      }
       format.json { head :no_content }
     end
   end

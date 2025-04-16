@@ -1,6 +1,4 @@
-<p style="color: green">
-  <%= notice %>
-</p>
+<%= render 'shared/notification', id: "home" %>
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4 min-w-fit">
   <%= render partial: "game_sessions/upcoming_game_sessions", locals: {upcoming_game_sessions: local_assigns[:game_sessions]} %>
   <%= render partial: "game_proposals/pending_game_proposals", locals: {pending_game_proposals: local_assigns[:pending_game_proposals]} %>

@@ -1,4 +1,5 @@
 class GroupsController < ApplicationController
+  add_flash_types :success, :error
   before_action :set_group, only: %i[show edit update destroy]
   before_action :set_group_membership, only: %i[update]
 
@@ -45,18 +46,23 @@ class GroupsController < ApplicationController
 
   # POST /groups or /groups.json
   def create
-    service = GroupCreationService.new(group_params, Current.user)
-    @group = service.create_group_and_membership
-    authorize(@group)
-    @group_permission_set = @group.make_permission_set(@group.users.to_a)
+    @group = GroupCreationService.call(group_params, Current.user)
 
     respond_to do |format|
       if @group.persisted?
-        format.html { redirect_to group_url(@group), notice: "Group was successfully created." }
+        authorize @group
+        @group_permission_set = @group.make_permission_set(@group.users.to_a)
+        format.html {
+          redirect_to group_url(@group),
+            success: {message: I18n.t("group.create.success", name: @group.name),
+                      options: {highlight: @group.name}}
+        }
         format.json { render :show, status: :created, location: @group }
         format.turbo_stream
       else
-        format.html { render :new, status: :unprocessable_entity, notice: I18n.t("group.group_creation_error") }
+        flash.now[:error] = {message: I18n.t("group.create.error"),
+                              options: {list_items: @group.errors.full_messages.uniq}}
+        format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @group.errors, status: :unprocessable_entity }
       end
     end
@@ -68,7 +74,13 @@ class GroupsController < ApplicationController
     original_name = @group.name
     respond_to do |format|
       if @group.update(group_params)
-        format.html { redirect_to group_url(@group), notice: "Group was successfully updated." }
+        @group_membership = GroupMembership.find_by(group: @group, user: Current.user)
+        @group_availability = @group.get_user_group_availability(Current.user)
+        @group_permission_set = @group.make_permission_set(@group.users.to_a)
+        format.html {
+          redirect_to group_url(@group), message: I18n.t("group.update.success", name: @group.name),
+            options: {highlight: @group.name}
+        }
         format.json { render :show, status: :ok, location: @group }
         format.turbo_stream
       else
@@ -84,8 +96,12 @@ class GroupsController < ApplicationController
     @group.destroy!
 
     respond_to do |format|
-      format.html { redirect_to groups_url, notice: "Group was successfully destroyed." }
+      format.html {
+        redirect_to groups_url, success: {message: I18n.t("group.destroy.success", name: @group.name),
+                                          options: {highlight: @group.name}}
+      }
       format.json { head :no_content }
+      format.turbo_stream
     end
   end
 

@@ -41,7 +41,11 @@ class GroupMembershipsController < ApplicationController
         format.html { redirect_to group_path(@group_membership.group), notice: "You have joined #{@group_membership.group.name}." }
         format.json { render :show, status: :created, location: @group_membership }
       else
-        format.html { redirect_to join_group_with_token_path, status: :unprocessable_entity, notice: @group_membership.errors.full_messages.join(", ") }
+        format.html {
+          redirect_to join_group_with_token_path, status: :unprocessable_entity,
+            error: {message: I18n.t("group_membership.invite_not_valid"),
+                    options: {list_items: @group_membership.errors.full_messages}}
+        }
         format.json { render json: @group_membership.errors, status: :unprocessable_entity }
       end
     end
@@ -103,7 +107,7 @@ class GroupMembershipsController < ApplicationController
       flash[:alert] = "This invite is invalid"
       redirect_to join_group_with_token_path and return
     end
-    params[:group_id] = @group.id if params[:group_membership][:group_id].blank?
+    params[:group_id] = @group.id if params[:group_membership].present? && params[:group_membership][:group_id].blank?
   end
 
   def redirect_if_member

@@ -1,4 +1,4 @@
-<p style="color: green"><%= notice %></p>
+<%= render 'shared/notification', id: "groups" %>
 
 <div id="groups" class="relative space-y-4">
   <% @group_memberships.map(&:group).each do |group| %>

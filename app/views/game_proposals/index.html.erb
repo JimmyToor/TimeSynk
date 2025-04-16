@@ -1,5 +1,5 @@
 <%# locals: (game_proposals:, groups: nil, group: nil) %>
-<p style="color: green"><%= notice %></p>
+<%= render "shared/notification", id: "game_proposals" %>
 
 <h1>Game proposals</h1>
 <% if groups.present? %>

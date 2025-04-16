@@ -26,7 +26,7 @@ class PermissionSetsController < ApplicationController
       @affected_users&.each do |affected_user|
         affected_user.reload.broadcast_role_change_for_resource(@resource)
       end
-      format.html { redirect_to @resource, notice: "Permissions were successfully updated." }
+      format.html { redirect_to @resource, success: {message: "Permissions were successfully updated."} }
       format.turbo_stream
     end
   end

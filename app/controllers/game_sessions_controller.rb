@@ -1,11 +1,14 @@
 class GameSessionsController < ApplicationController
   include DurationSaturator
+  add_flash_types :error, :success
   before_action -> { populate_duration_param([:game_session]) }, only: %i[create update]
   before_action :set_game_session, only: %i[show edit update destroy]
   before_action :set_game_proposal, only: %i[new create]
   before_action :set_game_session_attendance, only: %i[show update]
   before_action :check_param_alignment, only: %i[create]
   skip_after_action :verify_policy_scoped
+
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
   # GET /game_sessions or /game_sessions.json
   def index
@@ -16,6 +19,12 @@ class GameSessionsController < ApplicationController
     end
     @pagy, @game_sessions, = pagy(@game_sessions, limit: 8)
     authorize @game_sessions
+    respond_to do |format|
+      format.html {
+        render :index, locals: {game_sessions: @game_sessions, upcoming: !params[:game_proposal_id].present?}
+      }
+      format.json
+    end
   end
 
   # GET /game_sessions/1 or /game_sessions/1.json
@@ -30,13 +39,7 @@ class GameSessionsController < ApplicationController
 
     respond_to do |format|
       format.html { render :new, locals: {game_session: @game_session, game_proposals: game_proposals} }
-      format.turbo_stream {
-        render turbo_stream: turbo_stream.replace(
-          "game_session_form",
-          partial: "game_sessions/form",
-          locals: {game_session: @game_session, game_proposal: @game_proposal, game_proposals: game_proposals}
-        )
-      }
+      format.turbo_stream
     end
   end
 
@@ -57,8 +60,11 @@ class GameSessionsController < ApplicationController
     respond_to do |format|
       if @game_session.save
         set_game_session_attendance
-        Current.user.add_role(:owner, @game_session)
-        format.html { redirect_to game_proposal_url(@game_session.game_proposal), notice: "Game session created." }
+        format.html {
+          redirect_to game_proposal_url(@game_session.game_proposal),
+            success: {message: I18n.t("game_session.create.success"),
+                      options: {highlight: " #{@game_session.game_name} "}}
+        }
         format.json { render :show, status: :created, location: @game_session }
         format.turbo_stream
       else
@@ -66,19 +72,15 @@ class GameSessionsController < ApplicationController
           redirect_to new_game_proposal_game_session_path(@game_proposal),
             game_session: @game_session,
             game_proposals: game_proposals,
+            error: {message: I18n.t("game_session.create.error", name: @game_session.game_name),
+                    options: {list_items: @game_session.errors.full_messages}},
             status: :unprocessable_entity
         }
         format.json { render json: @game_session.errors, status: :unprocessable_entity }
         format.turbo_stream {
-          render turbo_stream: turbo_stream.replace(
-            "form_game_session",
-            partial: "game_sessions/form",
-            locals: {game_session: @game_session,
-                     initial_game_proposal: @game_proposal,
-                     game_proposal: @game_proposal,
-                     game_proposals: game_proposals,
-                     groups: Current.user.groups}
-          ), status: :unprocessable_entity
+          flash.now[:error] = {message: I18n.t("game_session.create.error", name: @game_session.game_name),
+                                options: {list_items: @game_session.errors.full_messages}}
+          render "create_fail", status: :unprocessable_entity
         }
       end
     end
@@ -88,21 +90,24 @@ class GameSessionsController < ApplicationController
   def update
     respond_to do |format|
       if @game_session.update(game_session_params)
-        format.html { redirect_to game_proposal_url(@game_session.game_proposal), notice: "Game session was successfully updated." }
+        format.html {
+          redirect_to game_proposal_url(@game_session.game_proposal),
+            success: {message: I18n.t("game_session.update.success", name: @game_session.game_name),
+                      options: {highlight: " #{@game_session.game_name} "}}
+        }
         format.json { render :show, status: :ok, location: @game_session }
         format.turbo_stream
       else
-        format.html { render :edit, game_session: @game_session, groups: Current.user.groups, status: :unprocessable_entity }
+        format.html {
+          flash[:error] = {message: I18n.t("game_session.update.error", name: @game_session.game_name),
+                           options: {list_items: @game_session.errors.full_messages}}
+          redirect_to edit_game_session_path(@game_session)
+        }
         format.json { render json: @game_session.errors, status: :unprocessable_entity }
         format.turbo_stream {
-          render turbo_stream: turbo_stream.replace(
-            "form_game_session",
-            partial: "game_sessions/form",
-            locals: {game_session: @game_session,
-                     initial_game_proposal: @game_session.game_proposal,
-                     game_proposals: @game_session.game_proposal.group.game_proposals,
-                     groups: Current.user.groups}
-          ), status: :unprocessable_entity
+          flash.now[:error] = {message: I18n.t("game_session.update.error", name: @game_session.game_name),
+                               options: {list_items: @game_session.errors.full_messages}}
+          render "update_fail"
         }
       end
     end
@@ -113,7 +118,10 @@ class GameSessionsController < ApplicationController
     game_proposal = @game_session.game_proposal
     @game_session.destroy!
     respond_to do |format|
-      format.html { redirect_to game_proposal, notice: "Game session was successfully destroyed." }
+      format.html {
+        redirect_to game_proposal, success: {message: I18n.t("game_session.destroy.success", name: game_proposal.game_name),
+                                             options: {highlight: " #{@game_session.game_name} "}}
+      }
       format.turbo_stream
     end
   end
@@ -149,6 +157,21 @@ class GameSessionsController < ApplicationController
   def check_param_alignment
     if params[:game_session][:game_proposal_id].to_i != @game_proposal.id
       render json: {error: "Game Proposal ID does not match the current game proposal."}, status: :unprocessable_entity
+    end
+  end
+
+  def record_not_found
+    respond_to do |format|
+      format.html {
+        flash.now[:error] = {message: I18n.t("game_session.not_found")}
+        render "shared/error", status: :not_found
+      }
+      format.turbo_stream {
+        render turbo_stream: [
+          turbo_stream.replace("content_game_session_#{params[:id]}", partial: "game_sessions/destroyed"),
+          turbo_stream_toast(:error, I18n.t("game_session.not_found"), "game_session_invalid")
+        ]
+      }
     end
   end
 end

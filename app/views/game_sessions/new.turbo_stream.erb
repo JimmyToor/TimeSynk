@@ -1,0 +1,4 @@
+<%= turbo_stream.replace(
+      "game_session_form", # targets the modal form
+      partial: "game_sessions/form",
+      locals: {game_session: @game_session, game_proposal: @game_proposal, game_proposals: game_proposals}) %>

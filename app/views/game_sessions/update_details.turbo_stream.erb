@@ -1,0 +1,7 @@
+<%= turbo_stream.update "game_session_#{game_session.id}_details_date" do %>
+  <%= render partial: "game_sessions/game_session_date", locals: { game_session: game_session, user: Current.user } %>
+<% end %>
+
+<%= turbo_stream.update "game_session_#{game_session.id}_details_duration" do %>
+  <%= format_interval(game_session.duration) %>
+<% end %>

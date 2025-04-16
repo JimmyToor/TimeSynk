@@ -1,0 +1,3 @@
+<%= turbo_stream.update("group_memberships_list_#{@group.id}",
+                        partial:"group_memberships/table/group_membership_list",
+                        locals: {group_memberships: @group_memberships}) %>

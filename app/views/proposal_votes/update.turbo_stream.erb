@@ -1,16 +1,13 @@
 <%= turbo_stream.replace_all(".vote_count_game_proposal_#{@proposal_vote.game_proposal.id}",
                             partial: "game_proposals/vote_count",
-                            locals: { game_proposal: @proposal_vote.game_proposal}) %>
+                            locals: { game_proposal: @proposal_vote.game_proposal }) %>
 
-<%= turbo_stream.replace("form_proposal_vote_#{@proposal_vote.id}",
-                         partial: "proposal_votes/form",
-                         locals: { proposal_vote: @proposal_vote,
-                                   notice: "Your vote has been saved" }) %>
-
-<%= turbo_stream.update("vote_link",
-                         partial: "game_proposals/vote_link",
-                         locals: { game_proposal: @proposal_vote.game_proposal }) %>
 
 <%= turbo_stream.update("pending_game_proposals_count",
                         partial: "game_proposals/pending_count",
                         locals: {count: Current.user.pending_game_proposal_count}) %>
+
+<%= turbo_stream_toast(:success, I18n.t("proposal_vote.update.success"), "proposal_vote_#{@proposal_vote.id}") %>
+
+<%= turbo_stream.update "notification_container_proposal_vote_#{@proposal_vote.id}", partial: "shared/notification",
+                        locals: { id: "proposal_vote_#{@proposal_vote.id}" } %>

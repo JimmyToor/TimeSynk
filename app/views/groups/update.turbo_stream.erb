@@ -1,4 +1,12 @@
 <%= turbo_stream.replace(@group,
                          partial: "groups/group",
-                         locals: { group: @group, group_membership: @group_membership }) %>
-<%= turbo_stream.remove("modal_frame") %>
+                         locals: { group: @group,
+                                   group_availability: @group_availability,
+                                   group_permission_set: @group_permission_set }) %>
+
+<%= turbo_stream.update("modal_frame") %>
+
+<%= turbo_stream_toast(:success,
+                       I18n.t("group.update.success", name: @group.name),
+                       "group_#{@group.id}",
+                       highlight: "#{@group.name}") %>

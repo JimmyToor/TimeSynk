@@ -1,9 +1,13 @@
-<%= turbo_stream.update("modal_frame",
+<%= turbo_stream.update(dom_id(@game_session_attendance, :form),
                          partial: "game_sessions/show_content",
                          locals: {game_session: @game_session,
-                                  game_session_attendance: @game_session_attendance,
-                                  notice: "Game session created"}) %>
+                                  game_session_attendance: @game_session_attendance}) %>
 
 <%= turbo_stream.replace("upcoming_game_sessions",
                          partial: "game_sessions/upcoming_game_sessions",
                          locals:  {upcoming_game_sessions: Current.user.upcoming_game_sessions} ) %>
+
+<%= turbo_stream_toast(:success,
+                       I18n.t("game_session.create.success", name: @game_session.game_name),
+                       "game_session_#{@game_session.id}",
+                       highlight: " #{@game_session.game_name} ") %>

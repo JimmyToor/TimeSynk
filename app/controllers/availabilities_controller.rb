@@ -30,6 +30,7 @@ class AvailabilitiesController < ApplicationController
   # GET /availabilities/1/edit
   def edit
     @pagy, @schedules = pagy(@schedules)
+    add_no_schedules_flash
     respond_to do |format|
       format.html { render :edit, locals: {schedules: @schedules, availability: @availability} }
     end
@@ -41,7 +42,7 @@ class AvailabilitiesController < ApplicationController
     authorize(@availability)
     respond_to do |format|
       if @availability.save
-        format.html { redirect_to availability_url(@availability), notice: "Availability was successfully created." }
+        format.html { redirect_to availability_url(@availability), success: {message: "Availability was successfully created."} }
         format.json { render :show, status: :created, location: @availability }
       else
         format.html { render :new, locals: {schedules: @schedules, availability: @availability}, status: :unprocessable_entity }
@@ -69,9 +70,11 @@ class AvailabilitiesController < ApplicationController
       if @availability.destroy
         format.html { redirect_to availabilities_url, notice: "Availability was successfully destroyed." }
         format.json { head :no_content }
+        format.turbo_stream
       else
         format.html { redirect_to availabilities_url, alert: "Availability could not be destroyed." }
         format.json { render json: @availability.errors, status: :unprocessable_entity }
+        format.turbo_stream { render :destroy_fail }
       end
     end
   end
@@ -93,5 +96,11 @@ class AvailabilitiesController < ApplicationController
       :user_id,
       :description,
       availability_schedules_attributes: [:id, :schedule_id, :_destroy])
+  end
+
+  def add_no_schedules_flash
+    if Current.user.schedules.count == 0
+      flash.now[:info] = {message: "You can create schedules to indicate the times you're available. The schedules you select will make up your availability. Get started by creating a new schedule."}
+    end
   end
 end

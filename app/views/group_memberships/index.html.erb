@@ -1,6 +1,8 @@
 <p style="color: green"><%= notice %></p>
 
 <h1>Group memberships</h1>
+<%= render "shared/notification", id: "group_memberships" %>
+<% frame_path = group_group_memberships_path(group_id: group.id, format: :turbo_stream) %>
 
 <div id="group_memberships">
   <% @group_memberships.each do |group_membership| %>

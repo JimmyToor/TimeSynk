@@ -1,4 +1,5 @@
 class InvitesController < ApplicationController
+  add_flash_types :error, :success
   before_action :set_invite, only: %i[show edit update destroy]
   before_action :set_group, only: %i[show index new create]
   before_action :set_roles, only: %i[new edit create]
@@ -34,11 +35,16 @@ class InvitesController < ApplicationController
 
     respond_to do |format|
       if @invite.save
-        format.html { redirect_to invite_path(@invite), notice: "Group invite was successfully created" }
+        format.html { redirect_to invite_path(@invite), suceess: {message: I18n.t("invite.update.success")} }
         format.json { render :show, status: :created, location: @invite }
       else
         format.html { render :new, status: :unprocessable_entity }
+        flash.now[:error] = {message: I18n.t("invite.create.error"),
+        format.html {
+          render :new, status: :unprocessable_entity
+        }
         format.json { render json: @invite.errors, status: :unprocessable_entity }
+        format.turbo_stream { render "create_fail", status: :unprocessable_entity }
       end
     end
   end
@@ -53,10 +59,10 @@ class InvitesController < ApplicationController
 
     respond_to do |format|
       if @invite.update(invite_params)
-        format.html { redirect_to group_invites_path(@invite.group), notice: "Group invite was successfully updated." }
+        format.html { redirect_to invite_path(@invite), success: {message: I18n.t("invite.update.success")} }
         format.json { render :show, status: :ok, location: @invite }
       else
-        format.html { render :edit, status: :unprocessable_entity }
+        format.html { render :edit, status: :unprocessable_entity, error: {message: I18n.t("invite.update.error")} }
         format.json { render json: @invite.errors, status: :unprocessable_entity }
       end
     end
@@ -69,8 +75,13 @@ class InvitesController < ApplicationController
     @invite.destroy!
 
     respond_to do |format|
-      format.html { redirect_to group_invites_path(group), notice: "Group invite was successfully destroyed." }
-      format.json { head :no_content }
+      if !@invite.errors.any?
+        format.html { redirect_to group_invites_path(group), success: {message: "Group invite was successfully destroyed."} }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to group_invites_path(group), error: {message: I18n.t("invite.destroy.error")} }
+        format.json { render json: @invite.errors, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -80,7 +91,6 @@ class InvitesController < ApplicationController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_invite
     @invite = Invite.with_token(params[:invite_token]) || Invite.find(params[:id])
 
@@ -89,7 +99,7 @@ class InvitesController < ApplicationController
       @invite ||= Invite.new
       @invite.errors.add(:invite_token, message: error_message)
 
-      render :error, status: :unprocessable_entity
+      render :error, status: :unprocessable_entity and return
     end
 
     authorize(@invite)

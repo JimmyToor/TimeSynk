@@ -1,7 +1,7 @@
 <%# locals: (game_session:, game_session_attendance:, notice: nil) %>
 <%= modal_wrapper(game_session.game_name) do %>
   <%= content_tag(:div, id:dom_id(game_session, :content)) do %>
-    <p style="color: green"><%= notice %></p>
+    <%= render "shared/notification", id: "game_session_#{game_session.id}" %>
     <%= render game_session %>
     <div>
       <%= render "game_session_attendances/form", game_session: game_session, game_session_attendance: game_session_attendance %>

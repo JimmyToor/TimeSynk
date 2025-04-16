@@ -1,4 +1,5 @@
 class ProposalVotesController < ApplicationController
+  add_flash_types :error, :success
   before_action :set_proposal_vote, only: %i[show edit update destroy]
   before_action :set_game_proposal, only: %i[new create]
   before_action :set_group_membership, only: %i[show create]
@@ -24,20 +25,21 @@ class ProposalVotesController < ApplicationController
     @proposal_vote = @game_proposal.proposal_votes.build(proposal_vote_params)
     respond_to do |format|
       if @proposal_vote.save
-        format.html { redirect_to edit_proposal_vote_path(@proposal_vote), notice: "Proposal vote was successfully created." }
+        format.html {
+          flash[:success] = {message: I18n.t("proposal_vote.create.success")}
+          redirect_to new_game_proposal_proposal_vote_path(@game_proposal)
+        }
         format.json { render :show, status: :created, location: @proposal_vote }
         format.turbo_stream
       else
-        format.html { render @game_proposal, status: :unprocessable_entity }
+        format.html {
+          flash.now[:error] = {message: I18n.t("proposal_vote.create.error"),
+                  options: {list_items: @proposal_vote.errors.full_messages}}
+          redirect_to new_game_proposal_proposal_vote_path(@game_proposal)
+        }
         format.json { render json: @proposal_vote.errors, status: :unprocessable_entity }
         format.turbo_stream {
-          render turbo_stream:
-                  turbo_stream.replace("proposal_vote_form",
-                    partial: "proposal_votes/form",
-                    method: :morph,
-                    locals: {proposal_vote: @proposal_vote,
-                             game_proposal: @game_proposal,
-                             notice: "Your vote could not be saved"})
+          flash.now[:error] = {message: I18n.t("proposal_vote.create.error"), options: {list_items: @proposal_vote.errors.full_messages}}
         }
       end
     end
@@ -47,20 +49,21 @@ class ProposalVotesController < ApplicationController
   def update
     respond_to do |format|
       if @proposal_vote.update(proposal_vote_params)
-        format.html { redirect_to edit_proposal_vote_path, notice: "Proposal vote was successfully updated." }
+        format.html {
+          flash[:success] = {message: I18n.t("proposal_vote.update.success")}
+          redirect_to edit_proposal_vote_path(@proposal_vote)
+        }
         format.json { render :show, status: :ok, location: @proposal_vote }
         format.turbo_stream
       else
-        format.html { redirect_to @game_proposal, status: :unprocessable_entity }
+        format.html {
+          flash[:error] = {message: I18n.t("proposal_vote.update.error"), options: {list_items: @proposal_vote.errors.full_messages}}
+          redirect_to edit_proposal_vote_path(@proposal_vote)
+        }
         format.json { render json: @proposal_vote.errors, status: :unprocessable_entity }
         format.turbo_stream {
-          render turbo_stream:
-                   turbo_stream.replace("proposal_vote_form",
-                     partial: "proposal_votes/form",
-                     method: :morph,
-                     locals: {proposal_vote: @proposal_vote,
-                              game_proposal: @game_proposal,
-                              notice: "Your vote could not be saved"})
+          flash.now[:error] = {message: I18n.t("proposal_vote.update.error"), options: {list_items: @proposal_vote.errors.full_messages}}
+          render "update_fail"
         }
       end
     end

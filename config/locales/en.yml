@@ -28,15 +28,118 @@
 #       enabled: "ON"
 
 en:
-  hello: "Hello world"
+  activerecord:
+    attributes:
+      invite:
+        expires_at: "Expiration date"
+  identity:
+    email:
+      already_verified: "This email is already in-use by another user."
+      invalid: "That email verification link is invalid."
+      verification_sent: "A verification email has been sent to %{email}."
+      update:
+        success: "Your email has been changed."
+        error: "There was an error updating your email."
   group:
-    creation_error: "There was an error creating the group. Please try again later."
-    join_error: "There was an error joining the group. Please try again later."
+    create:
+      success: "Group %{name} successfully created."
+      error: "There was an error creating the group."
+    validation:
+      name:
+        presence: "can't be blank."
+        length: "is too long (maximum is %{count} characters)."
+    join_error: "There was an error joining the group."
     join_success: "You have successfully joined the group."
     invalid_link: "Invalid group invite link."
-    group_creation_error: "There was an error creating the group. Please try again later."
+    destroy:
+      success: "Group %{name} successfully deleted."
+    update:
+      success: "Group name changed to %{name}."
   group_membership:
-    invite_not_valid: "There was a problem with the invite. Please try again later."
+    invite_not_valid: "There was a problem with the invite."
     already_member: "You are already a member of this group."
   proposal_vote:
-    vote_unique: "You have already voted on this proposal."
+    validation:
+      vote_unique: "You have already voted on this proposal."
+    create:
+      success: "Vote successfully cast."
+      error: "There was an error casting your vote."
+    update:
+      success: "Vote successfully updated."
+      error: "There was an error updating your vote."
+    destroy:
+      success: "Vote successfully deleted."
+      error: "There was an error deleting your vote."
+  schedule:
+    create:
+      success: "Schedule successfully created."
+      error: "There was an error creating the schedule."
+    destroy:
+      success: "Schedule successfully deleted."
+      error: "There was an error deleting the schedule."
+  permission_set:
+    update:
+      success: "Permissions successfully updated."
+      error: "There was an error updating the permissions."
+  availability:
+    destroy:
+      success: "Availability successfully deleted."
+      error: "There was an error deleting the availability."
+      only_availability: "Cannot delete your only availability."
+  invite:
+    create:
+      success: "Invite successfully created."
+      error: "There was an error creating the invite."
+    destroy:
+      success: "Invite successfully deleted."
+      error: "There was an error deleting the invite."
+    update:
+      success: "Invite successfully updated."
+      error: "There was an error updating the invite."
+    validation:
+      expires_at:
+        presence: "can't be blank."
+        date: "cannot be in the past."
+  game_session:
+    validation:
+      name:
+        presence: "can't be blank."
+        length: "is too long (maximum is %{count} characters)."
+      start_time:
+        presence: "can't be blank."
+        date: "must be a valid date."
+      end_time:
+        presence: "can't be blank."
+        date: "must be a valid date."
+      duration:
+        length: "must be a multiple of 15 minutes."
+    create:
+      success: "Game session for %{name} successfully created."
+      error: "There was an error creating the %{name} game session."
+    destroy:
+      success: "Game session for %{name} successfully deleted."
+      error: "There was an error deleting the %{name} game session."
+    update:
+      success: "Game session for %{name} successfully updated."
+      error: "There was an error updating the %{name} game session."
+    not_found: "Game session not found. It may have been deleted."
+  game_session_attendance:
+    create:
+      success: "Attendance for %{name} saved."
+      error: "There was an error saving your attendance."
+    destroy:
+      success: "Attendance for %{name} saved."
+      error: "There was an error saving your attendance."
+    update:
+      success: "Attendance for %{name} saved."
+      error: "There was an error saving your attendance."
+  game_proposal:
+      create:
+        success: "Game proposal for %{name} successfully created ."
+        error: "There was an error creating the proposal for %{name}."
+      destroy:
+        success: "Game proposal for %{name} successfully deleted."
+        error: "There was an error deleting the proposal for %{name}."
+      update:
+        success: "Game proposal for %{name} successfully updated."
+        error: "There was an error updating the proposal for %{name}."

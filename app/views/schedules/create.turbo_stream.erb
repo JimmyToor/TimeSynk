@@ -1,4 +1,5 @@
-<!--
-TODO: Add a notice
--->
 <%= turbo_stream.update "modal_frame", "" %>
+
+<%= turbo_stream.remove "new_schedule_ping" %>
+
+<%= turbo_stream_toast(:success, I18n.t("schedule.create.success"), "schedule_#{@schedule.id}") %>

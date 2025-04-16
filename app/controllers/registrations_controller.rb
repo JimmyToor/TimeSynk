@@ -18,7 +18,10 @@ class RegistrationsController < ApplicationController
       if @user.email.present?
         send_email_verification
       end
-      redirect_to root_path, notice: "Welcome! You have signed up successfully"
+      flash[:success] = "Welcome to TimeSynk! Please check your email to verify your account." if @user.email.present?
+      flash[:info] = {message: "You can click here to set your default availability times, or set them later through your profile.",
+                      options: {link: {text: "click here", url: edit_availability_path(@user.user_availability.availability)}}}
+      redirect_to home_path
     else
       render :new, status: :unprocessable_entity
     end

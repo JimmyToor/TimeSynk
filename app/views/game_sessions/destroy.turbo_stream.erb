@@ -2,5 +2,12 @@
                          partial: "game_sessions/upcoming_game_sessions",
                          locals:  {upcoming_game_sessions: Current.user.upcoming_game_sessions} ) %>
 
+<%= turbo_stream.update("modal_frame") %>
+
 <%= turbo_stream.replace("content_game_session_#{@game_session.id}",
-                         html: raw("<p>Deleted</p>")) %>
+                         html: raw("<p>Game Session Deleted</p>")) %>
+
+<%= turbo_stream_toast(:success,
+                       I18n.t("game_session.destroy.success", name: @game_session.game_name),
+                       "game_session_#{@game_session.id}",
+                       highlight: " #{@game_session.game_name} ") %>

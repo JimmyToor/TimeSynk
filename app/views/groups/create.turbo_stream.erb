@@ -1,8 +1,13 @@
 <%= turbo_stream.append "groups" do %>
-  <div class="flex">
-    <%= render @group, group_availability: @group.get_user_group_availability(Current.user) %>
+  <div class="group-container relative flex" id="<%= @group.id %>_container">
+    <%= render @group, group_availability: @group.get_user_group_availability(Current.user), group_permission_set: @group_permission_set %>
     <%= card_link_to_group(@group) %>
   </div>
 <% end %>
 
 <%= turbo_stream.update "modal_frame", "" %>
+
+<%= turbo_stream_toast(:success,
+                       I18n.t("group.create.success", name: @group.name),
+                       "group_#{@group.id}",
+                       highlight: " #{@group.name} ") %>
