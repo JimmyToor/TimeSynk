@@ -1,4 +1,4 @@
-<%# locals: (game_proposal:, proposal_availability: nil, proposal_permission_set:nil, notice: nil) %>
+<%# locals: (game_proposal:, proposal_availability: nil, proposal_permission_set:nil) %>
 <%= content_tag :div, id: dom_id(game_proposal) do %>
   <%= turbo_frame_tag dom_id(game_proposal, :content),
                       data: { controller: "reload-on-restore",
@@ -37,7 +37,7 @@
             <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
               <%= inline_svg "icons/votes.svg", class: "h-6 w-6" %>
               <%= render 'game_proposals/vote_count', game_proposal: game_proposal %>
-              <%= turbo_stream_from "vote_count_game_proposal_#{game_proposal.id}" %>
+              <%= render 'game_proposals/vote_link', proposal_vote: Current.user.get_vote_for_proposal(game_proposal) %>
             </div>
           </div>
         </div>
@@ -45,3 +45,4 @@
     </div>
   <% end %>
 <% end %>
+<%= turbo_stream_from("game_proposal_#{game_proposal.id}") %>

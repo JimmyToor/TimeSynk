@@ -37,10 +37,6 @@ class GameProposal < ApplicationRecord
   end
 
   def user_voted?(user)
-    proposal_votes.exists?(user_id: user.id)
-  end
-
-  def user_voted_yes_or_no?(user)
     proposal_votes.exists?(user_id: user.id, yes_vote: [true, false])
   end
 
@@ -138,8 +134,8 @@ class GameProposal < ApplicationRecord
 
   def broadcast_vote_count
     broadcast_replace_later_to(
-      "vote_count_game_proposal_#{id}",
-      target: "vote_count_game_proposal_#{id}",
+      "game_proposal_#{id}",
+      targets: "#vote_count_game_proposal_#{id}",
       partial: "game_proposals/vote_count"
     )
   end

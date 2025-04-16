@@ -1,7 +1,7 @@
 <%= turbo_stream.update_all(".vote_count_game_proposal_#{@game_proposal.id}",
                             partial: "game_proposals/vote_count",
                             method: :morph,
-                            locals: { game_proposal: @game_proposal }) %>
+                            locals: { game_proposal: @game_proposal, proposal_vote: @proposal_vote }) %>
 
 <%= turbo_stream.replace("form_proposal_vote_#{@proposal_vote.id}",
                          partial: "proposal_votes/form",

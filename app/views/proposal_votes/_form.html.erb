@@ -2,41 +2,27 @@
 <%= form_with(model: proposal_vote.new_record? ?  [game_proposal, proposal_vote] :  proposal_vote, id:dom_id(proposal_vote, :form)) do |form| %>
   <%= render "shared/notification", id: proposal_vote.new_record? ? "proposal_vote_new" : "proposal_vote_#{proposal_vote.id}" %>
 
-      <ul>
-        <% proposal_vote.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div>
+  <div class="text-center">
     <%= form.hidden_field :user_id, value: Current.user.id %>
     <%= form.hidden_field :game_proposal_id, value: proposal_vote.game_proposal_id  %>
   </div>
 
-  <div>
-    <%= form.label :yes_vote, "Vote", style: "display: block" %>
+  <div class="text-center my-2">
+    <%= form.label :yes_vote, "Vote", class: "block underline" %>
     <%= form.radio_button :yes_vote, true,  checked: proposal_vote.yes_vote == true %>
-    <%= form.label :yes_vote_true, "Yes", style: "display: inline" %>
+    <%= form.label :yes_vote_true, "Yes", class: "inline" %>
     <%= form.radio_button :yes_vote, false, checked: proposal_vote.yes_vote == false %>
-    <%= form.label :yes_vote_false, "No", style: "display: inline" %>
+    <%= form.label :yes_vote_false, "No", class: "inline" %>
     <%= form.radio_button :yes_vote, "", checked: proposal_vote.new_record? || proposal_vote.yes_vote == nil %>
-    <%= form.label :yes_vote_, "Unsure", style: "display: inline" %>
+    <%= form.label :yes_vote_, "Unsure", class: "inline" %>
   </div>
 
-  <div>
-    <%= form.label :comment, style: "display: block" %>
+  <div class="text-center my-2 space-y-2">
+    <%= form.label :comment, class: "block underline" %>
     <%= form.text_area :comment, placeholder:"Add a comment (optional)", value: proposal_vote.comment %>
   </div>
 
   <div>
     <%= render "shared/buttons/form_submit_button", form: form, text:"Save Vote and Comment", extra_classes: "m-2" %>
   </div>
-
-  <% if local_assigns[:notice] %>
-    <div style="color: green">
-      <h2><%= local_assigns[:notice] %></h2>
-    </div>
-  <% end %>
 <% end %>

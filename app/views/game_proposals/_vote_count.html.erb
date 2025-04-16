@@ -5,9 +5,6 @@
       <strong>Yes: <%= game_proposal.yes_votes.count %></strong>
       <strong>No: <%= game_proposal.no_votes.count %></strong>
       <strong>Undecided: <%= game_proposal.undecided_votes.count %></strong>
-      <div id="vote_link" class="flex">
-        <%= render partial: 'game_proposals/vote_link', locals: {game_proposal: game_proposal} %>
-      </div>
     </div>
     <div class="flex">
       <% game_proposal.proposal_votes.order(yes_vote: :desc).each do |vote| %>
