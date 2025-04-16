@@ -1,0 +1,8 @@
+<%# locals: (schedules: nil) %>
+<% if schedules.present? %>
+  <% schedules.each do |name| %>
+    <%= content_tag :li, name, class: "text-left" %>
+  <% end %>
+<% else %>
+  <span class="text-gray-500">No schedules assigned</span>
+<% end %>

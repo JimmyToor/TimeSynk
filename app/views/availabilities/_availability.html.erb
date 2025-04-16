@@ -10,14 +10,18 @@
   </p>
 
   <% if policy(availability).edit? %>
-    <p>
+    <div>
       <strong>Schedules:</strong>
       <% if availability.schedules.empty? %>
         None
       <% else %>
-        <%= availability.schedules.map(&:name).join(", ") %>
-      <% end %>
-    </p>
+        <ul>
+          <% availability.schedules.map(&:name).each do |availability_name| %>
+            <li> - <%= availability_name %> </li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
   <% end %>
 
 </div>

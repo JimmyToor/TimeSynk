@@ -1,17 +1,31 @@
 <%# locals: (availability:) %>
-<tr class="hover:bg-gray-100 dark:hover:bg-gray-700 border-b-2 dark:border-gray-600">
+<% schedules = availability.schedules&.map(&:name) || nil %>
+
+<tr class="hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-gray-600">
   <td class="w-4 px-4 py-3">
     <%= link_to "View", availability, class: "text-black focus:outline-none dark:text-white bg-primary-400 hover:bg-primary-600
-                  focus:ring-4 focus:ring-primary-300 dark:bg-primary-700 dark:hover:bg-primary-60 text-xs font-medium
+                  focus:ring-4 focus:ring-primary-300 dark:bg-primary-700 dark:hover:bg-primary-600 text-xs font-medium
                   px-2 py-0.5 rounded hover:underline", data: { turbo_frame: "_top" } %>
   </td>
-  <th scope="row" class="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-    <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= availability.name %> </span>
+  <th scope="row" class="whitespace-nowrap py-2 font-medium text-gray-900 dark:text-white text-left">
+    <%= availability.name %>
+    <%= button_tag 'Button', type: 'button', title: "Details", class:"inline-block lg:hidden", data: {action:"click->element-toggle#triggerToggle", id:availability.id} do %>
+      &#9660;
+    <% end %>
   </th>
-  <td class="py-2 hidden md:table-cell">
-    <span class="text-xs font-medium px-2 py-0.5 rounded text-wrap"> <%= availability.description %> </span>
+  <td class="py-2 table-cell px-2 font-medium text-gray-900 dark:text-white">
+    <%= availability.description %>
   </td>
-  <td class="py-2 hidden lg:table-cell">
-    <span class="text-xs font-medium px-2 py-0.5 rounded"> <%= availability.schedules.map(&:name).join(",") %> </span>
+  <td class="py-2 hidden lg:table-cell whitespace-nowrap px-2 font-medium text-gray-900 dark:text-white">
+      <%= render "assigned_schedules", schedules: schedules %>
+  </td>
+</tr>
+<tr class="border-b-2 additional-info dark:border-gray-600">
+  <td></td>
+  <td colspan="7" class="hidden" data-element-toggle-target="targetElement" data-id=<%= availability.id %>>
+      <div class="table-cell lg:hidden">
+        <strong class="font-semibold">Schedules:</strong>
+        <%= render "assigned_schedules", schedules: schedules %>
+      </div>
   </td>
 </tr>
