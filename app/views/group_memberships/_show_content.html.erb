@@ -5,7 +5,7 @@
 
     <%= render group_membership %>
 
-    <div class="mt-2">
+    <div class="my-4 space-y-4">
       <%= render "shared/buttons/secondary_link",
                  path:edit_group_permission_set_path(group_membership.group, user_id: group_membership.user.id),
                  text: "Edit Group Permissions" if group_permission_set_policy(group_permission_set).edit? %>
@@ -14,10 +14,6 @@
                    resource: group_membership,
                    text: "Kick User",
                    confirm_text: "Are you sure you want to kick #{group_membership.user.username} from the group?" %>
-          <%= button_to "Kick User",
-                        group_membership,
-                        {method: :delete, data: { turbo_method: "delete",
-                                 turbo_confirm: "Are you sure you want to kick #{group_membership.user.username} from the group?"}} %>
       <% end %>
     </div>
   <% end %>

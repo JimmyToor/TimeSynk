@@ -1,16 +1,26 @@
-<p style="color: green"><%= notice %></p>
+<%# locals: (group_memberships:, group:) %>
 
 <h1>Group memberships</h1>
 <%= render "shared/notification", id: "group_memberships" %>
 <% frame_path = group_group_memberships_path(group_id: group.id, format: :turbo_stream) %>
 
-<div id="group_memberships">
-  <% @group_memberships.each do |group_membership| %>
-    <%= render group_membership %>
-    <p>
-      <%= link_to "Show this group membership", group_membership %>
-    </p>
-  <% end %>
-</div>
+<section class="bg-tertiary-50 dark:bg-gray-900">
+  <div class="mx-auto max-w-screen-xl">
+    <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden w-fit"
+         data-controller="search frame-reload"
+         data-search-src-value="<%= frame_path %>"
+         data-frame-reload-events-value="modal-form-submit-success">
+      <%= render partial:"group_memberships/table/group_membership_table_header", locals: {group: group} %>
+      <%= turbo_frame_tag "group_memberships_list_#{group.id}",
+                          src: frame_path,
+                          data: { controller:"reload_on_restore",
+                                  reload_on_restore_src_value:frame_path,
+                                  turbo_prefetch:"false",
+                                  search_target: "frame",
+                                  frame_reload_target:"frame"} do %>
+        Loading...
+      <% end %>
+    </div>
+  </div>
+</section>
 
-<%= link_to "New group membership", new_group_group_membership_path %>

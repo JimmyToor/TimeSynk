@@ -9,6 +9,10 @@ export default class extends Dialog {
       type: Boolean,
       default: false,
     },
+    ignoreSubmitSuccess: {
+      type: Boolean,
+      default: false,
+    },
   };
 
   initialize() {
@@ -102,7 +106,9 @@ export default class extends Dialog {
   handleSubmitEnd(event) {
     if (event.detail.success) {
       this.endLoading();
-      this.fireSubmitSuccessEvent(event);
+      if (!this.ignoreSubmitSuccessValue) {
+        this.fireSubmitSuccessEvent(event);
+      }
     } else {
       this.fireSubmitFailEvent();
       this.endLoading();
@@ -176,10 +182,14 @@ export default class extends Dialog {
   }
 
   showLoadingSpinner() {
+    if (!this.hasLoadingIndicatorTarget) return;
+
     this.loadingIndicatorTarget.classList.remove("hidden");
   }
 
   hideLoadingSpinner() {
+    if (!this.hasLoadingIndicatorTarget) return;
+
     this.loadingIndicatorTarget.classList.add("hidden");
   }
 

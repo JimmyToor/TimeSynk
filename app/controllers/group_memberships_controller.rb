@@ -8,7 +8,17 @@ class GroupMembershipsController < ApplicationController
 
   # GET /group_memberships or /group_memberships.json
   def index
-    @group_memberships = GroupMembership.all
+    redirect_back_or_to :root_path unless params[:group_id]
+
+    @group = Group.find(params[:group_id])
+    @group_memberships = authorize(params[:query].present? ? @group.group_memberships.search(params[:query]) : @group.group_memberships)
+    @pagy, @group_memberships = pagy(@group_memberships, limit: 10)
+
+    respond_to do |format|
+      format.html { render :index, locals: {group_memberships: @group_memberships, group: @group} }
+      format.turbo_stream
+      format.json { render json: @group_memberships }
+    end
   end
 
   # GET /group_memberships/1 or /group_memberships/1.json
