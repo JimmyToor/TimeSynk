@@ -1,5 +1,5 @@
 <div class="flex flex-col items-center justify-between p-4 md:flex-row space-y-3 md:space-y-0 md:space-x-4">
-  <div class="w-full md:w-1/2">
+  <div class="w-1/2 sm:w-full">
     <%= form_with(id: "search-form", url:schedules_path(format: :turbo_stream), method: :get, class:"flex items-center") do |form| %>
       <label for="query" class="sr-only">Search</label>
       <div class="relative w-full">
@@ -11,10 +11,10 @@
         <div class="flex">
           <%= form.text_field :query, name:"query", data: {search_target:"query"}, pattern:"[A-Za-z0-9 ]*",
                               title:"Numbers, letters, and spaces only",
-                              class:"bg-tertiary-50border border-gray-300 text-gray-900 text-sm rounded-lg
+                              class:"bg-tertiary-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                                focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700
                                dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500
-                               dark:focus:border-primary-500",
+                               dark:focus:border-primary-500 justify-left",
                               placeholder:"Search Schedules..." %>
           <%= render "shared/buttons/search_submit_button", form: form, turbo_frame_id: "schedules_index" %>
           <%= render "shared/buttons/search_reset_button", form: form, extra_classes: "end-12" %>

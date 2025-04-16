@@ -2,11 +2,11 @@
 <tr class="text-center hover:bg-gray-100 dark:hover:bg-gray-700">
   <td class="w-4 px-4 py-3">
     <%= link_to "View", schedule, class: "text-black focus:outline-none dark:text-white bg-primary-400 hover:bg-primary-600
-                  focus:ring-4 focus:ring-primary-300 dark:bg-primary-700 dark:hover:bg-primary-60 text-xs font-medium
+                  focus:ring-4 focus:ring-primary-300 dark:bg-primary-700 dark:hover:bg-primary-600 text-xs font-medium
                   px-2 py-0.5 rounded hover:underline",
                 data: { turbo_frame: "_top" } %>
   </td>
-  <th scope="row" class="whitespace-nowrap py-2 font-medium text-gray-900 dark:text-white">
+  <th scope="row" class="whitespace-nowrap py-2 font-medium text-gray-900 dark:text-white text-left">
     <span class="rounded px-2 text-xs font-medium py-0.5"> <%= schedule.name %> </span>
     <%= button_tag 'Button', type: 'button', title: "Details", class:"inline-block 2xl:hidden", data: {action:"click->element-toggle#triggerToggle", id:schedule.id} do %>
       &#9660;
