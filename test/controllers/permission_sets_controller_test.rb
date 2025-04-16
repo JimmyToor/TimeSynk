@@ -16,8 +16,8 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
     create_invites_role = roles(:create_invites_3)
     user1 = users(:two)
     user2 = users(:three)
-    expected_user1_roles = (user1.roles + [manage_proposals_role, create_invites_role]).sort_by(&:id)
-    expected_user2_roles = (user2.roles - [create_proposals_role, create_invites_role] + [manage_proposals_role]).sort_by(&:id)
+    expected_user1_roles = (user1.roles + [manage_proposals_role, create_invites_role]).to_set
+    expected_user2_roles = (user2.roles - [create_proposals_role, create_invites_role] + [manage_proposals_role]).to_set
 
     get permission_sets_update_url, params: {permission_set: {role_changes: {user1.id => {add_roles: [manage_proposals_role.id, create_invites_role.id]},
                                                                              user2.id => {add_roles: [manage_proposals_role.id], remove_roles: [create_proposals_role.id, create_invites_role.id]}}},
@@ -25,8 +25,8 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
                                              group_id: groups(:three_members).id}, as: :turbo_stream
 
     assert_response :success
-    user1_roles = user1.reload.roles.order(:id).to_a
-    user2_roles = user2.reload.roles.order(:id).to_a
+    user1_roles = user1.reload.roles.to_set
+    user2_roles = user2.reload.roles.to_set
     assert_equal expected_user1_roles, user1_roles
     assert_equal expected_user2_roles, user2_roles
   end

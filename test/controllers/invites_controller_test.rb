@@ -148,7 +148,7 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
                                                  invite_token: @invite.invite_token,
                                                  assigned_role_ids: @invite.assigned_role_ids,
                                                  user_id: @invite.user_id}}
-    assert_redirected_to group_invites_url(@invite.group)
+    assert_redirected_to invite_url(@invite)
   end
 
   test "should destroy invite" do

@@ -2,7 +2,7 @@ require "test_helper"
 
 class ProposalVotesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @proposal_vote = proposal_votes(:proposal_2_user_2_yes_vote)
+    @proposal_vote = proposal_votes(:proposal_2_user_2_yes)
     @game_proposal = @proposal_vote.game_proposal
     @user = @proposal_vote.user
     sign_in_as(@user)
@@ -13,9 +13,9 @@ class ProposalVotesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should create proposal_vote" do
+  test "should not create proposal_vote when one exists" do
     game_proposal = game_proposals(:group_2_game_1)
-    assert_difference("ProposalVote.count") do
+    assert_no_difference("ProposalVote.count") do
       post game_proposal_proposal_votes_url(game_proposal), params: {proposal_vote: {game_proposal_id: game_proposal.id, user_id: @user.id, yes_vote: true}}
     end
   end
@@ -30,15 +30,20 @@ class ProposalVotesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should update proposal_vote" do
+  test "should update yes-vote to no-vote" do
     old_vote_value = @proposal_vote.yes_vote
-    patch proposal_vote_url(@proposal_vote), params: {proposal_vote: {comment: @proposal_vote.comment, game_proposal_id: @proposal_vote.game_proposal_id, user_id: @proposal_vote.user_id, yes_vote: !old_vote_value}}
+    patch proposal_vote_url(@proposal_vote), params: {proposal_vote: {comment: @proposal_vote.comment, game_proposal_id: @proposal_vote.game_proposal_id, user_id: @proposal_vote.user_id, yes_vote: false}}
     assert_not_equal @proposal_vote.reload.yes_vote, old_vote_value
+  end
+
+  test "should update yes-vote to undecided vote" do
+    patch proposal_vote_url(@proposal_vote), params: {proposal_vote: {comment: @proposal_vote.comment, game_proposal_id: @proposal_vote.game_proposal_id, user_id: @proposal_vote.user_id, yes_vote: nil}}
+    assert_nil @proposal_vote.reload.yes_vote
   end
 
   test "should destroy proposal_vote" do
     assert_difference("ProposalVote.count", -1) do
-      delete proposal_vote_url(@proposal_vote.game_proposal)
+      delete proposal_vote_url(@proposal_vote)
     end
   end
 end

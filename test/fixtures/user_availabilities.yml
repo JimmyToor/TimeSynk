@@ -9,3 +9,13 @@ user_2:
   id: 2
   availability_id: 2
   user_id: 2
+
+user_3:
+  id: 3
+  availability_id: 5
+  user_id: 3
+
+user_4:
+  id: 4
+  availability_id: 6
+  user_id: 4

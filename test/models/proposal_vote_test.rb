@@ -7,27 +7,27 @@ class ProposalVoteTest < ActiveSupport::TestCase
 
   test "should update proposal vote counts after update" do
     game_proposal = game_proposals(:group_2_game_2)
-    vote1 = proposal_votes(:proposal_2_user_2_yes_vote)
+    vote1 = proposal_votes(:proposal_2_user_2_yes)
 
-    assert_equal 1, game_proposal.yes_votes.count
-    assert_equal 1, game_proposal.no_votes.count
+    assert_equal 1, game_proposal.yes_votes_count
+    assert_equal 1, game_proposal.no_votes_count
 
     vote1.update!(yes_vote: false)
-    assert_equal 0, game_proposal.yes_votes.count
-    assert_equal 2, game_proposal.no_votes.count
+    assert_equal 0, game_proposal.reload.yes_votes_count
+    assert_equal 2, game_proposal.reload.no_votes_count
   end
 
   test "should update game proposal vote count after delete" do
     game_proposal = game_proposals(:group_2_game_2)
-    vote1 = proposal_votes(:proposal_2_user_2_yes_vote)
+    vote1 = proposal_votes(:proposal_2_user_2_yes)
 
-    assert_equal 1, game_proposal.yes_votes.count
-    assert_equal 1, game_proposal.no_votes.count
+    assert_equal 1, game_proposal.yes_votes_count
+    assert_equal 1, game_proposal.no_votes_count
 
     vote1.destroy
 
-    assert_equal 0, game_proposal.yes_votes.count
-    assert_equal 1, game_proposal.no_votes.count
+    assert_equal 0, game_proposal.reload.yes_votes_count
+    assert_equal 1, game_proposal.reload.no_votes_count
   end
 
   test "should update game proposal vote count after create" do
@@ -43,7 +43,7 @@ class ProposalVoteTest < ActiveSupport::TestCase
   end
 
   test "should reject duplicate votes" do
-    vote1 = proposal_votes(:proposal_2_user_2_yes_vote)
+    vote1 = proposal_votes(:proposal_2_user_2_yes)
     game_proposal = vote1.game_proposal
 
     assert_raises(ActiveRecord::RecordInvalid) do

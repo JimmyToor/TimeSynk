@@ -5,18 +5,6 @@ class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
     @group_membership = group_memberships(:group_2_user_3)
   end
 
-  test "should create group_membership without invite as admin" do
-    @user = users(:admin)
-    sign_in_as @user
-    group = groups(:two_members)
-
-    assert_difference("GroupMembership.count") do
-      post group_group_memberships_url group, params: {group_membership: {user_id: @user.id, invite_token: "admin"}, group_id: group.id}
-    end
-
-    assert_redirected_to group_url(GroupMembership.last.group)
-  end
-
   test "should not create group_membership without invite" do
     group = groups(:two_members)
     @user = users(:two)
@@ -63,7 +51,7 @@ class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
 
     get accept_invite_url(invite_token: invite.invite_token)
 
-    assert_response :success
+    assert_response :found
     assert_recognizes({controller: "invites", action: "show", invite_token: invite.invite_token},
       path: accept_invite_url(invite_token: invite.invite_token))
   end

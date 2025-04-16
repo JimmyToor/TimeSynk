@@ -1,6 +1,8 @@
 require "test_helper"
 
 class ScheduleTest < ActiveSupport::TestCase
+  fixtures :users # Add users fixture if needed for the moved test
+
   test "consolidate_occurrences returns empty array when no occurrences" do
     result = Schedule.consolidate_occurrences([])
     assert_equal [], result
@@ -87,5 +89,34 @@ class ScheduleTest < ActiveSupport::TestCase
     result = Schedule.find_overlaps([schedule1, schedule2, schedule3], start1, schedule3.end_time)
 
     assert_equal [Schedule::ScheduleInterval.new(schedule2.start_time, schedule2.start_time + 30.minutes)], result
+  end
+
+  # --- Test moved from game_proposal_test.rb ---
+  test "make_calendar_schedule returns a valid calendar schedule hash" do
+    test_user = users(:admin) # Use a fixture user
+    start_time = Time.new(2000, 1, 1, 0, 0, 0, "+00:00")
+    end_time = start_time + 1.hour
+    schedule = Schedule.new(name: "Test Schedule", start_time: start_time, end_time: end_time, duration: 1.hour, user: test_user)
+
+    expected_calendar_schedule = {
+      start_time: {time: start_time.utc, zone: start_time.zone},
+      end_time: {time: end_time.utc, zone: end_time.zone},
+      name: "Test Schedule",
+      duration: 1.hour.to_i, # Ensure duration is integer seconds
+      user_id: test_user.id,
+      id: nil, # It's a new record
+      extimes: [],
+      rtimes: [],
+      rrules: [],
+      cal_rrule: "DTSTART:20000101T080000Z\nDTEND:20000101T090000Z", # Example assumes timezone America/Los_Angeles for user :admin
+      selectable: true
+    }
+
+    # Recalculate expected cal_rrule based on actual user timezone from fixture
+    rrule_start = schedule.start_time.utc.strftime("%Y%m%dT%H%M%SZ")
+    rrule_end = schedule.end_time.utc.strftime("%Y%m%dT%H%M%SZ")
+    expected_calendar_schedule[:cal_rrule] = "DTSTART:#{rrule_start}\nDTEND:#{rrule_end}"
+
+    assert_equal expected_calendar_schedule, schedule.make_calendar_schedule
   end
 end

@@ -99,7 +99,7 @@ class UserTest < ActiveSupport::TestCase
 
   test "get_vote_for_proposal returns user's vote" do
     user = users(:two)
-    vote = proposal_votes(:proposal_2_user_2_yes_vote)
+    vote = proposal_votes(:proposal_2_user_2_yes)
     proposal = vote.game_proposal
     assert_equal vote, user.get_vote_for_proposal(proposal)
   end

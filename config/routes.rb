@@ -55,7 +55,6 @@ Rails.application.routes.draw do
   post "sign_up", to: "registrations#create"
   get "sign_out", to: "sessions#destroy", as: :sign_out
   get "settings", to: "users#edit", as: :settings
-  get "home", to: "home#index", as: :home
   resources :sessions, only: [:index, :show, :destroy]
   resource :password, only: [:edit, :update]
   namespace :identity do

@@ -26,7 +26,7 @@ class CalendarControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal "application/json", @response.media_type
-    assert_equal JSON.parse(service.create_calendars.to_json), JSON.parse(@response.body)
+    assert_equal JSON.parse(service.call.to_json), JSON.parse(@response.body)
   end
 
   test "should not get calendar with unauthorized group" do

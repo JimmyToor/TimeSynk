@@ -377,3 +377,19 @@ game_proposal_3_admin:
   resource_id: 3
   created_at: 2024-11-15 21:41:30.298949
   updated_at: 2024-11-15 21:41:30.298949
+
+game_session_4_owner:
+  id: 48
+  name: "owner"
+  resource_type: "GameSession"
+  resource_id: 4
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+game_session_5_owner:
+  id: 49
+  name: "owner"
+  resource_type: "GameSession"
+  resource_id: 5
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949

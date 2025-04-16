@@ -79,3 +79,18 @@ user_3_group_4_admin:
   # User 3 is an admin for Group 4
   user_id: 3
   role_id: 37
+
+user_3_game_session_3_owner:
+  # User 3 is an owner of GameSession 3
+  user_id: 3
+  role_id: 35
+
+user_3_game_session_4_owner:
+  # User 3 is an owner of GameSession 4
+  user_id: 3
+  role_id: 48
+
+user_3_game_session_5_owner:
+  # User 3 is an owner of GameSession 5
+  user_id: 3
+  role_id: 49

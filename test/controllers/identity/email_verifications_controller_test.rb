@@ -9,7 +9,7 @@ class Identity::EmailVerificationsControllerTest < ActionDispatch::IntegrationTe
       post identity_email_verification_url(user: user, email: user.email)
     end
 
-    assert_redirected_to settings_url
+    assert_redirected_to edit_identity_email_url
   end
 
   test "should verify email" do
@@ -32,7 +32,7 @@ class Identity::EmailVerificationsControllerTest < ActionDispatch::IntegrationTe
     get identity_email_verification_url(sid: sid, email: user.email)
 
     assert_redirected_to edit_identity_email_url
-    assert_equal "That email verification link is invalid", flash[:alert]
+    assert_equal I18n.t("identity.email.invalid"), flash[:alert]
   end
 
   test "should not verify email if already verified by another user" do
@@ -48,6 +48,6 @@ class Identity::EmailVerificationsControllerTest < ActionDispatch::IntegrationTe
     get identity_email_verification_url(sid: sid, email: user.email)
 
     assert_redirected_to edit_identity_email_url
-    assert_equal "This email is already verified by another user.", flash[:alert]
+    assert_equal I18n.t("identity.email.invalid"), flash[:alert]
   end
 end
