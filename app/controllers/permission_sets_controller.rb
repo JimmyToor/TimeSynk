@@ -90,7 +90,7 @@ class PermissionSetsController < ApplicationController
   def transfer_ownership
     authorize(@resource, :change_owner?)
     new_owner = User.find(permission_set_params[:new_owner_id])
-    TransferOwnershipService.new(new_owner, @resource).transfer_ownership
+    TransferOwnershipService.call(new_owner, @resource)
     @affected_users = [new_owner, Current.user]
   end
 

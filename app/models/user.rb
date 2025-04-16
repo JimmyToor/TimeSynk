@@ -113,7 +113,7 @@ class User < ApplicationRecord
   end
 
   def update_roles(add_roles: [], remove_roles: [])
-    RoleUpdateService.new(user: self, add_roles: add_roles, remove_roles: remove_roles).update_roles
+    RoleUpdateService.call(self, add_roles, remove_roles)
   end
 
   def membership_for_group(group)

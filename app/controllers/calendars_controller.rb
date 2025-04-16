@@ -5,7 +5,7 @@ class CalendarsController < ApplicationController
   # TODO: Add caching
 
   def show
-    @calendars = CalendarCreationService.new(calendar_params, Current.user).create_calendars
+    @calendars = CalendarCreationService.call(calendar_params, Current.user)
     render json: @calendars.as_json
   end
 
@@ -47,8 +47,6 @@ class CalendarsController < ApplicationController
     params[:schedule_ids] = params[:schedule_ids].present? ? params[:schedule_ids].split(",") : []
     params.permit(:start, :end, :user_id, :group_id, :schedule_id, :availability_id, :game_session_id, :game_proposal_id, schedule_ids: [])
   end
-
-  private
 
   def user_not_authorized
     render json: {error: "You are not authorized to perform this action."}, status: :unauthorized

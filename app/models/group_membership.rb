@@ -21,10 +21,10 @@ class GroupMembership < ApplicationRecord
   def transfer_resources_to_group_owner
     unless user.has_cached_role?(:owner, group)
       group.game_proposals.with_role(:owner, user).each do |proposal|
-        TransferOwnershipService.new(group.owner, proposal).transfer_ownership
+        TransferOwnershipService.call(group.owner, proposal)
       end
       GameSession.for_group(group.id).with_role(:owner, user).each do |session|
-        TransferOwnershipService.new(group.owner, session).transfer_ownership
+        TransferOwnershipService.call(group.owner, session)
       end
     end
   end

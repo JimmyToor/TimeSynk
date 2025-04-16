@@ -38,13 +38,7 @@ class GroupMembershipsController < ApplicationController
 
   # POST /group_memberships or /group_memberships.json
   def create
-    if group_membership_params[:invite_token].present?
-      service = InviteAcceptanceService.new(group_membership_params)
-      @group_membership = service.accept_invite
-    else
-      @group_membership = GroupMembership.new(group_membership_params)
-      @group_membership.errors.add(:base, I18n.t("group_membership.invite_not_valid"))
-    end
+    @group_membership = InviteAcceptanceService.call(group_membership_params)
 
     respond_to do |format|
       if @group_membership.persisted?

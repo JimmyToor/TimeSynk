@@ -36,7 +36,6 @@ class RoleUpdateService < ApplicationService
       # Remove roles specified in the remove_roles set
       @user.roles.delete(Role.where(id: @remove_roles)) if @remove_roles.present?
     end
-    Rails.logger.debug "Roles updated for user #{@user.username} with add_roles: #{@add_roles}, remove_roles: #{@remove_roles}"
   end
 
   private
