@@ -6,18 +6,18 @@ class InvitesController < ApplicationController
   before_action :check_param_alignment, only: %i[create]
 
   # GET /invites or /invites.json
-  def index # list invites
+  def index
     @invites = policy_scope(Invite).for_group(params[:group_id])
     @pagy, @invites = pagy(@invites)
   end
 
   def show
     # If the user is not a member of the group, render the accept invite page
-    unless @invite.group.members.include?(Current.user)
-      @group_membership = @group.group_memberships.build
-      @group_membership.user_id = Current.user.id
-      render :accept, locals: {group_membership: @group_membership, group: @invite.group, invite: @invite}
-    end
+    return if @invite.group.members.include?(Current.user)
+
+    @group_membership = @group.group_memberships.build
+    @group_membership.user_id = Current.user.id
+    render :accept, locals: {group_membership: @group_membership, group: @invite.group, invite: @invite}
   end
 
   # GET /groups/1/invite

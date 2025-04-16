@@ -1,5 +1,4 @@
 class GroupPolicy < ApplicationPolicy
-
   def show?
     user.has_cached_role?(:site_admin) || record.is_user_member?(user)
   end
@@ -49,5 +48,3 @@ class GroupPolicy < ApplicationPolicy
     user.has_cached_role?(:site_admin) || user.has_any_role_for_resource?([:admin, :owner], record)
   end
 end
-
-

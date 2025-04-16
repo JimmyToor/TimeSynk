@@ -5,16 +5,31 @@
       <tr class="text-center">
         <th></th>
         <th scope="col" class="px-4 py-3">Creator</th>
-        <th scope="col" class="px-4 py-3">URL</th>
+        <th scope="col" class="px-4 py-3">Invite Token</th>
         <th scope="col" class="px-4 py-3 hidden md:table-cell">Roles</th>
         <th scope="col" class="px-4 py-3 hidden lg:table-cell">Expires</th>
       </tr>
     </thead>
-    <tbody data-controller="element-toggle" data-element-toggle-display-style-value="table-row">
-      <% invites.each do |invite| %>
-        <%= render partial:"invites/table/invite_table_row", locals: {invite: invite} %>
+    <% viewable_invites = invites.select do |invite| %>
+      <% if policy(invite).show? %>
+         <% invite %>
+      <% else %>
+        <% next %>
       <% end %>
-    </tbody>
+    <% end %>
+    <% if viewable_invites.any? %>
+      <tbody data-controller="element-toggle" data-element-toggle-display-style-value="table-row">
+        <% viewable_invites.each do |invite| %>
+          <%= render partial:"invites/table/invite_table_row", locals: {invite: invite} %>
+        <% end %>
+      </tbody>
+    <% end %>
   </table>
 </div>
-<%= render partial: "shared/table_nav" %>
+<%= render "shared/table_nav" do %>
+  <% if viewable_invites.length < invites.length %>
+    <% content_tag :div, class: "text-gray-500" do %>
+      Some items may be hidden due to your permissions.
+    <% end %>
+  <% end %>
+<% end %>

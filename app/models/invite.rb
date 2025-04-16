@@ -5,8 +5,10 @@ class Invite < ApplicationRecord
   belongs_to :group
   has_secure_token :invite_token
 
-  validate :validate_roles
+  validate :validate_roles, :check_date
   attr_readonly :user_id, :group_id
+
+  scope :for_group, ->(group_id) { where(group: group_id) }
 
   def assigned_roles
     Role.where(id: assigned_role_ids)
@@ -45,5 +47,14 @@ class Invite < ApplicationRecord
     end
   end
 
-  scope :for_group, ->(group_id) { where(group: group_id) }
+  def check_date
+    if expires_at.nil?
+      self.expires_at = 1.week.from_now
+    end
+
+    if expires_at <= Time.current
+      errors.add(:expires_at, I18n.t("invite.validation.expires_at.date"))
+      throw :abort
+    end
+  end
 end

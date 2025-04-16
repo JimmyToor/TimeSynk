@@ -44,3 +44,21 @@ turbo-frame:not([busy]) {
 button.selected {
     @apply z-[1];
 }
+
+/* For WebKit browsers (Chrome, Safari) */
+.persistent-scrollbar::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+    height: 7px;
+}
+
+.persistent-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, .3);
+}
+
+/* For Firefox */
+.persistent-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, .3) transparent;
+}

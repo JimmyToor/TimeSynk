@@ -1,10 +1,9 @@
 <h1>Editing group invite</h1>
+<div class="mb-2">
+  <%= render "form", invite: @invite, group: nil, roles: @roles %>
+</div>
 
-<%= render "form", invite: @invite, group: nil, roles: @roles %>
-
-<br>
-
-<div>
-  <%= link_to "Show this group invite", @invite %> |
-  <%= link_to "Back to group invites", group_invites_path(@invite.group) %>
+<div class="space-x-2 mt-4">
+  <%= render "shared/buttons/secondary_link", text: "See all invites for #{@invite.group.name}",path: group_invites_path(@invite.group)%>
+  <%= render "shared/buttons/secondary_link", text: "Go to group: #{@invite.group.name}", path: @invite.group  %>
 </div>

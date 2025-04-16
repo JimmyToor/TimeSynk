@@ -1,15 +1,23 @@
 class InvitePolicy < ApplicationPolicy
-  def index?
-    user.has_role? :admin
-  end
-
   def new?
-    user.has_role?(:site_admin) || user.has_any_role_for_resource?([:owner, :admin, :manage_invites], record.group)
+    user.has_any_role_for_resource?([:owner, :admin, :manage_invites], record.group)
   end
 
   def show?
-    return true unless record.group.is_user_member?(user)
-    new?
+    return false unless record.group.is_user_member?(user)
+    return true if record.assigned_roles.empty?
+
+    user_role_weight = user.most_permissive_role_weight_for_resource(record.group)
+    invite_role_weight = record.assigned_roles.map { |role| RoleHierarchy.role_weight(role) }.min
+
+    return false if user_role_weight > invite_role_weight # invite provides more dangerous permissions than the user has
+
+    # If neither the user nor invite has a permissive role, check if the user lacks an explicit role provided by the invite
+    if user_role_weight == invite_role_weight && invite_role_weight == 1000
+      return false unless (record.assigned_roles - user.roles_for_resource(record.group)).empty?
+    end
+
+    true
   end
 
   def create?

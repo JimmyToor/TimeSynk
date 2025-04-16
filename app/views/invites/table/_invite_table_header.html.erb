@@ -9,6 +9,6 @@
   </div>
 
   <div class="flex w-fit flex-shrink-0 flex-col items-stretch justify-end md:w-auto md:flex-row space-y-2 md:space-y-0 md:items-center md:space-x-3">
-    <%= render "shared/buttons/icon_button", path: new_group_invite_path(group), text: "New Invite", data: { turbo_frame: "_top" } %>
+    <%= render "shared/buttons/icon_button", path: new_group_invite_path(group), text: "New Invite", data: { turbo_frame: "_top" } if policy(Invite.new(group:@group)).new? %>
   </div>
 </div>
