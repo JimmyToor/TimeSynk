@@ -154,5 +154,7 @@ class GameProposal < ApplicationRecord
 
   def create_roles
     Role.create_roles_for_game_proposal(self)
+    return unless owner.nil?
+    Current.user.add_role(:owner, @game_session)
   end
 end

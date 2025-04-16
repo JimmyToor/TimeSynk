@@ -1,5 +1,5 @@
 <% new_record = game_session_attendance.new_record? %>
-<%= form_with(model: new_record? ?  [game_session, game_session_attendance] :  game_session_attendance,
+<%= form_with(model: new_record ?  [game_session, game_session_attendance] :  game_session_attendance,
               id: dom_id(game_session_attendance, :form)) do |form| %>
   <%= render "shared/notification", id: "game_session_attendance_#{new_record ? "new" : game_session_attendance.id}" %>
 
@@ -10,15 +10,15 @@
 
   <div>
     <%= form.label :attending, "Attendance", style: "display: block" %>
-    <%= form.radio_button :attending, true,  checked: game_session_attendance.attending == true %>
+    <%= form.radio_button :attending, true,  checked: game_session_attendance.attending == true%>
     <%= form.label :attending_true, "Attending", style: "display: inline" %>
-    <%= form.radio_button :attending, false, checked: game_session_attendance.attending == false %>
+    <%= form.radio_button :attending, false, checked: game_session_attendance.attending == false%>
     <%= form.label :attending_false, "Not Attending", style: "display: inline" %>
-    <%= form.radio_button :attending, "", checked: game_session_attendance.new_record? || game_session_attendance.attending == nil %>
+    <%= form.radio_button :attending, "", checked: game_session_attendance.new_record? || game_session_attendance.attending == nil%>
     <%= form.label :attending_, "Unsure", style: "display: inline" %>
-  </div>
-
-  <div>
-    <%= render "shared/buttons/form_submit_button", form: form, text: "Save Attendance", extra_classes: "block mt-2 mb-2" %>
+    <%= render "shared/buttons/form_submit_button",
+               form: form,
+               text: "Save Attendance",
+               extra_classes: "block mt-2 mb-2 disabled:bg-gray-600 disabled:cursor-default disabled:hover:bg-gray-600 dark:disabled:hover:bg-gray-600" %>
   </div>
 <% end %>

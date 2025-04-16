@@ -38,7 +38,7 @@ class GameSession < ApplicationRecord
   def get_or_build_attendance_for_user(user)
     attendance = user_get_attendance(user)
     return attendance if attendance
-    game_session_attendances.build(user_id: Current.user.id, game_session_id: id)
+    game_session_attendances.build(user_id: user.id, game_session_id: id)
   end
 
   def user_attend(user)
@@ -137,7 +137,13 @@ class GameSession < ApplicationRecord
 
   def validate_duration_length
     if !duration.present? || duration.minutes % 15 != 0
-      errors.add(:duration, "must be a multiple of 15 minutes")
+      errors.add(:duration, I18n.t("game_session.validation.duration.length"))
+    end
+  end
+
+  def create_initial_attendance
+    game_proposal.group.users.each do |user|
+      game_session_attendances.create(user: user, game_session: self)
     end
   end
 end
