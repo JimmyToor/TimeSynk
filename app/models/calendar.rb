@@ -23,4 +23,8 @@ class Calendar
   def attributes
     {schedules: nil, id: nil, title: nil, name: nil, type: nil, user_id: nil, group_id: nil, schedule_id: nil, availability_id: nil}
   end
+
+  def self.broadcast_calendar_update_notification(stream_id, payload)
+    ActionCable.server.broadcast("calendar_update_notifications_#{stream_id}", payload)
+  end
 end

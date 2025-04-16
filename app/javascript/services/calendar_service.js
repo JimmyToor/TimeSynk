@@ -235,4 +235,21 @@ export default class CalendarService {
     this.fullCalendarObj.getEventSourceById(oldSrcId).remove();
     this.fullCalendarObj.addEventSource(newSrc);
   }
+
+  currentMonth(utc = true) {
+    const currentStart = this.fullCalendarObj.view.currentStart;
+    return utc ? currentStart.getUTCMonth() : currentStart.getMonth();
+  }
+
+  currentYear(utc = true) {
+    const currentStart = this.fullCalendarObj.view.currentStart;
+    return utc ? currentStart.getUTCFullYear() : currentStart.getFullYear();
+  }
+
+  currentDate(utc = true) {
+    const currentStart = this.fullCalendarObj.view.currentStart;
+    return utc
+      ? new Date(this.fullCalendarObj.view.currentStart.getTime())
+      : currentStart;
+  }
 }

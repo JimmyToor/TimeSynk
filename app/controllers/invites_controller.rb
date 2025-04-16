@@ -38,8 +38,8 @@ class InvitesController < ApplicationController
         format.html { redirect_to invite_path(@invite), suceess: {message: I18n.t("invite.update.success")} }
         format.json { render :show, status: :created, location: @invite }
       else
-        format.html { render :new, status: :unprocessable_entity }
         flash.now[:error] = {message: I18n.t("invite.create.error"),
+                             options: {list_items: @invite.errors.full_messages}}
         format.html {
           render :new, status: :unprocessable_entity
         }

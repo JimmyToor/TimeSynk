@@ -5,6 +5,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interaction from "@fullcalendar/interaction";
 import CalendarService from "../services/calendar_service";
+import consumer from "../channels/consumer";
 
 /**
  * Main controller class for the calendar functionality.
@@ -26,6 +27,7 @@ export default class extends Controller {
     "toggleButton",
     "calendarLoading",
     "toggleTemplate",
+    "updateNotification",
   ];
 
   static outlets = ["dialog", "flatpickr"];
@@ -43,11 +45,13 @@ export default class extends Controller {
     this.debouncedRefreshCallback = this.debounce(this.refreshCallback, 300);
     this.eventFrameLoadCallback = null;
     this.dateFrameLoadCallback = null;
+    this.frameErrorHandler = this.handleFrameError.bind(this);
   }
 
   connect() {
     this.removeRefreshListeners();
     this.addRefreshListeners();
+    this.subscribeToUpdateNotifier();
   }
 
   disconnect() {
@@ -56,21 +60,22 @@ export default class extends Controller {
         this.dialogOuterDisconnected(outlet, outlet.element);
       });
     }
+    if (this.calendarUpdateNotificationChannel) {
+      this.calendarUpdateNotificationChannel.unsubscribe();
+      this.subscription = null;
+    }
     this.removeRefreshListeners();
   }
 
   removeRefreshListeners() {
-    document.removeEventListener(
-      "turbo:morph-element",
-      this.eventRefreshCallback,
-    );
-
     document.removeEventListener(
       "turbo:before-stream-render",
       this.eventRefreshCallback,
     );
 
     document.removeEventListener("turbo:submit-end", this.eventRefreshCallback);
+
+    document.removeEventListener("turbo:frame-error", this.frameErrorHandler);
 
     if (this.eventFrameLoadCallback) {
       document.removeEventListener(
@@ -87,19 +92,66 @@ export default class extends Controller {
   }
 
   addRefreshListeners() {
-    document.addEventListener("turbo:morph-element", this.eventRefreshCallback);
-
     document.addEventListener(
       "turbo:before-stream-render",
       this.eventRefreshCallback,
     );
+    document.addEventListener("turbo:frame-error", this.frameErrorHandler);
+
     document.addEventListener("turbo:submit-end", this.eventRefreshCallback);
   }
 
   eventRefresh(event) {
-    if (event.target.hasAttribute("data-refresh-calendar")) {
+    if (event.target.hasAttribute("data-refresh-calendar-on-submit")) {
       this.debouncedRefreshCallback();
     }
+  }
+
+  manualRefresh() {
+    this.debouncedRefreshCallback();
+  }
+
+  subscribeToUpdateNotifier() {
+    // Ensure we don't create duplicate subscriptions
+    if (this.calendarUpdateNotificationChannel) {
+      this.calendarUpdateNotificationChannel.unsubscribe();
+    }
+    const streamId = this.extractStreamId();
+    if (!streamId) {
+      return;
+    }
+
+    this.calendarUpdateNotificationChannel = consumer.subscriptions.create(
+      {
+        channel: "CalendarUpdateNotificationChannel",
+        stream_id: streamId,
+      },
+      {
+        connected: () => {},
+
+        disconnected: () => {},
+
+        received: (data) => this.toggleUpdateNotifier(data.dates),
+      },
+    );
+  }
+
+  extractStreamId() {
+    const streamId = this.data.get("streamId");
+    if (streamId) {
+      return streamId;
+    }
+    return null;
+  }
+
+  showNotifier() {
+    if (!this.updateNotificationTarget) return;
+    this.updateNotificationTarget.classList.remove("hidden");
+  }
+
+  hideNotifier() {
+    if (!this.updateNotificationTarget) return;
+    this.updateNotificationTarget.classList.add("hidden");
   }
 
   debounce(func, wait) {
@@ -154,11 +206,10 @@ export default class extends Controller {
       height: "auto",
       displayEventEnd: true,
       eventDisplay: "block",
+      datesSet: this.hideNotifier.bind(this),
     });
 
-    this.refreshCallback = this.calendarService.refresh.bind(
-      this.calendarService,
-    );
+    this.refreshCallback = this.refresh.bind(this);
   }
 
   replaceEventSource(oldSrcId, newSrc) {
@@ -175,6 +226,7 @@ export default class extends Controller {
     const el = info.el;
     el.dataset.turboFrame = this.frameIdValue;
     el.dataset.href = info.event.extendedProps.route;
+    el.dataset.turboStream = "true";
     el.classList.add("cursor-pointer");
   }
 
@@ -213,9 +265,41 @@ export default class extends Controller {
     this.displayLoading();
 
     const frameId = info.el.dataset.turboFrame;
-    Turbo.visit(info.el.dataset.href, { frame: frameId });
+
+    Turbo.visit(info.el.dataset.href, {
+      frame: frameId,
+    });
 
     this.addEventFrameLoadCallback(frameId);
+  }
+
+  /**
+   * Handles HTML response errors.
+   * @param {Event} event - The event object.
+   */
+  handleError(event) {
+    const frame = event.target;
+    const errorContainer = frame.querySelector("[data-status-code]");
+    if (errorContainer) {
+      this.hideLoading();
+      this.manualRefresh();
+    }
+  }
+
+  /**
+   * Handles errors when loading a turbo frame.
+   * @param {Event} event - The event object.
+   */
+  handleFrameError(event) {
+    if (
+      event.target.id !== this.frameIdValue ||
+      !event.detail ||
+      !event.detail.response
+    ) {
+      return;
+    }
+    this.hideLoading();
+    this.manualRefresh();
   }
 
   dateClick(info) {
@@ -305,8 +389,10 @@ export default class extends Controller {
       "gameProposalId",
     ].forEach((param) => {
       let value = this.data.get(param);
-      if (value !== null)
+      if (value !== null) {
+        // Convert camelCase param keys to snake_case
         extraParams[param.replace(/([A-Z])/g, "_$1").toLowerCase()] = value;
+      }
     });
     return extraParams;
   }
@@ -599,6 +685,7 @@ export default class extends Controller {
   onEventFrameLoad(frameId, event) {
     if (event.target.id === frameId) {
       this.hideLoading();
+      this.handleError(event);
       document.removeEventListener(
         "turbo:frame-load",
         this.eventFrameLoadCallback,
@@ -608,7 +695,7 @@ export default class extends Controller {
   }
 
   /**
-   * Handles the cleanup after loading the turbo frame from a data click.
+   * Handles the cleanup after loading the turbo frame from a date click.
    * @param info - The date information. Used to set the date in the modal form.
    * @param event - The event object.
    */
@@ -636,5 +723,26 @@ export default class extends Controller {
     if (element.id === this.frameIdValue) {
       this.modal = null;
     }
+  }
+
+  refresh() {
+    this.calendarService.refresh();
+    this.hideNotifier();
+  }
+
+  // Displays the update notifier if the current month matches any of the provided dates, indicating that the calendar should be updated.
+  // @param {Array} dates - An array of dates to check against the current month. Null or empty array means always update.
+  toggleUpdateNotifier(dates) {
+    // Treat no date as always update
+    if (!dates || dates === []) return;
+
+    dates.some((date) => {
+      if (date == null) return;
+      let affectedDate = new Date(date);
+      if (affectedDate.getMonth() === this.calendarService.currentMonth()) {
+        this.showNotifier();
+        return true;
+      }
+    });
   }
 }

@@ -1,0 +1,10 @@
+<%# locals: (resource_string:, id:) %>
+<%= content_tag :div, id: "#{resource_string}_#{id}" do %>
+  <button type="button" data-action="calendar#manualRefresh" title="Refresh Calendar" class="relative text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+    <%= inline_svg "icons/refresh.svg" %>
+    <span class="sr-only">Refresh Calendar</span>
+    <span data-calendar-target="updateNotification" role="status" aria-hidden="true" title="Updates available" class="hidden absolute top-0 left-8 transform -translate-y-1/2 w-3.5 h-3.5 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full">
+      <span class="sr-only">Calendar updates are available</span>
+    </span>
+  </button>
+<% end %>

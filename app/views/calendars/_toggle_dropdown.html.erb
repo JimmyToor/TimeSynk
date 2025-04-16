@@ -1,0 +1,48 @@
+<button id="dropdownDefault" data-dropdown-toggle="toggle_dropdown"
+        class="inline-flex items-center rounded-lg px-4 text-center text-sm font-medium text-white bg-secondary-400 py-2.5 hover:bg-secondary-300 focus:ring-secondary-100
+             focus:outline-none focus:ring-4 dark:bg-secondary-600 dark:hover:bg-secondary-700 dark:focus:ring-secondary-500"
+        type="button">
+  Toggle Calendars
+  <svg class="ml-2 h-4 w-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+       xmlns="http://www.w3.org/2000/svg">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+  </svg>
+</button>
+<!-- Dropdown menu -->
+<div id="toggle_dropdown" data-calendar-target="toggleDropdown" class="z-10 hidden w-56 rounded-lg bg-tertiary-100 p-3 shadow dark:bg-gray-700">
+  <div id="toggle_dropdown_loading" data-calendar-target="toggleDropdownLoading" class="hidden">
+    <p>Loading...</p>
+  </div>
+
+  <div id="toggle_dropdown_empty" data-calendar-target="toggleDropdownEmpty" class="hidden">
+    <p>No calendars.</p>
+  </div>
+
+  <div id="calendar_toggles_availability" data-calendar-target="availabilityToggles" class="hidden">
+    <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
+      Availabilities
+    </h6>
+    <ul id="calendar_toggles_availability-list" data-calendar-target="availabilityTogglesList" class="text-sm space-y-2" aria-labelledby="dropdownDefault">
+      <!-- Toggle buttons will be dynamically added here -->
+    </ul>
+  </div>
+
+  <div id="calendar_toggles_game" data-calendar-target="gameToggles" class="hidden">
+    <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
+      Game Sessions
+    </h6>
+    <ul id="calendar_toggles_game-list" data-calendar-target="gameTogglesList" class="text-sm space-y-2" aria-labelledby="dropdownDefault">
+      <!-- Toggle buttons will be dynamically added here -->
+    </ul>
+  </div>
+
+  <div id="calendar_toggles_schedule" data-calendar-target="scheduleToggles" class="hidden">
+    <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
+      Schedules
+    </h6>
+    <ul id="calendar_toggles_schedule-list" data-calendar-target="scheduleTogglesList" class="text-sm space-y-2" aria-labelledby="dropdownDefault">
+      <!-- Toggle buttons will be dynamically added here -->
+    </ul>
+  </div>
+
+</div>

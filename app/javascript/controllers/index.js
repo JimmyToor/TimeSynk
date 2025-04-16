@@ -78,3 +78,4 @@ application.register("loading-dialog", LoadingDialogController);
 
 import NotificationController from "@stimulus-components/notification";
 application.register("notification", NotificationController);
+
