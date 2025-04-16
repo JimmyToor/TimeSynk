@@ -16,12 +16,14 @@ class GameProposal < ApplicationRecord
 
   after_create :create_initial_votes, :create_roles
 
-  validates :game, uniqueness: {scope: :group, message: "already has a proposal for this group"}
+  validates :game, uniqueness: {scope: :group, message: "already has a proposal in this group"}
 
-  attr_readonly :group_id
-
-  def get_upcoming_game_sessions
-    game_sessions.where("starts_at > ?", Time.current)
+  def get_upcoming_game_sessions(date_limit: nil)
+    if date_limit.nil?
+      game_sessions.where("date >= ?", Time.current)
+    else
+      game_sessions.where("date >= ? AND date <= ?", Time.current, date_limit)
+    end
   end
 
   def yes_votes
@@ -67,12 +69,31 @@ class GameProposal < ApplicationRecord
 
   def make_calendar_schedules(start_time: nil, end_time: nil)
     game_name = Game.find(game_id).name.to_s
-    game_sessions.map { |session|
-      icecube_schedule = session.make_icecube_schedule
-      if session.in_range(icecube_schedule: icecube_schedule, start_time: start_time, end_time: end_time)
-        session.make_calendar_schedule(name: game_name, icecube_schedule: icecube_schedule)
-      end
+    sessions = sessions_in_range(start_time: start_time, end_time: end_time)
+    sessions.map { |session|
+      session.make_calendar_schedule(name: game_name)
     }.compact
+  end
+
+  # Retrieves game sessions that fall within a specified time range.
+  #
+  # @param start_time [Time, nil] The start of the time range. If nil, only the end_time is considered.
+  # @param end_time [Time, nil] The end of the time range. If nil, only the start_time is considered.
+  # @return [ActiveRecord::Relation] A collection of game sessions that match the specified time range.
+  def sessions_in_range(start_time: nil, end_time: nil)
+    if start_time.present? && end_time.nil?
+      # If only start_time is provided, return sessions that end after or on the given start_time.
+      game_sessions.where("date + duration >= ?", start_time)
+    elsif end_time.present? && start_time.nil?
+      # If only end_time is provided, return sessions that start before or on the given end_time.
+      game_sessions.where("date <= ?", end_time)
+    else
+      # If both start_time and end_time are provided, return sessions that:
+      # - Start or end within the range.
+      # - Span across the entire range.
+      game_sessions.where("(date >= ? AND date <= ?) OR (date + duration >= ? AND date + duration <= ?) OR (date < ? AND date + duration > ?)",
+        start_time, end_time, start_time, end_time, start_time, end_time)
+    end
   end
 
   def game_name
@@ -89,17 +110,17 @@ class GameProposal < ApplicationRecord
         partial: "game_proposals/pending_count",
         locals: {count: user.pending_game_proposal_count}
       )
-      broadcast_replace_later_to(
+      broadcast_action_later_to(
         "pending_game_proposals_user_#{user.id}",
+        action: "frame_reload",
         target: "pending_game_proposals",
-        partial: "game_proposals/pending_game_proposals",
-        locals: {pending_game_proposals: user.pending_game_proposals}
+        render: false
       )
-      broadcast_update_later_to(
+      broadcast_action_later_to(
         "game_proposals_user_#{user.id}",
+        action: "frame_reload",
         target: "game_proposals",
-        partial: "game_proposals/game_proposals_list",
-        locals: {game_proposals: user.game_proposals.to_ary}
+        render: false
       )
     end
   end
@@ -115,20 +136,19 @@ class GameProposal < ApplicationRecord
         partial: "game_proposals/pending_count",
         locals: {count: user.pending_game_proposal_count}
       )
-      Turbo::Streams::ActionBroadcastJob.perform_later(
+      broadcast_action_later_to(
         "pending_game_proposals_user_#{user.id}",
-        action: :replace,
+        action: "frame_reload",
         target: "pending_game_proposals",
-        partial: "game_proposals/pending_game_proposals",
-        locals: {pending_game_proposals: user.pending_game_proposals}
+        render: false
       )
-      Turbo::Streams::ActionBroadcastJob.perform_later(
+      broadcast_action_later_to(
         "game_proposals_user_#{user.id}",
-        action: :replace,
+        action: "frame_reload",
         target: "game_proposals",
-        partial: "game_proposals/game_proposals_list",
-        locals: {game_proposals: user.game_proposals.to_ary}
+        render: false
       )
+      CalendarUpdateNotifierService.call(self)
     end
   end
 

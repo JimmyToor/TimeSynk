@@ -36,7 +36,6 @@ module NotificationsHelper
         message,
         content_tag(:div) do
           content_tag(:ul, class: "mt-1.5 list-disc list-inside") do
-            Rails.logger.debug options[:list_items]
             options[:list_items].map do |item|
               concat content_tag(:li, item)
             end

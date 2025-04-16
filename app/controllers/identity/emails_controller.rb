@@ -27,10 +27,10 @@ class Identity::EmailsController < ApplicationController
 
   def redirect_to_root
     if @user.email_previously_changed?
-      msg = "Your email has been changed"
-      msg += " and a verification email has been sent" unless @user.email.blank?
+      msg = I18n.t("identity.email.update.success")
+      msg += I18n.t("identity.email.verification_sent", email: @user.email) unless @user.email.blank?
       resend_email_verification
-      redirect_to root_path, notice: msg
+      redirect_to root_path, success: {message: msg, options: {highlight: @user.email}}
     else
       redirect_to root_path
     end
@@ -42,7 +42,7 @@ class Identity::EmailsController < ApplicationController
 
   def check_if_email_verified_by_other_user
     if User.where(email: params[:email] || @user&.email, verified: true).exists?
-      redirect_to edit_identity_email_path, alert: "This email is already verified by another user."
+      redirect_to edit_identity_email_path, alert: I18n.t("identity.email.already_verified")
     end
   end
 end

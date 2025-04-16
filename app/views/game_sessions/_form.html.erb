@@ -43,14 +43,14 @@
           <%= form.label :duration, "Duration:", class:"items-center mr-2" %>
           <div class="flex flex-col items-center">
             <%= form.label :duration_days, "Days", class: "block" %>
-            <%= form.number_field :duration_days, required: true,
-                                  value: (game_session.duration&.parts[:days] || 0),
+            <%= form.number_field :duration_days, min:0, max:30,  required: true,
+                                  value: game_session.duration&.parts[:days] || 0,
                                   class: "w-16 h-8 p-1 text-center" %>
           </div>
           <div class="flex flex-col items-center">
             <%= form.label :duration_hours, "Hours", class: "block" %>
-            <%= form.number_field :duration_hours, min:0, required: true,
-                                  value: (game_session.duration&.parts&.[](:hours) || game_session.new_record? ? 1 : 0),
+            <%= form.number_field :duration_hours, min:0, max:23, required: true,
+                                  value: game_session.duration&.parts[:hours] || (game_session.new_record? ? 1 : 0),
                                   class: "w-16 h-8 p-1 text-center" %>
           </div>
           <div class="mx-2 translate-y-2 text-4xl font-bold leading-7">:</div>
@@ -58,7 +58,7 @@
             <%= form.label :duration_minutes, "Minutes", class: "block" %>
             <%= form.select :duration_minutes,
                             options_for_select((0..3).map { |i| [i * 15, i * 15] },
-                            selected: (game_session.duration&.parts[:minutes] || 0)),
+                            selected: game_session.duration&.parts[:minutes] || 0),
                             {},
                             class: "w-16 h-8 p-1 text-center" %>
           </div>

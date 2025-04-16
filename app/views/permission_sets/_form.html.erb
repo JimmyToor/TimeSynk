@@ -26,7 +26,7 @@
           <% disabled = !can_update_resource_permissions_for_user?(policy_class, user, permission_set.resource) %>
           <tr class="border-b bg-white dark:bg-gray-800 dark:border-gray-700 persistent-scrollbar">
             <th scope="row" class="sticky left-0 z-10 pr-3 pl-5 py-4 font-medium text-gray-900
-              dark:text-white bg-white dark:bg-gray-800 w-32 text-wrap" >
+              dark:text-white bg-white dark:bg-gray-800 min-w-32 text-wrap" >
 
               <%= username_with_resource_role_icons(user, permission_set.resource) %>
 

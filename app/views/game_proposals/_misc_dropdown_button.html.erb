@@ -8,26 +8,26 @@
   </button>
 
 
-  <div id="misc-dropdown" data-dropdown-target="menu" class="absolute left-1/2 z-20 hidden w-44 origin-top
-      -translate-x-1/2 transform rounded-lg bg-slate-100 shadow transition divide-y
+  <div id="misc-dropdown" data-dropdown-target="menu" class="absolute left-full z-40 hidden w-48
+      -translate-x-full transform rounded-lg bg-slate-100 shadow transition divide-y
       divide-gray-100 dark:bg-gray-700"
        data-transition-enter-from="opacity-0 scale-95"
        data-transition-enter-to="opacity-100 scale-100"
        data-transition-leave-from="opacity-100 scale-100"
        data-transition-leave-to="opacity-0 scale-95">
-    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 space-y-2" aria-labelledby="misc-dropdown-button">
-      <li class="flex">
-        <%= link_to game_proposal_game_sessions_path(game_proposal), title: "View Game Sessions", class: "flex items-center px-2",
+    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="<%= game_proposal.game_name %>-game-proposal-misc-dropdown-button">
+      <li class="flex hover:border-gray-600 dark:hover:border-gray-500 hover:bg-gray-200 dark:hover:bg-gray-600">
+        <%= link_to game_proposal_game_sessions_path(game_proposal), title: "View Game Sessions", class: "flex items-center px-2 py-1 w-full",
                     data: { action: "dropdown#toggle", turbo_frame: "_top" } do %>
           <%= inline_svg_tag "icons/rectangle_stack.svg" %>
           <span class="ml-2">View Game Sessions</span>
         <% end %>
       </li>
 
-      <li class="flex">
+      <li class="flex hover:border-gray-600 dark:hover:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
         <% if proposal_availability.present? %>
           <%= link_to edit_proposal_availability_path(proposal_availability), title: "Change your game proposal availability",
-                      class: "flex items-center px-2",
+                      class: "flex px-2 items-center w-full py-1",
                       data: { turbo_frame: "_top" } do %>
 
             <%= inline_svg_tag "icons/calendar.svg" %>
@@ -36,7 +36,7 @@
           <% end %>
         <% else %>
           <%= link_to new_game_proposal_proposal_availability_path(game_proposal), title: "Set your game proposal availability",
-                      class: "flex items-center px-2",
+                      class: "flex px-2 items-center w-full py-1",
                       data: { turbo_frame: "_top" } do %>
 
             <%= inline_svg_tag "icons/calendar.svg" %>
@@ -49,15 +49,18 @@
       <% if policy(game_proposal).destroy? %>
 
         <% button_content = capture do %>
-          <div class="text-notice-600 dark:text-notice-400">
-            <button type="button" data-action="dialog#open" class="flex items-center px-2">
-              <%= inline_svg_tag "icons/trash.svg" %>
-              <span class="ml-2 text-left">Delete Game Proposal</span>
-            </button>
-          </div>
+          <button type="button" data-action="dialog#open" class="flex w-full items-center px-2 py-1 text-notice-400">
+            <%= inline_svg_tag "icons/trash.svg" %>
+            <span class="ml-2 text-left">Delete Game Proposal</span>
+          </button>
         <% end %>
 
-        <%= render "shared/delete_dialog", button_content: button_content, container_tag: :li, form_partial: "game_proposals/delete_form", resource: game_proposal %>
+        <%= render "shared/delete_dialog",
+                   button_content: button_content,
+                   container_tag: :li,
+                   container_classes:"flex hover:bg-notice-100 w-full hover:border-gray-600 dark:hover:border-gray-300 ",
+                   form_partial: "game_proposals/delete_form",
+                   resource: game_proposal %>
       <% end %>
     </ul>
   </div>

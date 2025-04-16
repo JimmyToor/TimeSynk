@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 // Connects to data-controller="frame-reload"
+// Reloads the target frame when the specified events in eventsValue are detected
 export default class extends Controller {
   static targets = ["frame"];
   static values = { src: String, events: String };

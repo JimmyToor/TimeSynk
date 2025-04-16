@@ -1,4 +1,5 @@
 class RegistrationsController < ApplicationController
+  add_flash_types :success, :info
   skip_before_action :authenticate
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
@@ -13,7 +14,7 @@ class RegistrationsController < ApplicationController
 
     if @user.save
       session_record = @user.sessions.create!
-      cookies.signed.permanent[:session_token] = { value: session_record.id, httponly: true }
+      cookies.signed.permanent[:session_token] = {value: session_record.id, httponly: true}
 
       if @user.email.present?
         send_email_verification
@@ -30,11 +31,10 @@ class RegistrationsController < ApplicationController
   def show
   end
 
-
   private
 
   def user_params
-    params.permit(:email, :username, :password, :password_confirmation, :avatar, :timezone).tap do |user_params|
+    params.require(:user).permit(:email, :username, :password, :password_confirmation, :avatar, :timezone).tap do |user_params|
       user_params[:email] = nil if user_params[:email].blank?
     end
   end

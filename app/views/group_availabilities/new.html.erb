@@ -1,8 +1,8 @@
 <div data-controller="availability-selection" data-availability-selection-calendar-outlet="#calendar_holder" >
-
-  <%= render "form", group: @group, group_availability: @group_availability, availabilities: @availabilities %>
-
-  <div>
+  <div class="mb-4">
+    <%= render "form", group: @group, group_availability: @group_availability, availabilities: @availabilities %>
+  </div>
+  <div class="my-4">
     <%= render "shared/buttons/cancel_button", text: "Cancel", path: @group, extra_classes: "mt-2 me-2 mb-2" %>
   </div>
 

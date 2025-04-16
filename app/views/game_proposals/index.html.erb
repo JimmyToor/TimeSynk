@@ -3,7 +3,7 @@
 
 <h1>Game proposals</h1>
 <% if groups.present? %>
-  <%= turbo_frame_tag "game_proposals", data: {controller:"reload-on-restore", reload_on_restore_src_value:game_proposals_path} do %>
+  <%= turbo_frame_tag "game_proposals", data: {controller:"reload-on-restore", reload_on_restore_src_value:game_proposals_path, src:game_proposals_path} do %>
     <%= render partial: "game_proposals/game_proposals_list", locals:{ game_proposals: game_proposals }%>
   <% end %>
 <% end %>

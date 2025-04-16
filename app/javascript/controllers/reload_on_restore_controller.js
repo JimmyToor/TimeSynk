@@ -12,7 +12,9 @@ export default class extends Controller {
       "data-turbo-visit-direction",
     );
     if (direction === "back" || direction === "forward") {
-      this.element.src = this.srcValue;
+      this.element.src = this.srcValue
+        ? this.srcValue
+        : this.element.dataset.src;
     }
   }
 }

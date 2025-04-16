@@ -1,16 +1,18 @@
-<%# locals: (user: nil, upcoming_game_sessions: [], limit: 5, game_session:nil)  %>
-<%= turbo_frame_tag "upcoming_game_sessions",
+<%# locals: (upcoming_game_sessions: [], limit: 5, game_session:nil)  %>
+<%= turbo_frame_tag "upcoming_game_sessions_user_#{Current.user.id}",
                     class: (upcoming_game_sessions.present?) ?
                              nil : "hidden",
-                    data: {controller:"reload-on-restore"} do %>
+                    data: {controller:"reload-on-restore", src:"/"} do %>
   <section>
     <% if upcoming_game_sessions.present? %>
       <h2>Upcoming Sessions</h2>
       <div class="flex rounded-lg dark:border-gray-600 h-128">
         <ul>
           <% upcoming_game_sessions.first(limit).each do |game_session| %>
-            <li><%= render game_session, user: Current.user || user || nil, include_link: true %></li>
-        <% end %>
+            <li class="flex"><%= render game_session, include_link: true %>
+            <%= card_link_to_game_proposal(game_session.game_proposal) %>
+            </li>
+          <% end %>
         </ul>
       </div>
     <% end %>

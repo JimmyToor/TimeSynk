@@ -158,12 +158,16 @@ class User < ApplicationRecord
     errors.add(:user_availability, message: "could not be created: #{e.message}")
   end
 
-  def upcoming_game_sessions
-    game_sessions.where("date >= ?", Time.current)
+  def upcoming_game_sessions(date_limit: 1.month.from_now)
+    if date_limit.nil?
+      game_sessions.where("date >= ?", Time.current)
+    else
+      game_sessions.where("date >= ? AND date <= ?", Time.current, date_limit)
+    end
   end
 
   def pending_game_proposals
-    game_proposals.reject { |proposal| proposal.user_voted_yes_or_no?(self) }.sort_by(&:created_at)
+    game_proposals.reject { |proposal| proposal.user_voted?(self) }.sort_by(&:created_at)
   end
 
   def pending_game_proposal_count

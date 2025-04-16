@@ -1,12 +1,12 @@
-<%# locals: (game_proposals:) %>
+<%# locals: (game_proposals:, game_proposal: nil) %>
 <div class="flex rounded-lg dark:border-gray-600">
   <ul>
-    <% game_proposals.each do |game_proposal| %>
+    <% game_proposals.each do |proposal| %>
       <li class="flex">
-        <%= render game_proposal,
-                   proposal_availability: game_proposal.get_user_proposal_availability(Current.user),
-                   proposal_permission_set: game_proposal.make_permission_set(game_proposal.group.users.to_a)%>
-        <%= card_link_to_game_proposal(game_proposal) %>
+        <%= render proposal,
+                   proposal_availability: proposal.get_user_proposal_availability(Current.user),
+                   proposal_permission_set: proposal.make_permission_set(proposal.group.users.to_a) %>
+        <%= card_link_to_game_proposal(proposal) %>
       </li>
     <% end %>
   </ul>

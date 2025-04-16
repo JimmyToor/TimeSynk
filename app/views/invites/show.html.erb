@@ -2,6 +2,7 @@
 
 <%= render @invite %>
 
-<%= link_to "See all invites for #{@invite.group.name} |", group_invites_path(@invite.group)%>
-<%= link_to "Go to group: #{@invite.group.name}", @invite.group  %>
-
+<div class="space-x-2 mt-4">
+  <%= render "shared/buttons/secondary_link", text: "See all invites for #{@invite.group.name}",path: group_invites_path(@invite.group)%>
+  <%= render "shared/buttons/secondary_link", text: "Go to group: #{@invite.group.name}", path: @invite.group  %>
+</div>

@@ -1,5 +1,5 @@
 <section class="bg-tertiary-50dark:bg-gray-900">
-  <%= form_with(url: sign_up_path) do |form| %>
+  <%= form_with(model: @user, url: sign_up_path) do |form| %>
     <% if @user.errors.any? %>
       <div style="color: red">
         <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
@@ -28,26 +28,30 @@
             </div>
             <div>
               <%= form.label :email, "Email (Optional)", style: "display: block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
-              <%= form.email_field :email, value: @user.email, autofocus: true, autocomplete: "email", class: "bg-tertiary-50border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", placeholder: "name@company.com"%>
+              <%= form.email_field :email, value: @user.email, autofocus: true, autocomplete: "email", class: "bg-tertiary-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", placeholder: "name@company.com"%>
             </div>
             <div>
               <%= form.label :username, style: "display: block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
-              <%= form.text_field :username, minlength: 3, value: @user.username, autofocus: true, autocomplete: "username", class: "bg-tertiary-50border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: "" %>
+              <%= form.text_field :username, minlength: 3, value: @user.username, autofocus: true, autocomplete: "username", class: "bg-tertiary-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: "" %>
             </div>
             <div>
               <%= form.label :password, style: "display: block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
-              <%= form.password_field :password, minlength: 8, autocomplete: "current-password", placeholder: "••••••••", class: "bg-tertiary-50border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: "" %>
+              <%= form.password_field :password, minlength: 8, autocomplete: "current-password", placeholder: "••••••••", class: "bg-tertiary-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: "" %>
             </div>
             <div>
               <%= form.label :password_confirmation, "Confirm Password", style: "display: block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
-              <%= form.password_field :password_confirmation, minlength: 8, autocomplete: "confirm-password", placeholder: "••••••••", class: "bg-tertiary-50border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: "" %>
+              <%= form.password_field :password_confirmation, minlength: 8, autocomplete: "confirm-password", placeholder: "••••••••", class: "bg-tertiary-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: "" %>
             </div>
 
             <div data-controller="timezone">
               <%= form.hidden_field :timezone, data: { timezone_target: "timezoneSelection" }, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
             </div>
 
-            <button type="submit" class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Create an account</button>
+            <%= form.submit "Create an account",
+                            data: {turbo: "false"},
+                            class: "w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none
+                             focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center
+                             dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 cursor-pointer" %>
             <p class="text-sm font text-gray-500 dark:text-gray-400">
               Already have an account?
               <%= link_to "Sign in", sign_in_path, class: "font-medium text-primary-600 hover:underline dark:text-primary-500" %>

@@ -1,9 +1,11 @@
 <%# locals: (game_proposal:, proposal_availability: nil, proposal_permission_set:nil, alert:nil) %>
 <%= alert if alert.present? %>
-<%= render game_proposal,
-           game_proposal: game_proposal,
-           proposal_permission_set: proposal_permission_set,
-           proposal_availability: proposal_availability %>
+<%= render partial: game_proposal,
+           locals: {
+             game_proposal: game_proposal,
+             proposal_availability: proposal_availability,
+             proposal_permission_set: proposal_permission_set
+           } %>
 
 <div data-controller="calendar" data-calendar-interactive="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-game-proposal-id=<%= game_proposal.id %> data-turbo-permanent>
   <%= render partial: 'calendars/calendar' %>

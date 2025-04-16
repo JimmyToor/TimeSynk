@@ -27,18 +27,13 @@
         <% end %>
 
       </div>
-      <div id="game_session_details" class="space-y-1.5">
+      <div id="game_session_<%= game_session.id %>_details" class="space-y-1.5">
         <div class="mb-3 flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
 
           <%= inline_svg_tag "icons/calendar.svg", class:"h-6" %>
-
-          <% if Current.user.present? %>
-            <%= game_session.date.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %>
-          <% elsif local_assigns[:user] %>
-            <%= game_session.date.in_time_zone(local_assigns[:user].timezone).strftime("%B %d, %I:%M %p") %>
-          <% else %>
-            <%= game_session.date.strftime("%B %d, %I:%M %p") %>
-          <% end %>
+          <div id="game_session_<%= game_session.id %>_details_date">
+            <%= render "game_sessions/game_session_date", game_session: game_session %>
+          </div>
 
           <% if policy(game_session).edit? %>
             <%= render "shared/buttons/icon_link", svg_name: "edit", path: edit_game_session_path(game_session),
@@ -51,12 +46,13 @@
         <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
 
           <%= inline_svg_tag "icons/clock.svg", class:"h-6" %>
-
-          <%= format_interval(game_session.duration) %>
+          <div id="game_session_<%= game_session.id %>_details_duration">
+            <%= format_interval(game_session.duration) %>
+          </div>
         </div>
         
       </div>
     </div>
   </div>
-  <%= turbo_stream_from "game_session_#{game_session.id}" unless turbo_frame_request_id == "modal_frame" %>
+  <%= turbo_stream_from "game_session_#{game_session.id}" %>
 <% end %>

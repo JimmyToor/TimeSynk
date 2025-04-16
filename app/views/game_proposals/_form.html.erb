@@ -22,9 +22,12 @@
   <%= render "games/game_list_header" %>
 
   <div class="relative">
-    <%= turbo_frame_tag "game_list", src:games_path(format: :turbo_stream), data: {turbo_prefetch:false, game_selection_target: "frame", search_target:"frame", controller:"reload-on-restore", reload_on_restore_src_value:games_path(format: :turbo_stream)}, class:"mx-3" do %>
-      <div class="items-center justify-center h-[calc(100vh-5rem)] w-full border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-        <div class="h-full animate-pulse rounded-full bg-blue-200 px-3 py-1 text-center text-xs font-medium leading-none text-primary-50 dark:bg-blue-900 dark:text-blue-200">Loading Games...</div>
+    <%= turbo_frame_tag "game_list", src:games_path(format: :turbo_stream),
+                        data: {turbo_prefetch:false, game_selection_target: "frame", search_target:"frame",
+                               controller:"reload-on-restore", reload_on_restore_src_value:games_path(format: :turbo_stream)},
+                        class:"mx-3" do %>
+      <div class="items-center justify-center h-[50vh] w-full border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+        <div class="animate-pulse rounded-full bg-blue-200 px-3 py-1 text-center text-xs font-medium leading-none text-primary-50 dark:bg-blue-900 dark:text-blue-200">Loading Games...</div>
       </div>
     <% end %>
     <div class="absolute inset-0 z-40 hidden items-center justify-center rounded-lg bg-black bg-opacity-50 backdrop-blur-lg spinner [[busy]~&]:flex">

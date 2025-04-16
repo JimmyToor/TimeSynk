@@ -30,7 +30,11 @@ class GameProposalsController < ApplicationController
 
   # GET /game_proposals/new
   def new
-    @game_proposal = authorize(GameProposal.new(group_id: params[:group_id]))
+    @game_proposal = if params[:game_id]
+      authorize(GameProposal.new(group_id: params[:group_id]))
+    else
+      authorize(GameProposal.build(group: @groups.first))
+    end
     respond_to do |format|
       format.html { render :new, locals: {game_proposal: @game_proposal, groups: @groups} }
     end
@@ -46,7 +50,6 @@ class GameProposalsController < ApplicationController
 
     respond_to do |format|
       if @game_proposal.save
-        Current.user.add_role(:owner, @game_proposal)
         format.html { redirect_to game_proposal_url(@game_proposal), notice: "Game proposal was successfully created." }
         format.json { render :show, status: :created, location: @game_proposal }
       else

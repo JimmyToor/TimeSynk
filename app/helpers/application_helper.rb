@@ -9,23 +9,32 @@ module ApplicationHelper
     end
   end
 
-  def modal_wrapper(modal_title, &)
+  # Renders a block in a modal if the request is a turbo frame request with the ID "modal_frame"
+  #
+  # @param modal_title [String] The title of the modal
+  # @yieldparam blk The block of content to be rendered inside the modal
+  # @return [String] The rendered modal or the captured block content
+  #
+  # @example
+  #   <%= modal_wrapper("My Modal Title") do %>
+  #     <p>This is the content of the modal.</p>
+  #   <% end %>
+  def modal_wrapper(modal_title, &blk)
     if turbo_frame_request_id == "modal_frame"
-      render partial: "shared/modal", locals: {modal_title: modal_title, modal_body: capture(&)}
+      render partial: "shared/modal", locals: {modal_title: modal_title, modal_body: capture(&blk)}
     else
-      capture(&)
+      capture(&blk)
     end
   end
 
-  # check if we're in a modal wrapper
-  def modal_wrapper?
-    turbo_frame_request_id == "modal_frame"
-  end
-
+  # Generates a data attribute for opening or closing a dialog based on the value
+  # @param value [Boolean] The value to check
   def open_unless_value(value)
     value ? "data-dialog-open-value=false" : "data-dialog-open-value=true"
   end
 
+  # Formats a time interval into a human-readable string
+  # @param interval [ActiveSupport::Duration] The time interval to format
   def format_interval(interval)
     parts = []
     parts << "#{interval.parts[:days]}d" if interval.parts[:days]

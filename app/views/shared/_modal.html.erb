@@ -1,5 +1,12 @@
 <%= turbo_frame_tag "modal_frame" do %>
-  <dialog id="modal_generic" tabindex="-1" class="fixed inset-0 h-fit max-h-fit items-center justify-center overflow-visible rounded-lg bg-white p-1 shadow dialog md:inset-0 dark:bg-gray-700" data-controller="dialog" data-dialog-title-value="Edit" data-dialog-target="dialog" data-dialog-open-value=true data-action="click->dialog#backdropClose">
+  <dialog id="modal_generic" tabindex="-1"
+          class="fixed inset-0 h-fit items-center justify-center overflow-visible rounded-lg
+            bg-white p-1 shadow dialog md:inset-0 dark:bg-gray-700 max-h-screen"
+          data-controller="dialog"
+          data-dialog-title-value="Edit"
+          data-dialog-target="dialog"
+          data-dialog-open-value=true
+          data-action="click->dialog#backdropClose">
     <!-- Modal header -->
     <div class="flex items-center justify-between rounded-t border-b p-2 dark:border-gray-600">
       <h3 id="modal_title" data-dialog-target="modalTitle" class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -14,7 +21,7 @@
     </div>
 
     <!-- Modal body -->
-    <div id="modal_body" data-dialog-target="modalBody" class="p-4 text-gray-700 dark:text-gray-300">
+    <div id="modal_body" data-dialog-target="modalBody" class="p-4 text-gray-700 dark:text-gray-300 max-h-full persistent-scrollbar">
       <%= local_assigns[:modal_body] || "" %>
     </div>
     <div id="loading_spinner" data-dialog-target="loadingIndicator" class="hidden p-4 text-center">

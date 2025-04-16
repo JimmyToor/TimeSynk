@@ -10,6 +10,12 @@ export default class extends Controller {
   endDatePicker = null;
   done = false;
 
+  disconnect() {
+    super.disconnect();
+    this.destroyStartDatePicker();
+    this.destroyEndDatePicker();
+  }
+
   destroyEndDatePicker() {
     if (this.endDatePicker) {
       this.endDatePicker.destroy();

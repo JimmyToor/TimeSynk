@@ -1,9 +1,9 @@
 class SessionsController < ApplicationController
-  skip_before_action :authenticate, only: %i[ new create ]
+  skip_before_action :authenticate, only: %i[new create]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
 
-  before_action :redirect_if_authenticated, only: %i[ new ]
+  before_action :redirect_if_authenticated, only: %i[new]
 
   before_action :set_session, only: :destroy
 
