@@ -140,6 +140,10 @@ class GameProposal < ApplicationRecord
     )
   end
 
+  def owner
+    @owner ||= User.with_role(:owner, self).first
+  end
+
   private
 
   def create_initial_votes

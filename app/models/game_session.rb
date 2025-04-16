@@ -16,23 +16,25 @@ class GameSession < ApplicationRecord
 
   attr_readonly :game_proposal_id
 
-  after_create :create_roles
-  after_save_commit :broadcast_game_session_create
+  after_create :create_roles, :create_initial_attendance
+  after_create_commit :broadcast_game_session_create
   after_update_commit :broadcast_game_session_update
   after_destroy_commit :broadcast_game_session_destroy
+  after_commit :notify_game_session_update
 
   DEFAULT_PARAMS = {
     date: Time.current.utc.ceil_to(15.minutes),
     duration: 1.hour
   }
 
-  
   def user_get_attendance(user)
     game_session_attendances.find_by(user_id: user.id)
   end
 
   def create_roles
     Role.create_roles_for_game_session(self)
+    return unless owner.nil?
+    Current.user.add_role(:owner, @game_session)
   end
 
   def get_or_build_attendance_for_user(user)
@@ -53,8 +55,8 @@ class GameSession < ApplicationRecord
     game_proposal.game.name
   end
 
-  def owner_name
-    user.username
+  def owner
+    @owner ||= User.with_role(:owner, self).first
   end
 
   def in_range(icecube_schedule: nil, start_time: nil, end_time: nil)
@@ -92,19 +94,20 @@ class GameSession < ApplicationRecord
 
     user_ids_to_broadcast.each do |user_id|
       user = User.find(user_id)
-      broadcast_replace_later_to(
+      broadcast_action_later_to(
         "upcoming_game_sessions_user_#{user_id}",
-        target: "upcoming_game_sessions",
-        partial: "game_sessions/upcoming_game_sessions",
-        locals: {upcoming_game_sessions: user.upcoming_game_sessions.sort_by(&:date), user: user}
-      )
-      broadcast_replace_later_to(
-        "game_session_#{id}",
-        targets: self,
-        partial: "game_sessions/game_session",
-        locals: {game_session: self, user: user}
+        user_id: user.id,
+        action: "frame_reload",
+        target: "upcoming_game_sessions_user_#{user.id}",
+        render: false
       )
     end
+
+    broadcast_render_later_to(
+      "game_session_#{id}",
+      template: "game_sessions/update_details",
+      locals: {game_session: self}
+    )
   end
 
   def broadcast_game_session_create
@@ -112,11 +115,11 @@ class GameSession < ApplicationRecord
 
     user_ids_to_broadcast.each do |user_id|
       user = User.find(user_id)
-      broadcast_replace_later_to(
+      broadcast_action_later_to(
         "upcoming_game_sessions_user_#{user_id}",
-        target: "upcoming_game_sessions",
-        partial: "game_sessions/upcoming_game_sessions",
-        locals: {upcoming_game_sessions: user.upcoming_game_sessions.sort_by(&:date), user: user}
+        action: "frame_reload",
+        target: "upcoming_game_sessions_user_#{user.id}",
+        render: false
       )
     end
   end
@@ -124,15 +127,27 @@ class GameSession < ApplicationRecord
   def broadcast_game_session_destroy
     user_ids_to_broadcast = game_proposal.group.users.pluck(:id)
     user_ids_to_broadcast.each do |user_id|
-      user = User.find(user_id)
-      Turbo::Streams::ActionBroadcastJob.perform_later(
+      User.find(user_id)
+
+      Turbo::StreamsChannel.broadcast_action_to(
         "upcoming_game_sessions_user_#{user_id}",
-        action: :replace,
-        target: "upcoming_game_sessions",
-        partial: "game_sessions/upcoming_game_sessions",
-        locals: {upcoming_game_sessions: user.upcoming_game_sessions.sort_by(&:date), user: user}
+        action: "frame_reload",
+        target: "upcoming_game_sessions_user_#{user_id}",
+        render: false
       )
     end
+    broadcast_replace_to(
+      "game_session_#{id}",
+      action: :replace,
+      target: "content_game_session_#{id}",
+      partial: "game_sessions/destroyed"
+    )
+  end
+
+  def notify_game_session_update
+    # Don't need to notify for individual game session updates if the entire game proposal is being destroyed
+    return if game_proposal.marked_for_destruction?
+    CalendarUpdateNotifierService.call(self)
   end
 
   def validate_duration_length

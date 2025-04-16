@@ -2,8 +2,11 @@ class PermissionSetsController < ApplicationController
   before_action :set_resource, :set_users, only: %i[edit update]
   before_action :set_role_changes_and_affected_users, only: %i[update], if: -> { params.key?("update_roles") }
   skip_after_action :verify_policy_scoped
-  skip_after_action :verify_authorized
   rescue_from ActionController::ParameterMissing, with: :handle_parameter_missing
+  rescue_from ArgumentError, with: :handle_parameter_missing
+
+  def index
+  end
 
   def edit
     @permission_set = @resource.make_permission_set(@users)

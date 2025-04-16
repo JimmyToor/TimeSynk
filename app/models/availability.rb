@@ -6,7 +6,7 @@ class Availability < ApplicationRecord
   belongs_to :user
   has_many :availability_schedules, dependent: :destroy, inverse_of: :availability
   has_many :schedules, through: :availability_schedules
-  has_one :user_availability, inverse_of: :availability, dependent: :destroy
+  has_one :user_availability, inverse_of: :availability
   has_many :group_availabilities, inverse_of: :availability, dependent: :destroy
   has_many :proposal_availabilities, inverse_of: :availability, dependent: :destroy
 
@@ -16,8 +16,7 @@ class Availability < ApplicationRecord
   validates :description, length: {maximum: 300}
   validates :user, presence: true
 
-  before_destroy :ensure_multiple_availabilities
-  after_destroy :transfer_user_availability
+  before_destroy :transfer_user_availability
 
   DEFAULT_PARAMS = {
     name: "New Availability",
@@ -30,18 +29,18 @@ class Availability < ApplicationRecord
 
   private
 
-  def transfer_user_availability
-    fallback_availability = user.availabilities.where.not(id: id).first
-    user_availability = User.find(user.id).user_availability
-    if user_availability&.availability == self
-      user_availability.update!(availability: fallback_availability)
+  def ensure_multiple_availabilities
+    if user.availabilities.count <= 1
+      errors.add(:base, I18n.t("availability.destroy.only_availability"))
+      throw(:abort)
     end
   end
 
-  def ensure_multiple_availabilities
-    if user.availabilities.count <= 1
-      errors.add(:base, "Cannot delete your only availability")
-      throw(:abort)
-    end
+  def transfer_user_availability
+    return unless user_availability.present?
+    ensure_multiple_availabilities
+    fallback_availability = user.availabilities.where.not(id: id).first
+    user_availability = user.user_availability
+    user_availability.update!(availability: fallback_availability)
   end
 end
