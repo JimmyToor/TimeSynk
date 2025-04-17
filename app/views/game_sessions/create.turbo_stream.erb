@@ -1,4 +1,4 @@
-<%= turbo_stream.update(dom_id(@game_session_attendance, :form),
+<%= turbo_stream.update("modal_frame",
                          partial: "game_sessions/show_content",
                          locals: {game_session: @game_session,
                                   game_session_attendance: @game_session_attendance}) %>
@@ -11,3 +11,5 @@
                        I18n.t("game_session.create.success", name: @game_session.game_name),
                        "game_session_#{@game_session.id}",
                        highlight: " #{@game_session.game_name} ") %>
+
+<%= turbo_stream.frame_reload "game_sessions" %>

@@ -18,3 +18,5 @@
                        I18n.t("game_session.update.success", name: @game_session.game_name),
                        "game_session_#{@game_session.id}",
                        highlight: " #{@game_session.game_name} ") %>
+
+<%= turbo_stream.frame_reload "game_sessions" %>

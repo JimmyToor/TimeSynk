@@ -236,16 +236,31 @@ export default class CalendarService {
     this.fullCalendarObj.addEventSource(newSrc);
   }
 
+  /**
+   * Returns the current month of the calendar.
+   * @param utc {boolean} - If true, returns the month in UTC.
+   * @returns {number} The current month of the calendar.
+   */
   currentMonth(utc = true) {
     const currentStart = this.fullCalendarObj.view.currentStart;
     return utc ? currentStart.getUTCMonth() : currentStart.getMonth();
   }
 
+  /**
+   * Returns the current year of the calendar.
+   * @param utc {boolean} - If true, returns the year in UTC.
+   * @returns {number} The current year of the calendar.
+   */
   currentYear(utc = true) {
     const currentStart = this.fullCalendarObj.view.currentStart;
     return utc ? currentStart.getUTCFullYear() : currentStart.getFullYear();
   }
 
+  /**
+   * Returns the current date of the calendar.
+   * @param utc {boolean} - If true, returns the date in UTC.
+   * @returns {Date} The current date of the calendar.
+   */
   currentDate(utc = true) {
     const currentStart = this.fullCalendarObj.view.currentStart;
     return utc

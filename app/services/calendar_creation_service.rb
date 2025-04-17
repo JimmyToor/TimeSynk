@@ -29,9 +29,10 @@ class CalendarCreationService < ApplicationService
   # @option params [Integer] :availability_id ID of a specific availability to generate a calendar for.
   # @option params [Integer] :game_session_id ID of a game session to generate a calendar for.
   # @option params [Integer] :game_proposal_id ID of a game proposal to generate a calendar for (includes proposal availabilities).
+  # @option params [Boolean] :exclude_availabilities Whether to exclude availabilities from the generated calendars.
   # @param user [User] The user requesting the calendar data (used for authorization).
   def initialize(params, user)
-    @params = params.permit(:start, :end, :user_id, :group_id, :schedule_id, :availability_id, :game_session_id, :game_proposal_id, schedule_ids: [])
+    @params = params.permit(:start, :end, :user_id, :group_id, :schedule_id, :availability_id, :game_session_id, :game_proposal_id, :exclude_availabilities, schedule_ids: [])
     @user = user
   end
 
@@ -71,7 +72,7 @@ class CalendarCreationService < ApplicationService
     if @params[:game_proposal_id].present?
       game_proposal = GameProposal.find(@params[:game_proposal_id])
       @calendars << make_game_proposal_calendar(game_proposal)
-      @calendars.concat(make_availability_calendars(game_proposal.group.users, game_proposal: game_proposal))
+      @calendars.concat(make_availability_calendars(game_proposal.group.users, game_proposal: game_proposal)) unless @params[:exclude_availabilities]
     end
     @calendars
   end
@@ -99,7 +100,7 @@ class CalendarCreationService < ApplicationService
   def make_group_calendars(group)
     Pundit.authorize(@user, group, :show?)
     calendars = []
-    calendars.concat(make_availability_calendars(group.users, group: group))
+    calendars.concat(make_availability_calendars(group.users, group: group)) unless @params[:exclude_availabilities]
     group.game_proposals.each do |game_proposal|
       calendars << make_game_proposal_calendar(game_proposal)
     end

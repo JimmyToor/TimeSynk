@@ -4,6 +4,8 @@
 
 <%= turbo_stream.update("modal_frame") %>
 
+<%= turbo_stream.remove("modal_confirmation_game_session_#{@game_session.id}") %>
+
 <%= turbo_stream.replace("content_game_session_#{@game_session.id}",
                          html: raw("<p>Game Session Deleted</p>")) %>
 
@@ -11,3 +13,5 @@
                        I18n.t("game_session.destroy.success", name: @game_session.game_name),
                        "game_session_#{@game_session.id}",
                        highlight: " #{@game_session.game_name} ") %>
+
+<%= turbo_stream.frame_reload "game_sessions" %>

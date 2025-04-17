@@ -359,7 +359,6 @@ export default class extends Controller {
       this.addToggleButton(
         calendar.type,
         this.createToggleForCalendar(calendar),
-        false,
       );
       this.updateToggleStates(
         calendar,
@@ -387,6 +386,7 @@ export default class extends Controller {
       "availabilityId",
       "gameSessionId",
       "gameProposalId",
+      "excludeAvailabilities",
     ].forEach((param) => {
       let value = this.data.get(param);
       if (value !== null) {
@@ -734,7 +734,7 @@ export default class extends Controller {
   // @param {Array} dates - An array of dates to check against the current month. Null or empty array means always update.
   toggleUpdateNotifier(dates) {
     // Treat no date as always update
-    if (!dates || dates === []) return;
+    if (!dates || dates.empty) return;
 
     dates.some((date) => {
       if (date == null) return;

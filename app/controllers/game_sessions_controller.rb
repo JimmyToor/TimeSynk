@@ -7,15 +7,17 @@ class GameSessionsController < ApplicationController
   before_action :set_game_session_attendance, only: %i[show update]
   before_action :check_param_alignment, only: %i[create]
   skip_after_action :verify_policy_scoped
+  skip_after_action :verify_authorized, only: %i[new]
 
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
   # GET /game_sessions or /game_sessions.json
   def index
-    @game_sessions = if params[:game_proposal_id]
-      GameSession.for_game_proposal(params[:game_proposal_id])
+    if params[:game_proposal_id]
+      @game_sessions = GameSession.for_game_proposal(params[:game_proposal_id])
+      set_game_proposal
     else
-      Current.user.upcoming_game_sessions
+      @game_sessions = Current.user.upcoming_game_sessions
     end
     @pagy, @game_sessions, = pagy(@game_sessions, limit: 8)
     authorize @game_sessions
@@ -34,7 +36,6 @@ class GameSessionsController < ApplicationController
   # GET /game_sessions/new
   def new
     @game_session = @game_proposal.game_sessions.build(GameSession::DEFAULT_PARAMS)
-    authorize @game_session
     game_proposals = params[:single_game_proposal] ? nil : @game_proposal.group.game_proposals
 
     respond_to do |format|
@@ -149,7 +150,7 @@ class GameSessionsController < ApplicationController
     params.require(:game_session).permit(:game_proposal_id, :date, :duration, :duration_days, :duration_hours, :duration_minutes)
   end
 
-  def user_not_authorized
+  def user_not_authorized_to_create
     flash[:alert] = "You are not authorized to perform this action."
     redirect_to(request.referrer || root_path)
   end
