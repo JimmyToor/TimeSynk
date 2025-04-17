@@ -8,6 +8,7 @@ class GroupsController < ApplicationController
     @groups = policy_scope(Group)
     @group_memberships = Current.user.group_memberships
     authorize @groups
+    @pagy, @groups = pagy(@groups)
   end
 
   # GET /groups/1 or /groups/1.json

@@ -11,7 +11,8 @@ class HomeController < ApplicationController
         render :index,
           locals: {game_proposals: @game_proposals,
                    game_proposal: @game_proposals.first,
-                   groups: @groups, game_sessions: @game_sessions,
+                   groups: @groups,
+                   game_sessions: @game_sessions,
                    pending_game_proposals: Current.user.pending_game_proposals},
           status: :ok
       }
