@@ -60,6 +60,7 @@ export default class extends Dialog {
   }
 
   removeTurboListeners() {
+    if (!this.dialogTarget) return;
     this.dialogTarget.removeEventListener(
       "turbo:before-fetch-request",
       this.beforeFetchRequestHandler,
