@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   resources :proposal_availabilities, only: [:index]
   resource :user_availability, only: [:show, :edit, :update]
   resolve("UserAvailability") { [:user_availability] }
-  resources :game_proposals, only: [:index]
+  resources :game_proposals, only: [:index, :new]
   resources :game_sessions, only: [:index]
   resources :group_memberships, only: [:create]
   get "calendars", to: "calendars#show"
