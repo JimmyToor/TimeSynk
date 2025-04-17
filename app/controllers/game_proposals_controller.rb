@@ -46,7 +46,7 @@ class GameProposalsController < ApplicationController
 
   # POST /game_proposals or /game_proposals.json
   def create
-    @game_proposal = authorize(GameProposal.new(**game_proposal_params, group_id: params[:group_id]))
+    @game_proposal = authorize(GameProposal.new(**game_proposal_params))
 
     respond_to do |format|
       if @game_proposal.save
