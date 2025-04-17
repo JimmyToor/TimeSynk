@@ -1,0 +1,6 @@
+<%# locals: (game_proposal:) %>
+<div class="flex">
+  <% game_proposal.proposal_votes.order(yes_vote: :desc).each do |vote| %>
+    <%= render vote, group_membership: vote.user.membership_for_group(game_proposal.group) %>
+  <% end %>
+</div>

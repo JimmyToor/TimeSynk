@@ -36,9 +36,10 @@
 
             <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
               <%= inline_svg "icons/votes.svg", class: "h-6 w-6" %>
-              <%= render 'game_proposals/vote_count', game_proposal: game_proposal %>
-              <%= render 'game_proposals/vote_link', proposal_vote: Current.user.get_vote_for_proposal(game_proposal) %>
+              <%= render "game_proposals/vote_count", game_proposal: game_proposal %>
+              <%= render "game_proposals/vote_link", proposal_vote: Current.user.get_vote_for_proposal(game_proposal) %>
             </div>
+            <%= render "proposal_votes/member_votes", game_proposal: game_proposal %>
           </div>
         </div>
       </div>
