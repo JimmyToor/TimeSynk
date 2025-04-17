@@ -15,7 +15,7 @@ class GameProposalPolicy < ApplicationPolicy
   end
 
   def show?
-    user.groups.include?(record.group)
+    user.has_cached_role?(:site_admin) || user.groups.include?(record.group)
   end
 
   def edit?
