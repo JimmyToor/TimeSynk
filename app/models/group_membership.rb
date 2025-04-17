@@ -12,6 +12,7 @@ class GroupMembership < ApplicationRecord
   validates_associated :group, :user
   validates :group, uniqueness: {scope: :user, message: I18n.t("group_membership.already_member")}
 
+  before_destroy :transfer_resources_to_group_owner, prepend: true
   after_destroy :delete_votes
 
   def member_roles
