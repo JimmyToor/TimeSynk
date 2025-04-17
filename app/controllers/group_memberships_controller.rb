@@ -95,11 +95,10 @@ class GroupMembershipsController < ApplicationController
   def set_invite
     return if Current.user.has_cached_role?(:site_admin)
     @invite = Invite.with_token(params[:invite_token] || group_membership_params[:invite_token])
-    flash[:invite_token] = params[:invite_token] || group_membership_params[:invite_token]
 
     unless @invite.present? && @invite.expires_at > Time.current
       flash[:alert] = @invite.nil? ? "This invite is invalid" : "This invite has expired"
-      redirect_to join_group_with_token_path and return
+      redirect_to join_group_with_token_path(invite_token: params[:invite_token] || group_membership_params[:invite_token]) and return
     end
     params[:group_membership][:assigned_role_ids] = @invite.assigned_role_ids if params[:group_membership][:assigned_role_ids].blank?
   end
