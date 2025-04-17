@@ -14,7 +14,6 @@ export default class extends Controller {
     "submitButton",
   ];
 
-  // Event listener for when a collection is selected
   changeProposal(event) {
     const proposalId = event.target.value;
 
@@ -91,12 +90,14 @@ export default class extends Controller {
   }
 
   setBusy() {
+    if (!this.hasSubmitButtonTarget) return;
     this.submitButtonTarget.setAttribute("disabled", true);
     this.formTarget.setAttribute("busy", true);
     this.collectionSelectTarget.setAttribute("disabled", true);
   }
 
   stopBusy() {
+    if (!this.hasSubmitButtonTarget) return;
     this.submitButtonTarget.removeAttribute("disabled");
     this.formTarget.removeAttribute("busy");
     this.collectionSelectTarget.removeAttribute("disabled");
