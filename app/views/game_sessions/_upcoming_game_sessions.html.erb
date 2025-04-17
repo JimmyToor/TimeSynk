@@ -1,9 +1,7 @@
 <%# locals: (upcoming_game_sessions: [], limit: 5, game_session:nil)  %>
 <%= turbo_frame_tag "upcoming_game_sessions_user_#{Current.user.id}",
-                    class: (upcoming_game_sessions.present?) ?
-                             nil : "hidden",
+                    class: "empty:hidden",
                     data: {controller:"reload-on-restore", src:"/"} do %>
-  <section>
     <% if upcoming_game_sessions.present? %>
       <h2>Upcoming Sessions</h2>
       <div class="flex rounded-lg dark:border-gray-600 h-128">
@@ -16,5 +14,4 @@
         </ul>
       </div>
     <% end %>
-  </section>
 <% end %>

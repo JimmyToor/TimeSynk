@@ -1,5 +1,8 @@
-<%= turbo_frame_tag "pending_game_proposals", data: {controller:"reload-on-restore", src: root_path} do %>
-  <% if local_assigns[:pending_game_proposals]&.any? %>
+<%# locals: (pending_game_proposals: nil)  %>
+<%= turbo_frame_tag "pending_game_proposals",
+                    class: "empty:hidden",
+                    data: {controller:"reload-on-restore", src: root_path} do %>
+  <% if pending_game_proposals.present? %>
     <h2>Pending Proposals</h2>
     <div class="flex rounded-lg dark:border-gray-600">
       <ul>
