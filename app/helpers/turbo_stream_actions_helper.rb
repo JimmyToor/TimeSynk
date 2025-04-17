@@ -2,7 +2,7 @@
 
 module TurboStreamActionsHelper
   def frame_reload(frame_id)
-    turbo_stream_action_tag :reload, target: frame_id
+    turbo_stream_action_tag :frame_reload, target: frame_id
   end
 
   # Creates a turbo stream that adds a toast notification to the container
