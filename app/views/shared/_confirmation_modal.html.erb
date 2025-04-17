@@ -1,5 +1,5 @@
-<%# locals: (title:"Confirm", title_content: nil, body_content: nil) %>
-<dialog id="modal_confirmation" tabindex="-1"
+<%# locals: (title:"Confirm", title_content: nil, body_content: nil, id: nil) %>
+<dialog id="modal_confirmation<%= "_#{id}" if id.present? %>" tabindex="-1"
         class="dialog overflow-visible relative justify-center items-center md:inset-0 h-fit p-1 rounded-lg shadow
         bg-white dark:bg-gray-700 max-h-fit"
         data-dialog-target="dialog">

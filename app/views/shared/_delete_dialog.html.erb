@@ -1,5 +1,5 @@
 <%# locals: (resource:, button_content: nil, form_partial:, container_tag: :div, container_classes:"") %>
-<%= content_tag container_tag, data: {controller: "dialog", action: "click->dialog#backdropClose"},
+<%= content_tag container_tag, data: {controller: "dialog", action: "click->dialog#backdropClose", dialog_ignore_submit_success_value: "true"},
                 class: container_classes do %>
   <% if button_content.present? %>
     <%= button_content %>
@@ -16,6 +16,7 @@
 
   <% body_content = capture do %>
     <%= render form_partial, resource.class.name.underscore.to_sym => resource %>
+    <%= render "shared/notification", id: "#{resource.class.name.underscore}_#{resource.id}" %>
     <% if resource.errors.any? %>
       <div style="color: red">
         <h2><%= pluralize(resource.errors.count, "error") %> prohibited this <%= resource.class.name.titleize %> from being saved:</h2>
@@ -31,5 +32,6 @@
 
   <%= render "shared/confirmation_modal",
              title_content: title_content,
-             body_content: body_content %>
+             body_content: body_content,
+             id: "#{resource.class.name.underscore}_#{resource.id}"%>
 <% end %>
