@@ -91,7 +91,6 @@ export default class extends Dialog {
   handleBeforeFetchRequest(event) {
     if (event.detail.fetchOptions?.headers["X-Sec-Purpose"] === "prefetch")
       return;
-    if (event.currentTarget !== this.dialogTarget) return;
     this.showLoadingSpinner();
   }
 
@@ -117,7 +116,7 @@ export default class extends Dialog {
   }
 
   handleSubmitStart(event) {
-    this.loadSubmit();
+    this.startLoading();
   }
 
   fireSubmitSuccessEvent(event) {
@@ -136,10 +135,6 @@ export default class extends Dialog {
         detail: { success: false, submitEndEvent: event },
       }),
     );
-  }
-
-  loadSubmit() {
-    this.startLoading();
   }
 
   setTitle(title) {
