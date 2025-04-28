@@ -22,18 +22,18 @@ export default class extends Controller {
   removeListeners() {
     if (!this.hasEventsValue) return;
     this.eventsValue.split(" ").forEach((event) => {
-      document.removeEventListener(event, this.frameReloadListener);
+      this.element.removeEventListener(event, this.frameReloadListener);
     });
   }
 
   addListeners() {
     if (!this.hasEventsValue) return;
     this.eventsValue.split(" ").forEach((event) => {
-      document.addEventListener(event, this.frameReloadListener);
+      this.element.addEventListener(event, this.frameReloadListener);
     });
   }
 
-  frameReload() {
+  frameReload(event) {
     if (!this.hasFrameTarget) return;
     this.frameTarget.src = this.srcValue || this.frameTarget.src;
   }
