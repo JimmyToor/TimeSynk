@@ -170,7 +170,7 @@ class GameSessionsController < ApplicationController
       }
       format.turbo_stream {
         render turbo_stream: [
-          turbo_stream.replace("content_game_session_#{params[:id]}", partial: "game_sessions/destroyed"),
+          turbo_stream.replace(targets: ".content_game_session_#{params[:id]}", partial: "game_sessions/destroyed"),
           turbo_stream_toast(:error, I18n.t("game_session.not_found"), "game_session_invalid")
         ]
       }

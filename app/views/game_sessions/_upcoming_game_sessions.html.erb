@@ -6,7 +6,7 @@
       <h2>Upcoming Sessions</h2>
       <div class="flex rounded-lg dark:border-gray-600 h-128">
         <ul>
-          <% upcoming_game_sessions.first(limit).each do |game_session| %>
+          <% upcoming_game_sessions.sort_by(&:date).first(limit).each do |game_session| %>
             <li class="flex"><%= render game_session, include_link: true %>
             <%= card_link_to_game_proposal(game_session.game_proposal) %>
             </li>

@@ -5,7 +5,7 @@ class HomeController < ApplicationController
   def index
     @game_proposals = policy_scope(GameProposal)
     @groups = policy_scope(Group)
-    @game_sessions = Current.user.upcoming_game_sessions.sort_by(&:date)
+    @game_sessions = Current.user.upcoming_game_sessions
     respond_to do |format|
       format.html {
         render :index,

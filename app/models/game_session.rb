@@ -34,7 +34,7 @@ class GameSession < ApplicationRecord
   def create_roles
     Role.create_roles_for_game_session(self)
     return unless owner.nil?
-    Current.user.add_role(:owner, @game_session)
+    Current.user.add_role(:owner, self)
   end
 
   def get_or_build_attendance_for_user(user)
@@ -137,8 +137,6 @@ class GameSession < ApplicationRecord
     user_ids_to_broadcast = game_proposal.group.users.pluck(:id)
 
     user_ids_to_broadcast.each do |user_id|
-      User.find(user_id)
-
       Turbo::StreamsChannel.broadcast_action_to(
         "upcoming_game_sessions_user_#{user_id}",
         action: "frame_reload",
@@ -146,15 +144,11 @@ class GameSession < ApplicationRecord
         render: false
       )
     end
-    broadcast_remove_to(
-      "game_session_#{id}",
-      target: "game_session_#{id}_attendance_details"
-    )
 
     broadcast_replace_to(
-      "game_session_#{id}",
+      self,
       action: :replace,
-      target: "game_session_#{id}_details",
+      targets: ".content_game_session_#{id}",
       partial: "game_sessions/destroyed"
     )
   end

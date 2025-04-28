@@ -27,7 +27,7 @@
         <% end %>
 
       </div>
-      <div id="game_session_<%= game_session.id %>_details" class="space-y-1.5">
+      <div class="game_session_<%= game_session.id %>_details space-y-1.5">
         <div class="mb-3 flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
 
           <%= inline_svg_tag "icons/calendar.svg", class:"h-6" %>
@@ -50,7 +50,7 @@
           </div>
         </div>
       </div>
-      <div id="game_session_<%= game_session.id %>_attendance_details" class="flex flex-col gap-2">
+      <div class="game_session_<%= game_session.id %>_attendance_details flex flex-col gap-2">
         <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
           <%= render "game_session_attendances/full_game_session_attendance_button", game_session: game_session %>
         </div>
