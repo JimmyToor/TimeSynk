@@ -1,4 +1,3 @@
-<!-- TODO: Add a loading indicator and disable the inputs while loading-->
 <%= form_with(model: proposal_vote.new_record? ?  [game_proposal, proposal_vote] :  proposal_vote, id:dom_id(proposal_vote, :form)) do |form| %>
   <%= render "shared/notification", id: proposal_vote.new_record? ? "proposal_vote_new" : "proposal_vote_#{proposal_vote.id}" %>
 

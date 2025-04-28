@@ -28,7 +28,7 @@ Rails.application.routes.draw do
           resources :game_session_attendances
         end
         resources :proposal_availabilities
-        resources :proposal_votes, except: [:index]
+        resources :proposal_votes
       end
     end
   end

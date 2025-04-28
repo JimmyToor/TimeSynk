@@ -1,0 +1,3 @@
+<%= turbo_stream.update("proposal_vote_table_#{@game_proposal.id}",
+                        partial:"proposal_votes/table/proposal_vote_table",
+                        locals: {proposal_votes: @proposal_votes}) %>

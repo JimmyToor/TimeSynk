@@ -1,14 +1,26 @@
-<p style="color: green"><%= notice %></p>
+<%# locals: (proposal_votes:, game_proposal:) %>
 
-<h1>Proposal votes</h1>
+<h1>Proposal Votes</h1>
+<%= render "shared/notification", id: "proposal_votes" %>
+<% frame_path = game_proposal_proposal_votes_path(game_proposal_id: game_proposal.id, format: :turbo_stream) %>
 
-<div id="proposal_votes">
-  <% @proposal_votes.each do |proposal_vote| %>
-    <%= render proposal_vote %>
-    <p>
-      <%= link_to "Show this proposal vote", proposal_vote %>
-    </p>
-    <%= link_to "New proposal vote", new_game_proposal_proposal_vote_path(proposal_vote.game_proposal) %>
-<% end %>
-</div>
+<section class="bg-tertiary-50 dark:bg-gray-900">
+  <div class="mx-auto max-w-screen-xl">
+    <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden w-fit"
+         data-controller="search frame-reload"
+         data-search-src-value="<%= frame_path %>"
+         data-frame-reload-events-value="modal-form-submit-success">
+      <%= render partial:"proposal_votes/table/proposal_vote_table_header", locals: {group: group} %>
+      <%= turbo_frame_tag "proposal_vote_table_#{group.id}",
+                          src: frame_path,
+                          data: { controller:"reload_on_restore",
+                                  reload_on_restore_src_value:frame_path,
+                                  turbo_prefetch:"false",
+                                  search_target: "frame",
+                                  frame_reload_target:"frame"} do %>
+        <%= render "proposal_votes/table/proposal_vote_table", proposal_votes: proposal_votes %>
+      <% end %>
+    </div>
+  </div>
+</section>
 

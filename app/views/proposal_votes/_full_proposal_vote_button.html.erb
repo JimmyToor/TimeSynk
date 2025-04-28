@@ -1,0 +1,7 @@
+<%# locals: (game_proposal:, container_tag: :div, container_classes:"") %>
+
+<%= content_tag container_tag, data: {controller: "dialog", action: "click->dialog#backdropClose", dialog_ignore_submit_success_value: "true"},
+                class: container_classes do %>
+  <%= render "shared/buttons/icon_button", action:"dialog#open", title: "View All Votes", svg_name: "votes", icon_classes: "h-6 w-6" %>
+  <%= render "proposal_votes/full_proposal_vote_modal", game_proposal: game_proposal %>
+<% end %>

@@ -152,11 +152,19 @@ class GameProposal < ApplicationRecord
     end
   end
 
-  def broadcast_vote_count
+  def broadcast_game_proposal_vote_count
     broadcast_replace_later_to(
-      "game_proposal_#{id}",
+      self,
       targets: "#vote_count_game_proposal_#{id}",
       partial: "game_proposals/vote_count"
+    )
+  end
+
+  def broadcast_game_proposal_votes
+    broadcast_replace_later_to(
+      self,
+      targets: "#game_proposal_#{id}_votes",
+      partial: "proposal_votes/proposal_vote_list"
     )
   end
 

@@ -35,15 +35,16 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
-              <%= inline_svg "icons/votes.svg", class: "h-6 w-6" %>
+              <%= render "proposal_votes/full_proposal_vote_button", game_proposal: game_proposal %>
               <%= render "game_proposals/vote_count", game_proposal: game_proposal %>
-              <%= render "game_proposals/vote_link", proposal_vote: Current.user.get_vote_for_proposal(game_proposal) %>
+              <% vote = Current.user.get_vote_for_proposal(game_proposal) %>
+              <%= render "game_proposals/vote_link", proposal_vote: vote if vote.present? %>
             </div>
-            <%= render "proposal_votes/member_votes", game_proposal: game_proposal %>
+            <%= render "proposal_votes/proposal_vote_list", game_proposal: game_proposal %>
           </div>
         </div>
       </div>
     </div>
   <% end %>
 <% end %>
-<%= turbo_stream_from("game_proposal_#{game_proposal.id}") %>
+<%= turbo_stream_from game_proposal %>

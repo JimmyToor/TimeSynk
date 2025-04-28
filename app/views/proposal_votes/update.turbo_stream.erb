@@ -2,6 +2,9 @@
                             partial: "game_proposals/vote_count",
                             locals: { game_proposal: @proposal_vote.game_proposal }) %>
 
+<%= turbo_stream.replace_all("#game_proposal_#{@proposal_vote.game_proposal.id}_votes",
+                             partial: "proposal_votes/proposal_vote_list",
+                             locals: { game_proposal: @proposal_vote.game_proposal }) %>
 
 <%= turbo_stream.update("pending_game_proposals_count",
                         partial: "game_proposals/pending_count",

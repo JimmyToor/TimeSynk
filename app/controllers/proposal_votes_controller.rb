@@ -1,11 +1,21 @@
 class ProposalVotesController < ApplicationController
   add_flash_types :error, :success
   before_action :set_proposal_vote, only: %i[show edit update destroy]
-  before_action :set_game_proposal, only: %i[new create]
+  before_action :set_game_proposal, only: %i[index new create]
   before_action :set_group_membership, only: %i[show create]
   before_action :check_param_alignment, only: %i[create]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
+
+  def index
+    @proposal_votes = authorize(params[:query].present? ? @game_proposal.proposal_votes.search(params[:query]) : @game_proposal.proposal_votes)
+    @pagy, @proposal_votes = pagy(@proposal_votes.sorted_scope, limit: 10)
+    respond_to do |format|
+      format.html { render :index, locals: {proposal_votes: @proposal_votes, game_proposal: @game_proposal} }
+      format.turbo_stream
+      format.json { render json: @group_memberships }
+    end
+  end
 
   # GET /proposal_votes/1 or /proposal_votes/1.json
   def show

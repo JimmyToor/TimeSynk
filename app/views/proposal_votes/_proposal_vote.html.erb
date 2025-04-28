@@ -8,37 +8,40 @@
                 proposal_vote.yes_vote ? 'checkmark.svg' : 'xmark.svg'
               end
     %>
-    <%= link_to group_membership, id: "proposal_vote_#{proposal_vote.id}_group_membership_#{group_membership.id}" , class: "flex", data: { turbo_frame:"modal_frame" } do %>
+    <%= link_to group_membership_path(id: group_membership.id, game_proposal_id: proposal_vote.game_proposal.id),
+                id: "proposal_vote_#{proposal_vote.id}_group_membership_#{group_membership.id}",
+                class: "flex",
+                data: { turbo_frame:"modal_frame" } do %>
       <%= user_avatar(proposal_vote.user, size_x: 24, size_y: 24, svg_icon: icon) %>
     <% end %>
   </div>
 
   <div data-popover id="popover-proposal-vote-<%= proposal_vote.id %>" role="tooltip"
        class="absolute z-50 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300
-       bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400
-       dark:bg-gray-800 dark:border-gray-600">
-    <div class="p-3 overflow-x-scroll">
-      <p>
-        <strong>User:</strong>
+       bg-gray-200 shadow-lg border-2 rounded-lg border-gray-400 dark:bg-gray-800 dark:border-gray-600">
+    <div class="pb-3 overflow-x-scroll">
+      <div class="bg-gray-100 dark:bg-gray-700 border-b-2 rounded-t-lg border-gray-400 dark:border-gray-600 text-center">
+        <span class="font-bold text-primary-600">
         <%= proposal_vote.user.username %>
-      </p>
+        </span>
+      </div>
 
-      <p>
-        <strong>Vote:</strong>
-        <%= format_vote(proposal_vote.yes_vote) %>
-      </p>
+      <div class="pt-2 px-3">
+        <span class="font-bold text-primary-600">Vote:</span>
+        <span class="text-black dark:text-white"><%= format_vote(proposal_vote.yes_vote) %></span>
+      </div>
 
       <% unless proposal_vote.comment.blank? %>
-        <p>
-          <strong>Comment:</strong>
-          <%= proposal_vote.comment %>
-        </p>
+        <div class="pt-2 px-3">
+          <span class="font-bold text-primary-600">Comment:</span>
+          <span class="text-black dark:text-white"><%= proposal_vote.comment %></span>
+        </div>
       <% end %>
 
-      <div>
-        <%= turbo_frame_tag "user_roles_#{proposal_vote.user.id}", src: user_path(proposal_vote.user, group_id: proposal_vote.game_proposal.group.id, game_proposal_id: proposal_vote.game_proposal.id) %>
+      <div class="px-3">
+        <%= render "users/roles", user: proposal_vote.user, game_proposal: proposal_vote.game_proposal %>
       </div>
     </div>
-    <div data-popper-arrow></div>
+    <div class="after:border-gray-400 after:dark:border-gray-600" data-popper-arrow></div>
   </div>
 </div>

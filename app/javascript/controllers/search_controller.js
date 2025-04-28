@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 
 // Connects to data-controller="search"
 export default class extends Controller {
-  static targets = ["query", "frame"];
+  static targets = ["query", "frame", "form"];
   static values = { src: String };
 
   initialize() {
@@ -44,7 +44,7 @@ export default class extends Controller {
   resetSearch(event) {
     event.preventDefault();
     if (this.hasQueryTarget) this.queryTarget.value = "";
-    if (this.hasFrameTarget) this.frameTarget.src = this.srcValue;
+    this.formTarget.requestSubmit();
   }
 
   setBusy() {

@@ -1,0 +1,13 @@
+<%# locals: (proposal_vote:) %>
+<tr class="text-center hover:bg-gray-100 dark:hover:bg-gray-700 h-fit">
+  <th scope="row" class="sticky left-0 z-10 pl-3 py-4 pr-3 min-w-32 font-medium text-gray-900 dark:text-white
+    w-40">
+    <div class="flex items-center space-x-2">
+      <%= user_avatar(proposal_vote.user, size_x: 24) %>
+      <span class="ml-1"><%= proposal_vote.user.username %></span>
+    </div>
+  </th>
+  <td class="px-4 py-4">
+    <%= format_vote(proposal_vote.yes_vote) %>
+  </td>
+</tr>
