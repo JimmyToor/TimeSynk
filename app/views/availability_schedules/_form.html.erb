@@ -1,6 +1,4 @@
 <%# locals: (availability:, schedules:, pagy:) %>
-<p style="color: green"><%= notice %></p>
-
 <%= turbo_frame_tag "availability_schedule_table" do %>
   <% if schedules.any? %>
     <section class="bg-tertiary-50dark:bg-gray-900">

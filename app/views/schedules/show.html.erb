@@ -1,5 +1,4 @@
 <%# locals: (schedule:) %>
-<p style="color: green"><%= notice %></p>
 <%= content_tag(:div, id:dom_id(schedule, :show)) do %>
 
   <%= render partial: "schedules/show_content", locals: {schedule: schedule} %>
