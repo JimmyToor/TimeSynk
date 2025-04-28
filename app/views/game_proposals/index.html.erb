@@ -1,14 +1,14 @@
-<%# locals: (game_proposals:, groups: nil, group: nil) %>
+<%# locals: (game_proposals:) %>
 <%= render "shared/notification", id: "game_proposals" %>
 
 <h1>Game proposals</h1>
-<% if groups.present? %>
-  <%= turbo_frame_tag "game_proposals", data: {controller:"reload-on-restore", reload_on_restore_src_value:game_proposals_path, src:game_proposals_path} do %>
-    <%= render partial: "game_proposals/game_proposals_list", locals:{ game_proposals: game_proposals }%>
-  <% end %>
-<% end %>
-<%= render "shared/buttons/primary_link", path: new_game_proposal_path, text: "New Game Proposal" %>
-<%= turbo_stream_from "game_proposals_user_#{Current.user.id}" %>
+<div id="game_proposals">
+  <%= render partial: "game_proposals/game_proposal_list", locals:{game_proposals: game_proposals }%>
+</div>
+
+<div class="my-4">
+  <%= render "shared/buttons/primary_link", path: new_game_proposal_path, text: "New Game Proposal" %>
+</div>
 
 <div data-controller="calendar" data-calendar-interactive="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr"  data-calendar-user-id=<%= Current.user.id %> data-turbo-permanent>
   <%= render partial: 'calendars/calendar' %>
