@@ -21,6 +21,8 @@ class CalendarsController < ApplicationController
     locals = {}
     locals[:schedule] = Schedule.new_default(Current.user.id)
 
+    locals[:date] = params[:date].present? ? Date.parse(params[:date]) : Date.today
+
     if params[:game_proposal_id].present?
       game_proposal = GameProposal.find(params[:game_proposal_id])
       locals[:game_proposal] = game_proposal

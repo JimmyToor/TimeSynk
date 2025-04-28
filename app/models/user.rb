@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  rolify
+  rolify strict: true
   has_secure_password
 
   generates_token_for :email_verification, expires_in: 2.days do
@@ -28,7 +28,10 @@ class User < ApplicationRecord
   has_many :proposal_availability_schedules, through: :proposal_availabilities, source: :schedules, dependent: :destroy
   has_one_attached :avatar
 
-  validates :avatar, processable_image: true, content_type: {with: [:png, :jpg, :gif], spoofing_protection: true}, size: {less_than: 1.megabyte}, if: -> { avatar.attached? }
+  validates :avatar,
+    processable_image: true,
+    content_type: {with: [:png, :jpg, :gif], spoofing_protection: true},
+    size: {less_than: 1.megabyte}, if: -> { avatar.attached? }
 
   validates :email, uniqueness: {case_sensitive: false, allow_blank: true, if: :verified?},
     format: {with: URI::MailTo::EMAIL_REGEXP}, allow_blank: true

@@ -244,13 +244,17 @@ export default class extends Controller {
   }
 
   setModalFormDate(info) {
+    if (!info.date) return false;
+
     this.flatpickrOutlets.forEach((outlet) => {
       if (outlet.element.closest(`#${this.containerIdValue}`)) {
         if (outlet.hasStartDateTarget) {
           outlet.startDatePicker.setDate(info.date);
+          return true;
         }
       }
     });
+    return false;
   }
 
   eventClick(info) {
@@ -313,6 +317,8 @@ export default class extends Controller {
     });
 
     this.displayLoading();
+
+    params.append("date", info.dateStr);
 
     Turbo.visit(`/calendars/new?${params.toString()}`, {
       frame: this.frameIdValue,
@@ -700,15 +706,30 @@ export default class extends Controller {
    * @param event - The event object.
    */
   onDateFrameLoad(info, event) {
-    if (event.target.id === this.frameIdValue) {
-      this.setModalFormDate(info);
+    if (
+      event.target.id === this.frameIdValue ||
+      this.isInFrame(event.target.id)
+    ) {
+      // Don't remove the listener until the date is set
+      if (this.setModalFormDate(info)) {
+        document.removeEventListener(
+          "turbo:frame-load",
+          this.dateFrameLoadCallback,
+        );
+        this.dateFrameLoadCallback = null;
+      }
       this.hideLoading();
-      document.removeEventListener(
-        "turbo:frame-load",
-        this.dateFrameLoadCallback,
-      );
-      this.dateFrameLoadCallback = null;
     }
+  }
+
+  isInFrame(targetId) {
+    return !!(
+      this.frameIdValue &&
+      targetId &&
+      document
+        .querySelector(`#${this.frameIdValue}`)
+        .querySelector(`#${targetId}`)
+    );
   }
 
   dialogOutletConnected(dialog, element) {

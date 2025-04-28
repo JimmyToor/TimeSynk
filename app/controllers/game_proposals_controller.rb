@@ -1,16 +1,15 @@
 class GameProposalsController < ApplicationController
   before_action :set_game_proposal, :set_game, only: %i[show edit update destroy]
-  before_action :set_groups, :set_game_proposals, only: %i[index edit new]
+  before_action :set_groups, only: %i[edit new]
+  before_action :set_game_proposals, only: %i[index]
   skip_after_action :verify_policy_scoped
 
   # GET /game_proposals or /game_proposals.json
   def index
-    @game_proposals = @game_proposals.order(created_at: :desc)
-    authorize @game_proposals
-    usable_groups = Current.user.groups_user_can_create_proposal_for
+    @game_proposals = authorize(@game_proposals.order(created_at: :desc))
+    @pagy, @game_proposals = pagy(@game_proposals)
     respond_to do |format|
-      format.html { render :index, locals: {game_proposals: @game_proposals, groups: @groups || nil, group: usable_groups.first || nil} }
-      format.json { render :index, status: :ok, location: @game_proposals }
+      format.html { render :index, locals: {game_proposals: @game_proposals} }
     end
   end
 
@@ -50,7 +49,7 @@ class GameProposalsController < ApplicationController
 
     respond_to do |format|
       if @game_proposal.save
-        format.html { redirect_to game_proposal_url(@game_proposal), notice: "Game proposal was successfully created." }
+        format.html { redirect_to game_proposal_url(@game_proposal) }
         format.json { render :show, status: :created, location: @game_proposal }
       else
         @groups = Current.user.groups_user_can_create_proposal_for
@@ -67,7 +66,6 @@ class GameProposalsController < ApplicationController
     respond_to do |format|
       if @game_proposal.update(game_proposal_params)
         format.html { redirect_to game_proposal_url(@game_proposal), notice: "Game proposal was successfully updated." }
-        format.json { render :show, status: :ok, location: @game_proposal }
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @game_proposal.errors, status: :unprocessable_entity }

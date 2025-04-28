@@ -12,6 +12,7 @@ export default class extends Controller {
     "collectionSelect",
     "formFrame",
     "submitButton",
+    "dateInput",
   ];
 
   changeProposal(event) {
@@ -73,20 +74,24 @@ export default class extends Controller {
   }
 
   updateForm(url, proposalId) {
-    if (this.hasFormTarget) {
-      this.formTarget.action = url.pathname.replace(
-        /game_proposals\/\d+/,
-        `game_proposals/${proposalId}`,
-      );
+    if (!this.hasFormTarget) return;
+
+    this.formTarget.action = url.pathname.replace(
+      /game_proposals\/\d+/,
+      `game_proposals/${proposalId}`,
+    );
+
+    // Update the form proposal ID
+    url = url.pathname.replace(
+      /game_proposals\/\d+\/game_sessions/,
+      `game_proposals/${proposalId}/game_sessions/new`,
+    );
+
+    if (this.hasDateInputTarget) {
+      url.searchParams.set("game_session[date]", this.dateInputTarget.value);
     }
 
-    // Switch to the form for the selected proposal
-    if (this.hasFormFrameTarget) {
-      this.formFrameTarget.src = url.pathname.replace(
-        /game_proposals\/\d+\/game_sessions/,
-        `game_proposals/${proposalId}/game_sessions/new`,
-      );
-    }
+    this.formFrameTarget.src = url;
   }
 
   setBusy() {

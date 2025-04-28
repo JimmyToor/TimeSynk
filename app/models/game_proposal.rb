@@ -2,6 +2,11 @@ class GameProposal < ApplicationRecord
   include Permissionable
   resourcify
 
+  include PgSearch::Model
+  pg_search_scope :search,
+    associated_against: {user: [:username]},
+    using: {tsearch: {prefix: true}}
+
   belongs_to :group
   belongs_to :game
   has_many :proposal_votes, dependent: :destroy, inverse_of: :game_proposal
@@ -136,13 +141,13 @@ class GameProposal < ApplicationRecord
         partial: "game_proposals/pending_count",
         locals: {count: user.pending_game_proposal_count}
       )
-      broadcast_action_later_to(
+      Turbo::Streams::ActionBroadcastJob.perform_later(
         "pending_game_proposals_user_#{user.id}",
         action: "frame_reload",
         target: "pending_game_proposals",
         render: false
       )
-      broadcast_action_later_to(
+      Turbo::Streams::ActionBroadcastJob.perform_later(
         "game_proposals_user_#{user.id}",
         action: "frame_reload",
         target: "game_proposals",
@@ -175,14 +180,25 @@ class GameProposal < ApplicationRecord
   private
 
   def create_initial_votes
-    group.users.each do |user|
-      proposal_votes.create(user: user)
+    now = Time.current
+    initial_votes = group.users.map do |user|
+      {
+        user_id: user.id,
+        game_proposal_id: id,
+        created_at: now,
+        updated_at: now
+      }
     end
+
+    ProposalVote.insert_all(initial_votes)
+    update_vote_counts!
+    broadcast_game_proposal_vote_count
+    broadcast_game_proposal_votes
   end
 
   def create_roles
     Role.create_roles_for_game_proposal(self)
     return unless owner.nil?
-    Current.user.add_role(:owner, @game_session)
+    Current.user.add_role(:owner, self)
   end
 end
