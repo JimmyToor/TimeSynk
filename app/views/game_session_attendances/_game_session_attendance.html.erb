@@ -1,17 +1,35 @@
+<%# locals: (game_session_attendance:) %>
 <div id="<%= dom_id game_session_attendance %>">
-  <p>
-    <strong>Game session:</strong>
-    <%= game_session_attendance.game_session_id %>
-  </p>
 
-  <p>
-    <strong>User:</strong>
-    <%= game_session_attendance.user_id %>
-  </p>
+    <div class="flex" data-popover-target="popover-game-session-attendance-<%= game_session_attendance.id %>">
+      <% icon = if game_session_attendance.attending.nil?
+                  'undecided.svg'
+                else
+                  game_session_attendance.attending ? 'checkmark.svg' : 'xmark.svg'
+                end
+      %>
+      <%= user_avatar(game_session_attendance.user, size_x: 24, size_y: 24, svg_icon: icon) %>
+    </div>
+  <div data-popover id="popover-game-session-attendance-<%= game_session_attendance.id %>" role="tooltip"
+       class="absolute z-50 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300
+       bg-gray-200 shadow-lg border-2 rounded-lg border-gray-400 dark:bg-gray-800 dark:border-gray-600">
 
-  <p>
-    <strong>Attending:</strong>
-    <%= game_session_attendance.attending %>
-  </p>
+    <div class="pb-3 overflow-x-scroll">
+      <div class="bg-gray-100 dark:bg-gray-700 border-b-2 rounded-t-lg border-gray-400 dark:border-gray-600 text-center">
+        <span class="font-bold text-primary-600">
+          <%= game_session_attendance.user.username %>
+        </span>
+      </div>
 
+      <div class="pt-2 px-3">
+        <span class="font-bold text-primary-600">Attending:</span>
+        <span class="text-black dark:text-white"><%= format_attendance(game_session_attendance.attending) %></span>
+      </div>
+
+      <div class="px-3">
+        <%= render "users/roles", user: game_session_attendance.user, game_session: game_session_attendance.game_session %>
+      </div>
+    </div>
+    <div data-popper-arrow></div>
+  </div>
 </div>

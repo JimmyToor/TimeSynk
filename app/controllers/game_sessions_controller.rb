@@ -35,7 +35,8 @@ class GameSessionsController < ApplicationController
 
   # GET /game_sessions/new
   def new
-    @game_session = @game_proposal.game_sessions.build(GameSession::DEFAULT_PARAMS)
+    new_params = params[:game_session].present? ? GameSession::DEFAULT_PARAMS.merge(game_session_params) : GameSession::DEFAULT_PARAMS
+    @game_session = @game_proposal.game_sessions.build(new_params)
     game_proposals = params[:single_game_proposal] ? nil : @game_proposal.group.game_proposals
 
     respond_to do |format|

@@ -23,7 +23,7 @@
         <% end %>
 
         <% if policy(game_session).destroy? %>
-            <%= render "shared/delete_dialog", resource:game_session, form_partial: "game_sessions/delete_form" %>
+            <%= render "shared/delete_dialog", resource: game_session, form_partial: "game_sessions/delete_form", ignore_success: true %>
         <% end %>
 
       </div>
@@ -44,15 +44,19 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
-
           <%= inline_svg_tag "icons/clock.svg", class:"h-6" %>
           <div id="game_session_<%= game_session.id %>_details_duration">
             <%= format_interval(game_session.duration) %>
           </div>
         </div>
-        
+      </div>
+      <div id="game_session_<%= game_session.id %>_attendance_details" class="flex flex-col gap-2">
+        <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
+          <%= render "game_session_attendances/full_game_session_attendance_button", game_session: game_session %>
+        </div>
+        <%= render "game_session_attendances/game_session_attendance_list", game_session: game_session %>
       </div>
     </div>
   </div>
-  <%= turbo_stream_from "game_session_#{game_session.id}" %>
 <% end %>
+<%= turbo_stream_from game_session %>

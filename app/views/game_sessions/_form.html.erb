@@ -36,7 +36,10 @@
       <% if policy(game_session).create? %>
         <div data-controller="flatpickr" class="flatpickr" data-flatpickr-timezone-value="<%= Current.user.timezone %>">
           <%= form.label :date, class: "block" %>
-          <%= form.datetime_field :date, data: { flatpickr_target: "startDate" }, required: true, value: game_session.date&.in_time_zone(Current.user.timezone) %>
+          <%= form.datetime_field :date,
+                                  data: { flatpickr_target: "startDate", proposal_selection_target: "dateInput" },
+                                  required: true,
+                                  value: game_session.date&.in_time_zone(Current.user.timezone) %>
         </div>
 
         <div class="flex items-center">
@@ -78,7 +81,5 @@
       <% end %>
     <% end %>
   </div>
-
-  <p style="color: green"><%= notice %></p>
 
 <% end %>

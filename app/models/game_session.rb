@@ -20,7 +20,7 @@ class GameSession < ApplicationRecord
   after_create_commit :broadcast_game_session_create
   after_update_commit :broadcast_game_session_update
   after_destroy_commit :broadcast_game_session_destroy
-  after_commit :notify_game_session_update
+  after_commit :notify_game_session_change
 
   DEFAULT_PARAMS = {
     date: Time.current.utc.ceil_to(15.minutes),
@@ -78,7 +78,7 @@ class GameSession < ApplicationRecord
     schedule[:id] = id
     schedule[:name] = name
     schedule[:duration] = duration
-    schedule[:user_id] = User.with_role(:owner, self).take.id
+    schedule[:user_id] = User.with_role(:owner, self)&.first&.id
     schedule[:selectable] = selectable
     schedule
   end
@@ -86,8 +86,6 @@ class GameSession < ApplicationRecord
   def self.new_default(game_proposal_id)
     GameSession.new(**DEFAULT_PARAMS, game_proposal_id: game_proposal_id)
   end
-
-  private
 
   def broadcast_game_session_update
     user_ids_to_broadcast = game_proposal.group.users.pluck(:id)
@@ -110,6 +108,17 @@ class GameSession < ApplicationRecord
     )
   end
 
+  def broadcast_game_session_attendances
+    broadcast_replace_later_to(
+      self,
+      targets: "#game_session_#{id}_attendances",
+      partial: "game_session_attendances/game_session_attendance_list",
+      locals: {game_session: self}
+    )
+  end
+
+  private
+
   def broadcast_game_session_create
     user_ids_to_broadcast = game_proposal.group.users.pluck(:id)
 
@@ -126,6 +135,7 @@ class GameSession < ApplicationRecord
 
   def broadcast_game_session_destroy
     user_ids_to_broadcast = game_proposal.group.users.pluck(:id)
+
     user_ids_to_broadcast.each do |user_id|
       User.find(user_id)
 
@@ -136,16 +146,20 @@ class GameSession < ApplicationRecord
         render: false
       )
     end
+    broadcast_remove_to(
+      "game_session_#{id}",
+      target: "game_session_#{id}_attendance_details"
+    )
+
     broadcast_replace_to(
       "game_session_#{id}",
       action: :replace,
-      target: "content_game_session_#{id}",
+      target: "game_session_#{id}_details",
       partial: "game_sessions/destroyed"
     )
   end
 
-  def notify_game_session_update
-    # Don't need to notify for individual game session updates if the entire game proposal is being destroyed
+  def notify_game_session_change
     return if game_proposal.marked_for_destruction?
     CalendarUpdateNotifierService.call(self)
   end

@@ -1,0 +1,7 @@
+<%# locals: (game_session:) %>
+<div id="game_session_<%= game_session.id %>_attendances" class="flex">
+  <% game_session_attendances = game_session.game_session_attendances.sorted_scope %>
+  <% game_session_attendances.each do |attendance| %>
+    <%= render attendance %>
+  <% end %>
+</div>

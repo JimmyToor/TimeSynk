@@ -1,13 +1,20 @@
 class GameSessionAttendancesController < ApplicationController
   add_flash_types :success
   before_action :set_game_session_attendance, only: %i[show edit update destroy]
-  before_action :set_game_session, only: %i[new create update]
+  before_action :set_game_session, only: %i[index new create update]
   skip_after_action :verify_authorized, only: %i[index show new create edit update destroy]
   skip_after_action :verify_policy_scoped, only: %i[index show new create edit update destroy]
 
   # GET /game_session_attendances or /game_session_attendances.json
   def index
-    @game_session_attendances = GameSessionAttendance.all
+    @game_session_attendances = params[:query].present? ? @game_session.game_session_attendances.search(params[:query]) : @game_session.game_session_attendances
+    @pagy, @game_session_attendances = pagy(@game_session_attendances.sorted_scope, limit: 10)
+
+    respond_to do |format|
+      format.html { render :index, locals: {game_session_attendances: @game_session_attendances, game_session: @game_session} }
+      format.turbo_stream
+      format.json { render json: @game_session_attendances }
+    end
   end
 
   # GET /game_session_attendances/1 or /game_session_attendances/1.json
@@ -78,7 +85,7 @@ class GameSessionAttendancesController < ApplicationController
   end
 
   def set_game_session
-    @game_session = GameSession.find(game_session_attendance_params[:game_session_id])
+    @game_session = @game_session_attendance&.game_session || GameSession.find(params[:game_session_id])
   end
 
   # Only allow a list of trusted parameters through.
