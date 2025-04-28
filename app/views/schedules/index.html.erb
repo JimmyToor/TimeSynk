@@ -8,7 +8,7 @@
          data-search-src-value="<%= frame_path %>"
          data-frame-reload-events-value="modal-form-submit-success">
       <%= render partial:"schedules/table/schedule_table_header" %>
-      <%= turbo_frame_tag "schedule_list",
+      <%= turbo_frame_tag "schedule_table",
                           src: frame_path,
                           data: { controller:"reload_on_restore",
                                   reload_on_restore_src_value:frame_path,

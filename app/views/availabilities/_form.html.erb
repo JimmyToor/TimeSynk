@@ -12,7 +12,7 @@
       <div class="mx-auto max-w-screen-xl ">
         <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
           <%= render "availability_schedules/table/schedule_table_header", availability: availability %>
-          <%= turbo_frame_tag "availability_schedule_list",
+          <%= turbo_frame_tag "availability_schedule_table",
                               src: availability_schedules_path(availability_id: availability.id, format: :turbo_stream),
                               data: {schedule_selection_target:"frame", search_target:"frame", turbo_prefetch:"false", availability_id: availability.id} do %>
             Loading...

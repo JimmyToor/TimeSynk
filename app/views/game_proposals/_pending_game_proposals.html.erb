@@ -6,7 +6,7 @@
     <h2>Pending Proposals</h2>
     <div class="flex rounded-lg dark:border-gray-600">
       <ul>
-        <% local_assigns[:pending_game_proposals].first(5).each do |game_proposal| %>
+        <% pending_game_proposals.first(5).each do |game_proposal| %>
           <li class="flex">
             <%= render game_proposal,
                        proposal_availability: game_proposal.get_user_proposal_availability(Current.user),

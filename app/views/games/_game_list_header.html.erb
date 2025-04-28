@@ -1,4 +1,7 @@
-<%= form_with(id: "search-form", url:games_path(format: :turbo_stream), method: :get) do |form| %>
+<%= form_with(id: "search-form",
+              url:games_path(format: :turbo_stream),
+              method: :get,
+              data: {search_target: "form"}) do |form| %>
   <label for="query" class="sr-only">Search</label>
   <div class="relative">
     <div class="pointer-events-none absolute inset-y-0 flex items-center start-0 ps-3">

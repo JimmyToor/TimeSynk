@@ -9,8 +9,8 @@
       <%= card_link_to_group(group) %>
     </div>
   <% end %>
-  <%= render "shared/table_nav" %>
 </div>
+<%= render "shared/table_nav" %>
 
 <div class="my-4 space-x-2">
   <%= render "shared/buttons/primary_link", path: new_group_path, text:"New Group", data: {turbo_frame: "modal_frame"} %>

@@ -1,7 +1,11 @@
 <%# locals: (availability:) %>
 <div class="flex flex-col lg:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
   <div class="w-full lg:w-1/2">
-    <%= form_with(id: "search-form", url:availability_schedules_path(format: :turbo_stream), method: :get, class:"flex items-center") do |form| %>
+    <%= form_with(id: "search-form",
+                  url:availability_schedules_path(format: :turbo_stream),
+                  method: :get,
+                  class:"flex items-center",
+                  data: {search_target: "form"}) do |form| %>
       <label for="query" class="sr-only">Search</label>
       <div class="relative w-full">
         <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">

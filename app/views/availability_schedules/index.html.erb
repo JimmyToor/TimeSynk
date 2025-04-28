@@ -7,7 +7,7 @@
          data-controller="search"
          data-search-src-value="<%= availability_schedules_path(availability_id: availability.id, format: :turbo_stream) %>">
       <%= render "availability_schedules/table/schedule_table_header", availability: availability  %>
-      <%= turbo_frame_tag "availability_schedule_list",
+      <%= turbo_frame_tag "availability_schedule_table",
                           src: availability_schedules_path(availability_id: availability.id, format: :turbo_stream),
                           data: {search_target:"frame"} do %>
         Loading...

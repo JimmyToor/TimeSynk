@@ -1,7 +1,7 @@
 <%= render "shared/notification", id: "notifications" %>
 <div id="invites">
   <%= render partial:"invites/table/invite_table_header", locals: {group: @invites.first.group} if @invites.present? %>
-  <%= render partial:"invites/table/invite_list", locals:{invites: @invites} %>
+  <%= render partial: "invites/table/invite_table", locals: { invites: @invites} %>
 </div>
 
 <%= render "shared/buttons/secondary_link", path: group_path(@group), text: "Back to group" %>
