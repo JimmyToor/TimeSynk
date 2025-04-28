@@ -7,5 +7,7 @@
                  class: "flex items-center justify-center text-white font-medium rounded-lg text-sm #{extra_classes}" do %>
     <%= inline_svg("icons/#{svg_name}.svg", class: icon_classes) %>
     </span>
-    <%= text %>
+    <span class="ml-2 underline decoration-2 hover:decoration-4 decoration-secondary-500 dark:decoration-secondary-200">
+      <%= text %>
+    </span>
   <% end %>

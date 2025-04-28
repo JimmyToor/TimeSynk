@@ -2,6 +2,6 @@
 
 <%= content_tag container_tag, data: {controller: "dialog", action: "click->dialog#backdropClose", dialog_ignore_submit_success_value: true},
                 class: container_classes do %>
-  <%= render "shared/buttons/icon_button", action:"dialog#open", title: "View All Attendance", svg_name: "votes", icon_classes: "h-6 w-6" %>
+  <%= render "shared/buttons/icon_button", text:"Attendance", action:"dialog#open", title: "View All Attendance", svg_name: "votes", icon_classes: "h-6 w-6" %>
   <%= render "game_session_attendances/full_game_session_attendance_modal", game_session: game_session %>
 <% end %>
