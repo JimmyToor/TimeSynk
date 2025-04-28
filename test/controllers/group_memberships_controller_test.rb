@@ -24,15 +24,6 @@ class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should get edit" do
-    @user = users(:two)
-    sign_in_as @user
-
-    get edit_group_membership_url(@group_membership)
-
-    assert_response :success
-  end
-
   test "should destroy group_membership" do
     @user = users(:two)
     sign_in_as @user

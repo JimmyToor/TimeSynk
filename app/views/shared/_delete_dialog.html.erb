@@ -1,5 +1,5 @@
-<%# locals: (resource:, button_content: nil, form_partial:, container_tag: :div, container_classes:"") %>
-<%= content_tag container_tag, data: {controller: "dialog", action: "click->dialog#backdropClose", dialog_ignore_submit_success_value: "true"},
+<%# locals: (resource:, button_content: nil, form_partial:, container_tag: :div, container_classes:"", ignore_success: true) %>
+<%= content_tag container_tag, data: {controller: "dialog", action: "click->dialog#backdropClose", dialog_ignore_submit_success_value: ignore_success},
                 class: container_classes do %>
   <% if button_content.present? %>
     <%= button_content %>

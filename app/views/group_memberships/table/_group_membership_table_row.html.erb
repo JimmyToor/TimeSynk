@@ -1,10 +1,12 @@
 <%# locals: (group_membership:) %>
 <tr class="text-center hover:bg-gray-100 dark:hover:bg-gray-700 h-fit">
   <td class="ml-1 py-8 flex items-center justify-center">
-    <%= render "shared/buttons/icon_link", path:edit_group_permission_set_path(group_membership.group, user_id: group_membership.user.id),
-               title:"Edit Permissions",
-               svg_name:"edit",
-               data: {turbo_frame: "modal_frame"} %>
+    <% if can_update_resource_permissions_for_user?(group_membership.user, group_membership.group) %>
+      <%= render "shared/buttons/icon_link", path:edit_group_permission_set_path(group_membership.group, user_id: group_membership.user.id),
+                 title:"Edit Permissions",
+                 svg_name:"edit",
+                 data: {turbo_frame: "modal_frame"} %>
+    <% end %>
     <% if can_kick_user?(group_membership) %>
       <%= render "shared/buttons/delete_link",
                  path: group_membership_path(group_membership),
@@ -27,7 +29,7 @@
       <% roles = group_membership.user.roles.where(resource: group_membership.group) %>
       <%= "None" unless roles.present? %>
       <% group_membership.user.roles.where(resource: group_membership.group).each do |role| %>
-        <li><%= role.name.titleize %></li>
+        <li class="text-black dark:text-gray-500"><%= role.name.titleize %></li>
       <% end if roles.present? %>
     </ul>
   </td>

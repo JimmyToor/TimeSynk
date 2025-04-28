@@ -11,16 +11,14 @@
   </div>
 
   <div>
-    <strong>Group Roles:</strong>
-    <% roles = group_membership.user.roles_for_resource(group_membership.group) %>
-    <% if roles.any? %>
-      <% roles.each do |role| %>
-        <div>-<%= role.name.humanize %></div>
-      <% end %>
-    <% else %>
-      <em>None</em>
-    <% end %>
+    <%= render "groups/roles", group_roles: group_membership.user.roles_for_resource(group_membership.group) %>
   </div>
+
+  <% if local_assigns[:game_proposal].present? %>
+    <div>
+      <%= render "game_proposals/roles", game_proposal_roles: group_membership.user.roles_for_resource(game_proposal) %>
+    </div>
+  <% end %>
 
   <div>
     <strong>Joined:</strong>

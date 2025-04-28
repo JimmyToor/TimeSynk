@@ -186,7 +186,7 @@ class User < ApplicationRecord
       target: nil,
       targets: ".user_roles_#{id}_#{resource.class.name.underscore}_#{resource.id}",
       partial: "#{resource.class.name.underscore.pluralize}/roles",
-      locals: {"#{resource.class.name.underscore}_roles": roles_for_resource(resource).to_a}
+      locals: {"#{resource.class.name.underscore}": resource}
     )
   end
 

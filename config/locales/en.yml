@@ -58,6 +58,12 @@ en:
   group_membership:
     invite_not_valid: "There was a problem with the invite."
     already_member: "You are already a member of this group."
+    destroy:
+      self:
+        success: "You have successfully left %{group_name}."
+        error: "There was an error leaving %{group_name}."
+      success: "%{username} is no longer a member of %{group_name}."
+      error: "There was an error removing %{username} from %{group_name}."
   proposal_vote:
     validation:
       vote_unique: "You have already voted on this proposal."

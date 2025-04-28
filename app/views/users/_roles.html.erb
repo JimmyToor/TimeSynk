@@ -1,16 +1,12 @@
-<%# locals: (user:, group:, group_roles:nil, game_proposal:nil, game_proposal_roles:nil, game_session:nil, game_session_roles:nil) %>
+<%# locals: (user:, group:nil, game_proposal:nil, game_session:nil) %>
+<%= content_tag :div, "user_roles_#{user.id}_group_#{group.id}", class:"user_roles_#{user.id}_group_#{group.id}" do %>
+  <%= render "groups/roles", group_roles: user.roles_for_resource(group) %>
+<% end if group %>
 
-<%= content_tag :div, id:"user_roles_#{user.id}_group_#{group.id}", class:"user_roles_#{user.id}_group_#{group.id}" do %>
-  <%= render "groups/roles", group_roles: group_roles %>
-<% end if group_roles %>
-<%= turbo_stream_from "user_roles_#{user.id}_group_#{group.id}" %>
+<%= content_tag :div, "user_roles_#{user.id}_game_proposal_#{game_proposal.id}", class:"user_roles_#{user.id}_game_proposal_#{game_proposal.id}" do %>
+  <%= render "game_proposals/roles", game_proposal_roles: user.roles_for_resource(game_proposal) %>
+<% end if game_proposal %>
 
-<%= content_tag :div, id:"user_roles_#{user.id}_game_proposal_#{game_proposal.id}", class:"user_roles_#{user.id}_game_proposal_#{game_proposal.id}" do %>
-  <%= render "game_proposals/roles", game_proposal_roles: game_proposal_roles %>
-<% end if game_proposal_roles %>
-<%= turbo_stream_from "user_roles_#{user.id}_game_proposal_#{game_proposal.id}" if game_proposal.present? %>
-
-<%= content_tag :div, id:"user_roles_#{user.id}_game_session_#{game_session.id}", class:"user_roles_#{user.id}_game_session_#{game_session.id}" do %>
-  <%= render "game_sessions/roles", game_session_roles: game_session_roles %>
-<% end if game_session_roles %>
-<%= turbo_stream_from "user_roles_#{user.id}_game_session#{game_session.id}" if game_session.present? %>
+<%= content_tag :div, "user_roles_#{user.id}_game_session_#{game_session.id}", class:"user_roles_#{user.id}_game_session_#{game_session.id}" do %>
+  <%= render "game_sessions/roles", game_session_roles: user.roles_for_resource(game_session) %>
+<% end if game_session %>

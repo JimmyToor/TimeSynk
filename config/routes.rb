@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   shallow do
     resources :groups do
       resources :schedules
-      resources :group_memberships
+      resources :group_memberships, except: [:edit, :update]
       resources :invites
       resources :group_availabilities
       resources :game_proposals do

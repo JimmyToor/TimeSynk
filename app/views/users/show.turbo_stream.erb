@@ -1,0 +1,4 @@
+<%= turbo_stream.update "user_roles_#{user.id}_", partial: "users/roles", locals: {user: user,
+                                                                                   group: group,
+                                                                                   game_proposal: game_proposal,
+                                                                                   game_session: game_session}%>

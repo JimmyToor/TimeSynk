@@ -6,13 +6,18 @@ class GroupMembership < ApplicationRecord
     associated_against: {user: [:username]},
     using: {tsearch: {prefix: true}}
 
+  scope :sorted_scope, -> {
+    joins(:user)
+      .order("username")
+  }
+
   belongs_to :group
   belongs_to :user
 
   validates_associated :group, :user
   validates :group, uniqueness: {scope: :user, message: I18n.t("group_membership.already_member")}
 
-  before_destroy :transfer_resources_to_group_owner, prepend: true
+  before_destroy :transfer_resources_to_group_owner, unless: :destroyed_via_association?
   after_destroy :delete_votes
 
   def member_roles
@@ -34,5 +39,9 @@ class GroupMembership < ApplicationRecord
 
   def delete_votes
     user.proposal_votes.where(game_proposal: group.game_proposals).destroy_all
+  end
+
+  def destroyed_via_association?
+    destroyed_by_association&.name == :group_memberships
   end
 end

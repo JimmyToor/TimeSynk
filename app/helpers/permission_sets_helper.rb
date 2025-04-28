@@ -1,6 +1,6 @@
 module PermissionSetsHelper
-  def can_update_resource_permissions_for_user?(policy_class, user, resource)
-    policy_class.new(Current.user, PermissionSet.new(resource: resource, users_roles: {user.id => nil})).update?
+  def can_update_resource_permissions_for_user?(user, resource)
+    permission_policy_class_for_resource(resource).new(Current.user, PermissionSet.new(resource: resource, users_roles: {user.id => nil})).update?
   end
 
   def permission_policy_class_for_resource(resource)

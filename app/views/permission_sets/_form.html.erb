@@ -20,10 +20,9 @@
         </thead>
         <tbody>
         <% can_change_owner = policy(permission_set.resource).change_owner? %>
-        <% policy_class = permission_policy_class_for_resource(permission_set.resource) %>
         <% permission_set.users_roles.each do |user_id, user_info| %>
           <% user = user_info[:user] %>
-          <% disabled = !can_update_resource_permissions_for_user?(policy_class, user, permission_set.resource) %>
+          <% disabled = !can_update_resource_permissions_for_user?(user, permission_set.resource) %>
           <tr class="border-b bg-white dark:bg-gray-800 dark:border-gray-700 persistent-scrollbar">
             <th scope="row" class="sticky left-0 z-10 pr-3 pl-5 py-4 font-medium text-gray-900
               dark:text-white bg-white dark:bg-gray-800 min-w-32 text-wrap" >

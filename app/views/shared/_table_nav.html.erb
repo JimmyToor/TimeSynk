@@ -1,7 +1,7 @@
 <nav class="flex flex-col items-start justify-between p-4 space-y-3 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
-  <ul class="inline-flex items-stretch -space-x-px ">
+  <ul class="inline-flex items-stretch -space-x-px">
     <li data-controller="pagy-initializer">
-      <%== pagy_nav_js(@pagy) if @pagy.pages > 1 %>
+      <%== pagy_nav_js(@pagy) if @pagy&.pages > 1 %>
       <noscript><%== pagy_nav(@pagy) if @pagy.pages > 1 %></noscript>
     </li>
   </ul>

@@ -1,17 +1,15 @@
 class GroupMembershipsController < ApplicationController
-  before_action :set_group_membership, only: %i[show edit update destroy]
+  before_action :set_group_membership, only: %i[show destroy]
   before_action :set_invite, only: %i[create]
-  before_action :set_group, only: %i[create]
+  before_action :set_group, only: %i[index create]
+  before_action :set_game_proposal, only: %i[show]
   before_action :redirect_if_member, only: %i[create]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
 
   # GET /group_memberships or /group_memberships.json
   def index
-    redirect_back_or_to :root_path unless params[:group_id]
-
-    @group = Group.find(params[:group_id])
-    @group_memberships = authorize(params[:query].present? ? @group.group_memberships.search(params[:query]) : @group.group_memberships)
+    @group_memberships = authorize(params[:query].present? ? @group.group_memberships.search(params[:query]) : @group.group_memberships.sorted_scope)
     @pagy, @group_memberships = pagy(@group_memberships, limit: 10)
 
     respond_to do |format|
@@ -24,16 +22,16 @@ class GroupMembershipsController < ApplicationController
   # GET /group_memberships/1 or /group_memberships/1.json
   def show
     respond_to do |format|
-      format.html { render :show, locals: {group_membership: @group_membership, group_permission_set: @group_membership.group.make_permission_set([@group_membership.user])} }
+      format.html {
+        render :show, locals: {group_membership: @group_membership,
+                               group_permission_set: @group_membership.group.make_permission_set([@group_membership.user]),
+                               game_proposal: @game_proposal}
+      }
     end
   end
 
   # GET /group_memberships/new
   def new
-  end
-
-  # GET /group_memberships/1/edit
-  def edit
   end
 
   # POST /group_memberships or /group_memberships.json
@@ -55,27 +53,13 @@ class GroupMembershipsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /group_memberships/1 or /group_memberships/1.json
-  def update
-    respond_to do |format|
-      if @group_membership.update(group_membership_params)
-        format.html { redirect_to group_path(@group_membership.group), notice: "Group membership was successfully updated." }
-        format.json { render :show, status: :ok, location: @group_membership }
-        format.turbo_stream
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @group_membership.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
   # DELETE /group_memberships/1 or /group_memberships/1.json
   def destroy
     @group_membership.destroy!
 
     respond_to do |format|
-      format.html { redirect_to groups_path, notice: "You've left the group." }
-      format.json { head :no_content }
+      format.html { redirect_to groups_path }
+      format.turbo_stream
     end
   end
 
@@ -110,6 +94,10 @@ class GroupMembershipsController < ApplicationController
       redirect_to join_group_with_token_path and return
     end
     params[:group_id] = @group.id if params[:group_membership].present? && params[:group_membership][:group_id].blank?
+  end
+
+  def set_game_proposal
+    @game_proposal = GameProposal.find(params[:game_proposal_id]) if params[:game_proposal_id]
   end
 
   def redirect_if_member

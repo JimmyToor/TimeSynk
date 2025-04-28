@@ -1,7 +1,11 @@
 <%# locals: (game_session_roles:) %>
-<strong class="text-xl font-bold dark:text-white">Game Session Roles:</strong>
+<h4 class="font-bold text-primary-600">Game Session Roles:</h4>
 <% if game_session_roles.present? %>
-  <%= render game_session_roles %>
+  <ul class="list-disc list-inside text-black dark:text-white">
+    <% game_session_roles.each do |role| %>
+      <li><%= render role %></li>
+    <% end %>
+  </ul>
 <% else %>
-  <p>None</p>
+  <p class="pl-2 text-black dark:text-white">None</p>
 <% end %>

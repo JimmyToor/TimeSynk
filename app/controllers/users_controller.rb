@@ -1,35 +1,27 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ update show destroy ]
-
+  before_action :set_user, only: %i[update show destroy]
+  before_action :set_group, only: %i[show]
+  before_action :set_game_proposal, only: %i[show]
+  before_action :set_game_session, only: %i[show]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
   def edit
   end
 
   def show
-    if params[:group_id].present?
-      @group = Group.find(params[:group_id])
-      @group_roles = @user.roles_for_resource(@group) if @group.is_user_member?(@user)
+    locals = {user: @user.includes(:roles),
+              group: @group,
+              group_roles: @group_roles,
+              game_proposal: @game_proposal,
+              game_session: @game_session}
 
-      if params[:game_proposal_id].present?
-        @game_proposal = GameProposal.find(params[:game_proposal_id])
-        @game_proposal_roles = @user.roles_for_resource(@game_proposal) if @game_proposal.present?
-      end
-
-      if params[:game_session_id].present?
-        @game_session = GameSession.find(params[:game_session_id])
-        @game_session_roles = @user.roles_for_resource(@game_session) if @game_session.present?
-      end
-    end
     respond_to do |format|
-      format.html { render :show, locals: {user: @user,
-                                           group: @group,
-                                           group_roles: @group_roles,
-                                           game_proposal: @game_proposal,
-                                           game_proposal_roles: @game_proposal_roles,
-                                           game_session: @game_session,
-                                           game_session_roles: @game_session_roles} }
-      format.turbo_stream
+      format.html {
+        render :show, locals: locals
+      }
+      format.turbo_stream {
+        render :show, locals: locals
+      }
     end
   end
 
@@ -55,12 +47,28 @@ class UsersController < ApplicationController
   end
 
   private
+
   def set_user
     @user = if params[:id].present?
       User.find(params[:id])
     else
       Current.user
     end
+  end
+
+  def set_group
+    @group = Group.find(params[:group_id]) if params[:group_id].present?
+    @group_roles = @user.roles_for_resource(@group) if @group.present?
+  end
+
+  def set_game_proposal
+    @game_proposal = GameProposal.find(params[:game_proposal_id]) if params[:game_proposal_id].present?
+    @game_proposal_roles = @user.roles_for_resource(@game_proposal) if @game_proposal.present?
+  end
+
+  def set_game_session
+    @game_session = GameSession.find(params[:game_session_id]) if params[:game_session_id].present?
+    @game_session_roles = @user.roles_for_resource(@game_session) if @game_session.present?
   end
 
   def user_params

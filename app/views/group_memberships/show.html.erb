@@ -1,2 +1,4 @@
-<%# locals: (group_membership:, group_permission_set:) %>
-<%= render partial: "group_memberships/show_content", locals: {group_membership: group_membership, group_permission_set: group_permission_set} %>
+<%# locals: (group_membership:, group_permission_set:, game_proposal: nil) %>
+<%= render partial: "group_memberships/show_content", locals: {group_membership: group_membership,
+                                                               group_permission_set: group_permission_set,
+                                                               game_proposal: game_proposal} %>

@@ -1,0 +1,52 @@
+<%# locals: (group:, limit: 8) %>
+<h5 class="font-normal text-gray-700 dark:text-gray-400">Members: </h5>
+<% memberships = group.group_memberships.first(limit) %>
+<%= content_tag :div,
+                id:"group_#{group.id}_member_list",
+                class:"mr-auto max-w-screen-xl bg-white dark:bg-gray-800 relative overflow-hidden" do %>
+  <div id="group_member_list" class="flex">
+    <% memberships.each do |membership| %>
+      <%= link_to group_membership_path(membership),
+                  id: "member_list_group_membership_#{membership.id}",
+                  class:"flex",
+                  data: { popover_target: "popover-user-roles-#{membership.user.id}-#{group.id}", turbo_frame:"modal_frame" } do %>
+        <%= user_avatar(membership.user, size_x: 32) %>
+      <% end %>
+
+    <% end %>
+    <% remaining_users = group.group_memberships.count - limit %>
+
+    <% button_content = capture do %>
+      <button type="button" data-action="dialog#open" class="flex items-center justify-center w-8 h-8 text-xs font-medium text-white bg-gray-600 border-2
+      border-white rounded-full hover:bg-gray-500 dark:border-gray-800">
+        <% if remaining_users > 0 %>
+          +<%= remaining_users %>
+        <% else %>
+          All
+        <% end %>
+      </button>
+    <% end %>
+
+    <%= render "group_memberships/full_group_membership_modal",
+               button_content: button_content,
+               group: group %>
+  </div>
+
+<% end %>
+<% memberships.each do |membership| %>
+  <div data-popover id="popover-user-roles-<%= membership.user.id %>-<%= group.id %>" role="tooltip"
+       class="absolute z-50 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300
+       bg-gray-200 shadow-lg border-2 rounded-lg border-gray-400 dark:bg-gray-800 dark:border-gray-600">
+
+    <div class="pb-3 overflow-x-scroll">
+      <div class="bg-gray-100 dark:bg-gray-700 border-b-2 rounded-t-lg border-gray-400 dark:border-gray-600 text-center">
+        <span class="font-bold text-primary-600"><%= membership.user.username %></span>
+      </div>
+
+      <div class="px-3">
+        <%= render "users/roles", user: membership.user, group: group %>
+      </div>
+    </div>
+    <div data-popper-arrow></div>
+  </div>
+<% end %>

@@ -20,8 +20,9 @@ class GroupPermissionSetPolicy < ApplicationPolicy
 
     # Check if the user is trying to change the roles of a user with higher permissions, or themselves
     record.users_roles&.each do |user_id, _|
+      return false if user_id == user.id
       role_user_role_weight = User.find(user_id).most_permissive_role_weight_for_resource(record.resource)
-      return false if user_id == user.id || role_user_role_weight <= RoleHierarchy::ROLE_WEIGHTS[:"group.admin"]
+      return false if role_user_role_weight <= RoleHierarchy::ROLE_WEIGHTS[:"group.admin"]
     end
 
     true

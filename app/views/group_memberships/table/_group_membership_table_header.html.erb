@@ -3,7 +3,9 @@
   <div class="w-full">
     <%= form_with(id: "search-form",
                   url:group_group_memberships_path(group_id: group.id, format: :turbo_stream),
-                  method: :get, class:"flex items-center") do |form| %>
+                  method: :get,
+                  class:"flex items-center",
+                  data: {search_target: "form"}) do |form| %>
       <label for="query" class="sr-only">Search</label>
       <div class="relative w-full">
         <div class="pointer-events-none absolute inset-y-0 flex items-center start-0 ps-3">

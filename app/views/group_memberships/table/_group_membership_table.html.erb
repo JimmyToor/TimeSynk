@@ -1,0 +1,25 @@
+<%# locals: (group_memberships:) %>
+<div class="relative w-full max-h-[calc(98vh-15rem)] flex flex-col">
+  <div class="overflow-y-auto persistent-scrollbar flex-grow">
+    <table class="w-full text-center text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+      <thead class="text-xs uppercase text-gray-700 bg-tertiary-50 dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        <th scope="col" class="sticky top-0 left-0 z-20 px-6 py-3 bg-tertiary-50 dark:bg-gray-600"></th>
+        <th scope="col" class="sticky top-0 left-0 z-20 px-6 py-3 bg-tertiary-50 dark:bg-gray-600">
+            <span>User</span>
+        </th>
+        <th scope="col" class="sticky top-0 z-10 px-6 py-3 bg-tertiary-50 dark:bg-gray-600">
+          Permissions
+        </th>
+      </tr>
+      </thead>
+      <tbody data-controller="element-toggle" data-element-toggle-display-style-value="table-row" class="divide-y-2">
+      <% group_memberships.each do |group_membership| %>
+        <%= render partial:"group_memberships/table/group_membership_table_row",
+                   locals: {group_membership: group_membership} %>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%= render partial: "shared/table_nav" %>
