@@ -6,7 +6,7 @@ class GameProposalsController < ApplicationController
 
   # GET /game_proposals or /game_proposals.json
   def index
-    @game_proposals = authorize(@game_proposals.order(created_at: :desc))
+    @game_proposals = authorize(@game_proposals)
     @pagy, @game_proposals = pagy(@game_proposals)
     respond_to do |format|
       format.html { render :index, locals: {game_proposals: @game_proposals} }

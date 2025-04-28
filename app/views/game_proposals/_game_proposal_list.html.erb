@@ -1,7 +1,7 @@
 <%# locals: (game_proposals:, game_proposal: nil) %>
 <div class="flex rounded-lg dark:border-gray-600">
   <ul>
-    <% game_proposals.each do |proposal| %>
+    <% game_proposals.order(created_at: :desc).each do |proposal| %>
       <li class="flex">
         <%= render proposal,
                    proposal_availability: proposal.get_user_proposal_availability(Current.user),

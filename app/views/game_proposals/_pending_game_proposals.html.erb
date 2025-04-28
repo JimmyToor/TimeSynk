@@ -1,12 +1,12 @@
-<%# locals: (pending_game_proposals: nil)  %>
+<%# locals: (pending_game_proposals: nil, limit: 5)  %>
 <%= turbo_frame_tag "pending_game_proposals",
                     class: "empty:hidden",
-                    data: {controller:"reload-on-restore", src: root_path} do %>
+                    data: {controller:"reload-on-restore", src: "/"} do %>
   <% if pending_game_proposals.present? %>
     <h2>Pending Proposals</h2>
     <div class="flex rounded-lg dark:border-gray-600">
       <ul>
-        <% pending_game_proposals.first(5).each do |game_proposal| %>
+        <% pending_game_proposals.sort_by(&:created_at).first(limit).each do |game_proposal| %>
           <li class="flex">
             <%= render game_proposal,
                        proposal_availability: game_proposal.get_user_proposal_availability(Current.user),
