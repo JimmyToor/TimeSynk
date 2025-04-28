@@ -7,6 +7,6 @@
              proposal_permission_set: proposal_permission_set
            } %>
 
-<div data-controller="calendar" data-calendar-interactive="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-game-proposal-id=<%= game_proposal.id %> data-turbo-permanent>
+<div data-controller="calendar" data-calendar-stream-id="game_proposal_<%= game_proposal.id %>" data-calendar-interactive="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-game-proposal-id=<%= game_proposal.id %> data-turbo-permanent>
   <%= render partial: 'calendars/calendar' %>
 </div>
