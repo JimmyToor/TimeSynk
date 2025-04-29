@@ -9,7 +9,6 @@ fi
 
 # Setup cron jobs
   if [ -f /rails/config/cron/games-crontab ]; then
-    chmod +x /rails/config/cron/games-crontab
     crontab /rails/config/cron/games-crontab
     touch /rails/log/cron.log
   fi

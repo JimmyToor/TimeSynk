@@ -29,7 +29,7 @@ Input your available times and TimeSynk will find the best time for everyone to 
    yarn install
    ```
 
-3. Setup `.env.development` environment variables. `.env.test` can be identical.
+3. Setup `.env.development` environment variables.
 
    | Variable                   | Description                                                                                                |
    |----------------------------|------------------------------------------------------------------------------------------------------------|
