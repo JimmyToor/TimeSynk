@@ -4,6 +4,5 @@
             data: data,
             title: title,
             class: "#{extra_classes}" do %>
-  <%= content_tag(:span, inline_svg("icons/#{svg_name}.svg"),
-                  class: "text-secondary-500 dark:text-secondary-200") %>
+  <%= inline_svg("icons/#{svg_name}.svg") %>
 <% end %>

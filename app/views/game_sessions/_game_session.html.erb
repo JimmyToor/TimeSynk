@@ -2,11 +2,11 @@
   <div data-turbo-frame="modal_frame" class="flex w-full flex-col
   items-center rounded-lg border bg-white border-gray-200 shadow game-display xs:flex-row xs:max-w-xl
   dark:border-gray-700 dark:bg-gray-800">
-    <%=image_tag(game_session.game.cover_image_url,
-      alt: game_session.game.name,
-      class: "game-art object-cover rounded-lg xs:h-auto xs:rounded-none mt-4 xs:mt-0 xs:rounded-s-lg w-24 h-16 ml-2",
-      id: dom_id(game_session.game, :art),
-      data: {proposal_selection_target: "gameArt"},) %>
+    <%= display_game_art_and_name(game: game_session.game,
+                                  only_art: true,
+                                  img_classes: "object-cover rounded-lg md:h-auto md:rounded-none mt-4 md:mt-0
+                                      md:rounded-s-lg w-24 h-16 ml-2",
+                                  img_size: GameImageSize::LOGO_MED) %>
 
     <div class="flex flex-col justify-between p-4 leading-normal">
       <div class="flex">
@@ -38,7 +38,8 @@
           <% if policy(game_session).edit? %>
             <%= render "shared/buttons/icon_link", svg_name: "edit", path: edit_game_session_path(game_session),
                           data: {turbo_frame: "modal_frame", turbo_prefetch: "false"},
-                          extra_classes: "align-top ml-2" %>
+                          extra_classes: "align-top ml-2 text-secondary-500 hover:text-secondary-400 dark:text-secondary-200
+                            dark:hover:text-secondary-100" %>
           <% end %>
 
         </div>
@@ -50,7 +51,7 @@
           </div>
         </div>
       </div>
-      <div class="game_session_<%= game_session.id %>_attendance_details flex flex-col gap-2">
+      <div class="game_session_<%= game_session.id %>_attendance_details mt-2 flex flex-col gap-2">
         <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
           <%= render "game_session_attendances/full_game_session_attendance_button", game_session: game_session %>
         </div>

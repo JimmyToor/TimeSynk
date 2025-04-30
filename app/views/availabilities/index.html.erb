@@ -4,7 +4,7 @@
   <div class="relative mx-auto max-w-screen-xl overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg" data-controller="search" data-search-src-value="<%= availabilities_path(format: :turbo_stream) %>">
     <%= render "availabilities/availability_table_header" %>
     <%= turbo_frame_tag "availability_list", src: availabilities_path(format: :turbo_stream), data: {turbo_prefetch:"false", search_target:"frame"} do %>
-      Loading...
+      <span class="text-center">Loading...</span>
     <% end %>
   </div>
 </section>

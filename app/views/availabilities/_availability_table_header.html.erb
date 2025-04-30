@@ -1,4 +1,4 @@
-<div class="flex flex-col lg:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+<div class="flex flex-col items-center justify-between p-4 lg:flex-row space-y-3 lg:space-y-0 md:space-x-4">
   <div class="w-full lg:w-1/2">
     <%= form_with(id: "search-form",
                   url:availabilities_path(format: :turbo_stream),
@@ -7,8 +7,8 @@
                   data: {search_target: "form"}) do |sub_form| %>
       <label for="query" class="sr-only">Search</label>
       <div class="relative w-full">
-        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-          <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <div class="pointer-events-none absolute inset-y-0 flex items-center start-0 ps-3">
+          <svg aria-hidden="true" class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
           </svg>
         </div>
@@ -28,7 +28,7 @@
     <% end %>
   </div>
 
-  <div class="w-full md:w-auto flex flex-col lg:flex-row space-y-2 lg:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+  <div class="flex w-full flex-shrink-0 flex-col items-stretch justify-end md:w-auto lg:flex-row space-y-2 lg:space-y-0 md:items-center md:space-x-3">
     <%= render "shared/buttons/icon_link_thick", path: new_availability_path, text: "New Availability", data: { turbo_frame: "_top"} %>
   </div>
 

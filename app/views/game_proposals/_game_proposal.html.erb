@@ -3,14 +3,13 @@
   <%= turbo_frame_tag dom_id(game_proposal, :content),
                       data: { controller: "reload-on-restore",
                               reload_on_restore_src_value: game_proposal_path(game_proposal) } do %>
-    <div class="game-display flex flex-col items-center border border-gray-200 rounded-lg shadow
+    <div class="flex flex-col items-center border border-gray-200 rounded-lg shadow
       md:flex-row bg-white dark:border-gray-700 dark:bg-gray-800 w-fit bg-">
-      <%= image_tag(game_proposal.game.cover_image_url,
-                    alt:   game_proposal.game.name,
-                    class: "game-art  object-cover rounded-lg md:h-auto md:rounded-none mt-4 md:mt-0 md:rounded-s-lg w-24
-                    h-16 ml-2",
-                    id:    dom_id(game_proposal.game, :art),
-                    data:  { proposal_selection_target: "gameArt" }) %>
+      <%= display_game_art_and_name(game: game_proposal.game,
+                                    only_art: true,
+                                    img_classes: "object-cover rounded-lg md:h-auto md:rounded-none mt-4 md:mt-0
+                                      md:rounded-s-lg w-24 h-16 ml-2",
+                                    img_size: GameImageSize::LOGO_MED) %>
 
       <div class="flex justify-between">
         <div class="flex flex-col justify-between p-4 leading-normal">
@@ -34,9 +33,11 @@
            decoration-2 hover:decoration-4 decoration-secondary-500 dark:decoration-secondary-200"%>
             </div>
 
-            <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
+            <div class="flex flex-wrap items-center text-sm text-gray-700 dark:text-gray-400">
               <%= render "proposal_votes/full_proposal_vote_button", game_proposal: game_proposal %>
-              <%= render "game_proposals/vote_count", game_proposal: game_proposal %>
+              <div class="mr-2">
+                <%= render "game_proposals/vote_count", game_proposal: game_proposal %>
+              </div>
               <% vote = Current.user.get_vote_for_proposal(game_proposal) %>
               <%= render "game_proposals/vote_link", proposal_vote: vote if vote.present? %>
             </div>

@@ -45,20 +45,24 @@
             </th>
 
             <% roles.reject{|role| role.name == "owner"}.each do |role| %>
-              <td class="px-6 py-4">
+              <td class="px-6 py-4 text-center">
                 <%= fields_for "permission_set[role_changes][#{user_id}]" do |subform|  %>
                   <% checked = user_info[:role_ids].include?(role.id) %>
-                  <% if checked %>
-                    <%= subform.check_box :remove_roles,
-                                          { disabled: disabled, multiple: true, checked: true, include_hidden: false,
-                                            data: { action:"change->role-removal#toggle change->form-change-watcher#checkForm", initial: true} }, "" %>
-                    <%= subform.check_box :remove_roles,
-                                          { disabled: true, multiple: true, checked: true, include_hidden: false, class:"hidden" },
-                                          role.id %>
-                  <% else %>
-                    <%= subform.check_box :add_roles, { disabled: disabled, multiple: true, include_hidden: false,
-                                                        data: { action:"change->form-change-watcher#checkForm", initial: false } }, role.id %>
-                  <% end %>
+                  <span title="<%= disabled ? 'You do not have permission to change this role' : 'Toggle Role' %>">
+                    <% if checked %>
+                      <%= subform.check_box :remove_roles,
+                                            { disabled: disabled, multiple: true, checked: true, include_hidden: false,
+                                              class: "rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 border-4",
+                                              data: { action:"change->role-removal#toggle change->form-change-watcher#checkForm", initial: true} }, "" %>
+                      <%= subform.check_box :remove_roles,
+                                            { disabled: true, multiple: true, checked: true, include_hidden: false, class:"hidden" },
+                                            role.id %>
+                    <% else %>
+                      <%= subform.check_box :add_roles, { disabled: disabled, multiple: true, include_hidden: false,
+                                                          class: "rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 border-2",
+                                                          data: { action:"change->form-change-watcher#checkForm", initial: false } }, role.id %>
+                    <% end %>
+                  </span>
                 <% end %>
               </td>
             <% end %>

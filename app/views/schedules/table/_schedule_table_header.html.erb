@@ -1,6 +1,10 @@
-<div class="flex flex-col items-center justify-between p-4 md:flex-row space-y-3 md:space-y-0 md:space-x-4">
-  <div class="w-1/2 sm:w-full">
-    <%= form_with(id: "search-form", url:schedules_path(format: :turbo_stream), method: :get, class:"flex items-center") do |form| %>
+<div class="flex flex-col items-center justify-between p-4 lg:flex-row space-y-3 lg:space-y-0 md:space-x-4">
+  <div class="w-full lg:w-1/2">
+    <%= form_with(id: "search-form",
+                  url:schedules_path(format: :turbo_stream),
+                  method: :get,
+                  class:"flex items-center",
+                  data: {search_target: "form"}) do |form| %>
       <label for="query" class="sr-only">Search</label>
       <div class="relative w-full">
         <div class="pointer-events-none absolute inset-y-0 flex items-center start-0 ps-3">
@@ -9,12 +13,12 @@
           </svg>
         </div>
         <div class="flex">
-          <%= form.text_field :query, name:"query", data: {search_target:"query"}, pattern:"[A-Za-z0-9 ]*",
-                              title:"Numbers, letters, and spaces only",
+          <%= form.text_field :query, name:"query", data: {search_target:"query"},
+                              title:"Search Schedules",
                               class:"bg-tertiary-50 border border-gray-300 text-gray-900 text-sm rounded-lg
-                               focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700
-                               dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500
-                               dark:focus:border-primary-500 justify-left",
+                                  focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700
+                                  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500
+                                  dark:focus:border-primary-500",
                               placeholder:"Search Schedules..." %>
           <%= render "shared/buttons/search_submit_button", form: form, turbo_frame_id: "schedules_index" %>
           <%= render "shared/buttons/search_reset_button", form: form, extra_classes: "end-12" %>
@@ -23,17 +27,9 @@
     <% end %>
 
   </div>
+
   <div class="flex w-full flex-shrink-0 flex-col items-stretch justify-end md:w-auto md:flex-row space-y-2 md:space-y-0 md:items-center md:space-x-3">
-    <%= link_to new_schedule_path, data: {turbo_frame: "modal_frame"} do %>
-      <button type="button"
-              class="flex items-center justify-center text-white bg-secondary-500 hover:bg-secondary-600
-                focus:ring-4 focus:ring-secondary-300 font-medium rounded-lg text-sm px-4 py-2
-                dark:bg-secondary-400 dark:hover:bg-secondary-300 focus:outline-none dark:focus:ring-secondary-200">
-        <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-        </svg>
-        New Schedule
-      </button>
-    <% end %>
+    <%= render "shared/buttons/icon_link_thick", path: new_schedule_path, text: "New Schedule", data: { turbo_frame: "modal_frame"} %>
   </div>
+
 </div>

@@ -1,7 +1,11 @@
-<div class="nested-form-wrapper" data-new-record="<%= form.object.new_record? %>" >
+<div class="nested-form-wrapper flex" data-new-record="<%= form.object.new_record? %>" >
   <%= form.hidden_field :_destroy %>
 
   <%= form.collection_select :availability_id, Current.user.availabilities, :id, :name, {}, data: { mutually_exclusive_select_target:"collectionSelect"}  %>
 
-  <button type="button" class="btn btn-danger" data-action="rails-nested-form#remove">Remove</button>
+  <%= render "shared/buttons/icon_button",
+             action: "rails-nested-form#remove",
+             svg_name: "minus",
+             title: "Remove from Availability",
+             icon_classes: "text-red-600 h-5 w-5 ml-2"  %>
 </div>

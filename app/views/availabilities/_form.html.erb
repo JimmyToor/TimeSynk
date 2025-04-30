@@ -1,36 +1,30 @@
 <%# locals: (availability:, schedules:) %>
-<div data-controller="schedule-selection search" data-schedule-selection-dialog-outlet=".dialog"
+<div data-controller="schedule-selection"
+     data-schedule-selection-dialog-outlet=".dialog"
      data-schedule-selection-rails-nested-form-outlet="#<%= dom_id(availability, :form)%>"
      data-schedule-selection-calendar-outlet="#calendar_holder"
-     data-schedule-selection-src-value="<%= availability_schedules_path(availability_id: availability.id, format: :turbo_stream) %>"
-     data-search-src-value="<%= availability_schedules_path(format: :turbo_stream) %>">
+     data-schedule-selection-src-value="<%= availability_schedules_path(availability_id: availability.id, format: :turbo_stream) %>">
+
   <%= render "shared/notification", id: "availability_#{availability.new_record? ? "new" : availability.id}" %>
+
   <div class="flex flex-col sm:flex-row justify-start gap-4"
        data-controller="search"
        data-search-src-value="<%= availability_schedules_path(availability_id: availability.id, format: :turbo_stream) %>">
-    <section id="table_holder" class="bg-tertiary-50dark:bg-gray-900">
+
+    <section id="table_holder" class="bg-tertiary-50 dark:bg-gray-900">
       <div class="mx-auto max-w-screen-xl ">
         <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
           <%= render "availability_schedules/table/schedule_table_header", availability: availability %>
           <%= turbo_frame_tag "availability_schedule_table",
                               src: availability_schedules_path(availability_id: availability.id, format: :turbo_stream),
                               data: {schedule_selection_target:"frame", search_target:"frame", turbo_prefetch:"false", availability_id: availability.id} do %>
-            Loading...
+            <div class="text-center w-full">Loading...</div>
           <% end %>
         </div>
       </div>
     </section>
+
     <%= form_with(model: availability, id:dom_id(availability, :form), data: {controller:"rails-nested-form", rails_nested_form_wrapper_selector_value:".nested-form-wrapper"}) do |form| %>
-      <% if availability.errors.any? %>
-        <div style="color: red">
-          <h2><%= pluralize(availability.errors.count, "error") %> prohibited this availability from being saved:</h2>
-          <ul>
-            <% availability.errors.each do |error| %>
-              <li><%= error.full_message %></li>
-            <% end %>
-          </ul>
-        </div>
-      <% end %>
 
       <div>
         <%= form.label :name, "Availability Name", style: "display: block" %>

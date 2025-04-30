@@ -1,13 +1,14 @@
 <%# locals: (action:, text: "", title: "", svg_name: "plus", data: {}, extra_classes: "", icon_classes:"h-3.5 w-3.5 mr-2", ping: false) %>
-<span class="relative flex">
+<div class="relative flex">
   <% if ping %>
-    <span id="new_ping" class="absolute inline-flex h-full w-full animate-ping rounded-lg bg-secondary-400 opacity-75"></span>
+    <span id="new_ping" class="absolute inline-flex h-full w-full animate-ping rounded-lg opacity-75 bg-secondary-400"></span>
   <% end %>
   <%= button_tag type: "button", title: title, data: {action: action}.merge(data),
-                 class: "flex items-center justify-center text-white font-medium rounded-lg text-sm #{extra_classes}" do %>
+                 class: "flex items-center justify-center font-medium
+                    rounded-lg text-sm #{extra_classes}" do %>
     <%= inline_svg("icons/#{svg_name}.svg", class: icon_classes) %>
-    </span>
-    <span class="ml-2 underline decoration-2 hover:decoration-4 decoration-secondary-500 dark:decoration-secondary-200">
+    <span class="ml-2 underline decoration-2 hover:decoration-4">
       <%= text %>
     </span>
   <% end %>
+</div>
