@@ -38,7 +38,7 @@ class CalendarCreationService < ApplicationService
 
   # Orchestrates the creation of different calendar types based on the initialized parameters.
   #
-  # @return [Array<Calendar>] An array of generated Calendar objects, ready for FullCalendar.
+  # @return [Array<Calendar>] An array of generated Calendar objects, ready to be parsed for FullCalendar.
   def call
     @calendars = []
     if @params[:user_id].present?

@@ -159,7 +159,7 @@ export default class CalendarService {
     // Set event properties based on calendar type
     switch (calendar.type) {
       case "availability":
-        const id = calendar.id.slice(-1);
+        const id = calendar.id.match(/_(\d+)$/)?.[1];
         event.id = `availability_${id}`;
         event.backgroundColor = "green";
         event.extendedProps.route = `/availabilities/${id}`;
