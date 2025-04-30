@@ -12,6 +12,9 @@ class Availability < ApplicationRecord
 
   accepts_nested_attributes_for :availability_schedules, allow_destroy: true, reject_if: :all_blank
 
+  normalizes :name, with: ->(name) { name.squish }
+  normalizes :description, with: ->(description) { description.squish }
+
   validates :name, presence: true, length: {maximum: 300}, uniqueness: {scope: :user}
   validates :description, length: {maximum: 300}
   validates :user, presence: true

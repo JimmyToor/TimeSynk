@@ -28,6 +28,8 @@ class User < ApplicationRecord
   has_many :proposal_availability_schedules, through: :proposal_availabilities, source: :schedules, dependent: :destroy
   has_one_attached :avatar
 
+  normalizes :username, with: ->(username) { username.squish }
+
   validates :avatar,
     processable_image: true,
     content_type: {with: [:png, :jpg, :gif], spoofing_protection: true},

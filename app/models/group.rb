@@ -10,6 +10,8 @@ class Group < ApplicationRecord
 
   scope :for_user, ->(user) { joins(:group_memberships).where(group_memberships: {user_id: user.id}) }
 
+  normalizes :name, with: ->(name) { name.squish }
+
   validates :name,
     presence: {message: I18n.t("group.validation.name.presence")},
     length: {maximum: 50, message: I18n.t("group.validation.name.length", count: 50)}

@@ -17,6 +17,9 @@ class Schedule < ApplicationRecord
 
   accepts_nested_attributes_for :availability_schedules, allow_destroy: true, reject_if: :all_blank
 
+  normalizes :name, with: ->(name) { name.squish }
+  normalizes :description, with: ->(description) { description.squish }
+
   validates :name, presence: true, uniqueness: {scope: :user}, length: {maximum: 300}
   validates :description, allow_blank: true, length: {maximum: 300}
   validates :start_time, timeliness: {on_or_before: :end_time, type: :datetime}, presence: true

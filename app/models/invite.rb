@@ -5,7 +5,7 @@ class Invite < ApplicationRecord
   belongs_to :group
   has_secure_token :invite_token
 
-  validate :validate_roles, :check_date
+  validate :validate_roles, :validate_date
   attr_readonly :user_id, :group_id
 
   scope :for_group, ->(group_id) { where(group: group_id) }
@@ -47,7 +47,7 @@ class Invite < ApplicationRecord
     end
   end
 
-  def check_date
+  def validate_date
     if expires_at.nil?
       self.expires_at = 1.week.from_now
     end

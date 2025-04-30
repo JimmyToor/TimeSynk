@@ -51,7 +51,6 @@ class SchedulesController < ApplicationController
         format.json { render :show, status: :created, location: @schedule }
         format.turbo_stream
       else
-        @schedule.errors.delete(:"availability_schedules.schedule") # this error is not useful to the user
         flash.now[:alert] = {message: I18n.t("schedule.create.error"),
                                       options: {list_items: @schedule.errors.full_messages}}
         format.html { render :new, status: :unprocessable_entity }

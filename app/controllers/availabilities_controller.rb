@@ -45,8 +45,11 @@ class AvailabilitiesController < ApplicationController
         format.html { redirect_to availability_url(@availability), success: {message: "Availability was successfully created."} }
         format.json { render :show, status: :created, location: @availability }
       else
+        flash.now[:alert] = {message: I18n.t("availability.create.error"),
+                             options: {list_items: @availability.errors.full_messages}}
         format.html { render :new, locals: {schedules: @schedules, availability: @availability}, status: :unprocessable_entity }
         format.json { render json: @availability.errors, status: :unprocessable_entity }
+        format.turbo_stream { render "create_fail" }
       end
     end
   end
@@ -58,8 +61,11 @@ class AvailabilitiesController < ApplicationController
         format.html { redirect_to availability_url(@availability), notice: "Availability was successfully updated." }
         format.json { render :show, status: :ok, location: @availability }
       else
-        format.html { render :edit, status: :unprocessable_entity }
+        flash.now[:alert] = {message: I18n.t("availability.update.error"),
+                             options: {list_items: @availability.errors.full_messages}}
+        format.html { render :edit, locals: {schedules: @schedules, availability: @availability}, status: :unprocessable_entity }
         format.json { render json: @availability.errors, status: :unprocessable_entity }
+        format.turbo_stream { render "update_fail" }
       end
     end
   end
