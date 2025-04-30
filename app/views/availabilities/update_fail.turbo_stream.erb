@@ -1,0 +1,7 @@
+<%= turbo_stream_toast(:error,
+                       I18n.t("availability.update.error"),
+                       "availability_#{@availability.id}",
+                       list_items: @availability.errors.full_messages) %>
+
+<%= turbo_stream.update "notification_container_availability_#{@availability.id}", partial: "shared/notification",
+                        locals: { id: "availability_#{@availability.id}" } %>

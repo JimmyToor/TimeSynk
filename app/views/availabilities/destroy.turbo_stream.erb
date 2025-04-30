@@ -1,7 +1,7 @@
-<%= turbo_stream.replace("content_schedule_#{@schedule.id}",
+<%= turbo_stream.replace("content_availability_#{@availability.id}",
                          html: raw("<p>Availability Deleted</p>")) %>
 
-<%= turbo_stream.replace("show_schedule_#{@schedule.id}",
+<%= turbo_stream.replace("show_availability_#{@availability.id}",
                          html: raw("<p>Availability Deleted</p><p>#{link_to 'Back to availabilities', availabilities_path}</p>")) %>
 
 <%= turbo_stream.update("modal_frame") %>

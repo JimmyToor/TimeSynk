@@ -79,7 +79,7 @@ en:
   schedule:
     create:
       success: "Schedule successfully created."
-      error: "There was an error creating the schedule."
+      error: "There was a problem creating the schedule."
     destroy:
       success: "Schedule successfully deleted."
       error: "There was an error deleting the schedule."
@@ -88,6 +88,12 @@ en:
       success: "Permissions successfully updated."
       error: "There was an error updating the permissions."
   availability:
+    create:
+      success: "Availability successfully created."
+      error: "There was a problem creating the availability."
+    update:
+      success: "Availability successfully updated."
+      error: "There was a problem updating the availability."
     destroy:
       success: "Availability successfully deleted."
       error: "There was an error deleting the availability."

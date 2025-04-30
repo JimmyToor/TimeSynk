@@ -8,7 +8,8 @@
       <%= turbo_frame_tag "availability_schedule_table",
                           src: availability_schedules_path(availability_id: availability.id, format: :turbo_stream),
                           data: {search_target:"frame"} do %>
-        Loading...
+        <%= render partial:"availability_schedules/table/availability_schedule_table",
+                   locals: {availability:@availability, schedules:@schedules, included_schedules: @included_schedules} %>
       <% end %>
     </div>
   </div>
