@@ -23,8 +23,8 @@
       <div data-rails-nested-form-target="target">
       </div>
 
-      <%= render "shared/buttons/accent_button", text:"Add Availability",
-                        data: {action:"mutually-exclusive-select#cacheSelections rails-nested-form#add",
+      <%= render "shared/buttons/accent_button", text:"Add Availability", extra_classes: "mt-2",
+                        data: {action:"rails-nested-form#add",
                                mutually_exclusive_select_target:"addButton"} %>
     </div>
 

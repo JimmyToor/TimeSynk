@@ -23,6 +23,7 @@ export default class extends Controller {
 
   onSubmitSuccess() {
     if (this.hasFrameTarget) {
+      // Reload the frame to show the new schedule
       this.frameTarget.src = this.frameTarget.src;
       const availabilityId = this.frameTarget.dataset.availabilityId;
       if (!availabilityId) {
@@ -160,15 +161,9 @@ export default class extends Controller {
 
   dialogOutletConnected(dialog, element) {
     dialog.addSubmitSuccessListener(this.submitSuccessCallback);
-    if (element.id === this.frameIdValue) {
-      this.modal = dialog;
-    }
   }
 
   dialogOuterDisconnected(dialog, element) {
     dialog.removeSubmitSuccessListener(this.submitSuccessCallback);
-    if (element.id === this.frameIdValue) {
-      this.modal = null;
-    }
   }
 }
