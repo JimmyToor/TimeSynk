@@ -102,9 +102,18 @@ export default class extends Controller {
   }
 
   eventRefresh(event) {
-    if (event.target.hasAttribute("data-refresh-calendar-on-submit")) {
+    if (this.eventRequestsRefresh(event)) {
       this.debouncedRefreshCallback();
     }
+  }
+
+  eventRequestsRefresh(event) {
+    return (
+      event.target.hasAttribute("data-refresh-calendar-on-submit") ||
+      event.detail?.formSubmission?.formElement?.hasAttribute(
+        "data-refresh-calendar-on-submit",
+      )
+    );
   }
 
   manualRefresh() {
