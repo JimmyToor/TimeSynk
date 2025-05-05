@@ -1,5 +1,5 @@
 <%# locals: (game_session:, game_session_attendance:, notice: nil) %>
-<%= modal_wrapper(game_session.game_name) do %>
+<%= modal_wrapper("Game Session") do %>
   <%= content_tag(:div, class:dom_id(game_session, :content)) do %>
     <%= render "shared/notification", id: "game_session_#{game_session.id}" %>
     <%= render game_session %>

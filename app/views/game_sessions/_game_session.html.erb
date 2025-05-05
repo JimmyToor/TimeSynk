@@ -12,9 +12,9 @@
       <div class="flex">
 
         <% if local_assigns[:include_link].present? && local_assigns[:include_link] %>
-          <h5 class="mb-2 text-lg font-semibold tracking-tight text-gray-900 game-name dark:text-white underline
+          <h5 class="mb-2 text-lg font-semibold tracking-tight game-name text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100 underline
            decoration-2 hover:decoration-4 decoration-secondary-500 dark:decoration-secondary-200">
-            <%= link_to game_session.game_name, game_session, data: {turbo_frame: "modal_frame"} %>
+            <%= link_to game_session.game_name, game_session, title: "View Game Session", data: {turbo_frame: "modal_frame"} %>
           </h5>
         <% else %>
           <h5 class="mb-2 text-lg font-semibold tracking-tight text-gray-900 game-name dark:text-white">
@@ -28,6 +28,17 @@
 
       </div>
       <div class="game_session_<%= game_session.id %>_details space-y-1.5">
+        <% if local_assigns[:include_link].present? && local_assigns[:include_link] %>
+          <div class="mb-3 flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400 underline">
+            <%= inline_svg "icons/group.svg", class: "h-6 w-6" %>
+            <%= link_to "#{game_session.game_proposal.group.name}",
+                        group_path(game_session.game_proposal.group),
+                        title: "Go to Group",
+                        data: {turbo_frame: "_top"},
+                        class:"text-gray-900 game-name dark:text-white underline
+             decoration-2 hover:decoration-4 decoration-secondary-500 dark:decoration-secondary-200"%>
+          </div>
+        <% end %>
         <div class="mb-3 flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
 
           <%= inline_svg_tag "icons/calendar.svg", class:"h-6" %>
@@ -54,6 +65,17 @@
       <div class="game_session_<%= game_session.id %>_attendance_details mt-2 flex flex-col gap-2">
         <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
           <%= render "game_session_attendances/full_game_session_attendance_button", game_session: game_session %>
+
+          <% if local_assigns[:include_link].present? && local_assigns[:include_link] %>
+            <%= render "shared/buttons/icon_link",
+                       svg_name: "edit",
+                       path: game_session_path(game_session),
+                       title: "View Game Session",
+                       data: {turbo_frame: "modal_frame"},
+                       extra_classes: "align-top ml-2 text-secondary-500 hover:text-secondary-400 dark:text-secondary-200
+                            dark:hover:text-secondary-100" %>
+          <% end %>
+
         </div>
         <%= render "game_session_attendances/game_session_attendance_list", game_session: game_session %>
       </div>

@@ -1,4 +1,10 @@
-<h1>Game sessions <%= "for #{@game_proposal.game_name} in #{@game_proposal.group.name}" if @game_proposal.present? %></h1>
+<div class="format lg:format-lg dark:format-invert">
+  <% if @game_proposal.present? %>
+    <h4>Upcoming Game Sessions for <span class="font-bold text-primary-600"><%= @game_proposal.game_name %></span> in <span class="font-bold text-primary-600"><%= @game_proposal.group.name %></span></h4>
+  <% else %>
+    <h4>Upcoming Game Sessions</h4>
+  <% end %>
+</div>
 <%= turbo_frame_tag "game_sessions", data: {src: @game_proposal.present? ? game_proposal_game_sessions_path(@game_proposal) : game_sessions_path} do %>
   <div class="w-fit">
    <%= render @game_sessions, include_link: true %>

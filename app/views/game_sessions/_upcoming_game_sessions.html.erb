@@ -3,7 +3,7 @@
                     class: "empty:hidden",
                     data: {controller:"reload-on-restore", src:"/"} do %>
     <% if upcoming_game_sessions.present? %>
-      <h2>Upcoming Sessions</h2>
+      <h4 class="text-2xl font-bold mb-1">Upcoming Sessions</h4>
       <div class="flex rounded-lg dark:border-gray-600 h-128">
         <ul>
           <% upcoming_game_sessions.sort_by(&:date).first(limit).each do |game_session| %>
