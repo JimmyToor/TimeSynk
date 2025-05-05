@@ -8,7 +8,7 @@ class InvitePolicy < ApplicationPolicy
     return true if record.assigned_roles.empty?
 
     user_role_weight = user.most_permissive_role_weight_for_resource(record.group)
-    invite_role_weight = record.assigned_roles.map { |role| RoleHierarchy.role_weight(role) }.min
+    invite_role_weight = record.assigned_roles.map { |role| RoleHierarchy.role_weight(role) }.min || RoleHierarchy::NON_PERMISSIVE_WEIGHT
 
     return false if user_role_weight > invite_role_weight # invite provides more dangerous permissions than the user has
 

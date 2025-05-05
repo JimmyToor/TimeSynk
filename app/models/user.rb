@@ -114,7 +114,7 @@ class User < ApplicationRecord
   end
 
   def most_permissive_role_weight_for_resource(resource)
-    roles.where(resource: resource).map { |role| RoleHierarchy.role_weight(role) }.min || 1000
+    roles.where(resource: resource).map { |role| RoleHierarchy.role_weight(role) }.min || RoleHierarchy::NON_PERMISSIVE_WEIGHT
   end
 
   def update_roles(add_roles: [], remove_roles: [])

@@ -37,7 +37,7 @@ module UsersHelper
       else
         user.most_permissive_role_for_resource(resource)
       end
-      unless highest_role.nil? || RoleHierarchy.role_weight(highest_role) >= 1000
+      unless highest_role.nil? || RoleHierarchy.role_weight(highest_role) >= RoleHierarchy::NON_PERMISSIVE_WEIGHT
         title = highest_role.resource_type.titleize + " " + highest_role.name.titleize
         concat(inline_svg("icons/star.svg", class: "absolute -left-4 h-3", title: title)) unless title.nil?
       end

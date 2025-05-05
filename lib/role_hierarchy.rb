@@ -19,6 +19,8 @@ module RoleHierarchy
     "game_session.owner": 200
   }.freeze
 
+  NON_PERMISSIVE_WEIGHT = 1000 # Default weight for roles that are not in the hierarchy
+
   # Determines if a given role supersedes another role based on their weights.
   #
   # @param role [Role] check if this role supersedes comparison role
@@ -39,8 +41,8 @@ module RoleHierarchy
   # @param role [Role] the role to get the weight of
   # @return [Integer] the weight of the role. 1000 if no weight is found
   def self.role_weight(role)
-    return 1000 if role.nil?
-    ROLE_WEIGHTS[role_to_key(role)] || 1000
+    return NON_PERMISSIVE_WEIGHT if role.nil?
+    ROLE_WEIGHTS[role_to_key(role)] || NON_PERMISSIVE_WEIGHT
   end
 
   def self.role_to_key(role)
