@@ -40,7 +40,7 @@ services:
     restart: unless-stopped
 
   scheduler: # cron jobs
-    image: timesynk-web:latest
+    image: timesynk-scheduler:latest
     build:
       context: .
       target: scheduler
