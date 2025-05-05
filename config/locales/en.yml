@@ -31,6 +31,7 @@ en:
   activerecord:
     attributes:
       invite:
+        assigned_role_ids: "Assigned permissions"
         expires_at: "Expiration date"
   identity:
     email:
@@ -98,6 +99,16 @@ en:
       success: "Availability successfully deleted."
       error: "There was an error deleting the availability."
       only_availability: "Cannot delete your only availability."
+  proposal_availability:
+    create:
+      success: "Availability set for %{game_name}."
+      error: "There was a problem creating the availability."
+    update:
+      success: "Availability updated for %{game_name}."
+      error: "There was a problem updating the availability."
+    destroy:
+      success: "Availability unset for %{game_name}."
+      error: "There was an error deleting the availability."
   invite:
     create:
       success: "Invite successfully created."
