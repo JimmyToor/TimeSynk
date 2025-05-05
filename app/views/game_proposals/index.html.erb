@@ -1,7 +1,7 @@
 <%# locals: (game_proposals:) %>
 <%= render "shared/notification", id: "game_proposals" %>
 
-<h1>Game proposals</h1>
+<h5 class="text-xl font-bold mb-1">Game Proposals</h5>
 <div id="game_proposals">
   <%= render partial: "game_proposals/game_proposal_list", locals:{game_proposals: game_proposals }%>
 </div>

@@ -1,4 +1,5 @@
 class ProposalAvailabilitiesController < ApplicationController
+  add_flash_types :success
   before_action :set_proposal_availability, only: %i[show edit update destroy]
   before_action :set_game_proposal, only: %i[new create]
   before_action :set_availabilities, only: %i[new edit create]
@@ -33,7 +34,11 @@ class ProposalAvailabilitiesController < ApplicationController
 
     respond_to do |format|
       if @proposal_availability.save
-        format.html { redirect_to @game_proposal, notice: "Proposal availability was successfully created." }
+        format.html {
+          redirect_to @game_proposal,
+            success: {message: I18n.t("proposal_availability.create.success", game_name: @game_proposal.game_name),
+                      options: {highlight: @game_proposal.game_name}}
+        }
         format.json { render :show, status: :created, location: @proposal_availability }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -46,7 +51,11 @@ class ProposalAvailabilitiesController < ApplicationController
   def update
     respond_to do |format|
       if @proposal_availability.update(proposal_availability_params)
-        format.html { redirect_to @proposal_availability.game_proposal, notice: "Proposal availability was successfully updated." }
+        format.html {
+          redirect_to @proposal_availability.game_proposal,
+            success: {message: I18n.t("proposal_availability.update.success", game_name: @proposal_availability.game_proposal.game_name),
+                      options: {highlight: "#{@proposal_availability.game_proposal.game_name}."}}
+        }
         format.json { render :show, status: :ok, location: @proposal_availability }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -61,7 +70,10 @@ class ProposalAvailabilitiesController < ApplicationController
     @proposal_availability.destroy!
 
     respond_to do |format|
-      format.html { redirect_to game_proposal, notice: "Proposal availability was successfully destroyed." }
+      format.html {
+        redirect_to game_proposal, success: {message: I18n.t("proposal_availability.destroy.success", game_name: @proposal_availability.game_proposal.game_name),
+                                             options: {highlight: "#{@proposal_availability.game_proposal.game_name}."}}
+      }
       format.json { head :no_content }
     end
   end

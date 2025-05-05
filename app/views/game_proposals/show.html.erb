@@ -1,5 +1,6 @@
 <%# locals: (game_proposal:, proposal_availability: nil, proposal_permission_set:nil, alert:nil) %>
-<%= alert if alert.present? %>
+<%= render "shared/notification", id: "game_proposal_#{game_proposal.id}"%>
+<h5 class="text-xl font-bold mb-1">Game Proposal</h5>
 <%= render partial: game_proposal,
            locals: {
              game_proposal: game_proposal,
