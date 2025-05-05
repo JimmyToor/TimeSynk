@@ -3,7 +3,7 @@
   <%= render "form", group_availability: @group_availability, availabilities: @availabilities %>
 
   <div class="my-6">
-    <%= render "shared/buttons/delete_button", resource: @group_availability, text: "Unset Group Availability" %>
+    <%= render "shared/buttons/delete_button", confirm: false, resource: @group_availability, text: "Unset Group Availability" %>
   </div>
 
   <div class="my-6">

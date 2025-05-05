@@ -3,7 +3,7 @@
   <%= render "form", proposal_availability: @proposal_availability, availabilities: @availabilities %>
 
   <div class="my-6">
-    <%= render "shared/buttons/delete_button", resource: @proposal_availability, text: "Unset Proposal Availability" %>
+    <%= render "shared/buttons/delete_button", confirm: false, resource: @proposal_availability, text: "Unset Proposal Availability" %>
   </div>
 
   <div class="my-6">
