@@ -1,0 +1,7 @@
+<%= turbo_stream_toast(:success,
+                       I18n.t("invite.create.success"),
+                       "invite_#{@invite.id}") %>
+
+<%= frame_reload("invite_table_#{@group.id}") %>
+
+<%= turbo_stream.update("modal_frame") %>

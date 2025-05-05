@@ -1,6 +1,8 @@
 <h1>Editing group invite</h1>
 <div class="mb-2">
-  <%= render "form", invite: @invite, group: nil, roles: @roles %>
+  <%= modal_wrapper("Invite") do %>
+    <%= render "form", invite: @invite, group: nil, roles: @roles %>
+  <% end %>
 </div>
 
 <div class="space-x-2 mt-4">

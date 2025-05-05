@@ -1,0 +1,7 @@
+<%= turbo_stream_toast(:error,
+                       I18n.t("invite.update.error"),
+                       "invite_#{@invite.id}") %>
+
+<%= turbo_stream.update("notification_container_invite_#{@invite.id}",
+                        partial: "shared/notification",
+                        locals: { id: "invite_#{@invite.id}" }) %>

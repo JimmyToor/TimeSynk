@@ -109,9 +109,10 @@ en:
       success: "Invite successfully updated."
       error: "There was an error updating the invite."
     validation:
+      assigned_role_ids:
+        invalid: "contained invalid roles. Please refresh the page and try again."
       expires_at:
         presence: "can't be blank."
-        date: "cannot be in the past."
   game_session:
     validation:
       name:

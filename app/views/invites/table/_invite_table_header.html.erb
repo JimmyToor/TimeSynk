@@ -1,14 +1,15 @@
 <%# locals: (group:) %>
 <div class="flex flex-col items-center justify-between p-4 md:flex-row space-y-3 md:space-y-0 md:space-x-4">
-  <div class="w-full md:w-1/2">
-    <div class="relative w-full">
-      <div class="flex">
-        Invites for <%= group.name %>
-      </div>
-    </div>
+  <div class="relative w-full md:w-1/2 format lg:format-lg dark:format-invert">
+      <h3>
+        Invites for <span class="font-bold text-primary-600"><%= group.name %></span>
+      </h3>
   </div>
 
   <div class="flex w-fit flex-shrink-0 flex-col items-stretch justify-end md:w-auto md:flex-row space-y-2 md:space-y-0 md:items-center md:space-x-3">
-    <%= render "shared/buttons/icon_link_thick", path: new_group_invite_path(group), text: "New Invite", data: { turbo_frame: "_top" } if policy(Invite.new(group:@group)).new? %>
+    <%= render "shared/buttons/icon_link_thick",
+               path: new_group_invite_path(group),
+               text: "New Invite",
+               data: { turbo_frame: "modal_frame" } if policy(Invite.new(group: group)).new? %>
   </div>
 </div>

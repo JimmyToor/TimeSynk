@@ -5,6 +5,10 @@ class Invite < ApplicationRecord
   belongs_to :group
   has_secure_token :invite_token
 
+  normalizes :assigned_role_ids, with: ->(role_ids) {
+    role_ids.reject(&:blank?).map(&:to_i).uniq
+  }
+
   validate :validate_roles, :validate_date
   attr_readonly :user_id, :group_id
 
@@ -19,7 +23,7 @@ class Invite < ApplicationRecord
   end
 
   # Determines which roles the user can assign to the invitee.
-  # Users who are not admins or higher in the group cannot assign any roles.
+  # Users who are not admins or higher in the group cannot assign any invite roles.
   #
   # @param user [User] the user who is creating/editing the invite
   # @param group [Group] the group the invite is for
@@ -37,12 +41,20 @@ class Invite < ApplicationRecord
     find_by(invite_token: token)
   end
 
+  def user_can_change_roles(role_ids)
+    return Invite.available_roles(user, group).pluck(:id).include?(role_ids) if user.present?
+    false
+  end
+
   private
 
   def validate_roles
+    valid_roles = Role.where(resource: group).pluck(:id)
+
     assigned_role_ids.each do |role_id|
-      if role_id.is_a?(Integer) && !Role.find_by(id: role_id)
-        errors.add(:assigned_role_ids, "Role #{role_id} not found")
+      if !role_id.is_a?(Integer) || !Role.find_by(id: role_id) || !valid_roles.include?(role_id)
+        errors.add(:assigned_role_ids, I18n.t("invite.validation.assigned_role_ids.invalid"))
+        break
       end
     end
   end
@@ -50,11 +62,6 @@ class Invite < ApplicationRecord
   def validate_date
     if expires_at.nil?
       self.expires_at = 1.week.from_now
-    end
-
-    if expires_at <= Time.current
-      errors.add(:expires_at, I18n.t("invite.validation.expires_at.date"))
-      throw :abort
     end
   end
 end

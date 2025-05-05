@@ -1,7 +1,9 @@
 <h1>New invite to <span class="font-bold text-primary-600"><%= @group.name %></span></h1>
 
 <div class="my-4 space-x-2">
-  <%= render "form", invite: @invite, group: @group, roles: @roles %>
+  <%= modal_wrapper "New Invite" do %>
+    <%= render "form", invite: @invite, group: @group, roles: @roles %>
+  <% end %>
 </div>
 
 <div class="mt-4 space-x-2">
