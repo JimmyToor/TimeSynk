@@ -54,7 +54,7 @@ FROM base AS final
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libvips postgresql-client cron && \
+    apt-get install --no-install-recommends -y curl libvips postgresql-client cron file && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy built artifacts: gems, application
@@ -81,11 +81,10 @@ CMD ["./bin/rails", "server"]
 # For scheduler container
 FROM final AS scheduler
 
-RUN mkdir -p /run /var/run && \
-    chown root:root /run /var/run && \
-    chmod 755 /run /var/run
-
 # cron daemon needs root
 USER root
+
+RUN mkdir -p /var/run && chown root:root /var/run
+
 ENTRYPOINT ["./bin/docker-scheduler-entrypoint"]
 CMD ["cron", "-f"]

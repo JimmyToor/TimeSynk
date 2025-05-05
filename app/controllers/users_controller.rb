@@ -1,11 +1,14 @@
 class UsersController < ApplicationController
+  add_flash_types :success, :error
   before_action :set_user, only: %i[update show destroy]
   before_action :set_group, only: %i[show]
   before_action :set_game_proposal, only: %i[show]
   before_action :set_game_session, only: %i[show]
-  skip_after_action :verify_authorized
+  skip_after_action :verify_authorized, except: %i[update]
   skip_after_action :verify_policy_scoped
-  def edit
+  
+
+  def index
   end
 
   def show
@@ -16,22 +19,24 @@ class UsersController < ApplicationController
               game_session: @game_session}
 
     respond_to do |format|
-      format.html {
-        render :show, locals: locals
-      }
-      format.turbo_stream {
-        render :show, locals: locals
-      }
+      format.html { render :show, locals: locals}
+      format.turbo_stream { render :show, locals: locals }
     end
+  end
+  
+  def edit
   end
 
   def update
+    authorize(@user)
     @user.avatar.purge if params.key?(:remove_avatar)
     respond_to do |format|
       if @user.update(user_params)
-        format.html { render "users/edit", notice: "Your settings were updated successfully", status: :ok }
+        flash[:success] = {message: I18n.t("user.avatar.update.success")}
+        format.html { redirect_to settings_path, success: {message: I18n.t("user.avatar.update.success")} }
       else
-        format.html { render "users/edit", alert: @user.errors.full_messages.join(", "), status: :unprocessable_entity }
+        format.html { redirect_to settings_path, error: {message: I18n.t("user.avatar.update.error"),
+                                                          options: {list_items: @user.errors.full_messages}} }
       end
     end
   end

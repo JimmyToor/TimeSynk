@@ -13,6 +13,6 @@ class UserPolicy < ApplicationPolicy
   end
 
   def update?
-    user == resource
+    user == record
   end
 end

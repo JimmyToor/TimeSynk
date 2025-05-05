@@ -155,3 +155,8 @@ en:
       update:
         success: "Game proposal for %{name} successfully updated."
         error: "There was an error updating the proposal for %{name}."
+  user:
+    avatar:
+      update:
+        success: "Avatar updated."
+        error: "There was a problem changing your avatar."
