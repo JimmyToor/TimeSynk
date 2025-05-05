@@ -7,3 +7,5 @@
                        I18n.t("game_session_attendance.update.success", name: @game_session_attendance.game_session.game_name),
                        "game_session_attendance_#{@game_session_attendance.id}",
                        highlight: " #{@game_session_attendance.game_session.game_name} ") %>
+
+<%= frame_reload "game_session_attendance_table_#{@game_session_attendance.game_session.id}" %>
