@@ -19,7 +19,6 @@ export default class extends Dialog {
     super.initialize();
     this.submitStartHandler = this.handleSubmitStart.bind(this);
     this.submitEndHandler = this.handleSubmitEnd.bind(this);
-    this.beforeFetchRequestHandler = this.handleBeforeFetchRequest.bind(this);
     this.afterFetchRequestHandler = this.handleAfterFetchRequest.bind(this);
     this.loadListener = this.startLoading.bind(this);
   }
@@ -36,10 +35,6 @@ export default class extends Dialog {
   }
 
   addTurboListeners() {
-    this.dialogTarget.addEventListener(
-      "turbo:before-fetch-request",
-      this.beforeFetchRequestHandler,
-    );
     this.dialogTarget.addEventListener(
       "turbo:submit-start",
       this.submitStartHandler,
@@ -60,11 +55,8 @@ export default class extends Dialog {
   }
 
   removeTurboListeners() {
-    if (!this.dialogTarget) return;
-    this.dialogTarget.removeEventListener(
-      "turbo:before-fetch-request",
-      this.beforeFetchRequestHandler,
-    );
+    if (!this.hasDialogTarget) return;
+
     this.dialogTarget.removeEventListener(
       "turbo:submit-start",
       this.submitStartHandler,
@@ -86,12 +78,6 @@ export default class extends Dialog {
 
   isInModal(event) {
     return this.dialogTarget.contains(event.detail.formSubmission.formElement);
-  }
-
-  handleBeforeFetchRequest(event) {
-    if (event.detail.fetchOptions?.headers["X-Sec-Purpose"] === "prefetch")
-      return;
-    this.showLoadingSpinner();
   }
 
   handleAfterFetchRequest(event) {
@@ -179,13 +165,11 @@ export default class extends Dialog {
 
   showLoadingSpinner() {
     if (!this.hasLoadingIndicatorTarget) return;
-
     this.loadingIndicatorTarget.classList.remove("hidden");
   }
 
   hideLoadingSpinner() {
     if (!this.hasLoadingIndicatorTarget) return;
-
     this.loadingIndicatorTarget.classList.add("hidden");
   }
 

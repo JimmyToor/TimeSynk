@@ -53,7 +53,7 @@ export default class extends Controller {
         this.element.dispatchEvent(
           new CustomEvent("fetch-end", {
             bubbles: true,
-            detail: { success: false },
+            detail: { success: true },
           }),
         );
       });
