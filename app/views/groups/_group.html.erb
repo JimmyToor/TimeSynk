@@ -28,4 +28,5 @@
 
     <%= render "group_memberships/group_membership_list", group: group, limit: 8 %>
   </div>
+  <%= turbo_stream_from group %>
 <% end %>

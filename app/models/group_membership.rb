@@ -18,7 +18,7 @@ class GroupMembership < ApplicationRecord
   validates :group, uniqueness: {scope: :user, message: I18n.t("group_membership.already_member")}
 
   before_destroy :transfer_resources_to_group_owner, unless: :destroyed_via_association?
-  after_destroy :delete_votes
+  after_destroy :delete_votes, :broadcast_destroy
 
   def member_roles
     roles.where(user: user)
@@ -43,5 +43,24 @@ class GroupMembership < ApplicationRecord
 
   def destroyed_via_association?
     destroyed_by_association&.name == :group_memberships
+  end
+
+  def broadcast_destroy
+    broadcast_remove_later_to(
+      group,
+      target: "popover-user-roles-#{@user.id}-#{@group.id}"
+    )
+    broadcast_remove_later_to(
+      group,
+      target: "group_membership_row_#{@id}"
+    )
+    broadcast_remove_later_to(
+      group,
+      target: "group_membership_#{@id}"
+    )
+    broadcast_remove_later_to(
+      group,
+      target: "member_list_group_membership_#{@id}"
+    )
   end
 end

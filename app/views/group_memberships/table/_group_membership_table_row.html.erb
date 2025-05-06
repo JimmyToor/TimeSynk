@@ -1,5 +1,5 @@
 <%# locals: (group_membership:) %>
-<tr class="text-center hover:bg-gray-100 dark:hover:bg-gray-700 h-fit">
+<tr id="group_membership_row_<%= group_membership.id %>" class="text-center hover:bg-gray-100 dark:hover:bg-gray-700 h-fit">
   <td class="ml-1 py-8 flex items-center justify-center">
     <% if can_update_resource_permissions_for_user?(group_membership.user, group_membership.group) %>
       <%= render "shared/buttons/icon_link",
