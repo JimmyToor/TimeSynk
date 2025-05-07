@@ -128,8 +128,12 @@ module.exports = {
         ],
       },
       screens: {
+        xxs: "300px",
         xs: "475px",
         xxl: "1650px",
+      },
+      maxWidth: {
+        xxs: "300px",
       },
     },
   },
