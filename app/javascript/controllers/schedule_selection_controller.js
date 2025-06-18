@@ -10,6 +10,8 @@ export default class extends Controller {
     "spinner",
     "scheduleIdInput",
     "scheduleToggle",
+    "scheduleName",
+    "removeButton",
   ];
   static values = {
     src: String,
@@ -21,6 +23,7 @@ export default class extends Controller {
     this.submitSuccessCallback = this.onSubmitSuccess.bind(this);
   }
 
+  //Handles post-creation of a new schedule.
   onSubmitSuccess() {
     if (this.hasFrameTarget) {
       // Reload the frame to show the new schedule
@@ -30,6 +33,7 @@ export default class extends Controller {
         return;
       }
 
+      // Re-fetch the schedules to ensure the new one is included
       fetch(
         `/availability_schedules.json?availability_id=${this.frameTarget.dataset.availabilityId}`,
       )
@@ -39,11 +43,11 @@ export default class extends Controller {
             // Check for schedules that are not listed in the form and add them
             if (
               this.scheduleIdInputTargets.find(
-                (input) =>
-                  parseInt(input.dataset.savedScheduleId) === schedule.id,
+                (input) => parseInt(input.dataset.scheduleId) === schedule.id,
               )
             )
               return;
+            // RailsNestedFormOutlet needs an event to add the new schedule.
             let event = new Event("", undefined);
             Object.defineProperty(event, "target", {
               value: {
@@ -53,6 +57,7 @@ export default class extends Controller {
                 },
               },
             });
+
             this.addSchedule(event, true);
           });
         });
@@ -67,39 +72,54 @@ export default class extends Controller {
     }
   }
 
+  /**
+   * Adds a schedule to the availability form.
+   * @param event - The event that triggered the addition of a schedule.
+   * @param existing - If true, the schedule is an existing one that was already in the availability.
+   */
   addSchedule(event, existing = false) {
     this.railsNestedFormOutlet.add(event);
 
-    let newScheduleInput = this.scheduleIdInputTargets.find(
+    // Find the new schedule ID input field and update it with the selected schedule ID.
+    let newScheduleId = event.target.dataset.scheduleId;
+    let newScheduleIdInput = this.scheduleIdInputTargets.find(
       (scheduleIdInput) =>
-        !this.isMarkedForRemoval(scheduleIdInput) &&
-        scheduleIdInput.dataset.savedScheduleId === "0",
+        scheduleIdInput.dataset.scheduleId === "0" &&
+        !this.isMarkedForRemoval(scheduleIdInput),
     );
-    if (!newScheduleInput) return;
+    if (!newScheduleIdInput) return;
 
-    newScheduleInput.value = event.target.dataset.scheduleId;
-    newScheduleInput.dataset.savedScheduleId = event.target.dataset.scheduleId;
-    newScheduleInput.parentElement.querySelector(".schedule-name").innerText =
-      event.target.dataset.scheduleName;
-    newScheduleInput.parentElement.querySelector(
-      ".remove-schedule-button",
-    ).dataset.removeId = event.target.dataset.scheduleId;
+    newScheduleIdInput.value = newScheduleId;
+    newScheduleIdInput.dataset.scheduleId = newScheduleId;
+
+    // Update the schedule name in the form.
+    let container = newScheduleIdInput.closest(".nested-form-wrapper");
+    container.querySelector(
+      "[data-schedule-selection-target='scheduleName']",
+    ).innerText = event.target.dataset.scheduleName;
+
+    // Update the remove button with the added schedule ID.
+    container.querySelector(
+      "[data-schedule-selection-target='removeButton']",
+    ).dataset.scheduleId = newScheduleId;
 
     if (existing) {
-      newScheduleInput.closest(".nested-form-wrapper").dataset.newRecord =
-        "false";
+      container.dataset.newRecord = "false";
     }
 
     this.updateCalendar();
   }
 
+  /**
+   * Removes a schedule from the availability form.
+   * @param event - The event that triggered the removal of a schedule.
+   */
   removeSchedule(event) {
-    const targetScheduleId =
-      event.target.dataset.scheduleId || event.target.dataset.removeId;
+    const targetScheduleId = event.target.dataset.scheduleId;
     const existingInput = this.scheduleIdInputTargets.find(
       (scheduleIdInput) =>
         !this.isMarkedForRemoval(scheduleIdInput) &&
-        scheduleIdInput.dataset.savedScheduleId === targetScheduleId,
+        scheduleIdInput.dataset.scheduleId === targetScheduleId,
     );
     if (!existingInput) return;
 
@@ -111,24 +131,22 @@ export default class extends Controller {
     this.railsNestedFormOutlet.remove(hollowEvent);
 
     // If the schedule was removed via button, uncheck the corresponding checkbox from the schedule list
-    const checkbox = this.scheduleToggleTargets.find(
-      (toggle) =>
-        toggle.dataset.scheduleId === event.originalTarget.dataset.removeId,
-    );
+    const checkbox = this.scheduleToggleTargets.find((toggle) => {
+      return toggle.dataset.scheduleId === event.target.dataset.scheduleId;
+    });
     if (checkbox) checkbox.checked = false;
 
     this.updateCalendar();
   }
 
-  /*
-   * Checks if a schedule has been marked for removal from the availability
-   */
+  // Checks if a schedule has been marked for removal from the availability
   isMarkedForRemoval(scheduleIdInput) {
     return (
       scheduleIdInput.closest(".nested-form-wrapper").style.display === "none"
     );
   }
 
+  // Updates the calendar with the current schedules.
   updateCalendar() {
     const id = this.calendarOutlet.sourceIdValue;
     this.calendarOutlet.replaceEventSource(id, {
@@ -137,7 +155,7 @@ export default class extends Controller {
       extraParams: {
         schedule_ids: this.scheduleIdInputTargets
           .filter((input) => !this.isMarkedForRemoval(input))
-          .map((input) => input.dataset.savedScheduleId),
+          .map((input) => input.dataset.scheduleId),
       },
       id: id,
     });
@@ -150,7 +168,7 @@ export default class extends Controller {
     const existingInput = this.scheduleIdInputTargets.find(
       (scheduleIdInput) =>
         !this.isMarkedForRemoval(scheduleIdInput) &&
-        scheduleIdInput.dataset.savedScheduleId === scheduleId,
+        scheduleIdInput.dataset.scheduleId === scheduleId,
     );
     element.checked = !!existingInput;
   }
