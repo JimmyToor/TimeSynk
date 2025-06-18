@@ -1,7 +1,8 @@
 <%# locals: (title: "Open Deletion Dialog", data: {}, extra_classes: "") %>
 
 <%= button_tag data: {action: "dialog#open"}.merge(data),
-  title: title,
-  class: "text-notice-600 dark:text-notice-400 #{extra_classes}" do %>
-  <%= content_tag(:span, inline_svg("icons/trash.svg")) %>
+               aria: {label:"Delete", haspopup: "dialog"},
+               title: title,
+               class: "text-notice-600 dark:text-notice-400 hover:text-notice-500 dark:hover:text-notice-300 #{extra_classes}" do %>
+  <%= inline_svg("icons/trash.svg", aria_hidden: true) %>
 <% end %>

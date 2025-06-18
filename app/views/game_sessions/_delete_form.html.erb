@@ -3,7 +3,7 @@
 
   <div>
     <label>
-      <input data-confirmation-target="input" data-action="confirmation#check" type="checkbox"/>
+      <input data-confirmation-target="input" data-action="confirmation#check" type="checkbox" autofocus/>
       I confirm that I want to permanently delete this game session.
     </label>
   </div>
@@ -16,6 +16,6 @@
                   class: "disabled:cursor-not-allowed disabled:bg-red-300 rounded-full bg-red-600 px-3
                                   py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline
                                   focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 " %>
-    <button type="button" data-action="dialog#close" autofocus>Cancel</button>
+    <button type="button" data-action="dialog#close">Cancel</button>
   </div>
 </div>
