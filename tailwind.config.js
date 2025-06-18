@@ -13,6 +13,8 @@ module.exports = {
       animation: {
         "slide-down": "slide-down 0.5s ease forwards",
         "slide-up": "slide-up 0.5s ease forwards",
+        appear: "appear 0.15s linear forwards",
+        disappear: "appear 0.15s linear backwards",
       },
       keyframes: {
         "slide-down": {
@@ -22,6 +24,14 @@ module.exports = {
         "slide-up": {
           from: { transform: "translateY(50px)" },
           to: { transform: "translateY(0px)" },
+        },
+        fade: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        appear: {
+          "0%": { translate: "var1/3rem)", opacity: "0" },
+          "100%": { translate: "var(--translateX))", opacity: "1" },
         },
       },
       colors: {
@@ -131,6 +141,8 @@ module.exports = {
         xxs: "300px",
         xs: "475px",
         xxl: "1650px",
+        fhd: "1920px",
+        uw: "2560px",
       },
       maxWidth: {
         xxs: "300px",
