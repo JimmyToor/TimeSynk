@@ -1,0 +1,16 @@
+<%# locals: (user:, resource:, editable:, roles_for_display: [], assignable_roles: nil) %>
+<h3 class="font-bold text-primary-600"><%= resource.class.name.titleize %> Roles:</h3>
+
+<%= render "permission_sets/roles",
+           user_id: user.id,
+           resource: resource,
+           editable: editable,
+           roles: roles_for_display %>
+
+<% if editable && assignable_roles.present? %>
+  <%= render "permission_sets/add_role_button",
+             user_id: user.id,
+             roles: assignable_roles,
+             resource: resource,
+             popover_id: "add_role_popover_user_#{user.id}_#{resource.model_name.param_key}_#{resource.id}_#{SecureRandom.hex(4)}" %>
+<% end %>

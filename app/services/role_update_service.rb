@@ -10,15 +10,15 @@
 #   RoleUpdateService.call(user, [1], [3])
 class RoleUpdateService < ApplicationService
   # Initializes the service, validating role IDs.
-  # Blank IDs are rejected, and IDs are converted to integers within Sets.
+  # Blank IDs are ignored.
   #
   # @param user [User] The user whose roles are being updated.
   # @param add_roles [Array<Integer, String>] An array of Role IDs to add to the user.
   # @param remove_roles [Array<Integer, String>] An array of Role IDs to remove from the user.
   # @raise [ArgumentError] If validation fails (invalid role ID found).
   def initialize(user, add_roles = [], remove_roles = [])
-    @add_roles = Set.new(add_roles.reject(&:blank?).map(&:to_i)) if add_roles.present?
-    @remove_roles = Set.new(remove_roles.reject(&:blank?).map(&:to_i)) if remove_roles.present?
+    @add_roles = Set.new(add_roles.reject(&:blank?).map(&:to_i).reject(&:zero?)) if add_roles.present?
+    @remove_roles = Set.new(remove_roles.reject(&:blank?).map(&:to_i).reject(&:zero?)) if remove_roles.present?
     @user = user
     validate_role_ids!
   end
@@ -26,7 +26,6 @@ class RoleUpdateService < ApplicationService
   # Executes the role update process within a transaction.
   # Adds roles from the `@add_roles` set that the user doesn't already have.
   # Removes roles specified in the `@remove_roles` set from the user.
-  # Logs the update operation at the debug level.
   #
   # @return [void]
   def call
@@ -41,7 +40,6 @@ class RoleUpdateService < ApplicationService
   private
 
   # Validates that all provided role IDs exist in the database.
-  # Queries for roles matching the IDs in `@add_roles` and `@remove_roles`.
   #
   # @raise [ArgumentError] If `ActiveRecord::RecordNotFound` is raised during the query,
   #   indicating an invalid role ID was provided.

@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  get "permission_sets/edit"
-  get "permission_sets/update"
   resources :availabilities
   resources :availability_schedules
   resources :games, only: [:index, :show]
@@ -14,8 +12,9 @@ Rails.application.routes.draw do
   resources :group_memberships, only: [:create]
   get "calendars", to: "calendars#show"
   get "calendars/new", to: "calendars#new"
-  get "groups/join", to: "group_memberships#new", as: :join_group_with_token
-  get "invites/accept/:invite_token", to: "invites#show", as: :accept_invite
+  get "groups/join", to: "group_memberships#new", as: :join_group
+  get "invites/accept", to: "group_memberships#new_from_invite", as: :accept_invite
+  get "invites/accept/:invite_token", to: "group_memberships#new_from_invite", as: :accept_invite_with_token
   resources :users
   shallow do
     resources :groups do
@@ -32,10 +31,17 @@ Rails.application.routes.draw do
       end
     end
   end
-  get "groups/:group_id/permission_set/edit", to: "permission_sets#edit", as: :edit_group_permission_set
-  match "groups/:group_id/permission_set", to: "permission_sets#update", via: [:patch, :put, :post], as: :group_permission_set
-  get "game_proposals/:game_proposal_id/permission_set/edit", to: "permission_sets#edit", as: :edit_game_proposal_permission_set
-  match "game_proposals/:game_proposal_id/permission_set", to: "permission_sets#update", via: [:patch, :put, :post], as: :game_proposal_permission_set
+
+  resources :groups, only: [] do
+    resource :permission_set, only: [:show, :edit, :update]
+  end
+  resources :game_proposals, only: [] do
+    resource :permission_set, only: [:show, :edit, :update]
+  end
+  resources :game_sessions, only: [] do
+    resource :permission_set, only: [:show, :edit, :update]
+  end
+
   namespace :two_factor_authentication do
     namespace :challenge do
       resource :totp, only: [:new, :create]

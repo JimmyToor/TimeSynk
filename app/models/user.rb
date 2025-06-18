@@ -75,37 +75,10 @@ class User < ApplicationRecord
     roles.where(resource: resource)
   end
 
-  def roles_for_game_proposal(proposal)
-    roles.where(resource: proposal)
-  end
-
-  def roles_for_game_session(game_session)
-    roles.where(resource: game_session)
-  end
-
-  def supersedes_user_in_game_proposal?(role_user, game_proposal)
-    highest_role = highest_role_for_game_proposal(game_proposal)
-    highest_role_user_role = role_user.highest_role_for_game_proposal(game_proposal)
-
-    RoleHierarchy.supersedes?(highest_role, highest_role_user_role)
-  end
-
-  # Returns the highest role a user has for a particular game proposal.
-  # This method takes into account the roles the user has for the group the game proposal belongs to.
-  #
-  # @param game_proposal [GameProposal] the game proposal to check roles for
-  # @return [Role] the highest role the user has for the game proposal
-  def highest_role_for_game_proposal(game_proposal)
-    highest_role = most_permissive_role_for_resource(game_proposal)
-
-    # roles for game proposals can be superseded by roles for the group
-    highest_group_role = most_permissive_role_for_resource(game_proposal.group)
-    highest_role = highest_group_role if RoleHierarchy.supersedes?(highest_group_role, highest_role)
-    highest_role
-  end
-
-  def supersedes_user_in_group?(role_user, group)
-    RoleHierarchy.supersedes?(most_permissive_role_for_resource(group), role_user.most_permissive_role_for_resource(group))
+  def supersedes_user_in_resource?(role_user, resource)
+    role_user_most_permissive_role = role_user.most_permissive_cascading_role_for_resource(resource)
+    our_most_permissive_role = most_permissive_cascading_role_for_resource(resource)
+    RoleHierarchy.supersedes?(our_most_permissive_role, role_user_most_permissive_role)
   end
 
   # Returns the highest role a user has for a particular resource.
@@ -117,11 +90,50 @@ class User < ApplicationRecord
     roles.where(resource: resource).map { |role| RoleHierarchy.role_weight(role) }.min || RoleHierarchy::NON_PERMISSIVE_WEIGHT
   end
 
+  # Returns the highest role a user has for a particular resource, including roles from parent resources.
+  def most_permissive_cascading_role_for_resource(resource)
+    current_highest_role = most_permissive_role_for_resource(resource)
+
+    return current_highest_role unless resource.class.respond_to?(:role_providing_associations)
+
+    resource.class.role_providing_associations.each do |association_name|
+      parent_resource = resource.send(association_name)
+      next if parent_resource.nil?
+
+      parent_highest_role = most_permissive_cascading_role_for_resource(parent_resource)
+
+      if RoleHierarchy.supersedes?(parent_highest_role, current_highest_role)
+        current_highest_role = parent_highest_role
+      end
+    end
+    current_highest_role
+  end
+
+  # @return [Hash<Role>] The roles that we can add/remove for the affected user relative to the resource
+  def available_roles_for_resource(affected_user, resource, cascading: false)
+    roles = {}
+    most_permissive_role = most_permissive_cascading_role_for_resource(resource)
+    return roles if most_permissive_role.nil? || most_permissive_role == RoleHierarchy::NON_PERMISSIVE_WEIGHT
+
+    if supersedes_user_in_resource?(affected_user, resource)
+      roles[resource.model_name.param_key.to_sym] = resource.roles.reject { |role| RoleHierarchy.special?(role) }
+      if cascading && resource.class.respond_to?(:role_providing_associations)
+        resource.class.role_providing_associations.each do |association_name|
+          parent_resource = resource.send(association_name)
+          next if parent_resource.nil?
+
+          roles.merge!(available_roles_for_resource(affected_user, parent_resource, cascading: true))
+        end
+      end
+    end
+    roles
+  end
+
   def update_roles(add_roles: [], remove_roles: [])
     RoleUpdateService.call(self, add_roles, remove_roles)
   end
 
-  def membership_for_group(group)
+  def get_membership_for_group(group)
     group_memberships.find_by(group: group, user: self)
   end
 
@@ -129,27 +141,21 @@ class User < ApplicationRecord
     proposal_votes.find_by(game_proposal: proposal)
   end
 
-  def nearest_proposal_availability(game_proposal)
-    availabilities = game_proposal.proposal_availabilities.for_user(self)
-    if availabilities.empty?
-      nearest_group_availability(game_proposal.group)
-    else
-      availabilities.first.availability
-    end
+  def get_attendance_for_game_session(game_session)
+    game_session_attendances.find_by(game_session: game_session)
   end
 
-  def make_sole_user_permission_set(resource)
+  def nearest_proposal_availability(game_proposal)
+    game_proposal.get_user_proposal_availability(self)&.availability || nearest_group_availability(game_proposal.group)
+  end
+
+  def make_permission_set_for_resource(resource)
     raise ArgumentError, "No resource provided for user (#{user.username}) permission set." if resource.nil?
     resource.make_permission_set([self])
   end
 
   def nearest_group_availability(group)
-    availabilities = group.group_availabilities.for_user(self)
-    if availabilities.empty?
-      user_availability.availability
-    else
-      availabilities.first.availability
-    end
+    group.get_user_group_availability(self)&.availability || user_availability.availability
   end
 
   def create_initial_user_availability
@@ -179,19 +185,22 @@ class User < ApplicationRecord
     pending_game_proposals.count
   end
 
-  def groups_user_can_create_proposal_for
+  def groups_user_can_create_proposals_for
     groups.select { |group| GroupPolicy.new(self, group).create_game_proposal? }
   end
 
+  def game_proposals_user_can_create_sessions_for
+    game_proposals.select do |proposal|
+      GameProposalPolicy.new(self, proposal).create_game_session?
+    end
+  end
+
   def broadcast_role_change_for_resource(resource)
-    Turbo::Streams::ActionBroadcastJob.perform_later(
-      "user_roles_#{id}_#{resource.class.name.underscore}_#{resource.id}",
-      action: :update,
-      method: :morph,
-      target: nil,
-      targets: ".user_roles_#{id}_#{resource.class.name.underscore}_#{resource.id}",
-      partial: "#{resource.class.name.underscore.pluralize}/roles",
-      locals: {"#{resource.class.name.underscore}": resource}
+    broadcast_action_to(
+      "user_roles_#{id}",
+      action: "frame_reload",
+      target: "user_roles_#{id}_#{resource.model_name.param_key}_#{resource.id}",
+      render: false
     )
   end
 
@@ -199,6 +208,7 @@ class User < ApplicationRecord
     roles_to_check.any? { |role| has_cached_role?(role, resource) }
   end
 
+  # Clears the email of other users who have the same email address when this user is verified.
   def clear_email_from_other_users
     return unless verified? && email.present?
 

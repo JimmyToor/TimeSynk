@@ -2,7 +2,10 @@ module Permissionable
   extend ActiveSupport::Concern
 
   included do
-    # @return [PermissionSet] a new instance of PermissionSet for the passed users with roles in relation to the resource
+    min_weight = RoleHierarchy::ROLE_WEIGHTS[:"#{model_name.singular}.admin"] || RoleHierarchy::NON_PERMISSIVE_WEIGHT
+    const_set(:MIN_PERMISSION_EDIT_WEIGHT, min_weight)
+
+    # @return [PermissionSet] a new instance of PermissionSet for the passed users with their current roles in relation to the resource
     #
     # @param users [Array<User>] the users to create the permission set for.
     # @return [PermissionSet] the permission set where attribute users_roles has the user ids as keys with user and role ids as values. e.g.  { 1 => { user: User, role_ids: [1, 2, 3] }}
@@ -15,7 +18,6 @@ module Permissionable
           username: user.username
         }
       end
-
       # Create a new instance with the calculated roles
       PermissionSet.new(
         resource: self,

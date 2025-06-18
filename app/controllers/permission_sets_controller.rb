@@ -1,17 +1,30 @@
 class PermissionSetsController < ApplicationController
-  before_action :set_resource, :set_users, only: %i[edit update]
-  before_action :set_role_changes_and_affected_users, only: %i[update], if: -> { params.key?("update_roles") }
+  before_action :set_resource, only: %i[edit update]
+  before_action :set_users, only: %i[edit update]
+  before_action :set_user, :set_game_session, :set_game_proposal, :set_group, only: %i[show]
+  before_action :set_role_changes_and_affected_users, only: %i[update], unless: -> { params.key?("transfer_ownership") }
   skip_after_action :verify_policy_scoped
+  skip_after_action :verify_authorized, only: %i[show]
   rescue_from ActionController::ParameterMissing, with: :handle_parameter_missing
-  rescue_from ArgumentError, with: :handle_parameter_missing
 
   def index
   end
 
+  def show
+    respond_to do |format|
+      format.html {
+        render :show, locals: {user: @user,
+                               group: @group,
+                               game_proposal: @game_proposal,
+                               game_session: @game_session,
+                               group_membership: @user.get_membership_for_group(@group)}
+      }
+    end
+  end
+
   def edit
     @permission_set = @resource.make_permission_set(@users)
-    authorize(@permission_set, policy_class: "#{@resource.class.name}PermissionSetPolicy".constantize)
-
+    authorize(@permission_set)
     render :edit, locals: {permission_set: @permission_set, roles: @resource.roles, title: @title}
   end
 
@@ -49,6 +62,9 @@ class PermissionSetsController < ApplicationController
     elsif params.key?(:game_proposal_id)
       @resource = GameProposal.find(params[:game_proposal_id])
       @title = @resource.game_name
+    elsif params.key?(:game_session_id)
+      @resource = GameSession.find(params[:game_session_id])
+      @title = @resource.game_proposal.game_name
     else
       raise ActionController::ParameterMissing.new("No resource specified")
     end
@@ -74,7 +90,6 @@ class PermissionSetsController < ApplicationController
 
     # Get all relevant users and add them to the role changes hash
     users = User.where(id: role_changes.keys).index_by(&:id)
-
     @role_changes = role_changes.each_with_object({}) do |(user_id, changes), hash|
       hash[user_id] = changes.merge(user: users[user_id])
     end
@@ -107,5 +122,23 @@ class PermissionSetsController < ApplicationController
 
   def handle_parameter_missing(exception)
     render json: {error: exception.message}, status: :unprocessable_entity
+  end
+
+  def set_user
+    @user = User.find(params[:user_id])
+  end
+
+  def set_group
+    @group = Group.find(params[:group_id]) if params[:group_id]
+    @group = @game_proposal.group if @game_proposal.present? && @group.nil?
+  end
+
+  def set_game_proposal
+    @game_proposal = GameProposal.find(params[:game_proposal_id]) if params[:game_proposal_id]
+    @game_proposal = @game_session.game_proposal if @game_session.present? && @game_proposal.nil?
+  end
+
+  def set_game_session
+    @game_session = GameSession.find(params[:game_session_id]) if params[:game_session_id]
   end
 end

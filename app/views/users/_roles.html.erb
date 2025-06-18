@@ -1,12 +1,63 @@
-<%# locals: (user:, group:nil, game_proposal:nil, game_session:nil) %>
-<%= content_tag :div, "user_roles_#{user.id}_group_#{group.id}", class:"user_roles_#{user.id}_group_#{group.id}" do %>
-  <%= render "groups/roles", group_roles: user.roles_for_resource(group) %>
+<%# locals: (user:, group:nil, game_proposal:nil, game_session:nil, edit: false) %>
+<% if edit %>
+  <% most_permissive_role = Current.user.most_permissive_cascading_role_for_resource(game_session || game_proposal || group) %>
+  <% peer_user_most_permissive_role = user.most_permissive_cascading_role_for_resource(game_session || game_proposal || group) %>
+<% end %>
+
+<%= turbo_frame_tag "user_roles_#{user.id}_group_#{group.id}",
+                    role: "presentation",
+                    data: {src: permission_set_path_for_resource(user, group)},
+                    class: "user_roles_#{user.id}_group_#{group.id}" do %>
+  <% if edit %>
+    <% can_edit_group_roles = can_update_resource_permissions_for_peer_user?(
+      user,
+      group,
+      most_permissive_role: most_permissive_role,
+      peer_user_most_permissive_role: peer_user_most_permissive_role
+    ) %>
+    <% available_group_roles = assignable_roles_for_resource(user, group, most_permissive_role) %>
+  <% end %>
+
+  <%= render "permission_sets/resource_roles",
+             user: user,
+             resource: group,
+             editable: edit && can_edit_group_roles,
+             roles_for_display: user.roles_for_resource(group),
+             assignable_roles: available_group_roles %>
 <% end if group %>
 
-<%= content_tag :div, "user_roles_#{user.id}_game_proposal_#{game_proposal.id}", class:"user_roles_#{user.id}_game_proposal_#{game_proposal.id}" do %>
-  <%= render "game_proposals/roles", game_proposal_roles: user.roles_for_resource(game_proposal) %>
+<%= turbo_frame_tag "user_roles_#{user.id}_game_proposal_#{game_proposal.id}",
+                    role: "presentation",
+                    data: { src: permission_set_path_for_resource(user, game_proposal) },
+                    class: "user_roles_#{user.id}_game_proposal_#{game_proposal.id}" do %>
+  <% if edit %>
+    <% can_edit_game_proposal_roles = can_update_resource_permissions_for_peer_user?(
+      user,
+      game_proposal,
+      most_permissive_role: most_permissive_role,
+      peer_user_most_permissive_role: peer_user_most_permissive_role
+    ) %>
+    <% available_game_proposal_roles = assignable_roles_for_resource(user, game_proposal, most_permissive_role) %>
+  <% end %>
+
+  <%= render "permission_sets/resource_roles",
+             user: user,
+             resource: game_proposal,
+             editable: edit && can_edit_game_proposal_roles,
+             roles_for_display: user.roles_for_resource(game_proposal),
+             assignable_roles: available_game_proposal_roles %>
 <% end if game_proposal %>
 
-<%= content_tag :div, "user_roles_#{user.id}_game_session_#{game_session.id}", class:"user_roles_#{user.id}_game_session_#{game_session.id}" do %>
-  <%= render "game_sessions/roles", game_session_roles: user.roles_for_resource(game_session) %>
+<%= turbo_frame_tag "user_roles_#{user.id}_game_session_#{game_session.id}",
+                    role: "presentation",
+                    data: { src: permission_set_path_for_resource(user, game_session) },
+                    class: "user_roles_#{user.id}_game_session_#{game_session.id}" do %>
+  <%= render "permission_sets/resource_roles",
+             user: user,
+             resource: game_session,
+             editable: false,
+             roles_for_display: user.roles_for_resource(game_session)
+  %>
 <% end if game_session %>
+
+<%= turbo_stream_from "user_roles_#{user.id}" %>

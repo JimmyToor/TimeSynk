@@ -1,0 +1,36 @@
+<%# locals: (roles:, resource:, user_id:, popover_id:) %>
+<%= form_with(url: polymorphic_path([resource,:permission_set]),
+              method: :patch,
+              data: {controller: "anchor-position element-toggle",
+                     element_toggle_use_arrows_value: false},
+              class: "flex") do |form| %>
+  <div class="relative w-fit">
+    <%= fields_for "permission_set[role_changes][#{user_id}]" do |subform|  %>
+      <%= render "shared/buttons/icon_button",
+                 title: "Add #{resource.class.name} Role",
+                 button_attributes: {popovertarget:popover_id},
+                 data: { action: "click->anchor-position#updatePosition", anchor_position_target: "anchor" },
+                 svg_name:"add",
+                 extra_classes:"size-6",
+                 icon_classes:"text-accent-800 hover:text-accent-700 dark:text-accent-600 dark:hover:text-accent-500
+                dark:focus:ring-accent-400 cursor-pointer focus:ring-4 focus:outline-none focus:ring-accent-500" %>
+    <% end %>
+  </div>
+  <%= render "shared/popover_top_layer",
+             id: popover_id,
+             data: {element_toggle_target: "targetElement"} do %>
+    <ul class="list-inside list-disc space-y-1">
+      <% roles.each do |role| %>
+        <%= fields_for "permission_set[role_changes][#{user_id}]" do |subform|  %>
+          <li class="flex rounded-md hover:bg-slate-400 dark:hover:bg-gray-600">
+            <%= subform.button role.name.humanize,
+                               name: "permission_set[role_changes][#{user_id}][add_roles][]",
+                               data: { action: "element-toggle#triggerToggle" },
+                               class: "w-full text-black dark:text-white rounded-lg px-1",
+                               value: role.id %>
+          </li>
+        <% end %>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>

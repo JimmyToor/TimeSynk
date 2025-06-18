@@ -1,4 +1,4 @@
-<%# locals: (group_membership:, group_permission_set:, game_proposal: nil) %>
-<%= render partial: "group_memberships/show_content", locals: {group_membership: group_membership,
-                                                               group_permission_set: group_permission_set,
-                                                               game_proposal: game_proposal} %>
+<%# locals: (group_membership:) %>
+<%= turbo_frame_tag dom_id(group_membership) do %>
+  <%= render partial: "group_memberships/show_content", locals: {group_membership: group_membership} %>
+<% end %>

@@ -1,4 +1,4 @@
-<%# locals: (user:, group: nil, game_proposal:nil, game_session:nil,) %>
+<%# locals: (user:, group: nil, game_proposal:nil, game_session:nil) %>
 <%= turbo_frame_tag "user_show_#{user.id}" do %>
 
   <%= render user %>
@@ -8,7 +8,7 @@
                  user: user,
                  group: group,
                  game_proposal: game_proposal,
-                 game_session:game_session %>
+                 game_session: game_session %>
     <% end %>
   <% end %>
 <% end %>

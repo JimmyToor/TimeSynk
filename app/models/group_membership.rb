@@ -46,21 +46,30 @@ class GroupMembership < ApplicationRecord
   end
 
   def broadcast_destroy
-    broadcast_remove_later_to(
+    broadcast_remove_to(
       group,
-      target: "popover-user-roles-#{@user.id}-#{@group.id}"
+      target: "popover-user-roles-#{user.id}-#{group.id}"
     )
-    broadcast_remove_later_to(
+    broadcast_remove_to(
       group,
-      target: "group_membership_row_#{@id}"
+      target: "group_membership_row_#{id}"
     )
-    broadcast_remove_later_to(
+    broadcast_remove_to(
       group,
-      target: "group_membership_#{@id}"
+      target: "group_membership_#{id}"
     )
-    broadcast_remove_later_to(
+    broadcast_remove_to(
       group,
-      target: "member_list_group_membership_#{@id}"
+      target: "member_list_group_membership_#{id}"
+    )
+  end
+
+  def broadcast_create
+    broadcast_action_later_to(
+      group,
+      action: :frame_reload,
+      target: "group_membership_table_#{group.id}",
+      render: false
     )
   end
 end

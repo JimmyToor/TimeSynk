@@ -1,5 +1,3 @@
-# config/initializers/role_hierarchy.rb
-
 # Provides a way to compare roles based on their hierarchy.
 # Lower weights are more privileged. Useful for determining role editing permissions.
 module RoleHierarchy
@@ -19,7 +17,16 @@ module RoleHierarchy
     "game_session.owner": 200
   }.freeze
 
-  NON_PERMISSIVE_WEIGHT = 1000 # Default weight for roles that are not in the hierarchy
+  # Default weight for roles that are not in the hierarchy, and thus do not provide anything but their explicit permission
+  NON_PERMISSIVE_WEIGHT = 1000
+
+  # Special roles that should be treated differently from most roles and cannot be modified as easily
+  SPECIAL_ROLES = Set.new([
+    :site_admin,
+    :"group.owner",
+    :"game_proposal.owner",
+    :"game_session.owner"
+  ]).freeze
 
   # Determines if a given role supersedes another role based on their weights.
   #
@@ -50,5 +57,15 @@ module RoleHierarchy
     # Expects role to have name and resource attributes
     resource_name = role.resource_type.underscore
     :"#{resource_name}.#{role.name}"
+  end
+
+  # Check if a role is designated as 'special'
+  #
+  # @param role [Role] the role to check
+  # @return [Boolean] true if the role is special, false otherwise
+  def self.special?(role)
+    return false if role.nil?
+    role = role_to_key(role) if role.is_a?(Role)
+    SPECIAL_ROLES.include?(role)
   end
 end

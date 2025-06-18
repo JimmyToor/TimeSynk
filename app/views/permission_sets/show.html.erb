@@ -1,0 +1,28 @@
+<%# locals: (user:, group:, group_membership:, game_proposal: nil, game_session: nil) %>
+<% frame_id = derive_permission_set_frame_id(user: user,
+                                             group: group,
+                                             game_proposal: game_proposal,
+                                             game_session: game_session) %>
+<% resource =  game_session || game_proposal || group %>
+
+<%= turbo_frame_tag frame_id, class:"relative peer", role: "presentation" do %>
+  <%= render group_membership,
+             attendance: game_session.present? ? user.get_attendance_for_game_session(game_session) : nil,
+             proposal_vote: game_proposal.present? ? user.get_vote_for_proposal(game_proposal) : nil %>
+  <div class="relative">
+    <%= turbo_frame_tag "user_roles_#{user.id}",
+                        role: "presentation",
+                        class: "peer",
+                        data: {src: permission_set_path_for_resource(user, resource)} do %>
+      <div class="text-left my-2 space-y-4 empty:hidden peer">
+        <%= render "users/roles",
+                       user: user,
+                       group: group,
+                       game_proposal: game_proposal,
+                       game_session: game_session,
+                       edit: true %>
+      </div>
+    <% end %>
+    <%= render "shared/spinner_absolute", start_hidden: true %>
+  </div>
+<% end %>

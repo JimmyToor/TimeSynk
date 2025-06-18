@@ -1,11 +1,23 @@
-<%# locals: (group_roles: nil) %>
-<strong class="font-bold text-primary-600">Group Roles:</strong>
-<% if group_roles.present? %>
-  <ul class="list-disc list-inside text-black dark:text-white">
-    <% group_roles.each do |role| %>
+<%# locals: (user: nil, resource: nil, edit: false) %>
+<% roles = user.roles_for_resource(resource) %>
+<% if roles.present? %>
+  <ul class="list-disc list-inside">
+    <% roles.each do |role| %>
       <li><%= render role %></li>
+      <%= form_with(url: polymorphic_path([resource,:permission_set]), id:"form_#{resource.model_name.param_key}_permission_set", method: :patch,
+                    data: {controller:"auto-submit"}) do |form| %>
+
+        <%= fields_for "permission_set[role_changes][#{user.id}]" do |subform|  %>
+          <%# When this is checked, auto submit and remove from dom %>
+          <%= render "shared/form_label", form: subform, field: :remove_roles, extra_classes: "", text: role.name.humanize %>
+          <%= subform.check_box :remove_roles,
+                                { disabled: false, multiple: true, checked: false, include_hidden: false },
+                                role.id %>
+        <% end %>
+      <% end if edit && !RoleHierarchy.special?(role) %>
     <% end %>
   </ul>
 <% else %>
-  <p class="pl-2 text-black dark:text-white">None</p>
+  <p class="pl-2 ">None</p>
 <% end %>
+

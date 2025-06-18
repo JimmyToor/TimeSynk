@@ -1,0 +1,25 @@
+<%# locals: (user_id: nil, resource: nil, roles: nil, editable: false) %>
+<%= content_tag :ul, class:"list-disc list-inside peer/user_roles" do -%>
+  <% roles.each do |role| %>
+    <div class="flex">
+      <li class="text-black dark:text-white"><%= render role %></li>
+      <% if editable && !RoleHierarchy.special?(role) %>
+        <%= form_with(url: polymorphic_path([resource,:permission_set]),
+                      method: :patch,
+                      class: "flex space-x-2") do |form| %>
+          <%= form.button "X",
+                          name: "permission_set[role_changes][#{user_id}][remove_roles][]",
+                          'aria-label': "Remove #{resource.class.name} Role",
+                          value: role.id,
+                          'data-action': "",
+                          class: "text-white" do %>
+            <%= inline_svg("icons/xmark.svg") %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>
+
+<span class="hidden peer-empty/user_roles:block dark:text-gray-400 text-gray-600 italic">None</span>
+

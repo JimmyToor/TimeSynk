@@ -6,7 +6,7 @@ class GameProposalPermissionSetPolicy < ApplicationPolicy
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
   def edit?
-    is_at_least_group_admin? || is_game_proposal_owner_or_admin?
+    RoleHierarchy.role_weight(user.most_permissive_cascading_role_for_resource(record.resource)) <= record.resource.class::MIN_PERMISSION_EDIT_WEIGHT
   end
 
   # Expects a PermissionSet object with a resource of a GameProposal and a hash of user IDs. Hash values and other keys are ignored.
@@ -16,11 +16,12 @@ class GameProposalPermissionSetPolicy < ApplicationPolicy
 
     # Check if the user has the necessary permissions
     return true if is_site_admin_or_group_owner?
-    return false unless user.has_cached_role?(:admin, record.resource.group) || user.has_any_role_for_resource?([:admin,:owner], record.resource)
-
-    record.users_roles.each do |user_id, _|
-      return false if user_id == user.id
-      return false unless user.supersedes_user_in_game_proposal?(User.find(user_id), record.resource)
+    most_permissive_role = most_permissive_cascading_role_for_resource(record.resource)
+    return false unless RoleHierarchy.role_weight(user.most_permissive_cascading_role_for_resource(record.resource)) <= record.resource.class::MIN_PERMISSION_EDIT_WEIGHT
+    record.users_roles.each do |secondary_user_id, _|
+      return false if secondary_user_id == user.id
+      most_permissive_role_secondary_user = User.find(secondary_user_id).most_permissive_cascading_role_for_resource(record.resource)
+      return false unless RoleHierarchy.supersedes?(most_permissive_role, most_permissive_role_secondary_user)
     end
 
     true
