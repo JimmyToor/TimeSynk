@@ -1,0 +1,11 @@
+<%# locals: (id:, extra_classes:"") %>
+<div class="hidden" data-stimulus-popover-target="content">
+  <div id="<%= id %>"
+       data-stimulus-popover-target="card"
+       role="tooltip"
+       tabindex="-1"
+       class="absolute z-50 text-sm bg-gray-200 shadow-lg border-2 rounded-lg border-gray-400
+          dark:bg-gray-800 dark:border-gray-600 cursor-auto <%= extra_classes %>">
+    <%= yield if block_given? %>
+  </div>
+</div>

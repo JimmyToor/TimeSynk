@@ -1,0 +1,7 @@
+<%# locals: (id:, extra_classes: "", data: {}) %>
+<%= content_tag :div, id: id,  popover:"",
+     data: {anchor_position_target: "positionedElement"}.merge(data),
+     class:"shadow-lg border-2 rounded-lg border-gray-400 bg-gray-100 dark:bg-gray-700 dark:border-gray-600
+                text-black dark:text-white overflow-scroll #{extra_classes}" do %>
+  <%= yield if block_given? %>
+<% end %>

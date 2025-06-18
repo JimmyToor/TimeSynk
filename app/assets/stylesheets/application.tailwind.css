@@ -62,3 +62,12 @@ button.selected {
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, .3) transparent;
 }
+
+[popover] {
+    margin: unset;
+    position: inherit;
+}
+
+.fixed [popover] {
+    position: fixed;
+}
