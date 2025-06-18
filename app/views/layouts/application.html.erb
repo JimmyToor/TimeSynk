@@ -3,7 +3,6 @@
   <head>
     <title>TimeSynk</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" >
-    <%= turbo_refresh_method_tag :morph %>
     <%= turbo_refresh_scroll_tag :preserve %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -15,7 +14,7 @@
     <%= javascript_include_tag "application", "recurring_select", data: { turbo_track: "reload" }, type: "module" %>
   </head>
 
-  <body class="bg-tertiary-50 dark:bg-gray-900 dark:text-white" data-controller="loading-dialog">
+  <body class="bg-tertiary-50 dark:bg-gray-900 dark:text-white" data-controller="loading-dialog single-stream">
     <%= render partial: "shared/navbar" %>
 
     <div class="p-4 sm:ml-44">

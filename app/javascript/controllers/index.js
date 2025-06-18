@@ -61,7 +61,7 @@ application.register("search", SearchController);
 import AvailabilitySelectionController from "./availability_selection_controller";
 application.register("availability-selection", AvailabilitySelectionController);
 
-import DropdownController from "@stimulus-components/dropdown";
+import DropdownController from "./dropdown_controller";
 application.register("dropdown", DropdownController);
 
 import ConfirmationController from "@stimulus-components/confirmation";
@@ -76,8 +76,23 @@ application.register("frame-reload", FrameReloadController);
 import LoadingDialogController from "./loading_dialog_controller";
 application.register("loading-dialog", LoadingDialogController);
 
-import NotificationController from "@stimulus-components/notification";
+import NotificationController from "./notification_controller";
 application.register("notification", NotificationController);
 
 import ClipboardController from "./clipboard_controller";
 application.register("clipboard", ClipboardController);
+
+import SingleStreamController from "./single_stream_controller";
+application.register("single-stream", SingleStreamController);
+
+import PopoverController from "./stimulus_popover_controller";
+application.register("stimulus-popover", PopoverController);
+
+import AutoSubmitController from "./auto_submit_controller";
+application.register("auto-submit", AutoSubmitController);
+
+import AnchorPositionController from "./anchor_position_controller";
+application.register("anchor-position", AnchorPositionController);
+
+import SidebarController from "./sidebar_controller";
+application.register("sidebar", SidebarController);

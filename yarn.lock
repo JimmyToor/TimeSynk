@@ -279,6 +279,11 @@
     estree-walker "^2.0.2"
     picomatch "^4.0.2"
 
+"@stimulus-components/auto-submit@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@stimulus-components/auto-submit/-/auto-submit-6.0.0.tgz#5649e2cca24834ff0d62b4ef1944393a8b0f5dfe"
+  integrity sha512-GBwjjnNuDZey9kdJinTGyrkIMCNVnPrTQvqihC0pBiwieIMfZIp+TT7Giee0Z0DS+pX6WdJweIeo8xEYD/VZJg==
+
 "@stimulus-components/clipboard@^5.0.0":
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/@stimulus-components/clipboard/-/clipboard-5.0.0.tgz#1d119c4ba8827c6c11c2e1b9214d0de79bc0cc87"
@@ -308,10 +313,20 @@
   dependencies:
     stimulus-use "^0.52.2"
 
+"@stimulus-components/popover@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@stimulus-components/popover/-/popover-7.0.0.tgz#0bd6b802536f4369ed953e8cf649495545b4b03c"
+  integrity sha512-GRO/vP5XfWs/JXFqnyW3cSNWMLGh5MTrwwoQ/uBOgzVEU6P5zoAIGhOQixJ+nZeOWW6cW6hy/zh2pwUgJ345uQ==
+
 "@stimulus-components/rails-nested-form@^5.0.0":
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/@stimulus-components/rails-nested-form/-/rails-nested-form-5.0.0.tgz#b443ad8ba5220328cfd704ca956ebf95ab8c4848"
   integrity sha512-qrmmurT+KBPrz9iBlyrgJa6Di8i0j328kSk2SUR53nK5W0kDhw1YxVC91aUR+7EsFKiwJT1iB7oDSwpDhDQPeA==
+
+"@stimulus-components/reveal@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@stimulus-components/reveal/-/reveal-5.0.0.tgz#87a17b91f8a556e3f3975740ebb3e760aea6fafc"
+  integrity sha512-0ShvvDiG4qNLyFUTDrjGiR9MWR6D9EiAJRUSKxTPHA5Cc2Ci/A4Qj7cHDCoK2ZGHhpESfK0LsR9xtySCN6FTQw==
 
 "@tailwindcss/typography@^0.5.13":
   version "0.5.16"
