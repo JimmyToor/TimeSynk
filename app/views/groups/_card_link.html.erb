@@ -1,0 +1,10 @@
+<%# locals: (group:) %>
+<%= link_to group,
+            class: "bg-primary-400 dark:bg-primary-900 text-xs font-medium px-2 py-0.5 rounded hover:underline
+              -translate-x-2",
+            title: "Go to #{group}",
+            data: {turbo_frame: "_top"} do %>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-full size-6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+  </svg>
+<% end %>

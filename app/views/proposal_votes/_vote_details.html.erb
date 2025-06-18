@@ -1,0 +1,30 @@
+<%# locals: (proposal_vote:) %>
+<div class="pb-3">
+  <div class="bg-gray-100 dark:bg-gray-700 border-b-2 rounded-t-lg border-gray-400 dark:border-gray-600 text-center"
+       aria-hidden="true">
+    <span class="font-bold text-primary-600">
+      <%= proposal_vote.user.username %>
+    </span>
+  </div>
+
+  <div class="pt-2 px-3">
+    <span class="font-bold text-primary-600">Vote:</span>
+    <span class="text-black dark:text-white"><%= format_vote(proposal_vote.yes_vote) %></span>
+  </div>
+
+  <% unless proposal_vote.comment.blank? %>
+    <div class="pt-2 px-3">
+      <span class="font-bold text-primary-600">Comment:</span>
+      <span class="text-black dark:text-white"><%= proposal_vote.comment %></span>
+    </div>
+  <% end %>
+
+  <div class="px-3">
+    <%= turbo_frame_tag "user_roles_#{proposal_vote.user.id}_game_proposal_#{proposal_vote.game_proposal.id}",
+                        class: "user_roles_#{proposal_vote.user.id}",
+                        data: {src: user_path(id: proposal_vote.user.id, game_proposal_id: proposal_vote.game_proposal.id)},
+                        role: "presentation" do %>
+      <%= render "users/roles", user: proposal_vote.user, game_proposal: proposal_vote.game_proposal %>
+    <% end %>
+  </div>
+</div>
