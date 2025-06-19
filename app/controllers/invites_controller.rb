@@ -3,7 +3,6 @@ class InvitesController < ApplicationController
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   before_action :set_invite, only: %i[show edit update destroy]
   before_action :set_group, only: %i[show index edit new create]
-  before_action :check_param_alignment, only: %i[create]
   before_action :set_roles, only: %i[new edit create]
 
   # GET /invites or /invites.json
@@ -14,11 +13,7 @@ class InvitesController < ApplicationController
 
   def show
     # If the user is not a member of the group, render the accept invite page
-    return if @invite.group.members.include?(Current.user)
-
-    @group_membership = @group.group_memberships.build
-    @group_membership.user_id = Current.user.id
-    render :accept, locals: {group_membership: @group_membership, group: @invite.group, invite: @invite}
+    render :show, locals: {invite: @invite}
   end
 
   # GET /groups/1/invite
@@ -92,34 +87,35 @@ class InvitesController < ApplicationController
     @invite = Invite.with_token(params[:invite_token]) || Invite.find(params[:id])
 
     unless @invite.present? && @invite.expires_at > Time.current
-      error_message = @invite.nil? ? "This invite is invalid" : "This invite has expired"
+      error_message = @invite.nil? ? t("invite.invalid") : t("invite.expired")
       @invite ||= Invite.new
       @invite.errors.add(:invite_token, message: error_message)
 
       render :error, status: :unprocessable_entity and return
     end
-
+    Rails.logger.debug "Invite found: #{@invite.inspect}"
     authorize(@invite)
+    Rails.logger.debug "Invite authorized: #{@invite.inspect}"
   end
 
   def set_group
-    @group = @invite&.group || Group.find_by!(id: params[:group_id])
+    Rails.logger.debug "Setting group for invite: params=#{params.inspect}"
+    @group = if @invite&.group
+      @invite.group
+    elsif params.dig(:invite, :group).present?
+      Group.find_by(id: params[:invite][:group])
+    else
+      Group.find_by!(id: params[:group_id])
+    end
   end
 
   def set_roles
+    Rails.logger.debug "Setting roles for invite: #{@invite.inspect}, group: #{@group.inspect}"
     @roles = Invite.available_roles(Current.user, @group || @invite.group)
   end
 
   # Only allow a list of trusted parameters through.
   def invite_params
     params.require(:invite).permit(:user_id, :group_id, :invite_token, :expires_at, assigned_role_ids: [])
-  end
-
-  def check_param_alignment
-    group_param = params[:invite][:group_id].to_i
-    if group_param.present? && group_param != @group.id
-      flash.now[:error] = {message: I18n.t("invite.create.error")}
-      render :new
-    end
   end
 end

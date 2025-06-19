@@ -5,6 +5,7 @@ class GameSession < ApplicationRecord
 
   belongs_to :game_proposal
   has_many :game_session_attendances, dependent: :destroy
+  has_one :group, through: :game_proposal
   has_one :game, through: :game_proposal
 
   scope :for_current_user_groups, -> { joins(game_proposal: :group).where(groups: {id: Current.user.groups.ids}) }
@@ -27,6 +28,10 @@ class GameSession < ApplicationRecord
     duration: 1.hour
   }
 
+  def self.role_providing_associations
+    [:game_proposal]
+  end
+
   def user_get_attendance(user)
     game_session_attendances.find_by(user_id: user.id)
   end
@@ -48,11 +53,15 @@ class GameSession < ApplicationRecord
   end
 
   def user_unattend(user)
-    game_session_attendances.find_by(user_id: user.id).destroy
+    game_session_attendances.find_by(user_id: user.id)&.destroy
   end
 
   def game_name
     game_proposal.game.name
+  end
+
+  def group_name
+    game_proposal.group.name
   end
 
   def owner
@@ -71,15 +80,32 @@ class GameSession < ApplicationRecord
     })
   end
 
+  # Generates a calendar schedule hash for the game session.
+  # Fields:
+  # - id: Unique identifier for the game session
+  # - name: Name of the game session (displayed in the calendar)
+  # - duration: Duration of the game session as an interval
+  # - user_id: ID of the user who owns the game session
+  # - selectable: Boolean indicating if the schedule is selectable
+  # - group: Name of the group associated with the game proposal
+  # - icecube_schedule fields: start_time, end_time, rrules, rtimes, extimes
+  #
+  # @param name [String, nil] The name of the game session.
+  # @param icecube_schedule [IceCube::Schedule, nil] The IceCube schedule object.
+  # @param selectable [Boolean] Indicates if the schedule is selectable.
+  # @return [Hash] A hash representing the calendar schedule.
   def make_calendar_schedule(name: nil, icecube_schedule: nil, selectable: true)
     icecube_schedule = make_icecube_schedule if icecube_schedule.nil?
     name = Game.find(game_proposal.game_id).name if name.nil?
     schedule = icecube_schedule.to_hash
+
     schedule[:id] = id
     schedule[:name] = name
     schedule[:duration] = duration
     schedule[:user_id] = User.with_role(:owner, self)&.first&.id
     schedule[:selectable] = selectable
+    schedule[:group] = game_proposal.group.name
+
     schedule
   end
 
@@ -88,13 +114,15 @@ class GameSession < ApplicationRecord
   end
 
   def broadcast_game_session_update
+    return unless saved_change_to_date? || saved_change_to_duration?
+
     user_ids_to_broadcast = game_proposal.group.users.pluck(:id)
 
     user_ids_to_broadcast.each do |user_id|
+      next if user_id == Current.user.id
       user = User.find(user_id)
       broadcast_action_later_to(
         "upcoming_game_sessions_user_#{user_id}",
-        user_id: user.id,
         action: "frame_reload",
         target: "upcoming_game_sessions_user_#{user.id}",
         render: false

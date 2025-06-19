@@ -1,1 +1,8 @@
-<%= render "form" %>
+<%# locals: (invite: nil) %>
+<%= render "shared/notification", id: "new_group_membership" %>
+
+<% if invite.present? %>
+  <%= render "accept_invite", invite: invite  %>
+<% else %>
+  <%= render "form" %>
+<% end %>

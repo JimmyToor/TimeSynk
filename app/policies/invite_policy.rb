@@ -24,7 +24,7 @@ class InvitePolicy < ApplicationPolicy
   def create?
     return false unless new?
     return true if record.assigned_role_ids.blank?
-    false unless record.user_can_change_roles(record.assigned_role_ids)
+    record.user_can_change_roles?(record.assigned_role_ids)
   end
 
   def edit?
@@ -48,7 +48,8 @@ class InvitePolicy < ApplicationPolicy
       user_group_roles = @user.roles_for_resource(scope.first.group)
 
       allowed_invite_ids = []
-      scope.each do |invite|
+      active_invites = scope.where("expires_at >= ?", Time.current)
+      active_invites.each do |invite|
         allowed_invite_ids << invite.id if can_see_invite?(invite, user_role_weight, user_group_roles)
       end
 

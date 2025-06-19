@@ -28,6 +28,6 @@ class GroupMembershipPolicy < ApplicationPolicy
   private
 
   def user_is_owner_or_admin?
-    user.has_cached_role?(:site_admin) || (user.has_any_role_for_resource?([:owner, :admin], record.group) && user.supersedes_user_in_group?(record.user, record.group))
+    user.has_cached_role?(:site_admin) || (user.has_any_role_for_resource?([:owner, :admin], record.group) && user.supersedes_user_in_resource?(record.user, record.group))
   end
 end

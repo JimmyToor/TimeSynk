@@ -13,6 +13,7 @@ class Invite < ApplicationRecord
   attr_readonly :user_id, :group_id
 
   scope :for_group, ->(group_id) { where(group: group_id) }
+  scope :expired, -> { where("expires_at < ?", Time.current) }
 
   def assigned_roles
     Role.where(id: assigned_role_ids)
@@ -31,7 +32,7 @@ class Invite < ApplicationRecord
   def self.available_roles(user, group)
     admin_weight = RoleHierarchy.role_weight(Role.find_by(resource: group, name: "admin"))
     if user.most_permissive_role_weight_for_resource(group) < admin_weight
-      group.roles.reject { |role| role.name == "owner" }
+      group.roles.reject { |role| RoleHierarchy.special?(role) }
     else
       []
     end
@@ -41,9 +42,13 @@ class Invite < ApplicationRecord
     find_by(invite_token: token)
   end
 
-  def user_can_change_roles(role_ids)
-    return Invite.available_roles(user, group).pluck(:id).include?(role_ids) if user.present?
+  def user_can_change_roles?(role_ids)
+    return (role_ids - Invite.available_roles(user, group).pluck(:id)).empty? if user.present?
     false
+  end
+
+  def self.destroy_expired_invites
+    expired.destroy_all
   end
 
   private

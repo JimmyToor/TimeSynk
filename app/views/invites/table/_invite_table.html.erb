@@ -1,7 +1,7 @@
 <%# locals: (invites:) %>
 <div class="text-center">
   <table class="w-full text-left text-gray-500 dark:text-gray-400">
-    <thead class="text-gray-700 uppercase bg-tertiary-50dark:bg-gray-700 dark:text-gray-400">
+    <thead class="text-gray-700 uppercase bg-tertiary-50 dark:bg-gray-700 dark:text-gray-400">
       <tr class="text-center">
         <th scope="col"></th>
         <th scope="col" class="px-4 py-3">Creator</th>
@@ -11,7 +11,7 @@
       </tr>
     </thead>
     <% if invites.any? %>
-      <tbody data-controller="element-toggle" data-element-toggle-display-style-value="table-row">
+      <tbody data-controller="element-toggle" >
         <% invites.each do |invite| %>
           <%= render partial:"invites/table/invite_table_row", locals: {invite: invite} %>
         <% end %>

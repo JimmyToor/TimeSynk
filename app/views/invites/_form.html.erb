@@ -27,7 +27,10 @@
 
   <div class="flatpickr" data-controller="flatpickr" data-flatpickr-timezone-value="<%= Current.user.timezone %>">
     <%= form.label :expires_at, style: "display: block" %>
-    <%= form.datetime_field :expires_at, data: { flatpickr_target: "startDate" }, value: (1.week.from_now).in_time_zone(Current.user.timezone) %>
+    <%= form.datetime_field :expires_at,
+                            data: { flatpickr_target: "startDate" },
+                            value: invite.expires_at&.in_time_zone(Current.user.timezone) || (1.week.from_now)
+                              .in_time_zone(Current.user.timezone) %>
   </div>
 
   <div class="mt-3">

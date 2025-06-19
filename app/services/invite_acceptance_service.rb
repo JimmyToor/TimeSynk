@@ -49,8 +49,9 @@ class InviteAcceptanceService < ApplicationService
         game_proposal.proposal_votes.create!(game_proposal: game_proposal, user: user)
         game_proposal.game_sessions.each do |game_session|
           game_session.game_session_attendances.create!(game_session: game_session, user: user)
-          game_session.broadcast_game_session_update
         end
+        game_proposal.broadcast_game_proposal_votes
+        game_proposal.broadcast_game_proposal_vote_count
       end
     end
     @group_membership
@@ -79,7 +80,7 @@ class InviteAcceptanceService < ApplicationService
   # @raise [ActiveRecord::RecordInvalid] If the GroupMembership creation fails.
   def new_member(user)
     @group_membership = GroupMembership.create!(user_id: @user_id, group_id: @group_id)
-    RoleUpdateService.call(user: user, add_roles: @invite&.assigned_role_ids || [])
+    RoleUpdateService.call(user, @invite.assigned_role_ids || [])
     @group_membership
   end
 end

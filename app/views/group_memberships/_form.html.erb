@@ -1,8 +1,8 @@
-<%= render "shared/notification", id: "new_group_membership" %>
-<%= form_with(url: group_memberships_path, scope: :group_membership, method: :post) do |form| %>
+<%= form_with(url: accept_invite_path, scope: :group_membership, method: :get) do |form| %>
   <%= form.hidden_field :user_id, value: Current.user.id %>
   <%= form.text_field :invite_token, placeholder: "Invite Token", value: (params[:invite_token] if params[:invite_token].present?) %>
-  <%= form.submit "Join Group", class:"cursor-pointer text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700
-      hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg
-      shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" %>
+  <%= form.submit "Join Group", class:"cursor-pointer mt-2 text-white bg-gradient-to-r from-blue-500 via-blue-600
+  to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800
+  shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5
+  text-center me-2 mb-2" %>
 <% end %>

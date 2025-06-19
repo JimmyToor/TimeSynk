@@ -2,4 +2,6 @@
 <%= content_tag :button, title:title, data: {action:"clipboard#copy", clipboard_target:"button"} do %>
   <%= inline_svg "icons/copy.svg" %>
 <% end %>
-<%= render "shared/copy_success" %>
+<template data-clipboard-target="successContent">
+  <%= render "shared/copy_success" %>
+</template>

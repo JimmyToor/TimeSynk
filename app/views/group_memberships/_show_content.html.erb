@@ -1,14 +1,10 @@
-<%# locals: (group_membership:, group_permission_set:, game_proposal:nil) %>
+<%# locals: (group_membership: %>
 <%= modal_wrapper(group_membership.user.username) do %>
   <%= content_tag(:div, id:dom_id(group_membership, :content)) do %>
     <%= render "shared/notification", id: "group_membership_#{group_membership.id}" %>
+    <%= render group_membership %>
 
-    <%= render group_membership, game_proposal: game_proposal %>
-
-    <div class="my-4 space-y-4">
-      <%= render "shared/buttons/secondary_link",
-                 path:edit_group_permission_set_path(group_membership.group, user_id: group_membership.user.id),
-                 text: "Edit Group Permissions" if group_permission_set_policy(group_permission_set).edit? %>
+    <div class="my-2 space-y-4 has-[ch]:hidden">
       <% if can_kick_user?(group_membership) %>
         <%= render "shared/buttons/delete_button",
                    resource: group_membership,

@@ -1,15 +1,17 @@
 class GroupMembershipsController < ApplicationController
+  add_flash_types :success, :error
   before_action :set_group_membership, only: %i[show destroy]
-  before_action :set_invite, only: %i[create]
+  before_action :set_invite, only: %i[create new_from_invite]
   before_action :set_group, only: %i[index create]
   before_action :set_game_proposal, only: %i[show]
+  before_action :set_game_session, only: %i[show]
   before_action :redirect_if_member, only: %i[create]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
 
   # GET /group_memberships or /group_memberships.json
   def index
-    @group_memberships = authorize(params[:query].present? ? @group.group_memberships.search(params[:query]) : @group.group_memberships.sorted_scope)
+    @group_memberships = params[:query].present? ? @group.group_memberships.search(params[:query]) : @group.group_memberships.sorted_scope
     @pagy, @group_memberships = pagy(@group_memberships, limit: 10)
 
     respond_to do |format|
@@ -23,15 +25,18 @@ class GroupMembershipsController < ApplicationController
   def show
     respond_to do |format|
       format.html {
-        render :show, locals: {group_membership: @group_membership,
-                               group_permission_set: @group_membership.group.make_permission_set([@group_membership.user]),
-                               game_proposal: @game_proposal}
+        render :show, locals: {group_membership: @group_membership}
       }
     end
   end
 
   # GET /group_memberships/new
   def new
+    render :new
+  end
+
+  def new_from_invite
+    render :new, locals: {invite: @invite}
   end
 
   # POST /group_memberships or /group_memberships.json
@@ -40,11 +45,11 @@ class GroupMembershipsController < ApplicationController
 
     respond_to do |format|
       if @group_membership.persisted?
-        format.html { redirect_to group_path(@group_membership.group), notice: "You have joined #{@group_membership.group.name}." }
+        format.html { redirect_to group_path(@group_membership.group), success: {message: I18n.t("group_membership.create.success", group_name: @group_membership.group.name)} }
         format.json { render :show, status: :created, location: @group_membership }
       else
         format.html {
-          redirect_to join_group_with_token_path, status: :unprocessable_entity,
+          redirect_to join_group_path, status: :unprocessable_entity,
             error: {message: I18n.t("group_membership.invite_not_valid"),
                     options: {list_items: @group_membership.errors.full_messages}}
         }
@@ -58,8 +63,12 @@ class GroupMembershipsController < ApplicationController
     @group_membership.destroy!
 
     respond_to do |format|
-      format.html { redirect_to groups_path }
-      format.turbo_stream
+      if @group_membership.user.id == Current.user.id
+        format.html { redirect_to groups_path }
+      else
+        format.html { redirect_to @group_membership.group, success: {message: I18n.t("group_membership.destroy.success", username: @group_membership.user.username, group_name: @group_membership.group.name)} }
+        format.turbo_stream
+      end
     end
   end
 
@@ -76,28 +85,36 @@ class GroupMembershipsController < ApplicationController
   end
 
   def set_invite
-    return if Current.user.has_cached_role?(:site_admin)
-    @invite = Invite.with_token(params[:invite_token] || group_membership_params[:invite_token])
+    return unless invite_required?
+    token = (params[:invite_token] || params.dig(:group_membership, :invite_token))&.sub(%r{.*invite_token=}, "")
+    @invite = Invite.with_token(token)
 
-    unless @invite.present? && @invite.expires_at > Time.current
-      flash[:alert] = @invite.nil? ? "This invite is invalid" : "This invite has expired"
-      redirect_to join_group_with_token_path(invite_token: params[:invite_token] || group_membership_params[:invite_token]) and return
+    unless token.present? && @invite.present? && @invite.expires_at > Time.current
+      flash[:error] = @invite.nil? ? I18n.t("invite.invalid") : I18n.t("invite.validation.expired")
+      redirect_to join_group_path(invite_token: token) and return
     end
-    params[:group_membership][:assigned_role_ids] = @invite.assigned_role_ids if params[:group_membership][:assigned_role_ids].blank?
+    params[:group_membership][:assigned_role_ids] = @invite.assigned_role_ids if params[:group_membership].present? && params[:group_membership][:assigned_role_ids].blank?
   end
 
   def set_group
-    @group = Group.find(params[:group_id]) if params[:group_id]
-    @group = @invite&.group unless @group.present?
+    @group = params[:group_id] ? Group.find(params[:group_id]) : @invite&.group
     unless @group
-      flash[:alert] = "This invite is invalid"
-      redirect_to join_group_with_token_path and return
+      flash[:error] = I18n.t("invite.invalid")
+      redirect_to join_group_path(invite_token: @invite&.token) and return
     end
     params[:group_id] = @group.id if params[:group_membership].present? && params[:group_membership][:group_id].blank?
   end
 
   def set_game_proposal
     @game_proposal = GameProposal.find(params[:game_proposal_id]) if params[:game_proposal_id]
+  end
+
+  def set_game_session
+    @game_session = GameSession.find(params[:game_session_id]) if params[:game_session_id]
+  end
+
+  def invite_required?
+    params[:invite_token] != "admin" || !Current.user.has_cached_role?(:site_admin)
   end
 
   def redirect_if_member

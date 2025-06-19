@@ -25,7 +25,8 @@
     <span class="pl-2 font-medium">
       <%= invite.invite_token %>
     </span>
-    <input type="text" class="hidden" value="<%= accept_invite_url(invite_token: invite.invite_token) %>" data-clipboard-target="source" aria-hidden="true" />
+    <input type="text" class="hidden" value="<%= accept_invite_url(invite_token: invite.invite_token) %>"
+           data-clipboard-target="source" aria-hidden="true" />
     <%= render "shared/buttons/copy_button", title: "Copy Invite Link" %>
 
   </td>
