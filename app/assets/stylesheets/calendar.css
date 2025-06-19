@@ -38,6 +38,6 @@
      @apply bg-gray-200 dark:bg-gray-700 !important;
 }
 
-[data-calendar-interactive="false"] .fc-day {
+[data-calendar-interactive-value="false"] .fc-day {
      @apply hover:bg-transparent dark:hover:bg-transparent;
 }

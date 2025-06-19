@@ -10,7 +10,10 @@
                 data: { turbo_frame: "_top" } %>
   </td>
   <th scope="row" class="whitespace-nowrap py-2 font-medium text-gray-900 dark:text-white text-left">
-    <%= availability.name %>
+    <div class="relative">
+      <%= availability.name %>
+      <%= inline_svg("icons/star.svg", class: "absolute -left-3 top-0 h-3", title: "Default User Availability") if Current.user.user_availability.id == availability.id %>
+    </div>
     <%= button_tag 'Button',
                    type: 'button',
                    title: "Details",

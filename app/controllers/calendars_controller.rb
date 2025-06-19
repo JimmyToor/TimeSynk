@@ -1,6 +1,7 @@
 class CalendarsController < ApplicationController
   skip_after_action :verify_policy_scoped
   skip_after_action :verify_authorized
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
   # TODO: Add authorizations and scopes
   # TODO: Add caching
 
@@ -25,21 +26,25 @@ class CalendarsController < ApplicationController
 
     if params[:game_proposal_id].present?
       game_proposal = GameProposal.find(params[:game_proposal_id])
-      locals[:game_proposal] = game_proposal
-      locals[:initial_game_proposal] = game_proposal
+      if GameProposalPolicy.new(Current.user, game_proposal).create_game_session?
+        locals[:game_proposal] = game_proposal
+        locals[:initial_game_proposal] = game_proposal
+      end
     elsif params[:group_id].present?
       group = Group.find(params[:group_id])
       if group.game_proposals.any?
-        locals[:group] = group
-        locals[:game_proposals] = group.game_proposals
-        locals[:initial_game_proposal] = group.game_proposals.first
+        locals[:groups] = [group]
+        game_proposals = group.game_proposals_user_can_create_sessions_for(Current.user)
+        locals[:game_proposals] = game_proposals
+        locals[:initial_game_proposal] = game_proposals.first
       end
     elsif params[:user_id].present?
       user = User.find(params[:user_id])
-      if user.game_proposals.any?
-        locals[:groups] = user.groups
-        locals[:game_proposals] = user.game_proposals
-        locals[:initial_game_proposal] = user.game_proposals.first
+      game_proposals = user.game_proposals_user_can_create_sessions_for
+      if game_proposals.any?
+        locals[:groups] = game_proposals.map(&:group).uniq
+        locals[:game_proposals] = game_proposals
+        locals[:initial_game_proposal] = game_proposals.first
       end
     end
     locals
@@ -52,5 +57,9 @@ class CalendarsController < ApplicationController
 
   def user_not_authorized
     render json: {error: "You are not authorized to perform this action."}, status: :unauthorized
+  end
+
+  def not_found
+    render json: {error: "Resource not found."}, status: :not_found
   end
 end

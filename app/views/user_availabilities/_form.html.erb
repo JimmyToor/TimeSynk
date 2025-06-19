@@ -1,24 +1,15 @@
 <%# locals: (user_availability:, availabilities: []) %>
 <%= form_with(model: user_availability) do |form| %>
-  <% if user_availability.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(user_availability.errors.count, "error") %> prohibited this user_availability from being saved:</h2>
+    <%= render "shared/notification", id: "user_availability_#{user_availability.id}" %>
 
-      <ul>
-        <% user_availability.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
 
   <div>
-    <%= form.label :user_id, style: "display: block" %>
     <%= form.hidden_field :user_id, value: Current.user.id %>
   </div>
 
   <div>
     <div>
+      <label for="user_availability_availability_id" class="sr-only">Select Default Availability</label>
       <%= collection_select :user_availability,
                             :availability_id,
                             @availabilities,
@@ -26,7 +17,8 @@
                             :name,
                             {},
                             data:{action: "change->availability-selection#setCalendarAvailability",
-                                  availability_selection_target:"availabilitySelectInput"}  %>
+                                  availability_selection_target:"availabilitySelectInput"},
+                            'aria-describedby': "tooltip-user-availability"%>
       <%= render "shared/buttons/form_submit_button", form: form, text: "Set Availability", extra_classes: "mt-2 me-2 mb-2" %>
     </div>
   </div>

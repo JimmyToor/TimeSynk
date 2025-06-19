@@ -1,6 +1,7 @@
 class AvailabilitiesController < ApplicationController
   before_action :set_availability, only: %i[show edit update destroy]
   before_action :set_schedules, only: %i[new edit create]
+  before_action :add_no_schedules_flash, only: %i[new edit create]
 
   # GET /availabilities or /availabilities.json
   def index
@@ -8,7 +9,7 @@ class AvailabilitiesController < ApplicationController
     authorize(@availabilities)
     @pagy, @availabilities = pagy(@availabilities)
     respond_to do |format|
-      format.html { render :index, locals: {pagy: @pagy, availabilities: @availabilities} }
+      format.html { render :index, locals: {availabilities: @availabilities} }
       format.turbo_stream
     end
   end
@@ -19,7 +20,7 @@ class AvailabilitiesController < ApplicationController
 
   # GET /availabilities/new
   def new
-    @availability = Availability.new(user: Current.user)
+    @availability = authorize(Availability.new(user: Current.user))
     @pagy, @schedules = pagy(@schedules)
 
     respond_to do |format|
@@ -40,6 +41,8 @@ class AvailabilitiesController < ApplicationController
   def create
     @availability = Availability.new(availability_params)
     authorize(@availability)
+    add_no_schedules_flash
+
     respond_to do |format|
       if @availability.save
         format.html { redirect_to availability_url(@availability), success: {message: "Availability was successfully created."} }
@@ -93,7 +96,7 @@ class AvailabilitiesController < ApplicationController
   end
 
   def set_schedules
-    @schedules = authorize(policy_scope(Schedule))
+    @schedules = policy_scope(Schedule)
   end
 
   # Only allow a list of trusted parameters through.
@@ -106,7 +109,7 @@ class AvailabilitiesController < ApplicationController
 
   def add_no_schedules_flash
     if Current.user.schedules.count == 0
-      flash.now[:info] = {message: "You can create schedules to indicate the times you're available. The schedules you select will make up your availability. Get started by creating a new schedule."}
+      flash.now[:info] = {message: I18n.t("availability.no_schedules")}
     end
   end
 end

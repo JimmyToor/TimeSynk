@@ -1,17 +1,6 @@
 <%# locals:(proposal_availability:, availabilities:, game_proposal: nil) %>
 <%= form_with(model: proposal_availability.new_record? ? [game_proposal, proposal_availability] : proposal_availability) do |form| %>
-  <h2>Set Availability for <span class="text-accent-800 dark:text-accent-400"><%= proposal_availability.game_proposal.game_name %></span></h2>
-  <% if proposal_availability.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(proposal_availability.errors.count, "error") %> prohibited this proposal_availability from being saved:</h2>
-
-      <ul>
-        <% proposal_availability.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <h2>Set Availability for <span class="font-bold text-primary-600"><%= proposal_availability.game_proposal.game_name %></span></h2>
 
   <div>
     <%= form.hidden_field :user_id, value: Current.user.id %>

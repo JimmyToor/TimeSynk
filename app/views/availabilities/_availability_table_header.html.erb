@@ -1,5 +1,5 @@
 <div class="flex flex-col items-center justify-between p-4 lg:flex-row space-y-3 lg:space-y-0 md:space-x-4">
-  <div class="w-full lg:w-1/2">
+  <div class="w-full lg:w-3/4">
     <%= form_with(id: "search-form",
                   url:availabilities_path(format: :turbo_stream),
                   method: :get,
@@ -13,7 +13,11 @@
           </svg>
         </div>
         <div class="flex">
-          <%= sub_form.text_field :query, name:"query", data: {search_target:"query"},
+          <%= sub_form.text_field :query,
+                                  name:"query",
+                                  type:"search",
+                                  'aria-label':"Availabilities",
+                                  data: {search_target:"query"},
                                   title:"Search Availabilities",
                                   class:"bg-tertiary-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                                   focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700
@@ -22,13 +26,13 @@
                                   placeholder:"Search Availabilities..." %>
           <%= render "shared/buttons/search_submit_button", form: sub_form, turbo_frame_id: "availabilities_index" %>
           <%= render "shared/buttons/search_reset_button", form: sub_form, extra_classes: "end-12" %>
-
         </div>
       </div>
-    <% end %>
+      <span class="sr-only" aria-live="polite" data-search-target="status"></span>
+  <% end %>
   </div>
 
-  <div class="flex w-full flex-shrink-0 flex-col items-stretch justify-end md:w-auto lg:flex-row space-y-2 lg:space-y-0 md:items-center md:space-x-3">
+  <div class="flex w-auto flex-shrink-0 flex-col items-stretch justify-end lg:flex-row space-y-2 lg:space-y-0 md:items-center md:space-x-3">
     <%= render "shared/buttons/icon_link_thick", path: new_availability_path, text: "New Availability", data: { turbo_frame: "_top"} %>
   </div>
 

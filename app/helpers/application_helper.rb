@@ -27,6 +27,10 @@ module ApplicationHelper
     end
   end
 
+  def modal_wrapper?
+    turbo_frame_request_id == "modal_frame"
+  end
+
   # Generates a data attribute for opening or closing a dialog based on the value
   # @param value [Boolean] The value to check
   def open_unless_value(value)
@@ -41,5 +45,16 @@ module ApplicationHelper
     parts << "#{interval.parts[:hours]}h" if interval.parts[:hours]
     parts << "#{interval.parts[:minutes]}m" if interval.parts[:minutes]
     parts.join(" ")
+  end
+
+  def input_field_classes
+    "bg-tertiary-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg
+                              focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700
+                              dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500
+                              dark:focus:border-blue-500"
+  end
+
+  def modal_link_classes
+    "text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100"
   end
 end

@@ -19,7 +19,9 @@ class Availability < ApplicationRecord
   validates :description, length: {maximum: 300}
   validates :user, presence: true
 
-  before_destroy :transfer_user_availability
+  before_destroy :prevent_destroying_last_availability, :transfer_user_availability_if_default
+
+  after_commit :notify_calendars
 
   DEFAULT_PARAMS = {
     name: "New Availability",
@@ -32,18 +34,42 @@ class Availability < ApplicationRecord
 
   private
 
-  def ensure_multiple_availabilities
+  def prevent_destroying_last_availability
     if user.availabilities.count <= 1
       errors.add(:base, I18n.t("availability.destroy.only_availability"))
       throw(:abort)
     end
   end
 
-  def transfer_user_availability
+  def transfer_user_availability_if_default
     return unless user_availability.present?
-    ensure_multiple_availabilities
+
     fallback_availability = user.availabilities.where.not(id: id).first
-    user_availability = user.user_availability
-    user_availability.update!(availability: fallback_availability)
+    user.user_availability.update!(availability: fallback_availability)
+  end
+
+  # For any groups or game proposals that this availability is associated with, notify their calendars that a refresh is needed.
+  def notify_calendars
+    notified_proposals = Set.new
+
+    # Groups that directly use this availability
+    groups = group_availabilities.map(&:group)
+    # Groups that use this availability as a fallback
+    groups += (user.groups - groups).select { |group| group.get_user_group_availability(user).nil? } if user_availability.present?
+
+    groups.each do |group|
+      group.notify_calendar_update(false)
+
+      # Game Proposals that fall back to this availability through the group
+      group.game_proposals.select { |proposal| proposal.get_user_proposal_availability(user).nil? }.each do |game_proposal|
+        game_proposal.notify_calendar_update(false)
+        notified_proposals.add(game_proposal.id)
+      end
+    end
+
+    # Proposals that directly use this availability
+    proposal_availabilities.map(&:game_proposal).each do |proposal|
+      proposal.notify_calendar_update(false) unless notified_proposals.include?(proposal.id)
+    end
   end
 end

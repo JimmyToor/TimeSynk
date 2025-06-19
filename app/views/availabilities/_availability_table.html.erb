@@ -9,7 +9,7 @@
       <th scope="col" class="px-4 py-3 hidden lg:table-cell">Schedules</th>
     </tr>
     </thead>
-    <tbody data-controller="element-toggle" data-element-toggle-display-style-value="table-row">
+    <tbody data-controller="element-toggle" >
     <% availabilities.each do |availability| %>
       <%= render partial:"availability_table_row", locals: {availability: availability} %>
     <% end %>

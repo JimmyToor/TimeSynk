@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :availabilities
-  resources :availability_schedules
+  resources :availability_schedules, only: [:index]
   resources :games, only: [:index, :show]
   resources :schedules
   resources :group_availabilities, only: [:index]

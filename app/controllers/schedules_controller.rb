@@ -2,6 +2,7 @@ class SchedulesController < ApplicationController
   include DurationSaturator
   before_action -> { populate_duration_param([:schedule]) }, only: %i[create update]
   before_action :calc_end_param, only: %i[create update]
+  before_action :set_availability, only: %i[index]
   before_action :set_schedule, only: %i[show edit update destroy]
   skip_after_action :verify_authorized, except: %i[index edit update destroy]
   skip_after_action :verify_policy_scoped, except: :index
@@ -11,11 +12,8 @@ class SchedulesController < ApplicationController
     @schedules = params[:query].present? ? policy_scope(Schedule).search(params[:query]) : policy_scope(Schedule)
     authorize(@schedules)
     @pagy, @schedules = pagy(@schedules)
-    if params[:start] && params[:end]
-      @schedules = @schedules.where("start_time >= ?", params[:start]).select do |schedule|
-        schedule if schedule.make_icecube_schedule.occurs_between?(params[:start], params[:end])
-      end
-    end
+    separate_included if params[:separate_included] && @availability.present?
+
     respond_to do |format|
       format.html { render :index, locals: {schedules: @schedules} }
       format.turbo_stream
@@ -94,7 +92,10 @@ class SchedulesController < ApplicationController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
+  def set_availability
+    @availability = Availability.find(params[:availability_id]) if params[:availability_id].present?
+  end
+
   def set_schedule
     @schedule = authorize(Schedule.find(params[:id]))
   end
@@ -116,5 +117,10 @@ class SchedulesController < ApplicationController
       params[:schedule][:end_time] = DateTime.parse(params[:schedule][:start_time]) + params[:schedule][:duration].to_i.seconds
     end
     params[:schedule] = params[:schedule].except(:duration_days, :duration_hours, :duration_minutes)
+  end
+
+  def separate_included
+    included_schedule_ids = @availability.schedule_ids.to_set
+    @included_schedules, @schedules = @schedules.partition { |schedule| included_schedule_ids.include?(schedule.id) }
   end
 end

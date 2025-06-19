@@ -6,7 +6,6 @@ class SchedulePolicy < ApplicationPolicy
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
   class Scope < ApplicationPolicy::Scope
-
     def show?
       true
     end
@@ -20,11 +19,7 @@ class SchedulePolicy < ApplicationPolicy
     end
 
     def resolve
-      if user.has_role?(:site_admin)
-        scope.all
-      else
-        user.schedules
-      end
+      user.schedules
     end
   end
 end

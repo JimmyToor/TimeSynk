@@ -5,12 +5,16 @@ class AvailabilityPolicy < ApplicationPolicy
   # code, beware of possible changes to the ancestors:
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
+  def new?
+    record.user == user
+  end
+
   def show?
     record.user == user || user.has_role?(:site_admin)
   end
 
   def create?
-    user == record.user || user.has_role?(:site_admin)
+    user == record.user
   end
 
   def edit?

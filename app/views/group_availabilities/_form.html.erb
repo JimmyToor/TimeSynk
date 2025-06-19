@@ -1,16 +1,5 @@
 <%# locals:(group_availability:, availabilities:, group: nil %>
 <%= form_with(model: group_availability.new_record? ? [group, group_availability] : group_availability) do |form| %>
-  <% if group_availability.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(group_availability.errors.count, "error") %> prohibited this group_availability from being saved:</h2>
-
-      <ul>
-        <% group_availability.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
 
   <div>
     <%= form.hidden_field :user_id, value: Current.user.id %>

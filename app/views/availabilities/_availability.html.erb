@@ -1,27 +1,31 @@
 <div id="<%= dom_id availability %>">
-  <p>
-    <strong>Name:</strong>
-    <%= availability.name %>
-  </p>
-
-  <p>
-    <strong>User:</strong>
-    <%= availability.username %>
-  </p>
-
-  <% if policy(availability).edit? %>
-    <div>
-      <strong>Schedules:</strong>
-      <% if availability.schedules.empty? %>
-        None
-      <% else %>
-        <ul>
-          <% availability.schedules.map(&:name).each do |availability_name| %>
-            <li> - <%= availability_name %> </li>
-          <% end %>
-        <% end %>
-      </ul>
+  <dl>
+    <div class="flex space-x-2">
+      <dt class="font-bold">Name:</dt>
+      <dd><%= availability.name %></dd>
     </div>
-  <% end %>
+
+    <div class="flex space-x-2">
+      <dt class="font-bold">User:</dt>
+      <dd><%= availability.username %></dd>
+    </div>
+
+    <% if policy(availability).edit? %>
+      <div>
+        <dt class="font-bold block">Schedules:</dt>
+        <dd>
+          <% if availability.schedules.empty? %>
+            None
+          <% else %>
+            <ul id="show_availability_schedule_list" class="list-inside list-disc">
+              <% availability.schedules.each do |schedule| %>
+                <li class="inset-2"> <%= schedule.name %> </li>
+              <% end %>
+            </ul>
+          <% end %>
+        </dd>
+      </div>
+    <% end %>
+  </dl>
 
 </div>

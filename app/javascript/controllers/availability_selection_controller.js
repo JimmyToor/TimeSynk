@@ -6,10 +6,6 @@ export default class extends Controller {
   static outlets = ["calendar"];
   static values = { src: String };
 
-  connect() {
-    this.setCalendarAvailability();
-  }
-
   setCalendarAvailability(event) {
     const id = this.calendarOutlet.sourceIdValue;
     this.calendarOutlet.replaceEventSource(id, {
@@ -20,5 +16,9 @@ export default class extends Controller {
       },
       id: id,
     });
+  }
+
+  calendarOutletConnected() {
+    this.setCalendarAvailability();
   }
 }

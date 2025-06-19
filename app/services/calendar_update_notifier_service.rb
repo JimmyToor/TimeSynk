@@ -11,8 +11,9 @@ class CalendarUpdateNotifierService < ApplicationService
   # Initializes the service with the resource that triggered the notification.
   #
   # @param resource [GameSession] The updated resource instance (currently supports GameSession).
-  def initialize(resource)
+  def initialize(resource, cascade = true)
     @resource = resource
+    @cascade = cascade
   end
 
   # Executes the notification logic based on the resource type.
@@ -24,14 +25,18 @@ class CalendarUpdateNotifierService < ApplicationService
       dates = [@resource.date]
       dates << previous_date if previous_date.present?
       notify_game_proposal(@resource.game_proposal.id, dates)
+      return unless @cascade
       notify_group(@resource.game_proposal.group.id, dates)
       notify_group_users(@resource.game_proposal.group, dates)
     elsif @resource.is_a?(GameProposal)
-      notify_group_users(@resource.group, [])
+      notify_game_proposal(@resource.id)
+      return unless @cascade
       notify_group(@resource.group.id, [])
+      notify_group_users(@resource.group, [])
     elsif @resource.is_a?(Group)
-      notify_group_users(@resource, [])
       notify_group(@resource.id, [])
+      return unless @cascade
+      notify_group_users(@resource, [])
     else
       raise ArgumentError, "Unsupported resource type: #{@resource.class.name}"
     end

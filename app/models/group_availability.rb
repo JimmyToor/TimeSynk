@@ -1,5 +1,5 @@
 class GroupAvailability < ApplicationRecord
-  belongs_to :availability
+  belongs_to :availability, touch: true
   belongs_to :group
   belongs_to :user
   has_many :availability_schedules, through: :availability

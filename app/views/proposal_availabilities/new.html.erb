@@ -1,13 +1,19 @@
 <div data-controller="availability-selection" data-availability-selection-calendar-outlet="#calendar_holder" >
 
+  <button data-tooltip-target="tooltip-user-availability" data-tooltip-placement="right" type="button" class="cursor-default"><%= inline_svg_tag "icons/question-circle.svg"%></button>
+  <div id="tooltip-user-availability" role="tooltip" class="absolute z-50 invisible inline-block px-3 py-2 text-sm font-medium text-black bg-gray-200 dark:text-white dark:bg-gray-300 rounded-xl shadow-xl opacity-0 tooltip dark:bg-gray-700 max-w-xxs sm:max-w-md lg:max-w-lg mr-5">
+    <p class="whitespace-normal wrap-normal">Set an availability for this game proposal to let others know when you can play. This availability will also be used for all of this game proposal's game sessions that do not have an availability set.</p>
+    <div class="tooltip-arrow translate-y-[-3.5rem] sm:-translate-y-8 shadow-xl" data-popover-arrow></div>
+  </div>
+
   <%= render "form", game_proposal: @game_proposal, proposal_availability: @proposal_availability, availabilities: @availabilities %>
 
   <div class="mt-4">
     <%= render "shared/buttons/cancel_button", text: "Cancel", path: @game_proposal, extra_classes: "mt-2 me-2 mb-2" %>
   </div>
 
-  <div id="calendar_holder" data-controller="calendar" data-calendar-interactive="true" data-calendar-availability-id="<%= @availabilities.first.id %>" data-turbo-permanent>
+  <h2 class="text-2xl font-bold tracking-tight text-black dark:text-white text-center">Preview</h2>
+  <div id="calendar_holder" data-controller="calendar" data-calendar-interactive-value="true" data-calendar-availability-id="<%= @availabilities.first.id %>" data-turbo-permanent>
     <%= render partial: 'calendars/calendar' %>
   </div>
-</div>
-
+</div> 

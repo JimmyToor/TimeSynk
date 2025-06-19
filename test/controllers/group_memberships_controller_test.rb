@@ -32,7 +32,7 @@ class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
       delete group_membership_url(@group_membership)
     end
 
-    assert_redirected_to groups_url
+    assert_redirected_to group_url(@group_membership.group)
   end
 
   test "should get accept invite page" do
@@ -42,8 +42,8 @@ class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
 
     get accept_invite_url(invite_token: invite.invite_token)
 
-    assert_response :found
-    assert_recognizes({controller: "invites", action: "show", invite_token: invite.invite_token},
+    assert_response :ok
+    assert_recognizes({controller: "group_memberships", action: "new_from_invite"},
       path: accept_invite_url(invite_token: invite.invite_token))
   end
 
@@ -55,6 +55,6 @@ class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
 
     travel_to 1.week.from_now
     get accept_invite_url(invite_token: invite.invite_token)
-    assert_response :unprocessable_entity
+    assert_redirected_to join_group_path(invite_token: invite.invite_token)
   end
 end

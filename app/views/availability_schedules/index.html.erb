@@ -1,16 +1,22 @@
-<%# locals: (schedules:, availability:) %>
-<section class="bg-tertiary-50dark:bg-gray-900">
-  <div class="mx-auto max-w-screen-xl ">
+<%# locals: (schedules:, availability:, included_schedules:) %>
+
+<section class="bg-tertiary-50 dark:bg-gray-900">
+  <div class="mx-auto max-w-screen-xl">
     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden"
+         role="search"
          data-controller="search"
-         data-search-src-value="<%= availability_schedules_path(availability_id: availability.id, format: :turbo_stream) %>">
-      <%= render "availability_schedules/table/schedule_table_header", availability: availability  %>
-      <%= turbo_frame_tag "availability_schedule_table",
-                          src: availability_schedules_path(availability_id: availability.id, format: :turbo_stream),
-                          data: {search_target:"frame"} do %>
-        <%= render partial:"availability_schedules/table/availability_schedule_table",
-                   locals: {availability:@availability, schedules:@schedules, included_schedules: @included_schedules} %>
-      <% end %>
+         data-search-search-complete-message-value="<%= t('search.complete_message') %>">
+      <%= render "schedules/table/schedule_table_form_header", availability: availability  %>
+      <div class="relative">
+        <%= turbo_frame_tag "schedule_table_form",
+                            src: schedules_path(availability_id: availability.id,
+                                                separate_included: true,
+                                                format: :turbo_stream) do %>
+          <%= render partial: "schedules/table/schedule_table_form",
+                     locals:  {availability:availability, schedules:schedules, included_schedules: included_schedules} %>
+        <% end %>
+        <%= render "shared/spinner_absolute", start_hidden: true %>
+      </div>
     </div>
   </div>
 </section>

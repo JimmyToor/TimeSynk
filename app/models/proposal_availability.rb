@@ -1,5 +1,5 @@
 class ProposalAvailability < ApplicationRecord
-  belongs_to :availability
+  belongs_to :availability, touch: true
   belongs_to :game_proposal
   belongs_to :user
   has_many :availability_schedules, through: :availability

@@ -25,6 +25,8 @@ class Schedule < ApplicationRecord
   validates :start_time, timeliness: {on_or_before: :end_time, type: :datetime}, presence: true
   validates :end_time, timeliness: {on_or_after: :start_time, type: :datetime}
 
+  after_commit :touch_availabilities
+
   scope :group_availabilities_for_group, ->(group) {
     group_availabilities.where(group_availabilities: {group: group})
   }
@@ -227,5 +229,9 @@ class Schedule < ApplicationRecord
   # @return [Schedule] the new schedule
   def self.new_default(user_id)
     Schedule.new(**DEFAULT_PARAMS, user_id: user_id)
+  end
+
+  def touch_availabilities
+    availabilities.each(&:touch)
   end
 end

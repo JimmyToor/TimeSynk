@@ -12,7 +12,7 @@
         <th scope="col" class="px-4 py-3 hidden 2xl:table-cell">Duration</th>
       </tr>
     </thead>
-    <tbody data-controller="element-toggle" data-element-toggle-display-style-value="table-row">
+    <tbody data-controller="element-toggle" >
       <% schedules.each do |schedule| %>
         <%= render partial:"schedules/table/schedule_table_row", locals: {schedule: schedule} %>
       <% end %>

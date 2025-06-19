@@ -1,68 +1,94 @@
 <%# locals: (availability:, schedules:) %>
+
 <div data-controller="schedule-selection"
      data-schedule-selection-dialog-outlet=".dialog"
      data-schedule-selection-rails-nested-form-outlet="#<%= dom_id(availability, :form)%>"
      data-schedule-selection-calendar-outlet="#calendar_holder"
-     data-schedule-selection-src-value="<%= availability_schedules_path(availability_id: availability.id, format: :turbo_stream) %>">
-
-  <%= render "shared/notification", id: "availability_#{availability.new_record? ? "new" : availability.id}" %>
-
-  <div class="flex flex-col sm:flex-row justify-start gap-4"
-       data-controller="search"
-       data-search-src-value="<%= availability_schedules_path(availability_id: availability.id, format: :turbo_stream) %>">
-
-    <section id="table_holder" class="bg-tertiary-50 dark:bg-gray-900">
-      <div class="mx-auto max-w-screen-xl ">
-        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-          <%= render "availability_schedules/table/schedule_table_header", availability: availability %>
-          <%= turbo_frame_tag "availability_schedule_table",
-                              src: availability_schedules_path(availability_id: availability.id, format: :turbo_stream),
-                              data: {schedule_selection_target:"frame", search_target:"frame", turbo_prefetch:"false", availability_id: availability.id} do %>
-            <div class="text-center w-full">Loading...</div>
-          <% end %>
+     data-schedule-selection-src-value="<%= schedules_path(availability_id: availability.id, format: :turbo_stream) %>">
+<%= render "shared/notification", id: "availability_#{availability.new_record? ? "new" : availability.id}" %>
+  <div class="xl:flex xl:flex-col xl:items-center">
+    <div class="flex flex-col justify-start gap-4 md:flex-row"
+         role="search"
+         data-controller="search"
+         data-search-search-complete-message-value="<%= t('search.complete_message') %>">
+      <div id="table_holder">
+        <div class="mx-auto max-w-screen-xl bg-tertiary-50 dark:bg-gray-900">
+          <div class="relative bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
+            <%= render "schedules/table/schedule_table_form_header", availability: availability %>
+            <div class="relative">
+              <%= turbo_frame_tag "schedule_table_form",
+                                  src: schedules_path(availability_id: availability.id,
+                                                      separate_included: true,
+                                                      format: :turbo_stream),
+                                  data: {schedule_selection_target:"frame",
+                                         availability_id: availability.id,
+                                         search_target:"frame",
+                                         turbo_prefetch:"false" } do %>
+              Loading...
+              <% end %>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
 
-    <%= form_with(model: availability, id:dom_id(availability, :form), data: {controller:"rails-nested-form", rails_nested_form_wrapper_selector_value:".nested-form-wrapper"}) do |form| %>
+      <%= form_with(model: availability,
+                    id:dom_id(availability, :form),
+                    data: {controller:"rails-nested-form",
+                           rails_nested_form_wrapper_selector_value:".nested-form-wrapper"}) do |form| %>
 
-      <div>
-        <%= form.label :name, "Availability Name", style: "display: block" %>
-        <%= form.text_area :name %>
-      </div>
+        <div>
+          <%= render "shared/form_label", form: form, field: :name, text: "Availability Name", extra_classes: "block" %>
+          <%= form.text_area :name, maxlength: 300 %>
+        </div>
 
-      <div>
-        <%= form.label :description, "Availability Description", style: "display: block" %>
-        <%= form.text_area :description %>
-      </div>
+        <div>
+          <%= render "shared/form_label", form: form, field: :description, text: "Availability Description",
+                     extra_classes: "block" %>
+          <%= form.text_area :description, maxlength: 300 %>
+        </div>
 
-      <div>
-        <%= form.hidden_field :user_id, value: Current.user.id %>
-      </div>
+        <div>
+          <%= form.hidden_field :user_id, value: Current.user.id %>
+        </div>
 
-      <template data-rails-nested-form-target="template">
-        <%= form.fields_for :availability_schedules, AvailabilitySchedule.new, child_index: "NEW_RECORD" do |sub_form| %>
-          <%= render "availability_schedule_form", schedule_id: "0", schedule_name: "", sub_form: sub_form %>
-        <% end %>
-      </template>
+        <template data-rails-nested-form-target="template">
+          <%= form.fields_for :availability_schedules, AvailabilitySchedule.new, child_index: "NEW_RECORD" do |sub_form| %>
+            <%= render "availability_schedule_form", schedule_id: "0", schedule_name: "", sub_form: sub_form %>
+          <% end %>
+        </template>
 
-      <div>
-        Included Schedules:
-        <%= form.fields_for :availability_schedules do |sub_form| %>
-          <%= render "availability_schedule_form", schedule_id: sub_form.object.schedule&.id, schedule_name: sub_form.object.schedule.name, sub_form: sub_form %>
-        <% end %>
-        <div data-rails-nested-form-target="target"></div>
-      </div>
+        <div>
+          <%= render "shared/form_label", form: form, field: :availability_schedules, text: "Included Schedules:",
+                     extra_classes: "block" %>
+          <ul class="list-disc group/included_schedules">
+            <%= form.fields_for :availability_schedules do |sub_form| %>
+              <%= render "availability_schedule_form",
+                         schedule_id: sub_form.object.schedule&.id,
+                         schedule_name: sub_form.object.schedule.name,
+                         sub_form: sub_form %>
+            <% end %>
+            <div data-rails-nested-form-target="target"></div>
+            <span class="block group-has-[.nested-form-wrapper:not([style*='display:_none'])]/included_schedules:hidden">None</span>
+          </ul>
+        </div>
 
-      <div class="flex mt-2 space-x-2">
-        <%= render "shared/buttons/form_submit_button", form: form, text:"Save Changes" %>
-        <%= render "shared/buttons/cancel_button", path: availabilities_path, text: "Discard Changes" %>
-      </div>
-    <% end %>
-  </div>
+        <div class="mt-2 flex space-x-2">
+          <%= render "shared/buttons/form_submit_button", form: form, text:"Save Changes" %>
+          <%= render "shared/buttons/cancel_button", path: availabilities_path, text: "Discard Changes" %>
+        </div>
+      <% end %>
+    </div>
 
-  <h3 class="text-center mt-4 text-4xl font-extrabold dark:text-white">Preview</h3>
-  <div id="calendar_holder" data-controller="calendar" data-calendar-interactive="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr">
-    <%= render partial: 'calendars/calendar' %>
+    <h2 class="text-center text-2xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white
+      mt-2">
+      Preview
+    </h2>
+    <div id="calendar_holder" data-controller="calendar"
+         data-calendar-interactive-value="true"
+         data-calendar-dialog-outlet=".dialog"
+         data-calendar-flatpickr-outlet=".flatpickr"
+         data-calendar-disambiguate-value=true>
+      <%= render partial: 'calendars/calendar' %>
+    </div>
   </div>
 </div>

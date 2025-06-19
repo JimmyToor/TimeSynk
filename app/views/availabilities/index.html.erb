@@ -1,10 +1,20 @@
+<%# locals: (availabilities:) %>
 <%= render "shared/notification", id: "availabilities" %>
 
-<section class="bg-tertiary-50dark:bg-gray-900">
-  <div class="relative mx-auto max-w-screen-xl overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg" data-controller="search" data-search-src-value="<%= availabilities_path(format: :turbo_stream) %>">
+<section class="bg-tertiary-50 dark:bg-gray-900">
+  <div class="relative mx-auto max-w-screen-xl overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg"
+       data-controller="search"
+       data-search-src-value="<%= availabilities_path(format: :turbo_stream) %>"
+       data-search-search-complete-message-value="<%= t('search.complete_message') %>">
     <%= render "availabilities/availability_table_header" %>
-    <%= turbo_frame_tag "availability_list", src: availabilities_path(format: :turbo_stream), data: {turbo_prefetch:"false", search_target:"frame"} do %>
-      <span class="text-center">Loading...</span>
-    <% end %>
+    <div class="relative">
+      <%= turbo_frame_tag "availability_table", data: {src:availabilities_path(format: :turbo_stream), turbo_prefetch:"false", search_target:"frame"} do %>
+        <%= render "availability_table", availabilities: availabilities %>
+      <% end %>
+      <%= render "shared/spinner_absolute", start_hidden: true %>
+    </div>
   </div>
 </section>
+<div class="my-4">
+  <%= render "shared/buttons/secondary_link", path: edit_user_availability_path, text: "Set Default Availability" %>
+</div>

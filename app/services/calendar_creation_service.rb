@@ -43,7 +43,7 @@ class CalendarCreationService < ApplicationService
     @calendars = []
     if @params[:user_id].present?
       User.find(@params[:user_id]).groups.each do |group|
-        group.game_proposals.each do |game_proposal|
+        group.game_proposals.reject { |proposal| proposal.game_sessions.empty? }.each do |game_proposal|
           @calendars << make_game_proposal_calendar(game_proposal)
         end
       end
@@ -71,7 +71,7 @@ class CalendarCreationService < ApplicationService
 
     if @params[:game_proposal_id].present?
       game_proposal = GameProposal.find(@params[:game_proposal_id])
-      @calendars << make_game_proposal_calendar(game_proposal)
+      @calendars << make_game_proposal_calendar(game_proposal) unless game_proposal.game_sessions.empty?
       @calendars.concat(make_availability_calendars(game_proposal.group.users, game_proposal: game_proposal)) unless @params[:exclude_availabilities]
     end
     @calendars
@@ -87,7 +87,7 @@ class CalendarCreationService < ApplicationService
     Pundit.authorize(@user, schedule, :show?)
     Calendar.new(
       schedules: [schedule.make_calendar_schedule],
-      name: "#{schedule.name}",
+      name: schedule.name.to_s,
       id: "calendar_schedule_#{schedule.id}",
       type: :schedule
     )
@@ -101,7 +101,7 @@ class CalendarCreationService < ApplicationService
     Pundit.authorize(@user, group, :show?)
     calendars = []
     calendars.concat(make_availability_calendars(group.users, group: group)) unless @params[:exclude_availabilities]
-    group.game_proposals.each do |game_proposal|
+    group.game_proposals.reject { |proposal| proposal.game_sessions.empty? }.each do |game_proposal|
       calendars << make_game_proposal_calendar(game_proposal)
     end
     calendars
@@ -195,12 +195,12 @@ class CalendarCreationService < ApplicationService
         duration: ActiveSupport::Duration.build(overlap.end - overlap.start),
         user_id: nil).make_calendar_schedule(selectable: false)
     }
-
+    Rails.logger.debug "Overlap schedules: #{overlap_schedules.inspect}"
     Calendar.new(
       schedules: overlap_schedules,
       name: "Everyone Available",
       id: "calendar_ideal",
-      type: :availability
+      type: :ideal
     )
   end
 
@@ -213,7 +213,7 @@ class CalendarCreationService < ApplicationService
     session_schedule = game_session.make_calendar_schedule
     Calendar.new(
       schedules: [session_schedule],
-      name: session_schedule[:name].to_s,
+      name: session_schedule[:name],
       id: "calendar_session_#{game_session.id}",
       type: :game
     )

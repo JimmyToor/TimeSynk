@@ -14,7 +14,6 @@ export default class extends Controller {
     "removeButton",
   ];
   static values = {
-    src: String,
     frameId: { type: String, default: "modal_frame" },
   };
   static outlets = ["rails-nested-form", "calendar", "dialog"];
@@ -25,43 +24,46 @@ export default class extends Controller {
 
   //Handles post-creation of a new schedule.
   onSubmitSuccess() {
-    if (this.hasFrameTarget) {
-      // Reload the frame to show the new schedule
-      this.frameTarget.src = this.frameTarget.src;
-      const availabilityId = this.frameTarget.dataset.availabilityId;
-      if (!availabilityId) {
-        return;
-      }
+    if (!this.hasFrameTarget) return;
+    // Reload the frame to show the new schedule
+    this.frameTarget.src = this.frameTarget.src;
 
-      // Re-fetch the schedules to ensure the new one is included
-      fetch(
-        `/availability_schedules.json?availability_id=${this.frameTarget.dataset.availabilityId}`,
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          data.forEach((schedule) => {
-            // Check for schedules that are not listed in the form and add them
-            if (
-              this.scheduleIdInputTargets.find(
-                (input) => parseInt(input.dataset.scheduleId) === schedule.id,
-              )
-            )
-              return;
-            // RailsNestedFormOutlet needs an event to add the new schedule.
-            let event = new Event("", undefined);
-            Object.defineProperty(event, "target", {
-              value: {
-                dataset: {
-                  scheduleId: schedule.id,
-                  scheduleName: schedule.name,
-                },
-              },
-            });
-
-            this.addSchedule(event, true);
-          });
-        });
+    const availabilityId = this.frameTarget.dataset.availabilityId;
+    if (!availabilityId) {
+      console.error("No availability ID found in frame target.");
+      return;
     }
+
+    // Re-fetch the schedules to ensure the new one is included
+    fetch(
+      `/availability_schedules.json?availability_id=${this.frameTarget.dataset.availabilityId}?`,
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        data.forEach((availabilitySchedule) => {
+          // Check for schedules that are not listed in the form and add them
+          if (
+            this.scheduleIdInputTargets.find(
+              (input) =>
+                parseInt(input.dataset.scheduleId) ===
+                availabilitySchedule.schedule.id,
+            )
+          )
+            return;
+          // RailsNestedFormOutlet needs an event to add the new schedule.
+          let event = this.makeHollowEvent({
+            value: {
+              dataset: {
+                scheduleId: availabilitySchedule.schedule_id,
+                scheduleName: availabilitySchedule.schedule.name,
+                recordId: availabilitySchedule.id,
+              },
+            },
+          });
+
+          this.addSchedule(event, true);
+        });
+      });
   }
 
   toggleSchedule(event) {
@@ -105,6 +107,18 @@ export default class extends Controller {
 
     if (existing) {
       container.dataset.newRecord = "false";
+      // Add the id input for the existing availability_schedule record after the container.
+      let idInput = document.createElement("input");
+      // Extract the index for the record
+      const index = container.children[0].name.match(/\[(\d+)]/)[1];
+
+      // Set up the id input
+      idInput.type = "hidden";
+      idInput.id = `availability_availability_schedules_attributes_${index}_id`;
+      idInput.name = `availability[availability_schedules_attributes][${index}][id]`;
+      idInput.autocomplete = "off";
+      idInput.value = event.target.dataset.recordId;
+      container.after(idInput);
     }
 
     this.updateCalendar();
@@ -126,8 +140,7 @@ export default class extends Controller {
     // The outlet only uses the event for the target property to find the wrapper to remove.
     // If the event was triggered by something outside the wrapper, then the target won't be in the desired wrapper.
     // To ensure the target is correct without messing with the event, we can use a new empty event and set the target manually to the wrapped input.
-    let hollowEvent = new Event("", undefined);
-    Object.defineProperty(hollowEvent, "target", { value: existingInput });
+    let hollowEvent = this.makeHollowEvent({ value: existingInput });
     this.railsNestedFormOutlet.remove(hollowEvent);
 
     // If the schedule was removed via button, uncheck the corresponding checkbox from the schedule list
@@ -137,6 +150,12 @@ export default class extends Controller {
     if (checkbox) checkbox.checked = false;
 
     this.updateCalendar();
+  }
+
+  makeHollowEvent(attributes) {
+    let event = new Event("", undefined);
+    Object.defineProperty(event, "target", attributes);
+    return event;
   }
 
   // Checks if a schedule has been marked for removal from the availability

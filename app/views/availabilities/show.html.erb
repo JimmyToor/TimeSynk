@@ -6,7 +6,11 @@
     <%= render "shared/buttons/secondary_link", path: availabilities_path, text: "Back to Availabilities" %>
   </div>
 
-  <div data-controller="calendar" data-calendar-interactive="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-availability-id=<%= @availability.id %> data-turbo-permanent>
+  <div data-controller="calendar"
+       data-calendar-interactive-value="true"
+       data-calendar-dialog-outlet=".dialog"
+       data-calendar-flatpickr-outlet=".flatpickr"
+       data-calendar-availability-id=<%= @availability.id %> data-turbo-permanent>
     <%= render partial: 'calendars/calendar' %>
   </div>
 

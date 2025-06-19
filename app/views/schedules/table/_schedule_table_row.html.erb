@@ -8,7 +8,13 @@
   </td>
   <th scope="row" class="whitespace-nowrap py-2 font-medium text-gray-900 dark:text-white text-left">
     <span class="rounded px-2 text-xs font-medium py-0.5"> <%= schedule.name %> </span>
-    <%= button_tag 'Button', type: 'button', title: "Details", class:"inline-block 2xl:hidden", data: {action:"click->element-toggle#triggerToggle", id:schedule.id} do %>
+    <%= button_tag 'Button',
+                   'aria-controls': "schedule_info_#{schedule.id}",
+                   'aria-expanded': "false",
+                   type: 'button',
+                   title: "Expand Details",
+                   class:"inline-block 2xl:hidden",
+                   data: {action:"click->element-toggle#triggerToggle", id:schedule.id} do %>
       &#9660;
     <% end %>
   </th>
@@ -26,7 +32,11 @@
 </tr>
 <tr class="border-b-2 additional-info dark:border-gray-600">
   <td></td>
-  <td colspan="7" class="hidden" data-element-toggle-target="targetElement" data-id=<%= schedule.id %>>
+  <td colspan="7"
+      class="hidden"
+      data-element-toggle-target="targetElement"
+      id="schedule_info_<%= schedule.id %>"
+      data-id=<%= schedule.id %>>
     <ul>
       <li>
         <div class="table-cell md:hidden">

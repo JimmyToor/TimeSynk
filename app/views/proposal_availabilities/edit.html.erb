@@ -1,5 +1,21 @@
-<div data-controller="availability-selection" data-availability-selection-calendar-outlet="#calendar_holder" >
-
+<div data-controller="availability-selection stimulus-popover"
+     role="presentation"
+     data-availability-selection-calendar-outlet="#calendar_holder">
+  <button data-action="mouseenter->stimulus-popover#show mouseleave->stimulus-popover#hide focusin->stimulus-popover#show focusout->stimulus-popover#hide"
+          aria-hidden="true"
+          type="button"
+          class="cursor-default">
+    <%= inline_svg_tag "icons/question-circle.svg"%>
+  </button>
+  <%= render "shared/popover_stimulus",
+             id: "tooltip-proposal-availability",
+             extra_classes: "inline-block px-3 py-2 font-medium text-black bg-gray-200 dark:text-white
+              dark:bg-gray-300 rounded-xl shadow-xl tooltip max-w-xxs sm:max-w-md lg:max-w-lg mr-5" do %>
+    <p class="whitespace-normal wrap-normal">
+      Set an availability for this game proposal to let others know when you can play.
+      This availability will also be used for all of this game proposal's game sessions.
+    </p>
+  <% end %>
   <%= render "form", proposal_availability: @proposal_availability, availabilities: @availabilities %>
 
   <div class="my-6">
@@ -11,7 +27,8 @@
     <%= render "shared/buttons/secondary_link", path: @proposal_availability.availability, text:"View Current Availability: #{@proposal_availability.availability.name}" %>
   </div>
 
-  <div id="calendar_holder" data-controller="calendar" data-calendar-interactive="true" data-calendar-availability-id="<%= @availabilities.first.id %>" data-turbo-permanent>
+  <h2 class="text-2xl font-bold tracking-tight text-black dark:text-white text-center">Preview</h2>
+  <div id="calendar_holder" data-controller="calendar" data-calendar-interactive-value="true" data-calendar-availability-id="<%= @availabilities.first.id %>" data-turbo-permanent>
     <%= render partial: 'calendars/calendar' %>
   </div>
 </div>
