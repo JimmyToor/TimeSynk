@@ -1,8 +1,11 @@
-<%# locals: (user:nil, game_session: nil) %>
-<% if Current.user.present? %>
-  <%= game_session.date.in_time_zone(Current.user.timezone).strftime("%B %d, %I:%M %p") %>
-<% elsif user %>
-  <%= game_session.date.in_time_zone(user.timezone).strftime("%B %d, %I:%M %p") %>
-<% else %>
-  <%= game_session.date.strftime("%B %d, %I:%M %p") %>
-<% end %>
+<%# locals: (game_session:, user:nil, format: "%B %d, %I:%M %p" ) %>
+<span id="game_session_date_<%= game_session.id %>" class="sr-only">Session Start Date: </span>
+<span aria-labelledby="game_session_date_<%= game_session.id %>">
+  <% if Current.user.present? %>
+    <%= game_session.date.in_time_zone(Current.user.timezone).strftime(format) %>
+  <% elsif user %>
+    <%= game_session.date.in_time_zone(user.timezone).strftime(format) %>
+  <% else %>
+    <%= game_session.date.strftime(format) %>
+  <% end %>
+</span>

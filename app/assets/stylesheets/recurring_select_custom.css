@@ -4,6 +4,9 @@
 
 .rs_dialog {
     overflow:visible !important;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
 }
 
 .rs_datepicker {

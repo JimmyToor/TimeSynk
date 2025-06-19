@@ -1,5 +1,5 @@
 <h1>Editing proposal vote</h1>
-<%= modal_wrapper(@proposal_vote.game_proposal.game_name) do %>
+<%= modal_wrapper("Vote for #{@proposal_vote.game_proposal.game_name}") do %>
   <%= render "form", proposal_vote: @proposal_vote %>
 <% end %>
 

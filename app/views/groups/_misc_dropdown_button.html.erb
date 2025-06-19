@@ -1,6 +1,10 @@
 <%# locals: (group:, group_availability: nil) %>
 <div data-controller="dropdown" class="relative">
-  <button id="misc-dropdown-button" data-action="dropdown#toggle click@window->dropdown#hide"
+  <button id="misc-dropdown-button"
+          aria-haspopup="menu"
+          aria-label="Open group options dropdown"
+          data-action="dropdown#toggle click@window->dropdown#hide"
+          data-dropdown-target="toggleButton"
           class="relative inline-flex items-center rounded-lg text-center text-sm font-medium focus:ring-4
               focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
           type="button">
@@ -63,8 +67,9 @@
           </button>
         <% end %>
 
-        <%= render "shared/delete_dialog",
+        <%= render "shared/delete_modal",
                    button_content: button_content,
+                   resource_title: group.name,
                    container_tag: :li,
                    container_classes:"flex hover:bg-notice-100 w-full hover:border-gray-600 dark:hover:border-gray-300 ",
                    form_partial:"groups/delete_form",

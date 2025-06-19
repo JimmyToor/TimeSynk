@@ -1,5 +1,10 @@
 <%# locals: (game_session:, game_proposals: nil) %>
-<h1>New game session</h1>
+<%= render "shared/header_primary",
+           text: safe_join(["New ",
+                            content_tag(:span, @game_session.game_name, class: "font-bold text-primary-600"),
+                            " session in ",
+                           content_tag(:span, @game_session.group.name, class: "font-bold text-primary-600")]),
+           extra_classes: "text-center" %>
 
 <%= modal_wrapper(game_session.game_name) do %>
   <%= content_tag(:div, id:dom_id(game_session, :content)) do %>

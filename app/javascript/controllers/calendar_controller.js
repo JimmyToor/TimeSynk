@@ -36,6 +36,9 @@ export default class extends Controller {
     frameId: { type: String, default: "modal_frame" },
     containerId: { type: String, default: "modal_container" },
     sourceId: { type: String, default: "calendarJson" },
+    interactive: { type: Boolean, default: true },
+    streamId: { type: String, default: null },
+    disambiguate: { type: Boolean, default: false },
   };
 
   initialize() {
@@ -65,6 +68,58 @@ export default class extends Controller {
       this.subscription = null;
     }
     this.removeRefreshListeners();
+  }
+
+  /**
+   * Initializes the FullCalendar instance with specified options and plugins.
+   */
+  initCalendar() {
+    let calendarEl = this.calendarTarget;
+    let url = "/calendars";
+    let eventSrc = {
+      url: url,
+      method: "GET",
+      extraParams: this.extractParams(),
+      id: this.sourceIdValue,
+    };
+
+    let interactive = this.interactiveValue;
+
+    this.calendarService = new CalendarService(
+      calendarEl,
+      this.disambiguateValue,
+      {
+        plugins: [
+          rrulePlugin,
+          interaction,
+          dayGridPlugin,
+          timeGridPlugin,
+          listPlugin,
+        ],
+        initialView: "dayGridMonth",
+        headerToolbar: {
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth,timeGridWeek,listWeek",
+        },
+        timeZone: "local",
+        loading: this.load.bind(this),
+        events: eventSrc,
+        eventInteractive: interactive,
+        eventClick: interactive ? this.eventClick.bind(this) : undefined,
+        eventDidMount: interactive ? this.eventDidMount.bind(this) : undefined,
+        selectable: false,
+        selectMirror: true,
+        dateClick: interactive ? this.dateClick.bind(this) : undefined,
+        unselectCancel: ".dialog",
+        height: "auto",
+        displayEventEnd: true,
+        eventDisplay: "block",
+        datesSet: this.hideNotifier.bind(this),
+      },
+    );
+
+    this.refreshCallback = this.refresh.bind(this);
   }
 
   removeRefreshListeners() {
@@ -102,7 +157,10 @@ export default class extends Controller {
   }
 
   eventRefresh(event) {
-    if (this.eventRequestsRefresh(event)) {
+    if (
+      this.eventRequestsRefresh(event) &&
+      !event.detail.fetchResponse.response.redirected
+    ) {
       this.debouncedRefreshCallback();
     }
   }
@@ -125,7 +183,7 @@ export default class extends Controller {
     if (this.calendarUpdateNotificationChannel) {
       this.calendarUpdateNotificationChannel.unsubscribe();
     }
-    const streamId = this.extractStreamId();
+    const streamId = this.streamIdValue;
     if (!streamId) {
       return;
     }
@@ -143,14 +201,6 @@ export default class extends Controller {
         received: (data) => this.toggleUpdateNotifier(data.dates),
       },
     );
-  }
-
-  extractStreamId() {
-    const streamId = this.data.get("streamId");
-    if (streamId) {
-      return streamId;
-    }
-    return null;
   }
 
   showNotifier() {
@@ -171,72 +221,44 @@ export default class extends Controller {
     };
   }
 
-  /**
-   * Initializes the FullCalendar instance with specified options and plugins.
-   */
-  initCalendar() {
-    let calendarEl = this.calendarTarget;
-    let url = "/calendars";
-    let eventSrc = {
-      url: url,
-      method: "GET",
-      extraParams: this.extractParams(),
-      id: this.sourceIdValue,
-    };
-
-    let interactive = this.data.has("interactive")
-      ? this.data.get("interactive") !== "false"
-      : true;
-
-    this.calendarService = new CalendarService(calendarEl, {
-      plugins: [
-        rrulePlugin,
-        interaction,
-        dayGridPlugin,
-        timeGridPlugin,
-        listPlugin,
-      ],
-      initialView: "dayGridMonth",
-      headerToolbar: {
-        left: "prev,next today",
-        center: "title",
-        right: "dayGridMonth,timeGridWeek,listWeek",
-      },
-      timeZone: "local",
-      loading: this.load.bind(this),
-      events: eventSrc,
-      eventInteractive: interactive,
-      eventClick: interactive ? this.eventClick.bind(this) : undefined,
-      eventDidMount: interactive ? this.eventDidMount.bind(this) : undefined,
-      selectable: false,
-      selectMirror: true,
-      dateClick: interactive ? this.dateClick.bind(this) : undefined,
-      unselectCancel: ".dialog",
-      height: "auto",
-      displayEventEnd: true,
-      eventDisplay: "block",
-      datesSet: this.hideNotifier.bind(this),
-    });
-
-    this.refreshCallback = this.refresh.bind(this);
-  }
-
   replaceEventSource(oldSrcId, newSrc) {
     this.calendarService.replaceEventSource(oldSrcId, newSrc);
   }
 
   eventDidMount(info) {
-    if (
-      (info.event.extendedProps.type !== "game" &&
-        info.event.extendedProps.type !== "availability") ||
-      !info.event.extendedProps.selectable
-    )
-      return;
+    const { type, selectable, route } = info.event.extendedProps;
+    if ((type !== "game" && type !== "availability") || !selectable) return;
+
     const el = info.el;
     el.dataset.turboFrame = this.frameIdValue;
-    el.dataset.href = info.event.extendedProps.route;
+    el.dataset.href = route;
     el.dataset.turboStream = "true";
     el.classList.add("cursor-pointer");
+    el.setAttribute("role", "button");
+    el.setAttribute("tabindex", "0");
+    el.setAttribute("aria-haspopup", "true");
+
+    const startTime = info.event.start.toLocaleTimeString(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+    const startDate = info.event.start.toLocaleDateString();
+
+    let endTime = info.event.end.toLocaleTimeString(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+    let endDate = info.event.end.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    el.setAttribute(
+      "aria-label",
+      `View ${info.event.title} - Starts at ${startTime} on ${startDate} - Ends at ${endTime} on ${endDate}`,
+    );
   }
 
   onSubmitSuccess(event) {
@@ -311,21 +333,23 @@ export default class extends Controller {
     ) {
       return;
     }
+
     this.hideLoading();
     this.manualRefresh();
   }
 
   dateClick(info) {
+    this.displayLoading();
+
     let params = new URLSearchParams();
     ["groupId", "userId", "gameProposalId", "availabilityId"].some((param) => {
       const value = this.data.get(param);
       if (value) {
+        // Convert camelCase param key to snake_case and append to params
         params.append(param.replace(/([A-Z])/g, "_$1").toLowerCase(), value);
         return true;
       }
     });
-
-    this.displayLoading();
 
     params.append("date", info.dateStr);
 
@@ -403,7 +427,7 @@ export default class extends Controller {
       "gameProposalId",
       "excludeAvailabilities",
     ].forEach((param) => {
-      let value = this.data.get(param);
+      const value = this.data.get(param);
       if (value !== null) {
         // Convert camelCase param keys to snake_case
         extraParams[param.replace(/([A-Z])/g, "_$1").toLowerCase()] = value;
@@ -764,8 +788,10 @@ export default class extends Controller {
   // @param {Array} dates - An array of dates to check against the current month. Null or empty array means always update.
   toggleUpdateNotifier(dates) {
     // Treat no date as always update
-    if (!dates || dates.empty) return;
-
+    if (!dates?.length) {
+      this.showNotifier();
+      return;
+    }
     dates.some((date) => {
       if (date == null) return;
       let affectedDate = new Date(date);

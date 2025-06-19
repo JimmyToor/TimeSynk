@@ -1,8 +1,6 @@
 <% new_record = game_session_attendance.new_record? %>
 <%= form_with(model: new_record ?  [game_session, game_session_attendance] :  game_session_attendance,
               id: dom_id(game_session_attendance, :form)) do |form| %>
-  <%= render "shared/notification", id: "game_session_attendance_#{new_record ? "new" : game_session_attendance.id}" %>
-
   <div>
     <%= form.hidden_field :game_session_id, value: game_session_attendance.game_session_id %>
     <%= form.hidden_field :user_id, value: Current.user.id %>
@@ -19,6 +17,7 @@
     <%= render "shared/buttons/form_submit_button",
                form: form,
                text: "Save Attendance",
+               data: {turbo_submits_with: "Saving..."},
                extra_classes: "block mt-2 mb-2 disabled:bg-gray-600 disabled:cursor-default disabled:hover:bg-gray-600 dark:disabled:hover:bg-gray-600" %>
   </div>
 <% end %>

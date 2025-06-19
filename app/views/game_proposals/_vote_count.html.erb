@@ -1,6 +1,8 @@
 <%# locals: (game_proposal:) %>
-<%= content_tag(:div, id:dom_id(game_proposal, :vote_count), class: "flex space-x-2 #{dom_id(game_proposal, :vote_count)}") do %>
-    <strong>Yes: <%= game_proposal.yes_votes.count %></strong>
-    <strong>No: <%= game_proposal.no_votes.count %></strong>
-    <strong>Undecided: <%= game_proposal.undecided_votes.count %></strong>
+<%= content_tag(:div, id:dom_id(game_proposal, :vote_count),
+                'aria-label': "Vote Counts for #{game_proposal.game_name} in #{game_proposal.group_name}",
+                class: "flex space-x-2 #{dom_id(game_proposal, :vote_count)}") do %>
+    <span>Yes: <%= game_proposal.yes_votes.count %></span>
+    <span>No: <%= game_proposal.no_votes.count %></span>
+    <span>Undecided: <%= game_proposal.undecided_votes.count %></span>
 <% end %>

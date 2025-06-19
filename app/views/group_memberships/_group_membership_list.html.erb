@@ -1,52 +1,56 @@
 <%# locals: (group:, limit: 8) %>
-<h5 class="font-normal text-gray-700 dark:text-gray-400">Members: </h5>
-<% memberships = group.group_memberships.first(limit) %>
 <%= content_tag :div,
                 id:"group_#{group.id}_member_list",
-                class:"mr-auto max-w-screen-xl bg-white dark:bg-gray-800 relative overflow-hidden" do %>
+                class:"mr-auto max-w-screen-xl bg-white dark:bg-gray-800 relative" do %>
   <div id="group_member_list" class="flex">
-    <% memberships.each do |membership| %>
-      <%= link_to group_membership_path(membership),
-                  id: "member_list_group_membership_#{membership.id}",
-                  class:"flex",
-                  data: { popover_target: "popover-user-roles-#{membership.user.id}-#{group.id}", turbo_frame:"modal_frame" } do %>
-        <%= user_avatar(membership.user, size_x: 32) %>
-      <% end %>
+    <% group.group_memberships.first(limit).each do |membership| %>
+      <% frame_id = derive_permission_set_frame_id(user: membership.user, group: group) %>
+      <% dialog_popover_id = "popover_#{frame_id}" %>
 
-    <% end %>
-    <% remaining_users = group.group_memberships.count - limit %>
+      <div data-controller="anchor-position"
+           data-anchor-position-target="anchor"
+           data-anchor-position-position-style-value="absolute"
+           class="flex relative">
+        <div data-controller="stimulus-popover" class="group_membership_<%= membership.id %>">
+          <div class="flex relative" data-action="mouseenter->stimulus-popover#show mouseleave->stimulus-popover#hide">
 
-    <% button_content = capture do %>
-      <button type="button" data-action="dialog#open" class="flex items-center justify-center w-8 h-8 text-xs font-medium text-white bg-gray-600 border-2
-      border-white rounded-full hover:bg-gray-500 dark:border-gray-800">
-        <% if remaining_users > 0 %>
-          +<%= remaining_users %>
-        <% else %>
-          All
+            <button popovertarget="<%= dialog_popover_id %>" data-action="click->anchor-position#triggerUpdate">
+              <%= user_avatar(membership.user, size_x: 32) %>
+            </button>
+          </div>
+
+          <%= render "shared/popover_stimulus",
+                     id: "popover_group_membership_#{membership.id}",
+                     extra_classes: "top-7 left-8 -translate-x-1/2 w-max" do %>
+            <div class="pb-3">
+              <div class="bg-gray-100 dark:bg-gray-700 border-b-2 rounded-t-lg border-gray-400 dark:border-gray-600 text-center">
+                <span class="font-bold text-primary-600"><%= membership.user.username %></span>
+              </div>
+
+              <div class="px-3">
+                <%= render "users/roles", user: membership.user, group: group %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        <%= render "shared/popover_top_layer", id: dialog_popover_id, extra_classes: "p-4" do %>
+          <%= turbo_frame_tag frame_id,
+                              src: group_permission_set_path(user_id: membership.user.id, group_id: group.id),
+                              data: { action: "turbo:frame-load->anchor-position#triggerUpdate"},
+                              loading:"lazy" do %>
+            <%= render "shared/spinner" %>
+          <% end %>
         <% end %>
+      </div>
+    <% end %>
+
+    <% remaining_users = group.group_memberships.count - limit %>
+    <% if remaining_users > 0 %>
+      <button data-action="dialog#open"
+              class="ml-2 font-semibold text-secondary-500 hover:text-secondary-400 dark:text-secondary-200
+                dark:hover:text-secondary-100">
+        +<%= remaining_users %> more
       </button>
     <% end %>
-
-    <%= render "group_memberships/full_group_membership_modal",
-               button_content: button_content,
-               group: group %>
-  </div>
-
-<% end %>
-<% memberships.each do |membership| %>
-  <div data-popover id="popover-user-roles-<%= membership.user.id %>-<%= group.id %>" role="tooltip"
-       class="absolute z-50 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300
-       bg-gray-200 shadow-lg border-2 rounded-lg border-gray-400 dark:bg-gray-800 dark:border-gray-600">
-
-    <div class="pb-3 overflow-x-scroll">
-      <div class="bg-gray-100 dark:bg-gray-700 border-b-2 rounded-t-lg border-gray-400 dark:border-gray-600 text-center">
-        <span class="font-bold text-primary-600"><%= membership.user.username %></span>
-      </div>
-
-      <div class="px-3">
-        <%= render "users/roles", user: membership.user, group: group %>
-      </div>
-    </div>
-    <div data-popper-arrow></div>
   </div>
 <% end %>

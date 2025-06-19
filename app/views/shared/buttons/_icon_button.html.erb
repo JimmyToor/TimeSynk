@@ -1,14 +1,18 @@
-<%# locals: (action:, text: "", title: "", svg_name: "plus", data: {}, extra_classes: "", icon_classes:"h-3.5 w-3.5 mr-2", ping: false) %>
+<%# locals: (action:"", text: nil, title: "", svg_name: "plus", data: {}, extra_classes: "", icon_classes:"", button_attributes:{}, ping: false) %>
 <div class="relative flex">
   <% if ping %>
     <span id="new_ping" class="absolute inline-flex h-full w-full animate-ping rounded-lg opacity-75 bg-secondary-400"></span>
   <% end %>
-  <%= button_tag type: "button", title: title, data: {action: action}.merge(data),
-                 class: "flex items-center justify-center font-medium
-                    rounded-lg text-sm #{extra_classes}" do %>
-    <%= inline_svg("icons/#{svg_name}.svg", class: icon_classes) %>
-    <span class="ml-2 underline decoration-2 hover:decoration-4">
-      <%= text %>
-    </span>
+  <%= button_tag type: "button",
+                 'aria-label': title,
+                 title: title,
+                 data: {action: action}.merge(data),
+                 class: "flex items-center justify-center font-medium rounded-lg text-sm #{extra_classes}",
+                 **button_attributes do %>
+    <%= inline_svg("icons/#{svg_name}.svg", title: "#{title}", aria_hidden: true, class: icon_classes) %>
+    <%= content_tag :div, class:"ml-2 underline decoration-2 hover:decoration-4 empty:hidden" do -%>
+      <%= text if text.present? -%>
+      <%= yield if block_given? -%>
+    <% end %>
   <% end %>
 </div>

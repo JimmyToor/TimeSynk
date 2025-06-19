@@ -16,15 +16,15 @@ class GroupPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user.has_cached_role?(:site_admin) || user.has_cached_role?(:owner, record)
+    user.has_cached_role?(:owner, record)
   end
 
   def create_game_proposal?
-    user.has_cached_role?(:site_admin) || user.has_any_role_for_resource?([:owner, :admin, :create_game_proposals], record)
+    user.has_any_role_for_resource?([:owner, :admin, :create_game_proposals], record)
   end
 
   def create_invite?
-    user.has_cached_role?(:site_admin) || user.has_any_role_for_resource?([:owner, :admin, :manage_invites], record)
+    user.has_any_role_for_resource?([:owner, :admin, :manage_invites], record)
   end
 
   def change_owner?

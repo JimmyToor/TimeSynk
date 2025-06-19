@@ -1,4 +1,4 @@
-import { Calendar } from "@fullcalendar/core";
+import { Calendar, JsonRequestError } from "@fullcalendar/core";
 
 /**
  * Service class for managing calendar data and functionality.
@@ -7,10 +7,15 @@ export default class CalendarService {
   /**
    * Constructs a new CalendarService instance.
    * @param {HTMLElement} calendarElement - The DOM element to render the calendar in.
+   * @param {Boolean} disambiguate - Prepend group information to calendar titles.
    * @param {Object} options - Configuration options for the calendar.
    */
-  constructor(calendarElement, options) {
-    this.fullCalendarObj = this.#createFullCalendar(calendarElement, options);
+  constructor(calendarElement, disambiguate, options) {
+    this.fullCalendarObj = this.#createFullCalendar(
+      calendarElement,
+      disambiguate,
+      options,
+    );
     this.allCalendars = new Map(); // <calendarId, calendar>
     this.calendarIdsByType = new Map(); // <calendarType, Set<calendarId>>
     this.calendarStates = new Map(); // <calendarId, isActive>
@@ -21,15 +26,24 @@ export default class CalendarService {
   /**
    * Creates a FullCalendar instance with custom options.
    * @param {HTMLElement} calendarEl - The DOM element to render the calendar in.
+   * @param {Boolean} disambiguate - Prepend group information to calendar titles.
    * @param {Object} optionsOverrides - Additional options to override defaults.
    * @returns {Calendar} A FullCalendar instance.
    */
-  #createFullCalendar(calendarEl, optionsOverrides = {}) {
+  #createFullCalendar(calendarEl, disambiguate = false, optionsOverrides = {}) {
     const options = {
-      eventSourceSuccess: this.#processCalendars.bind(this),
+      eventSourceSuccess: (retrievedCalendars, response) => {
+        return this.#processCalendars(retrievedCalendars, disambiguate); // Pass disambiguate here
+      },
       eventSourceFailure: function (errorObj) {
+        if (!(errorObj instanceof JsonRequestError)) return;
+
+        console.error(
+          "There was an error while fetching the calendar: ",
+          errorObj,
+        );
         alert(
-          "there was an error while fetching events! Error: " +
+          "There was an error while fetching the calendar! Error: " +
             errorObj.message,
         );
       },
@@ -46,15 +60,39 @@ export default class CalendarService {
    * @param {Array} retrievedCalendars - Array of calendar objects.
    * @returns {Array} An array of FullCalendar event objects.
    */
-  #processCalendars(retrievedCalendars) {
+  #processCalendars(retrievedCalendars, disambiguate = false) {
     let events = [];
     this.resetData();
+
+    if (disambiguate)
+      retrievedCalendars = this.#disambiguateCalendars(
+        retrievedCalendars,
+        "game",
+      );
 
     retrievedCalendars.forEach((calendar) => {
       this.#processCalendar(calendar, events);
     });
 
     return events;
+  }
+
+  /**
+   * Disambiguate calendars by appending group information to their titles.
+   * Assumes calendar schedules have a group property.
+   *
+   * @param {Array} calendars - Array of calendar objects to process.
+   * @param {string} type - The type of calendars to disambiguate.
+   * @returns {Array} The updated array of calendars.
+   */
+  #disambiguateCalendars(calendars, type) {
+    calendars.forEach((calendar) => {
+      if (calendar.type !== type || calendar.schedules.length === 0) return;
+
+      // Append group to title for disambiguation
+      calendar.title = `${calendar.schedules[0].group} - ${calendar.name}`;
+    });
+    return calendars;
   }
 
   /**
@@ -167,12 +205,12 @@ export default class CalendarService {
       case "ideal":
         event.id = `ideal`;
         event.backgroundColor = "purple";
-        event.extendedProps.route = `/ideals/${schedule.id}`;
         break;
       case "game":
         event.id = `game_${schedule.id}`;
         event.backgroundColor = "blue";
         event.extendedProps.route = `/game_sessions/${schedule.id}`;
+        event.extendedProps.group = schedule.group;
         break;
       default: // Single schedule
         event.id = `schedule_${schedule.id}`;

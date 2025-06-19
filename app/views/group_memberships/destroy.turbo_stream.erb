@@ -1,14 +1,14 @@
-<%= turbo_stream.remove("popover-user-roles-#{@group_membership.user.id}-#{@group_membership.group.id}") %>
-<%= turbo_stream.remove("group_membership_#{@group_membership.id}") %>
+<%= turbo_stream.remove_all(".group_membership_#{@group_membership.id}") %>
+<%= turbo_stream.remove_all(".member_list_group_membership_#{@group_membership.id}") %>
 
-<%= turbo_stream.replace("content_group_membership_#{@group_membership.id}",
-                         html: raw("<p><%= @group_membership.user.username %\> is no longer a member.</p>")) %>
+<%= turbo_stream.update("modal_frame") %>
 
 <% message = Current.user == @group_membership.user ?
-               I18n.t("group_membership.destroy.self.success", group_name: @group.name) :
-               I18n.t("group_membership.destroy.success", username:@group_membership.user.username, group_name: @group_membership.group.name)%>
+               I18n.t("group_membership.destroy.self.success", group_name: @group_membership.group.name) :
+               I18n.t("group_membership.destroy.success", username: @group_membership.user.username, group_name: @group_membership.group.name)%>
 
 <%= turbo_stream_toast(:success,
                        message,
-                       "group_membership_#{@group_membership.id}",
-                       highlight: "#{@group_membership.group.name}") %>
+                       "group_membership_#{@group_membership.id}") %>
+
+<%= frame_reload("group_membership_table_#{@group_membership.group.id}") %>

@@ -1,10 +1,19 @@
 <%# locals: (game_session:, groups:nil) %>
-<h1>Editing game session</h1>
+<%= render "shared/header_primary",
+           text: safe_join(["Edit ",
+                            content_tag(:span, @game_session.game_name, class: "font-bold text-primary-600"),
+                            " session in ",
+                            content_tag(:span, @game_session.group.name, class: "font-bold text-primary-600")]),
+           extra_classes: "text-center" %>
 
-<%= modal_wrapper(game_session.game_name) do %>
+<%= modal_wrapper("Edit #{game_session.group_name} - #{game_session.game_name}") do %>
   <%= content_tag(:div, id:dom_id(game_session, :content)) do %>
 
-    <%= render "form", game_session: game_session, game_proposal: nil, initial_game_proposal: game_session.game_proposal, groups: groups %>
+    <%= render "form",
+               game_session: game_session,
+               game_proposal: nil,
+               initial_game_proposal: game_session.game_proposal,
+               groups: groups %>
 
   <% end %>
 <% end %>

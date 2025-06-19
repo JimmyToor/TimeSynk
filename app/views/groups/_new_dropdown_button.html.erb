@@ -2,11 +2,14 @@
 <div data-controller="dropdown" class="relative">
 
   <button id="new-dropdown-button"
+          aria-label="Open creation dropdown"
+          aria-haspopup="menu"
           data-action="dropdown#toggle click@window->dropdown#hide"
+          data-dropdown-target="toggleButton"
           class="relative inline-flex items-center rounded-lg text-center text-sm font-medium focus:ring-4 focus:outline-none
            text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100"
           type="button">
-    <%= inline_svg_tag "icons/add.svg" %>
+    <%= inline_svg_tag "icons/add.svg", class: "size-6", aria_hidden: true %>
   </button>
 
   <div id="new-dropdown"

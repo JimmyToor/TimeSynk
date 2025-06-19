@@ -29,10 +29,33 @@
 
 en:
   activerecord:
+    errors:
+        models:
+            user:
+              attributes:
+                username:
+                  taken: "has already been taken."
+                  invalid: "is invalid."
+                  blank: "cannot be blank."
+                  too_short: "is too short (minimum is %{count} characters)."
+                  too_long: "is too long (maximum is %{count} characters)."
+                password_confirmation:
+                  confirmation: "doesn't match password."
+                password_challenge:
+                  invalid: "is incorrect."
+                password:
+                  blank: "cannot be blank."
+                  too_short: "is too short (minimum is %{count} characters)."
+                  too_long: "is too long (maximum is %{count} characters)."
     attributes:
       invite:
         assigned_role_ids: "Assigned permissions"
         expires_at: "Expiration date"
+      user:
+        password: "Password"
+        password_confirmation: "Password confirmation"
+        password_challenge: "Current password"
+        email: "Email"
   identity:
     email:
       already_verified: "This email is already in-use by another user."
@@ -40,14 +63,23 @@ en:
       verification_sent: "A verification email has been sent to %{email}."
       update:
         success: "Your email has been changed."
-        error: "There was an error updating your email."
+        error: "There was a problem updating your email."
+      destroy:
+        success: "Your email has been un-associated with your account."
+        error: "There was a problem removing your email address."
+    password:
+      update:
+        success: "Your password has been changed."
+        error: "There was a problem changing your password."
+    password_reset:
+      email_sent: "If a verified account with that email exists, a password reset link has been sent to it."
   group:
     create:
       success: "Group %{name} successfully created."
       error: "There was an error creating the group."
     validation:
       name:
-        presence: "can't be blank."
+        presence: "cannot be blank."
         length: "is too long (maximum is %{count} characters)."
     join_error: "There was an error joining the group."
     join_success: "You have successfully joined the group."
@@ -62,9 +94,12 @@ en:
     destroy:
       self:
         success: "You have successfully left %{group_name}."
-        error: "There was an error leaving %{group_name}."
+        error: "There was a problem leaving %{group_name}."
       success: "%{username} is no longer a member of %{group_name}."
       error: "There was an error removing %{username} from %{group_name}."
+    create:
+      success: "You have joined %{group_name}!"
+      error: "There was a problem joining %{group_name}!"
   proposal_vote:
     validation:
       vote_unique: "You have already voted on this proposal."
@@ -99,6 +134,7 @@ en:
       success: "Availability successfully deleted."
       error: "There was an error deleting the availability."
       only_availability: "Cannot delete your only availability."
+    no_schedules: "You can create schedules to indicate the times you're available. You can then select them here to be combined to create this availability. Get started by creating a new schedule."
   proposal_availability:
     create:
       success: "Availability set for %{game_name}."
@@ -119,21 +155,23 @@ en:
     update:
       success: "Invite successfully updated."
       error: "There was an error updating the invite."
+    invalid: "This invite is invalid."
+    expired: "This invite has expired."
     validation:
       assigned_role_ids:
         invalid: "contained invalid roles. Please refresh the page and try again."
       expires_at:
-        presence: "can't be blank."
+        presence: "cannot be blank."
   game_session:
     validation:
       name:
-        presence: "can't be blank."
+        presence: "cannot be blank."
         length: "is too long (maximum is %{count} characters)."
       start_time:
-        presence: "can't be blank."
+        presence: "cannot be blank."
         date: "must be a valid date."
       end_time:
-        presence: "can't be blank."
+        presence: "cannot be blank."
         date: "must be a valid date."
       duration:
         length: "must be a multiple of 15 minutes."
@@ -172,3 +210,11 @@ en:
       update:
         success: "Avatar updated."
         error: "There was a problem changing your avatar."
+  session:
+    create:
+      error: "That username/email and password is incorrect."
+  search:
+    complete_message: "Search complete."
+  registration:
+    create:
+      error: "There was a problem creating your account."

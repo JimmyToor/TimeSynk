@@ -11,8 +11,22 @@ class GameSessionAttendance < ApplicationRecord
 
   belongs_to :game_session
   belongs_to :user
+  has_one :game_proposal, through: :game_session
+  has_one :group, through: :game_session
 
   after_update_commit :broadcast_game_session_attendances
+
+  def group_membership
+    GroupMembership.find_by(user_id: user_id, group_id: game_session.group.id)
+  end
+
+  def group_name
+    game_session.group.name
+  end
+
+  def game_name
+    game_session.game_proposal.game.name
+  end
 
   def broadcast_game_session_attendances
     return unless game_session_present?

@@ -1,47 +1,51 @@
 <%# locals: (proposal_vote:, group_membership:) %>
 <div id="<%= dom_id proposal_vote %>" class="flex">
 
-  <div class="flex" data-popover-target="popover-proposal-vote-<%= proposal_vote.id %>">
+  <div id="proposal_vote_<%=proposal_vote.id%>_group_membership_<%=group_membership.id%>"
+       data-controller="anchor-position"
+       data-anchor-position-target="anchor"
+       data-anchor-position-position-style-value="absolute"
+       class="flex relative" >
     <% icon = if proposal_vote.yes_vote.nil?
                 'undecided.svg'
               else
                 proposal_vote.yes_vote ? 'checkmark.svg' : 'xmark.svg'
               end
     %>
-    <%= link_to group_membership_path(id: group_membership.id, game_proposal_id: proposal_vote.game_proposal.id),
-                id: "proposal_vote_#{proposal_vote.id}_group_membership_#{group_membership.id}",
-                class: "flex",
-                data: { turbo_frame:"modal_frame" } do %>
-      <%= user_avatar(proposal_vote.user, size_x: 24, size_y: 24, svg_icon: icon) %>
-    <% end %>
-  </div>
+    <% frame_id = derive_permission_set_frame_id(user: proposal_vote.user, game_proposal: proposal_vote.game_proposal) %>
+    <% dialog_popover_id = "popover_#{frame_id}" %>
 
-  <div data-popover id="popover-proposal-vote-<%= proposal_vote.id %>" role="tooltip"
-       class="absolute z-50 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300
-       bg-gray-200 shadow-lg border-2 rounded-lg border-gray-400 dark:bg-gray-800 dark:border-gray-600">
-    <div class="pb-3 overflow-x-scroll">
-      <div class="bg-gray-100 dark:bg-gray-700 border-b-2 rounded-t-lg border-gray-400 dark:border-gray-600 text-center">
-        <span class="font-bold text-primary-600">
-        <%= proposal_vote.user.username %>
-        </span>
+    <div data-controller="stimulus-popover">
+      <div class="flex"
+           data-action="mouseenter->stimulus-popover#show mouseleave->stimulus-popover#hide focusin->stimulus-popover#show focusout->stimulus-popover#hide">
+        <button popovertarget="<%= dialog_popover_id %>"
+                aria-label="View roles for <%= proposal_vote.user.username %> in <%= proposal_vote.game_name %> for <%= proposal_vote.group_name %>"
+                aria-describedby="popover_proposal_vote_<%= proposal_vote.id %>"
+                data-action="click->anchor-position#triggerUpdate">
+          <%= user_avatar(proposal_vote.user, size_x: 24, size_y: 24, svg_icon: icon) %>
+        </button>
       </div>
+      <%= render "shared/popover_stimulus",
+                 id: "popover_proposal_vote_#{proposal_vote.id}",
+                 extra_classes: "top-7 left-8 -translate-x-1/2 w-max" do %>
+        <span id="stimulus_popover_proposal_vote_<%= proposal_vote.id %>_label" class="sr-only"><%= proposal_vote.user.username %>'s vote for <%= proposal_vote.group_name %> in <%= proposal_vote.game_name %>:</span>
+        <%= render "proposal_votes/vote_details", proposal_vote: proposal_vote %>
+      <% end %>
+    </div>
 
-      <div class="pt-2 px-3">
-        <span class="font-bold text-primary-600">Vote:</span>
-        <span class="text-black dark:text-white"><%= format_vote(proposal_vote.yes_vote) %></span>
-      </div>
 
-      <% unless proposal_vote.comment.blank? %>
-        <div class="pt-2 px-3">
-          <span class="font-bold text-primary-600">Comment:</span>
-          <span class="text-black dark:text-white"><%= proposal_vote.comment %></span>
+
+    <%= render "shared/popover_top_layer", id: dialog_popover_id, extra_classes: "p-4" do %>
+      <span class="sr-only"><%= proposal_vote.user.username %>'s roles for <%= proposal_vote.game_name %> in <%= proposal_vote.group_name %></span>
+      <%= turbo_frame_tag frame_id,
+                          role: "presentation",
+                          src: game_proposal_permission_set_path(user_id: proposal_vote.user.id, game_proposal_id: proposal_vote.game_proposal.id),
+                          data: { action: "turbo:frame-load->anchor-position#triggerUpdate"},
+                          loading: "lazy" do %>
+        <div class="size-16">
+          <%= render "shared/spinner_absolute" %>
         </div>
       <% end %>
-
-      <div class="px-3">
-        <%= render "users/roles", user: proposal_vote.user, game_proposal: proposal_vote.game_proposal %>
-      </div>
-    </div>
-    <div class="after:border-gray-400 after:dark:border-gray-600" data-popper-arrow></div>
+    <% end %>
   </div>
 </div>

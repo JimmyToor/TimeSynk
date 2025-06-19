@@ -8,7 +8,7 @@ class ProposalVotesController < ApplicationController
   skip_after_action :verify_policy_scoped
 
   def index
-    @proposal_votes = authorize(params[:query].present? ? @game_proposal.proposal_votes.search(params[:query]) : @game_proposal.proposal_votes)
+    @proposal_votes = params[:query].present? ? @game_proposal.proposal_votes.search(params[:query]) : @game_proposal.proposal_votes
     @pagy, @proposal_votes = pagy(@proposal_votes.sorted_scope, limit: 10)
     respond_to do |format|
       format.html { render :index, locals: {proposal_votes: @proposal_votes, game_proposal: @game_proposal} }

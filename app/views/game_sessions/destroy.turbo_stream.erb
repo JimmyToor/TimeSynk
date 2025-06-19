@@ -11,7 +11,7 @@
 <%= turbo_stream.replace("game_session_#{@game_session.id}_details",
                          html: raw("<p>Game Session Deleted</p>")) %>
 
-
+<%= frame_reload("game_sessions") %>
 
 <%= turbo_stream_toast(:success,
                        I18n.t("game_session.destroy.success", name: @game_session.game_name),

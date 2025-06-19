@@ -13,10 +13,11 @@
         </th>
       </tr>
       </thead>
-      <tbody data-controller="element-toggle" data-element-toggle-display-style-value="table-row" class="divide-y-2">
+      <tbody data-controller="element-toggle"  class="divide-y-2">
+      <% most_permissive_role = Current.user.most_permissive_cascading_role_for_resource(group_memberships.first.group) if group_memberships.any? %>
       <% group_memberships.each do |group_membership| %>
         <%= render partial:"group_memberships/table/group_membership_table_row",
-                   locals: {group_membership: group_membership} %>
+                   locals: {group_membership: group_membership, most_permissive_role: most_permissive_role } %>
       <% end %>
       </tbody>
     </table>

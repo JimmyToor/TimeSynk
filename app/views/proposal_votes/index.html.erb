@@ -7,8 +7,10 @@
 <section class="bg-tertiary-50 dark:bg-gray-900">
   <div class="mx-auto max-w-screen-xl">
     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden w-fit"
+         role="search"
          data-controller="search frame-reload"
          data-search-src-value="<%= frame_path %>"
+         data-search-search-complete-message-value="<%= t('search.complete_message') %>"
          data-frame-reload-events-value="modal-form-submit-success">
       <%= render partial:"proposal_votes/table/proposal_vote_table_header", locals: {group: group} %>
       <%= turbo_frame_tag "proposal_vote_table_#{group.id}",
@@ -17,9 +19,10 @@
                                   reload_on_restore_src_value:frame_path,
                                   turbo_prefetch:"false",
                                   search_target: "frame",
-                                  frame_reload_target:"frame"} do %>
+                                  frame_reload_target:"frame"},
+                          role: "presentation" do %>
         <%= render "proposal_votes/table/proposal_vote_table", proposal_votes: proposal_votes %>
-      <% end %>
+    <% end %>
     </div>
   </div>
 </section>

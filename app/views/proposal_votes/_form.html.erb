@@ -21,7 +21,7 @@
     <%= form.text_area :comment, placeholder:"Add a comment (optional)", value: proposal_vote.comment %>
   </div>
 
-  <div>
+  <div class="text-center">
     <%= render "shared/buttons/form_submit_button", form: form, text:"Save Vote and Comment", extra_classes: "m-2" %>
   </div>
 <% end %>

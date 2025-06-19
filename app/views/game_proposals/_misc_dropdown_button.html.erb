@@ -1,67 +1,80 @@
 <%# locals: (game_proposal:, proposal_availability: nil) %>
 <div data-controller="dropdown" class="relative">
-  <button id="misc-dropdown-button" data-action="dropdown#toggle click@window->dropdown#hide"
+  <button id="misc-dropdown-button"
+          aria-label="Open miscellaneous dropdown for <%= game_proposal.game_name %>"
+          aria-haspopup="menu"
+          aria-expanded="false"
+          aria-controls="misc-dropdown"
+          data-action="dropdown#toggle click@window->dropdown#hide"
           class="relative inline-flex items-center rounded-lg text-center text-sm font-medium focus:ring-4
               focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
           type="button">
-    <%= inline_svg_tag "icons/chevron-down.svg" %>
+    <%= inline_svg_tag "icons/chevron-down.svg", aria_hidden: true %>
   </button>
 
 
-  <div id="misc-dropdown" data-dropdown-target="menu" class="absolute left-full z-40 hidden w-48
-      -translate-x-full transform rounded-lg bg-slate-100 shadow transition divide-y
-      divide-gray-100 dark:bg-gray-700"
+  <ul id="misc-dropdown"
+       data-dropdown-target="menu"
+       class="absolute left-full z-40 hidden w-48 -translate-x-full transform rounded-lg bg-slate-100 shadow transition
+       dark:bg-gray-700 py-2 text-sm text-gray-700 dark:text-gray-200"
+        aria-labelledby="<%= game_proposal.game_name %>-game-proposal-misc-dropdown-button"
        data-transition-enter-from="opacity-0 scale-95"
        data-transition-enter-to="opacity-100 scale-100"
        data-transition-leave-from="opacity-100 scale-100"
        data-transition-leave-to="opacity-0 scale-95">
-    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="<%= game_proposal.game_name %>-game-proposal-misc-dropdown-button">
-      <li class="flex hover:border-gray-600 dark:hover:border-gray-500 hover:bg-gray-200 dark:hover:bg-gray-600">
-        <%= link_to game_proposal_game_sessions_path(game_proposal), title: "View Game Sessions", class: "flex items-center px-2 py-1 w-full",
-                    data: { action: "dropdown#toggle", turbo_frame: "_top" } do %>
-          <%= inline_svg_tag "icons/rectangle_stack.svg" %>
-          <span class="ml-2">View Game Sessions</span>
-        <% end %>
-      </li>
-
-      <li class="flex hover:border-gray-600 dark:hover:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
-        <% if proposal_availability.present? %>
-          <%= link_to edit_proposal_availability_path(proposal_availability), title: "Change your game proposal availability",
-                      class: "flex px-2 items-center w-full py-1",
-                      data: { turbo_frame: "_top" } do %>
-
-            <%= inline_svg_tag "icons/calendar.svg" %>
-            <span class="ml-2">Edit Proposal Availability</span>
-
-          <% end %>
-        <% else %>
-          <%= link_to new_game_proposal_proposal_availability_path(game_proposal), title: "Set your game proposal availability",
-                      class: "flex px-2 items-center w-full py-1",
-                      data: { turbo_frame: "_top" } do %>
-
-            <%= inline_svg_tag "icons/calendar.svg" %>
-            <span class="ml-2">Set Proposal Availability</span>
-
-          <% end %>
-        <% end %>
-      </li>
-
-      <% if policy(game_proposal).destroy? %>
-
-        <% button_content = capture do %>
-          <button type="button" data-action="dialog#open" class="flex w-full items-center px-2 py-1 text-notice-400">
-            <%= inline_svg_tag "icons/trash.svg" %>
-            <span class="ml-2 text-left">Delete Game Proposal</span>
-          </button>
-        <% end %>
-
-        <%= render "shared/delete_dialog",
-                   button_content: button_content,
-                   container_tag: :li,
-                   container_classes:"flex hover:bg-notice-100 w-full hover:border-gray-600 dark:hover:border-gray-300 ",
-                   form_partial: "game_proposals/delete_form",
-                   resource: game_proposal %>
+    <li class="flex hover:border-gray-600 dark:hover:border-gray-500 hover:bg-gray-200 dark:hover:bg-gray-600">
+      <%= link_to game_proposal_game_sessions_path(game_proposal),
+                  title: "View Game Sessions",
+                  class: "flex items-center px-2 py-1 w-full",
+                  role: "menuitem",
+                  data: { action: "dropdown#toggle", turbo_frame: "_top" } do %>
+        <%= inline_svg_tag "icons/rectangle_stack.svg", aria_hidden: true %>
+        <span class="ml-2">View Game Sessions</span>
       <% end %>
-    </ul>
-  </div>
+    </li>
+
+    <li class="flex hover:border-gray-600 dark:hover:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
+      <% if proposal_availability.present? %>
+        <%= link_to edit_proposal_availability_path(proposal_availability),
+                    title: "Change your game proposal availability",
+                    class: "flex px-2 items-center w-full py-1",
+                    role: "menuitem",
+                    data: { turbo_frame: "_top" } do %>
+          <%= inline_svg_tag "icons/calendar.svg", aria_hidden: true %>
+          <span class="ml-2">Edit Proposal Availability</span>
+        <% end %>
+      <% else %>
+        <%= link_to new_game_proposal_proposal_availability_path(game_proposal), title: "Set your game proposal availability",
+                    class: "flex px-2 items-center w-full py-1",
+                    role: "menuitem",
+                    data: { turbo_frame: "_top" } do %>
+
+          <%= inline_svg_tag "icons/calendar.svg", aria_hidden: true %>
+          <span class="ml-2">Set Proposal Availability</span>
+
+        <% end %>
+      <% end %>
+    </li>
+
+    <% if policy(game_proposal).destroy? %>
+
+      <% button_content = capture do %>
+        <button type="button"
+                aria-haspopup="dialog"
+                data-action="dialog#open"
+                class="flex w-full items-center px-2 py-1 text-notice-400">
+          <%= inline_svg_tag "icons/trash.svg", aria_hidden: true %>
+          <span class="ml-2 text-left">Delete Game Proposal</span>
+        </button>
+      <% end %>
+
+      <%= render "shared/delete_modal",
+                 button_content: button_content,
+                 resource_title: game_proposal.game_name,
+                 container_tag: :li,
+                 container_classes:"flex hover:bg-notice-100 w-full hover:border-gray-600 dark:hover:border-gray-300 ",
+                 form_partial: "game_proposals/delete_form",
+                 resource: game_proposal %>
+    <% end %>
+  </ul>
 </div>

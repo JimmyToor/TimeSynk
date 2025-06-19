@@ -1,20 +1,21 @@
 <%# locals: (pending_game_proposals: nil, limit: 5)  %>
 <%= turbo_frame_tag "pending_game_proposals",
+                    role: "presentation",
                     class: "empty:hidden",
                     data: {controller:"reload-on-restore", src: "/"} do %>
   <% if pending_game_proposals.present? %>
-    <h4 class="text-2xl font-bold mb-1">Pending Proposals</h4>
-    <div class="flex rounded-lg dark:border-gray-600">
-      <ul>
+    <h1 id="pending-game-proposals" class="text-2xl font-bold mb-1">Pending Proposals</h1>
+    <section aria-labelledby="pending-game-proposals" class="flex rounded-lg dark:border-gray-600">
+      <ul aria-labelledby="pending-game-proposals">
         <% pending_game_proposals.sort_by(&:created_at).first(limit).each do |game_proposal| %>
           <li class="flex">
             <%= render game_proposal,
                        proposal_availability: game_proposal.get_user_proposal_availability(Current.user),
                        proposal_permission_set: game_proposal.make_permission_set(game_proposal.group.users.to_a) %>
-            <%= card_link_to_game_proposal(game_proposal) %>
+            <%= render "game_proposals/card_link", game_proposal: game_proposal %>
           </li>
         <% end %>
       </ul>
-    </div>
+    </section>
   <% end %>
 <% end %>

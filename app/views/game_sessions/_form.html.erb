@@ -3,16 +3,18 @@
               data: {controller:"proposal-selection", proposal_selection_target:"form", refresh_calendar_on_submit:""}) do |form| %>
   <%= render "shared/notification", id: "game_session_#{game_session.new_record? ? "new" : game_session.id}" %>
 
-  <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg">
-    <div>
+  <section class="flex w-full flex-col items-center self-center rounded-lg p-4 space-y-2 dark:bg-gray-800">
       <div class="flex justify-center">
-        <%= display_game_art_and_name(game: game_session.game, only_art: true, img_classes: "border-4 border-primary-900", img_size: GameImageSize::COVER_SMALL) if game_session.game.present? %>
+        <%= display_game_art_and_name(game: game_session.game,
+                                      only_art: true,
+                                      img_classes: "border-4 border-primary-900",
+                                      img_size: GameImageSize::COVER_SMALL) if game_session.game.present? %>
       </div>
       <% if !game_proposals.present? || !game_session.new_record? %>
         <%= hidden_field_tag :single_game_proposal, true %>
-        <%= form.hidden_field :game_proposal_id, value: initial_game_proposal.id %>
+        <%= form.hidden_field :game_proposal_id, value: initial_game_proposal.id, 'aria-label': "Game proposal" %>
       <% else %>
-        <%= form.label :game_proposal_id, style: "display: block" %>
+        <span data-proposal-selection-target="groupName" class="font-semibold"><%= initial_game_proposal.group.name %></span>
         <% if groups.present? && groups.length > 1 %>
           <%= form.grouped_collection_select :game_proposal_id,
                                            groups.reject { |group| group.game_proposals.empty? },
@@ -20,7 +22,8 @@
                                            :name,
                                            :id,
                                            :game_name,
-                                           {selected: initial_game_proposal.id},
+                                           {selected: initial_game_proposal.id,                                            'aria-label': "Game proposal",
+                                             },
                                            data: { proposal_selection_target:"collectionSelect" } %>
         <% else %>
           <%= form.collection_select :game_proposal_id,
@@ -30,56 +33,71 @@
                                {selected: initial_game_proposal.id}, data: { proposal_selection_target:"collectionSelect" } %>
         <% end %>
       <% end %>
-    </div>
 
-    <%= turbo_frame_tag "game_session_form_fields", data: {proposal_selection_target:"formFrame"} do %>
+    <%= turbo_frame_tag "game_session_form_fields",
+                        role: "presentation",
+                        data: {proposal_selection_target:"formFrame"},
+                        class:"flex flex-col w-fit space-y-2" do %>
       <% if policy(game_session).create? %>
         <div data-controller="flatpickr" class="flatpickr" data-flatpickr-timezone-value="<%= Current.user.timezone %>">
-          <%= form.label :date, class: "block" %>
+          <%= render "shared/form_label", form: form, field: :date, extra_classes: "block" %>
           <%= form.datetime_field :date,
                                   data: { flatpickr_target: "startDate", proposal_selection_target: "dateInput" },
                                   required: true,
+                                  autofocus: true,
                                   value: game_session.date&.in_time_zone(Current.user.timezone) %>
         </div>
-
-        <div class="flex items-center">
-          <%= form.label :duration, "Duration:", class:"items-center mr-2" %>
-          <div class="flex flex-col items-center">
-            <%= form.label :duration_days, "Days", class: "block" %>
-            <%= form.number_field :duration_days, min:0, max:30,  required: true,
-                                  value: game_session.duration&.parts[:days] || 0,
-                                  class: "w-16 h-8 p-1 text-center" %>
-          </div>
-          <div class="flex flex-col items-center">
-            <%= form.label :duration_hours, "Hours", class: "block" %>
-            <%= form.number_field :duration_hours, min:0, max:23, required: true,
-                                  value: game_session.duration&.parts[:hours] || (game_session.new_record? ? 1 : 0),
-                                  class: "w-16 h-8 p-1 text-center" %>
-          </div>
-          <div class="mx-2 translate-y-2 text-4xl font-bold leading-7">:</div>
-          <div class="flex flex-col items-center disabled:opacity-50">
-            <%= form.label :duration_minutes, "Minutes", class: "block" %>
-            <%= form.select :duration_minutes,
-                            options_for_select((0..3).map { |i| [i * 15, i * 15] },
-                            selected: game_session.duration&.parts[:minutes] || 0),
-                            {},
-                            class: "w-16 h-8 p-1 text-center" %>
-          </div>
-        </div>
-
         <div>
-          <%= form.submit "Save Game Session", data: { turbo_submits_with: "Saving...",
-                                                        proposal_selection_target:"submitButton" },
-                          class:"text-black mt-2 cursor-pointer focus:outline-none dark:text-white bg-primary-400 hover:bg-primary-600
-                          focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2
-                          dark:bg-primary-700 dark:hover:bg-primary-600 disabled:opacity-20 disabled:cursor-not-allowed disabled" %>
+          <%= render "shared/form_label", form: form, field: :duration, extra_classes: "mr-2 block" %>
+          <div class="flex flex-row">
+            <div class="flex flex-col items-center">
+              <%= form.number_field :duration_days, min:0, max:30,  required: true,
+                                    value: game_session.duration&.parts[:days] || 0,
+                                    class: "w-16 h-8 p-1 text-center",
+                                    'aria-label': "Duration: Days"%>
+              <%= render "shared/form_label", text: "Days", form: form, field: :duration_days, extra_classes: "block" %>
+            </div>
+
+            <div class="flex flex-col items-center">
+              <%= form.number_field :duration_hours, min:0, max:23, required: true,
+                                    value: game_session.duration&.parts[:hours] || (game_session.new_record? ? 1 : 0),
+                                    class: "w-16 h-8 p-1 text-center",
+                                    'aria-label': "Duration: Hours" %>
+              <%= render "shared/form_label", text: "Hours", form: form, field: :duration_hours, extra_classes: "block" %>
+            </div>
+
+            <div class="mx-2 text-4xl font-bold leading-7 transform -translate-y-1">:</div>
+
+            <div class="flex flex-col items-center">
+              <%= form.select :duration_minutes,
+                              options_for_select((0..3).map { |i| [i * 15, i * 15] },
+                                                 selected: game_session.duration&.parts[:minutes] || 0),
+                              {},
+                              class: "w-16 h-8 p-1 text-center",
+                              'aria-label': "Duration: Minutes"%>
+              <%= render "shared/form_label",
+                         text: "Minutes",
+                         form: form,
+                         field: :duration_minutes,
+                         extra_classes: "block" %>
+            </div>
+          </div>
         </div>
+
+
+          <%= form.submit "Save Game Session",
+                          data: { turbo_submits_with: "Saving...",
+                                  proposal_selection_target:"submitButton" },
+                          class:"text-black mt-2 cursor-pointer focus:outline-none dark:text-white bg-primary-400
+                            hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2
+                            dark:bg-primary-700 dark:hover:bg-primary-600 disabled:opacity-20 disabled:cursor-not-allowed disabled" %>
+          <span class="sr-only"></span>
       <% else %>
         <div>
-          You don't have permission to create game sessions for <%= game_session.game_proposal.game_name %>
+          You don't have permission to create game sessions for <%= game_session.game_proposal.game_name %> in <%= game_session.game_proposal.group.name %>.
         </div>
       <% end %>
     <% end %>
-  </div>
+  </section>
 
 <% end %>

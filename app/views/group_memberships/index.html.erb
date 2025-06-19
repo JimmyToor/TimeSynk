@@ -7,13 +7,15 @@
 <section class="bg-tertiary-50 dark:bg-gray-900">
   <div class="mx-auto max-w-screen-xl">
     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden w-fit"
+         role="search"
          data-controller="search frame-reload"
          data-search-src-value="<%= frame_path %>"
+         data-search-search-complete-message-value="<%= t('search.complete_message') %>"
          data-frame-reload-events-value="modal-form-submit-success">
       <%= render partial:"group_memberships/table/group_membership_table_header", locals: {group: group} %>
       <%= turbo_frame_tag "group_membership_table_#{group.id}",
                           src: frame_path,
-                          data: { controller:"reload_on_restore",
+                          data: { controller:"reload-on-restore",
                                   reload_on_restore_src_value:frame_path,
                                   turbo_prefetch:"false",
                                   search_target: "frame",

@@ -47,6 +47,34 @@ module NotificationsHelper
     message
   end
 
+  def format_notification_message_sr(message, options = {})
+    return message unless options.present?
+    options = options.with_indifferent_access if options.respond_to?(:with_indifferent_access)
+
+    if options[:link]
+      parts = message.split(options[:link][:text])
+      message = safe_join([
+        parts.first,
+        link_to(options[:link][:text], options[:link][:url], class: "text-gray-900 dark:text-white underline
+           decoration-2 hover:decoration-4 decoration-secondary-500 dark:decoration-secondary-200"),
+        parts.last
+      ])
+    end
+
+    if options[:list_items].present?
+      message = safe_join([
+        message,
+        content_tag(:div) do
+          options[:list_items].map do |item|
+            concat content_tag(:li, item)
+          end
+        end
+      ])
+    end
+
+    message
+  end
+
   def notification_classes(type)
     case type.to_sym
     when :notice

@@ -19,6 +19,14 @@ class ProposalVote < ApplicationRecord
   validates :yes_vote, inclusion: {in: [true, false, nil]}, allow_nil: true
   attr_readonly :user_id, :game_proposal_id
 
+  def group_name
+    game_proposal.group.name
+  end
+
+  def game_name
+    game_proposal.game.name
+  end
+
   private
 
   def update_proposal_vote_counts

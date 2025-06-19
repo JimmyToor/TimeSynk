@@ -2,7 +2,13 @@ import Dialog from "@stimulus-components/dialog";
 
 // Connects to data-controller="dialog"
 export default class extends Dialog {
-  static targets = ["loadingIndicator", "modalBody", "modalTitle"];
+  static targets = [
+    "loadingIndicator",
+    "modalBody",
+    "modalTitle",
+    "dialog",
+    "status",
+  ];
   static values = {
     title: { type: String, default: "Modal" },
     open: {
@@ -21,20 +27,21 @@ export default class extends Dialog {
     this.submitEndHandler = this.handleSubmitEnd.bind(this);
     this.afterFetchRequestHandler = this.handleAfterFetchRequest.bind(this);
     this.loadListener = this.startLoading.bind(this);
+    this.backdropCloseListener = this.backdropClose.bind(this); // Bind backdropClose
   }
 
   connect() {
     super.connect();
-    this.removeTurboListeners(); // Ensure no duplicate listeners
-    this.addTurboListeners();
+    this.removeListeners(); // Ensure no duplicate listeners
+    this.addListeners();
   }
 
   disconnect() {
     super.disconnect();
-    this.removeTurboListeners();
+    this.removeListeners();
   }
 
-  addTurboListeners() {
+  addListeners() {
     this.dialogTarget.addEventListener(
       "turbo:submit-start",
       this.submitStartHandler,
@@ -43,18 +50,12 @@ export default class extends Dialog {
       "turbo:submit-end",
       this.submitEndHandler,
     );
-    this.dialogTarget.addEventListener(
-      "fetch-end",
-      this.afterFetchRequestHandler,
-    );
-    this.dialogTarget.addEventListener(
-      "turbo:click",
-      this.beforeFetchRequestHandler,
-    );
+    document.addEventListener("fetch-end", this.afterFetchRequestHandler);
     this.dialogTarget.addEventListener("dialog:load", this.loadListener);
+    this.element.addEventListener("click", this.backdropCloseListener);
   }
 
-  removeTurboListeners() {
+  removeListeners() {
     if (!this.hasDialogTarget) return;
 
     this.dialogTarget.removeEventListener(
@@ -65,19 +66,9 @@ export default class extends Dialog {
       "turbo:submit-end",
       this.submitEndHandler,
     );
-    this.dialogTarget.removeEventListener(
-      "fetch-end",
-      this.afterFetchRequestHandler,
-    );
-    this.dialogTarget.removeEventListener(
-      "turbo:click",
-      this.beforeFetchRequestHandler,
-    );
+    document.removeEventListener("fetch-end", this.afterFetchRequestHandler);
     this.dialogTarget.removeEventListener("dialog:load", this.loadListener);
-  }
-
-  isInModal(event) {
-    return this.dialogTarget.contains(event.detail.formSubmission.formElement);
+    this.element.removeEventListener("click", this.backdropCloseListener);
   }
 
   handleAfterFetchRequest(event) {
@@ -102,7 +93,10 @@ export default class extends Dialog {
   }
 
   handleSubmitStart(event) {
+    // Don't load on this dialog if the event is from a separate dialog
+    if (event.target.closest("dialog") !== this.dialogTarget) return;
     this.startLoading();
+    this.setSavingStatus();
   }
 
   fireSubmitSuccessEvent(event) {
@@ -156,10 +150,12 @@ export default class extends Dialog {
 
   startLoading() {
     this.showLoadingSpinner();
+    this.setStatus("Loading...");
   }
 
   endLoading(newTitle = null) {
     this.hideLoadingSpinner();
+    this.setStatus("Done");
     if (newTitle != null) this.setTitle(newTitle);
   }
 
@@ -179,5 +175,14 @@ export default class extends Dialog {
       this.open();
       this.openValue = false; // Prevent dialog from opening on back/forward navigation
     }
+  }
+
+  setStatus(status) {
+    if (!this.hasStatusTarget) return;
+    this.statusTarget.textContent = status;
+  }
+
+  setSavingStatus() {
+    this.setStatus("Saving...");
   }
 }

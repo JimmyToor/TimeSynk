@@ -15,6 +15,8 @@
         <div class="flex">
           <%= form.text_field :query, name:"query", data: {search_target:"query"},
                               title:"Search Users",
+                              'aria-label':"Users",
+                              type:"search",
                               class:"bg-tertiary-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                                focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700
                                dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500
@@ -24,6 +26,7 @@
           <%= render "shared/buttons/search_reset_button", form: form, extra_classes: "end-12" %>
         </div>
       </div>
+      <span class="sr-only" aria-live="polite" data-search-target="status"></span>
     <% end %>
 
   </div>

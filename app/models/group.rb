@@ -39,4 +39,14 @@ class Group < ApplicationRecord
   def members
     group_memberships.map { |membership| membership.user }
   end
+
+  def notify_calendar_update(cascade = true)
+    CalendarUpdateNotifierService.call(self, cascade)
+  end
+
+  def game_proposals_user_can_create_sessions_for(user)
+    game_proposals.select do |proposal|
+      GameProposalPolicy.new(user, proposal).create_game_session?
+    end
+  end
 end

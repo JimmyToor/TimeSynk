@@ -6,5 +6,9 @@
 <br>
 
 <div>
-  <%= link_to "Back to game proposals", game_proposals_path %>
+  <% if !@groups.present? || @groups.length > 1 %>
+    <%= render "shared/buttons/secondary_link", path: game_proposals_path, text: "Back to Game Proposals" %>
+  <% elsif @groups.present? %>
+    <%= render "shared/buttons/secondary_link", path: group_game_proposals_path(@groups.first), text: "Back to #{@groups.first.name}" %>
+<% end %>
 </div>

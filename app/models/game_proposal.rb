@@ -16,12 +16,16 @@ class GameProposal < ApplicationRecord
   scope :for_current_user_groups, -> { where(group_id: Current.user.groups.ids) }
   scope :for_group, ->(group_id) { where(group_id: group_id) }
 
-  after_create_commit :broadcast_user_game_proposals_change
-  after_destroy_commit :broadcast_user_game_proposals_destroy
+  after_create_commit :broadcast_game_proposal_create
+  after_destroy_commit :broadcast_game_proposals_destroy
 
   after_create :create_initial_votes, :create_roles
 
   validates :game, uniqueness: {scope: :group, message: "already has a proposal in this group"}
+
+  def self.role_providing_associations
+    [:group]
+  end
 
   def get_upcoming_game_sessions(date_limit: nil)
     if date_limit.nil?
@@ -105,22 +109,13 @@ class GameProposal < ApplicationRecord
     game.name
   end
 
-  def broadcast_user_game_proposals_change
-    user_ids_to_broadcast = group.users.pluck(:id)
-    users_to_broadcast = User.where(id: user_ids_to_broadcast).includes(:game_proposals)
-    users_to_broadcast.each do |user|
-      broadcast_update_later_to(
-        "pending_game_proposals_count_user_#{user.id}",
-        target: "pending_game_proposals_count",
-        partial: "game_proposals/pending_count",
-        locals: {count: user.pending_game_proposal_count}
-      )
-      broadcast_action_later_to(
-        "pending_game_proposals_user_#{user.id}",
-        action: "frame_reload",
-        target: "pending_game_proposals",
-        render: false
-      )
+  def group_name
+    group.name
+  end
+
+  def broadcast_game_proposal_create
+    group.users.each do |user|
+      broadcast_pending_game_proposal_update(user.id)
       broadcast_action_later_to(
         "game_proposals_user_#{user.id}",
         action: "frame_reload",
@@ -130,10 +125,27 @@ class GameProposal < ApplicationRecord
     end
   end
 
-  def broadcast_user_game_proposals_destroy
+  def broadcast_pending_game_proposal_update(user_id)
+    broadcast_update_later_to(
+      "pending_game_proposals_count_user_#{user_id}",
+      target: "pending_game_proposals_count",
+      partial: "game_proposals/pending_count",
+      locals: {count: User.find(user_id).pending_game_proposal_count}
+    )
+    broadcast_action_later_to(
+      "pending_game_proposals_user_#{user_id}",
+      action: "frame_reload",
+      target: "pending_game_proposals",
+      render: false
+    )
+  end
+
+  def broadcast_game_proposals_destroy
     user_ids_to_broadcast = group.users.pluck(:id)
     users_to_broadcast = User.where(id: user_ids_to_broadcast).includes(:game_proposals)
     users_to_broadcast.each do |user|
+      # Can't use the helper here because the game proposal is destroyed and the helper will result in a failed deserialization when the job runs.
+      # Using perform_later directly removes the need for deserialization later on.
       Turbo::Streams::ActionBroadcastJob.perform_later(
         "pending_game_proposals_count_user_#{user.id}",
         action: :update,
@@ -153,8 +165,8 @@ class GameProposal < ApplicationRecord
         target: "game_proposals",
         render: false
       )
-      CalendarUpdateNotifierService.call(self)
     end
+    CalendarUpdateNotifierService.call(group)
   end
 
   def broadcast_game_proposal_vote_count
@@ -175,6 +187,10 @@ class GameProposal < ApplicationRecord
 
   def owner
     @owner ||= User.with_role(:owner, self).first
+  end
+
+  def notify_calendar_update(cascade = true)
+    CalendarUpdateNotifierService.call(self, cascade)
   end
 
   private

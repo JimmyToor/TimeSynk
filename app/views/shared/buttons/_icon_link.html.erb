@@ -1,8 +1,10 @@
-<%# locals: (path: "#", title: "", svg_name: "plus", data: {}, extra_classes: "") %>
+<%# locals: (path: "#", title: "", svg_name: "plus", data: {}, extra_classes: "", link_attributes: {}) %>
 
 <%= link_to path,
             data: data,
             title: title,
-            class: "#{extra_classes}" do %>
-  <%= inline_svg("icons/#{svg_name}.svg") %>
+            'aria-label': title,
+            class: "#{extra_classes}",
+            **link_attributes do %>
+  <%= inline_svg("icons/#{svg_name}.svg", aria_hidden: true) %>
 <% end %>

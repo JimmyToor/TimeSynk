@@ -1,8 +1,9 @@
-<%# locals: (path:, text: "Back", data: {}, extra_classes: "") %>
+<%# locals: (path:, text: "Back", data: {}, extra_classes: "", attributes: {}) %>
 
 <%= link_to text,
-  path,
-  class: "cursor-pointer text-black dark:text-white bg-primary-400 hover:bg-primary-200 focus:ring-4 focus:ring-primary-300
-          dark:bg-primary-700 dark:hover:bg-primary-600 rounded-lg font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2
-          #{extra_classes}",
-  data: data %>
+            path,
+            class: "cursor-pointer text-black dark:text-white bg-primary-400 hover:bg-primary-200 focus:ring-4 focus:ring-primary-300
+              dark:bg-primary-700 dark:hover:bg-primary-600 font-medium rounded-lg text-sm px-5 py-2.5
+              #{extra_classes}",
+            **attributes,
+            data: data %>

@@ -1,28 +1,28 @@
-<div id="<%= dom_id group_membership %>">
+<%# locals: (group_membership:, attendance: nil, proposal_vote: nil) %>
+<dl id="<%= dom_id group_membership %>">
 
-  <div>
-    <strong>User:</strong>
-    <%= group_membership.user.username %>
+  <div class="flex space-x-2">
+    <dt class="font-semibold">User:</dt>
+    <dd> <%= group_membership.user.username %></dd>
   </div>
 
-  <div>
-    <strong>Group:</strong>
-    <%= group_membership.group.name %>
+  <div class="flex space-x-2">
+    <dt class="font-semibold">Group:</dt>
+    <dd> <%= group_membership.group.name %></dd>
   </div>
 
-  <div>
-    <%= render "groups/roles", group_roles: group_membership.user.roles_for_resource(group_membership.group) %>
+  <div class="flex space-x-2">
+    <dt class="font-semibold">Joined:</dt>
+    <dd> <%= group_membership.created_at.in_time_zone(Current.user.timezone).strftime("%B %d, %Y %I:%M %p") %></dd>
   </div>
 
-  <% if local_assigns[:game_proposal].present? %>
-    <div>
-      <%= render "game_proposals/roles", game_proposal_roles: group_membership.user.roles_for_resource(game_proposal) %>
-    </div>
-  <% end %>
+  <%= content_tag :div, class:"flex space-x-2" do %>
+    <dt class="font-semibold">Attending:</dt>
+    <dd> <%= format_attendance(attendance) %></dd>
+  <% end if attendance.present? %>
 
-  <div>
-    <strong>Joined:</strong>
-    <%= group_membership.created_at.in_time_zone(Current.user.timezone).strftime("%B %d, %Y %I:%M %p") %>
-  </div>
-
-</div>
+  <%= content_tag :div, class:"flex space-x-2" do %>
+    <dt class="font-semibold">Vote:</dt>
+    <dd> <%= format_vote(proposal_vote) %></dd>
+  <% end if proposal_vote.present? %>
+</dl>

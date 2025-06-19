@@ -1,16 +1,18 @@
 <%# locals: (game_proposal:) %>
   <% frame_path = game_proposal_proposal_votes_path(game_proposal_id: game_proposal.id, format: :turbo_stream) %>
 
-  <dialog id="modal_full_proposal_vote_<%= game_proposal.id %>" tabindex="-1"
+  <dialog id="modal_full_proposal_vote_<%= game_proposal.id %>"
+          aria-labelledby="modal_title_<%= game_proposal.id %>"
+          tabindex="-1"
           class="dialog overflow-visible fixed justify-center items-center inset-0 h-fit p-1 rounded-lg shadow
             bg-white dark:bg-gray-700"
           data-dialog-target="dialog">
     <!-- Modal header -->
     <div class="flex items-center justify-between p-2 border-b rounded-t dark:border-gray-600">
-      <h3 id="modal_title" class="text-lg font-semibold text-gray-900 dark:text-white flex space-x-4 items-center">
-        <%= inline_svg_tag "icons/members.svg" %>
-        <%= game_proposal.game_name %> Votes
-      </h3>
+      <h2 id="modal_title_<%= game_proposal.id %>" class="text-lg font-semibold text-gray-900 dark:text-white flex space-x-4 items-center">
+        <%= inline_svg_tag "icons/members.svg", aria_hidden: true %>
+        <%= game_proposal.game_name %> Votes in <%= game_proposal.group_name %>
+      </h2>
       <button data-action="dialog#close" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
         <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
@@ -27,9 +29,12 @@
            class="relative min-h-24 bg-tertiary-50 dark:bg-gray-900 mx-auto">
 
         <div class="bg-white dark:bg-gray-800 relative shadow-md"
-               data-controller="search frame-reload"
-               data-search-src-value="<%= frame_path %>"
-               data-frame-reload-events-value="modal-form-submit-success">
+             data-controller="search frame-reload"
+             role="search"
+             data-search-src-value="<%= frame_path %>"
+             data-search-search-complete-message-value="<%= t('search.complete_message') %>"
+             data-frame-reload-events-value="modal-form-submit-success"
+             role="presentation">
           <%= render partial:"proposal_votes/table/proposal_vote_table_header", locals: {game_proposal: game_proposal} %>
           <%= turbo_frame_tag "proposal_vote_table_#{game_proposal.id}",
                               src: frame_path,
@@ -37,8 +42,9 @@
                                       reload_on_restore_src_value:frame_path,
                                       turbo_prefetch:"false",
                                       search_target: "frame",
-                                      frame_reload_target:"frame"} do %>
-            Loading...
+                                      frame_reload_target:"frame"}, loading: "lazy",
+                              role: "presentation" do %>
+            <%= render "shared/spinner" %>
           <% end %>
         </div>
 

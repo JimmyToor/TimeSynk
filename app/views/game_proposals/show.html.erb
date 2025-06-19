@@ -1,6 +1,6 @@
 <%# locals: (game_proposal:, proposal_availability: nil, proposal_permission_set:nil, alert:nil) %>
 <%= render "shared/notification", id: "game_proposal_#{game_proposal.id}"%>
-<h5 class="text-xl font-bold mb-1">Game Proposal</h5>
+<h1 class="text-xl font-bold mb-1">Game Proposal</h1>
 <%= render partial: game_proposal,
            locals: {
              game_proposal: game_proposal,
@@ -8,6 +8,6 @@
              proposal_permission_set: proposal_permission_set
            } %>
 
-<div data-controller="calendar" data-calendar-stream-id="game_proposal_<%= game_proposal.id %>" data-calendar-interactive="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-game-proposal-id=<%= game_proposal.id %> data-turbo-permanent>
+<div data-controller="calendar" data-calendar-stream-id-value="game_proposal_<%= game_proposal.id %>" data-calendar-interactive-value="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-game-proposal-id=<%= game_proposal.id %> data-turbo-permanent>
   <%= render partial: 'calendars/calendar' %>
 </div>

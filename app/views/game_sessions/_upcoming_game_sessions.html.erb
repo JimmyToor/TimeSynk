@@ -1,17 +1,21 @@
 <%# locals: (upcoming_game_sessions: [], limit: 5, game_session:nil)  %>
 <%= turbo_frame_tag "upcoming_game_sessions_user_#{Current.user.id}",
+                    role: "presentation",
                     class: "empty:hidden",
                     data: {controller:"reload-on-restore", src:"/"} do %>
     <% if upcoming_game_sessions.present? %>
-      <h4 class="text-2xl font-bold mb-1">Upcoming Sessions</h4>
-      <div class="flex rounded-lg dark:border-gray-600 h-128">
-        <ul>
-          <% upcoming_game_sessions.sort_by(&:date).first(limit).each do |game_session| %>
-            <li class="flex"><%= render game_session, include_link: true %>
-            <%= card_link_to_game_proposal(game_session.game_proposal) %>
-            </li>
-          <% end %>
-        </ul>
-      </div>
+      <section aria-labelledby="upcoming-game-sessions">
+        <h1 id="upcoming-game-sessions" class="text-2xl font-bold mb-1">Upcoming Sessions</h1>
+        <div class="flex rounded-lg dark:border-gray-600 h-128">
+          <ul aria-labelledby="upcoming-game-sessions">
+            <% upcoming_game_sessions.sort_by(&:date).first(limit).each do |game_session| %>
+              <li aria-label="<%= game_session.game_name %> game session for <%= game_session.group_name %>" class="flex">
+                <%= render game_session, include_link: true %>
+                <%= render "game_proposals/card_link", game_proposal: game_session.game_proposal %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </section>
     <% end %>
 <% end %>

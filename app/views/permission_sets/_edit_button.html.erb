@@ -1,7 +1,8 @@
 <%# locals: (permission_set:) %>
 <%= link_to polymorphic_path([:edit,permission_set.resource,:permission_set]),
             title:"Edit #{permission_set.resource.class.name} Permissions",
+            'aria-haspopup': "dialog",
             class: "text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100",
             data: { turbo_frame: "modal_frame" } do %>
-  <%= inline_svg_tag "icons/shield-check.svg" %>
+  <%= inline_svg_tag "icons/shield-check.svg", aria_hidden: true %>
 <% end %>

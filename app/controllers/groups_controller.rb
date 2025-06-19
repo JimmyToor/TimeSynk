@@ -8,7 +8,6 @@ class GroupsController < ApplicationController
     @groups = policy_scope(Group)
     @group_memberships = Current.user.group_memberships
     authorize @groups
-    @pagy, @groups = pagy(@groups)
   end
 
   # GET /groups/1 or /groups/1.json
@@ -80,7 +79,7 @@ class GroupsController < ApplicationController
         @group_permission_set = @group.make_permission_set(@group.users.to_a)
         format.html {
           redirect_to group_url(@group), message: I18n.t("group.update.success", name: @group.name),
-            options: {highlight: @group.name}
+            options:                    {highlight: @group.name}
         }
         format.json { render :show, status: :ok, location: @group }
         format.turbo_stream

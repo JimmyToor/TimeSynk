@@ -1,7 +1,11 @@
-<%# locals: (game_session:) %>
-<div id="game_session_<%= game_session.id %>_attendances" class="flex">
+<%# locals: (game_session:, limit: 8) %>
+<div id="game_session_<%= game_session.id %>_attendances" class="flex" role="presentation">
   <% game_session_attendances = game_session.game_session_attendances.sorted_scope %>
-  <% game_session_attendances.each do |attendance| %>
+  <% overflow = game_session_attendances.length - limit %>
+  <% game_session_attendances.first(limit).each do |attendance| %>
     <%= render attendance %>
   <% end %>
+  <%= content_tag :p, class: "text-black dark:text-white ml-2" do %>
+    +<%= overflow %> more
+  <% end if overflow > 0 %>
 </div>

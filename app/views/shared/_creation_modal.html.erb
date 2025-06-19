@@ -1,13 +1,23 @@
+<%# locals: (modal_body: "", modal_title: "New", date: Time.current, groups: nil, schedule: nil, game_proposal: nil, game_proposals: nil, initial_game_proposal: nil) %>
 <%= turbo_frame_tag "modal_frame" do %>
-  <dialog id="modal_creation" tabindex="-1" class="fixed inset-0 h-fit max-h-fit items-center justify-center overflow-visible rounded-lg bg-white p-1 shadow dialog md:inset-0 dark:bg-gray-700" data-controller="dialog" data-dialog-title-value="New" data-dialog-target="dialog" data-action="click->dialog#backdropClose" data-dialog-open-value=true>
+  <dialog id="modal_creation"
+          tabindex="-1"
+          aria-labelledby="modal_title_creation"
+          aria-modal="true"
+          data-controller="dialog"
+          data-dialog-title-value="New"
+          data-dialog-target="dialog"
+          data-dialog-open-value=true
+          class="fixed inset-0 h-fit max-h-fit items-center justify-center overflow-visible rounded-lg bg-white p-1 shadow dialog md:inset-0 dark:bg-gray-700">
       <!-- Modal header -->
       <div class="flex items-center justify-between rounded-t border-b pl-3 dark:border-gray-600">
-        <h3 id="modal_title_creation" data-dialog-title-value="New" data-dialog-target="modalTitle" class="text-lg font-semibold text-gray-900 dark:text-white">
-          <%= local_assigns[:modal_title] || "New" %>
-        </h3>
+        <h2 id="modal_title_creation" data-dialog-title-value="New" data-dialog-target="modalTitle" class="text-lg
+        font-semibold text-gray-900 dark:text-white">
+          <%= modal_title %>
+        </h2>
 
         <!-- Tabs -->
-        <% has_proposal = local_assigns[:game_proposal] || local_assigns[:game_proposals] %>
+        <% has_proposal = game_proposal || game_proposals %>
         <div id="modal_tabs">
           <div class="flex border-b border-gray-200 dark:border-gray-700">
             <ul class="-mb-px flex text-center text-sm font-medium" id="default-tab" data-tabs-toggle="#tab_content" role="tablist">
@@ -32,22 +42,22 @@
 
       <!-- Modal body -->
       <div id="modal_body_creation" data-dialog-target="modalBody" class="p-4 text-gray-700 dark:text-gray-300">
-        <%= local_assigns[:modal_body] || "" %>
+        <%= modal_body %>
 
         <!-- Tab content -->
         <div id="tab_content">
           <% if has_proposal %>
             <div class="hidden rounded-lg bg-tertiary-50p-4 dark:bg-gray-800" id="game_session_form" role="tabpanel" aria-labelledby="new-game-session-tab">
               <%= render partial: "game_sessions/form",
-                         locals: { game_proposal: local_assigns[:game_proposal] || game_proposals.first,
-                                   initial_game_proposal: local_assigns[:initial_game_proposal],
-                                   game_session: GameSession.new(game_proposal: local_assigns[:game_proposal] || game_proposals.first, duration: 1.hour, date: local_assigns[:date] || Time.current),
-                                   game_proposals: local_assigns[:game_proposals] || nil,
-                                   groups: local_assigns[:groups] || nil} %>
+                         locals: { game_proposal: game_proposal || game_proposals&.first,
+                                   initial_game_proposal: initial_game_proposal,
+                                   game_session: GameSession.new(game_proposal: game_proposal || game_proposals&.first, duration: 1.hour, date: date),
+                                   game_proposals: game_proposals || nil,
+                                   groups: groups || nil} %>
             </div>
           <% end %>
             <div class="hidden rounded-lg bg-tertiary-50p-4 dark:bg-gray-800" id="schedule_form" role="tabpanel" aria-labelledby="new-schedule-tab">
-              <%= render partial: "schedules/form", locals: { schedule: local_assigns[:schedule] || Schedule.new_default(Current.user) } %>
+              <%= render partial: "schedules/form", locals: { schedule: schedule || Schedule.new_default(Current.user) } %>
             </div>
         </div>
 

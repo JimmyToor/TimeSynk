@@ -1,13 +1,17 @@
-<%# locals: (game_proposal:, container_tag: :div, container_classes:"") %>
+<%# locals: (game_proposal:, container_tag: :div, container_classes:"", block: nil) %>
 
 <%= content_tag container_tag,
-                data: {controller: "dialog", action: "click->dialog#backdropClose", dialog_ignore_submit_success_value: "true"},
+                role: "presentation",
+                data: {controller: "dialog", dialog_ignore_submit_success_value: "true"},
                 class: container_classes do %>
   <%= render "shared/buttons/icon_button",
              action:"dialog#open",
              title: "View All Votes",
              svg_name: "votes",
-             extra_classes: "font-semibold text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100",
-             icon_classes: "font-semibold text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100 h-6 w-6" %>
+             extra_classes: "font-semibold #{modal_link_classes}",
+             button_attributes: {'aria-haspopup': "dialog" },
+             icon_classes: "#{modal_link_classes} h-6 w-6" do %>
+    <%= yield block if block_given? %>
+  <% end %>
   <%= render "proposal_votes/full_proposal_vote_modal", game_proposal: game_proposal %>
 <% end %>

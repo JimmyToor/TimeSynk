@@ -6,8 +6,8 @@ class GameProposalsController < ApplicationController
 
   # GET /game_proposals or /game_proposals.json
   def index
-    @game_proposals = authorize(@game_proposals)
     @pagy, @game_proposals = pagy(@game_proposals)
+    @group = Group.find_by_id(params[:group_id]) if params[:group_id].present?
     respond_to do |format|
       format.html { render :index, locals: {game_proposals: @game_proposals} }
     end
@@ -52,7 +52,7 @@ class GameProposalsController < ApplicationController
         format.html { redirect_to game_proposal_url(@game_proposal) }
         format.json { render :show, status: :created, location: @game_proposal }
       else
-        @groups = Current.user.groups_user_can_create_proposal_for
+        @groups = Current.user.groups_user_can_create_proposals_for
         format.html { render :new, locals: {game_proposal: @game_proposal, groups: @groups}, status: :unprocessable_entity }
         format.json { render json: @game_proposal.errors, status: :unprocessable_entity }
         format.turbo_stream { render "create_fail" }
@@ -82,7 +82,6 @@ class GameProposalsController < ApplicationController
         redirect_to game_proposals_url, success: {message: I18n.t("game_proposal.destroy.success", name: @game_proposal.game.name),
                                                   options: {highlight: " #{@game_proposal.game.name}"}}
       }
-      format.json { head :no_content }
     end
   end
 
@@ -109,7 +108,7 @@ class GameProposalsController < ApplicationController
     @groups = if params[:group_id]
       [Group.find(params[:group_id])]
     else
-      Current.user.groups_user_can_create_proposal_for
+      Current.user.groups_user_can_create_proposals_for
     end
   end
 

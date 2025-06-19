@@ -1,14 +1,6 @@
-<%# locals: (group_membership:) %>
+<%# locals: (group_membership:, most_permissive_role: nil) %>
 <tr id="group_membership_row_<%= group_membership.id %>" class="text-center hover:bg-gray-100 dark:hover:bg-gray-700 h-fit">
-  <td class="ml-1 py-8 flex items-center justify-center">
-    <% if can_update_resource_permissions_for_user?(group_membership.user, group_membership.group) %>
-      <%= render "shared/buttons/icon_link",
-                 path:edit_group_permission_set_path(group_membership.group, user_id: group_membership.user.id),
-                 title:"Edit Permissions",
-                 extra_classes: "text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100",
-                 svg_name:"edit",
-                 data: {turbo_frame: "modal_frame"} %>
-    <% end %>
+  <td class="pl-4 align-middle">
     <% if can_kick_user?(group_membership) %>
       <%= render "shared/buttons/delete_link",
                  path: group_membership_path(group_membership),
@@ -18,7 +10,7 @@
   </td>
   <th scope="row" class="sticky left-0 z-10 pl-3 py-4 pr-3 min-w-32 font-medium text-gray-900 dark:text-white
     w-40">
-    <div class="flex items-center space-x-2">
+    <div class="flex items-center space-x-2 relative">
       <%= user_avatar(group_membership.user, size_x: 24) %>
       <span class="ml-1"><%= username_with_resource_role_icons(group_membership.user, group_membership.group) %></span>
     </div>
@@ -28,11 +20,12 @@
   </th>
   <td class="px-4 py-4">
     <ul class="list-disc list-inside text-left">
-      <% roles = group_membership.user.roles.where(resource: group_membership.group) %>
-      <%= "None" unless roles.present? %>
-      <% group_membership.user.roles.where(resource: group_membership.group).each do |role| %>
-        <li class="text-black dark:text-gray-500"><%= role.name.titleize %></li>
-      <% end if roles.present? %>
+      <%= turbo_frame_tag "user_roles_#{group_membership.user.id}_group_#{group_membership.group.id}",
+                          src: group_permission_set_path(user_id: group_membership.user.id, group_id: group_membership.group.id),
+                          role: "presentation",
+                          loading:"lazy" do %>
+        <%= render "shared/spinner" %>
+      <% end %>
     </ul>
   </td>
 </tr>

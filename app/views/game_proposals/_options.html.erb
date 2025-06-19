@@ -4,7 +4,8 @@
   <%= render "shared/buttons/icon_link",
              path: new_game_proposal_game_session_path(game_proposal, single_game_proposal: true),
              svg_name: "add",
-             extra_classes: "text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100",
+             link_attributes: {'aria-haspopup': "dialog" },
+             extra_classes: "text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100 size-6",
              data: { turbo_frame: "modal_frame" },
              title: "New game session" if policy(game_proposal).create_game_session? %>
 

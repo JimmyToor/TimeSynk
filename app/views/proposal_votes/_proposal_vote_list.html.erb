@@ -1,6 +1,6 @@
 <%# locals: (game_proposal:) %>
 <div id="game_proposal_<%= game_proposal.id %>_votes" class="flex">
   <% game_proposal.proposal_votes.sorted_scope.each do |vote| %>
-    <%= render vote, group_membership: vote.user.membership_for_group(game_proposal.group) %>
+    <%= render vote, group_membership: vote.user.get_membership_for_group(game_proposal.group) %>
   <% end %>
 </div>

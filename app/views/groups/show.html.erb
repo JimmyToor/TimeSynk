@@ -1,5 +1,5 @@
 <%# locals: (group:, group_membership:nil, group_availability: nil, group_permission_set:) %>
-
+<%= render "shared/notification", id: "group_#{group.id}" %>
 <%= render group,
            group_availability: group_availability,
            group_permission_set: group_permission_set %>
@@ -9,7 +9,7 @@
     <%= form_with(url: group_group_memberships_path(group), scope: :group_membership, method: :post) do |form| %>
       <%= form.hidden_field :user_id, value: Current.user.id %>
       <%= form.hidden_field :invite_token, value: "admin" %>
-      <%= render "shared/buttons/form_submit_button", form: form, text: "Join Group" %>
+      <%= render "shared/buttons/form_submit_button", form: form, text: "Join Group", extra_classes: "mt-2" %>
     <% end %>
   <% end %>
   <div class="mt-2">
@@ -20,6 +20,6 @@
   </div>
 </div>
 
-<div data-controller="calendar" data-calendar-interactive="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-group-id="<%= group.id %>" data-turbo-permanent>
+<div data-controller="calendar" data-calendar-interactive-value="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-group-id="<%= group.id %>" data-turbo-permanent>
   <%= render partial: 'calendars/calendar' %>
 </div>
