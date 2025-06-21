@@ -6,7 +6,8 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get edit for group" do
-    get permission_sets_edit_url, params: {group_id: groups(:three_members).id}
+    group = groups(:three_members)
+    get edit_group_permission_set_url(group.id)
     assert_response :success
   end
 
@@ -18,11 +19,12 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
     user2 = users(:three)
     expected_user1_roles = (user1.roles + [manage_proposals_role, create_invites_role]).to_set
     expected_user2_roles = (user2.roles - [create_proposals_role, create_invites_role] + [manage_proposals_role]).to_set
+    group = groups(:three_members)
 
-    get permission_sets_update_url, params: {permission_set: {role_changes: {user1.id => {add_roles: [manage_proposals_role.id, create_invites_role.id]},
-                                                                             user2.id => {add_roles: [manage_proposals_role.id], remove_roles: [create_proposals_role.id, create_invites_role.id]}}},
-                                             update_roles: "",
-                                             group_id: groups(:three_members).id}, as: :turbo_stream
+    patch group_permission_set_url(group.id), params: {permission_set: {role_changes: {user1.id => {add_roles: [manage_proposals_role.id, create_invites_role.id]},
+                                                                                       user2.id => {add_roles: [manage_proposals_role.id], remove_roles: [create_proposals_role.id, create_invites_role.id]}}},
+                                                       update_roles: "",
+                                                       group_id: group.id}, as: :turbo_stream
 
     assert_response :success
     user1_roles = user1.reload.roles.to_set
@@ -33,8 +35,8 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
 
   test "should get edit for single group user" do
     user = users(:three)
-
-    get permission_sets_edit_url, params: {group_id: groups(:three_members).id, user_id: user.id}
+    group = groups(:three_members)
+    get edit_group_permission_set_url(group), params: {group_id: group.id, user_id: user.id}
 
     assert_response :success
   end
@@ -42,15 +44,15 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
   test "should update single group user permission set" do
     user = users(:three)
     manage_proposals_role = roles(:manage_all_proposals_3)
-
-    get permission_sets_update_url, params: {
+    group = groups(:three_members)
+    patch group_permission_set_url(group.id), params: {
       permission_set: {
         role_changes: {
           user.id => {add_roles: [manage_proposals_role.id], remove_roles: []}
         }
       },
       update_roles: "",
-      group_id: groups(:three_members).id,
+      group_id: group.id,
       user_id: user.id
     }, as: :turbo_stream
 
@@ -61,7 +63,7 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
   test "should get edit for game proposal" do
     proposal = game_proposals(:group_3_game_1)
 
-    get permission_sets_edit_url, params: {game_proposal_id: proposal.id}
+    get edit_game_proposal_permission_set_url(proposal.id), params: {game_proposal_id: proposal.id}
 
     assert_response :success
   end
@@ -70,7 +72,7 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
     proposal = game_proposals(:group_3_game_1)
     manage_sessions_role = roles(:manage_all_sessions_3)
 
-    get permission_sets_update_url, params: {
+    patch game_proposal_permission_set_url(proposal.id), params: {
       permission_set: {
         role_changes: {
           users(:three).id => {add_roles: [manage_sessions_role.id], remove_roles: []}
@@ -88,7 +90,7 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
     proposal = game_proposals(:group_3_game_1)
     user = users(:three)
 
-    get permission_sets_edit_url, params: {game_proposal_id: proposal.id, user_id: user.id}
+    get edit_game_proposal_permission_set_url(proposal.id), params: {game_proposal_id: proposal.id, user_id: user.id}
 
     assert_response :success
   end
@@ -98,7 +100,7 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
     user = users(:three)
     role = roles(:game_proposal_1_admin)
 
-    get permission_sets_update_url, params: {
+    patch game_proposal_permission_set_url(proposal.id), params: {
       permission_set: {
         role_changes: {
           user.id => {add_roles: [role.id], remove_roles: []}
@@ -118,7 +120,7 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
     old_owner = User.with_role(:owner, group).first
     new_owner = users(:three)
 
-    get permission_sets_update_url, params: {
+    patch group_permission_set_url(group.id), params: {
       permission_set: {new_owner_id: new_owner.id},
       transfer_ownership: true,
       group_id: group.id
@@ -133,8 +135,9 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
     group = groups(:three_members)
     old_owner = User.with_role(:owner, group).first
     new_owner = users(:three)
+    proposal = game_proposals(:group_3_game_1)
 
-    get permission_sets_update_url, params: {
+    patch game_proposal_permission_set_url(proposal.id), params: {
       permission_set: {new_owner_id: new_owner.id},
       transfer_ownership: true,
       group_id: group.id

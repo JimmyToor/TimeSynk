@@ -30,11 +30,11 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
       post group_invites_url group, params: {invite: {expires_at: 1.day.from_now,
                                                       group_id: group.id,
                                                       invite_token: "iWXu1mS7SNgX8xFYGiQGPoCU",
-                                                      assigned_role_ids: ["", 1],
+                                                      assigned_role_ids: ["", 5],
                                                       user_id: @user.id}}
     end
 
-    assert_redirected_to invite_url(Invite.last)
+    assert_redirected_to group_invites_url(group.id)
   end
 
   test "should not create invite with invalid group" do
@@ -74,7 +74,7 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
                                                                assigned_role_ids: [0],
                                                                user_id: @user.id}}
     end
-    assert_response :unprocessable_entity
+    assert_response :forbidden
   end
 
   test "admin should get new with valid roles" do
@@ -103,13 +103,13 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
 
     assert_no_difference("Invite.count") do
       post group_invites_url(@invite.group), params: {invite: {expires_at: 1.day.from_now,
-                                                               group_id: groups(:three_members),
+                                                               group_id: groups(:three_members).id,
                                                                invite_token: "iWXu1mS7SNgX8xFYGiQGPoCU",
                                                                assigned_role_ids: ["", 1],
                                                                user_id: users(:two).id}}
     end
 
-    assert_response :unprocessable_entity
+    assert_response :forbidden
   end
 
   test "should not create invite for another group" do
@@ -124,6 +124,8 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
                                                        assigned_role_ids: ["", 1],
                                                        user_id: @user.id}}
     end
+
+    assert_response :forbidden
   end
 
   test "should show invite" do

@@ -47,6 +47,19 @@ class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
       path: accept_invite_url(invite_token: invite.invite_token))
   end
 
+  test "should create group_membership from invite" do
+    @user = users(:two)
+    sign_in_as(@user)
+
+    invite = invites(:group_1)
+
+    assert_difference("GroupMembership.count", 1) do
+      post group_group_memberships_url(params: {group_membership: {user_id: @user.id, invite_token: invite.invite_token}}, group_id: invite.group_id)
+    end
+
+    assert_redirected_to group_url(invite.group)
+  end
+
   test "expired invite should not create membership" do
     @user = users(:two)
     sign_in_as(@user)
