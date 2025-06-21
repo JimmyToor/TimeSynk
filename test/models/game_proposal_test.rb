@@ -23,15 +23,13 @@ class GameProposalTest < ActiveSupport::TestCase
   end
 
   test "make_calendar_schedules returns calendar schedules only for sessions in range" do
-    # Setup: Use fixture game proposal and sessions
     game_proposal = game_proposals(:group_3_game_1)
-    # Load the specific sessions from fixtures we want to test within the range
+
     session2 = game_sessions(:proposal_3_session_2)
     session3 = game_sessions(:proposal_3_session_3)
-    # Session 1 from fixtures (proposal_3_session_1) should be excluded by the range
-    session_owner = users(:three) # Assuming user 'three' is relevant for the expected output's user_id
 
-    # Remove creation of new sessions
+    # Session 1 from fixtures (proposal_3_session_1) should be excluded by the range
+    session_owner = users(:three)
 
     # Expected structure for session2 fixture
     valid_calendar_schedule2 = {
@@ -43,9 +41,11 @@ class GameProposalTest < ActiveSupport::TestCase
       id: session2.id,
       name: session2.game_name,
       duration: session2.duration,
-      user_id: session_owner.id, # Assuming this is the expected user
-      selectable: true
+      user_id: session_owner.id,
+      selectable: true,
+      group: session2.group_name
     }
+
     # Expected structure for session3 fixture
     valid_calendar_schedule3 = {
       start_time: {time: session3.date.utc, zone: session3.date.time_zone.name},
@@ -57,14 +57,12 @@ class GameProposalTest < ActiveSupport::TestCase
       name: session3.game_name,
       duration: session3.duration,
       user_id: session_owner.id, # Assuming this is the expected user
-      selectable: true
+      selectable: true,
+      group: session3.group_name
     }
 
-    # Action: Call the method with a range covering session2 and session3
-    # Use the dates from the fixtures to define the range
     result = game_proposal.make_calendar_schedules(start_time: session2.date, end_time: session3.date)
 
-    # Assertion: Check if the result contains exactly the expected schedules for session2 and session3
     # Convert result to set for comparison to ignore order
     assert_equal [valid_calendar_schedule2, valid_calendar_schedule3].to_set, result.to_set, "Should return only sessions 2 and 3 from fixtures within the specified range"
   end
@@ -86,6 +84,7 @@ class GameProposalTest < ActiveSupport::TestCase
   test "user_voted_yes_or_no? returns true if the user has voted yes or no" do
     game_proposal = game_proposals(:group_3_game_1)
     undecided_user = users(:two) # User with initially undecided vote
+
     # Use existing undecided vote from fixtures
     vote = proposal_votes(:proposal_3_user_2_undecided)
 
@@ -102,6 +101,7 @@ class GameProposalTest < ActiveSupport::TestCase
   test "user_voted_yes_or_no? returns false if the user has not voted" do
     game_proposal = game_proposals(:group_2_game_1)
     non_voting_user = users(:admin) # User 'admin' has no vote for this proposal
+
     # Ensure user admin actually has no vote for this proposal in fixtures
     assert_nil game_proposal.proposal_votes.find_by(user: non_voting_user)
 
@@ -146,10 +146,8 @@ class GameProposalTest < ActiveSupport::TestCase
 
     # Initial state from fixtures: user 2 voted yes, user 3 voted no
 
-    # Change user 3's vote to yes
     vote_to_change.update!(yes_vote: true)
 
-    # Trigger the update
     game_proposal.update_vote_counts!
 
     # Verify counts reflect the change (both users voted yes)

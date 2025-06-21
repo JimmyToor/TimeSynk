@@ -1,15 +1,36 @@
 <%# locals: (game_proposals:) %>
-<%= render "shared/notification", id: "game_proposals" %>
+<section>
+  <div class="flex justify-between mb-4">
+    <div>
+      <% if @group.present? %>
+        <%= render "shared/header_primary",
+                   text: safe_join(["Game Proposals for ",
+                                    content_tag(:span, @group.name, class: "font-bold text-primary-600")
+                                   ]) %>
+      <% else %>
+        <%= render "shared/header_primary", text: "Game Proposals" %>
+      <% end %>
+    </div>
+    <div>
+      <%= render "shared/buttons/primary_link", path: new_game_proposal_path(group_id: @group), text: "New Game Proposal" %>
+    </div>
+  </div>
 
-<h5 class="text-xl font-bold mb-1">Game Proposals</h5>
-<div id="game_proposals">
-  <%= render partial: "game_proposals/game_proposal_list", locals:{game_proposals: game_proposals }%>
-</div>
+  <%= render "shared/notification", id: "game_proposals" %>
 
-<div class="my-4">
-  <%= render "shared/buttons/primary_link", path: new_game_proposal_path, text: "New Game Proposal" %>
-</div>
+  <div id="game_proposals">
+    <%= render partial: "game_proposals/game_proposal_list", locals:{game_proposals: game_proposals }%>
+  </div>
 
-<div data-controller="calendar" data-calendar-interactive="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr"  data-calendar-user-id=<%= Current.user.id %> data-turbo-permanent>
-  <%= render partial: 'calendars/calendar' %>
-</div>
+  <div data-controller="calendar"
+       data-calendar-interactive-value="true"
+       data-calendar-dialog-outlet=".dialog"
+       data-calendar-flatpickr-outlet=".flatpickr"
+       <% if @group.present? %>
+        data-calendar-group-id="<%= @group.id %>"
+       <% else %>
+        data-calendar-user-id="<%= Current.user.id %>"
+       <% end %> data-turbo-permanent >
+    <%= render partial: 'calendars/calendar' %>
+  </div>
+</section>
