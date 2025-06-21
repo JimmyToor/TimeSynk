@@ -1,29 +1,42 @@
-<div class="format lg:format-lg dark:format-invert">
-  <% if @game_proposal.present? %>
-    <h4>Upcoming Game Sessions for <span class="font-bold text-primary-600"><%= @game_proposal.game_name %></span> in <span class="font-bold text-primary-600"><%= @game_proposal.group.name %></span></h4>
-  <% else %>
-    <h4>Upcoming Game Sessions</h4>
-  <% end %>
-</div>
-<%= turbo_frame_tag "game_sessions", data: {src: @game_proposal.present? ? game_proposal_game_sessions_path(@game_proposal) : game_sessions_path} do %>
-  <div class="w-fit">
-   <%= render @game_sessions, include_link: true %>
-   <% unless @game_sessions.present? %>
-     <p>
-       No game sessions have been scheduled yet.
-     </p>
-   <% end %>
+<section>
+  <div class="text-center mb-2">
+    <% if @game_proposal.present? %>
+      <%= render "shared/header_primary",
+                 text: safe_join(["Upcoming Game Sessions for ",
+                                  content_tag(:span, @game_proposal.game_name, class: "font-bold text-primary-600"),
+                                  " in ",
+                                  content_tag(:span, @game_proposal.group.name, class: "font-bold text-primary-600")]) %>
+    <% else %>
+      <%= render "shared/header_primary", text: "Upcoming Game Sessions" %>
+    <% end %>
   </div>
-  <%= render "shared/table_nav" %>
-<% end %>
-<% stream_id = @game_proposal.present? ? "game_proposal_#{@game_proposal.id}" : "user_#{Current.user.id}" %>
-<% type = @game_proposal.present? ? "data-calendar-game-proposal-id=#{@game_proposal.id}" : "data-calendar-user-id=#{Current.user.id}"  %>
-<div data-controller="calendar"
-     data-calendar-stream-id="<%= stream_id %>"
-     data-calendar-toggles-start-off="availability"
-     data-calendar-dialog-outlet=".dialog"
-     data-calendar-flatpickr-outlet=".flatpickr"
-     <%= type %>
-     data-calendar-exclude-availabilities="">
-  <%= render partial: 'calendars/calendar' %>
-</div>
+  <%= turbo_frame_tag "game_sessions",
+                      data: {src: @game_proposal.present? ?
+                                    game_proposal_game_sessions_path(@game_proposal) :
+                                    game_sessions_path} do %>
+    <div class="grid grid-cols-1 w-full peer divide-y-2">
+      <% if @game_proposal.present? %>
+        <% @game_sessions.each do |game_session| %>
+          <%= render "game_session_slim", game_session: game_session %>
+        <% end %>
+      <% else %>
+        <%= render @game_sessions, include_link: true %>
+    <% end %>
+    </div>
+    <p class="block peer-has-[turbo-frame]:hidden">
+      No game sessions have been scheduled yet.
+    </p>
+    <%= render "shared/table_nav" %>
+  <% end %>
+
+  <% stream_id = @game_proposal.present? ? "game_proposal_#{@game_proposal.id}" : "user_#{Current.user.id}" %>
+  <% type = @game_proposal.present? ? "data-calendar-game-proposal-id=#{@game_proposal.id}" : "data-calendar-user-id=#{Current.user.id}"  %>
+  <div data-controller="calendar"
+       data-calendar-stream-id-value="<%= stream_id %>"
+       data-calendar-dialog-outlet=".dialog"
+       data-calendar-flatpickr-outlet=".flatpickr"
+       <%= type %>
+       data-calendar-exclude-availabilities="">
+    <%= render partial: 'calendars/calendar' %>
+  </div>
+</section>

@@ -1,8 +1,3 @@
-<%= turbo_stream.replace("modal_frame",
-                         partial: "game_sessions/show_content",
-                         locals: { game_session:          @game_session,
-                                   game_session_attendance: @game_session_attendance,
-                                   notice:                "Game session updated successfully" }) %>
 
 <%= turbo_stream.replace_all("#game_session_#{@game_session.id}",
                          partial: "game_sessions/game_session",
@@ -20,3 +15,8 @@
                        highlight: " #{@game_session.game_name} ") %>
 
 <%= turbo_stream.frame_reload "game_sessions" %>
+
+<%= turbo_stream.replace("modal_frame",
+                         partial: "game_sessions/show_content",
+                         locals: { game_session:          @game_session,
+                                   game_session_attendance: @game_session_attendance}) %>

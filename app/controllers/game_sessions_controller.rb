@@ -19,7 +19,7 @@ class GameSessionsController < ApplicationController
     else
       @game_sessions = Current.user.upcoming_game_sessions
     end
-    @pagy, @game_sessions, = pagy(@game_sessions, limit: 8)
+    @pagy, @game_sessions, = pagy(@game_sessions, limit: 6)
     authorize @game_sessions
     respond_to do |format|
       format.html {
@@ -92,23 +92,21 @@ class GameSessionsController < ApplicationController
   def update
     respond_to do |format|
       if @game_session.update(game_session_params)
-        format.html {
-          redirect_to game_proposal_url(@game_session.game_proposal),
-            success: {message: I18n.t("game_session.update.success", name: @game_session.game_name),
-                      options: {highlight: " #{@game_session.game_name} "}}
-        }
+        notification = {message: I18n.t("game_session.update.success", name: @game_session.game_name),
+                        options: {highlight: " #{@game_session.game_name} "}}
+        format.html { redirect_to game_proposal_url(@game_session.game_proposal), success: notification }
         format.json { render :show, status: :ok, location: @game_session }
-        format.turbo_stream
-      else
-        format.html {
-          flash[:error] = {message: I18n.t("game_session.update.error", name: @game_session.game_name),
-                           options: {list_items: @game_session.errors.full_messages}}
-          redirect_to edit_game_session_path(@game_session)
+        format.turbo_stream {
+          flash.now[:success] = notification
+          render "update"
         }
+      else
+        notification = {message: I18n.t("game_session.update.error", name: @game_session.game_name),
+                        options: {list_items: @game_session.errors.full_messages}}
+        format.html { redirect_to edit_game_session_path(@game_session), error: notification }
         format.json { render json: @game_session.errors, status: :unprocessable_entity }
         format.turbo_stream {
-          flash.now[:error] = {message: I18n.t("game_session.update.error", name: @game_session.game_name),
-                               options: {list_items: @game_session.errors.full_messages}}
+          flash.now[:error] = notification
           render "update_fail"
         }
       end
