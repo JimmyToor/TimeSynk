@@ -1,0 +1,7 @@
+EnableDefaultLinters: true
+exclude:
+  # explicitly required for GitHub Actions
+  - '**/vendor/**/*'
+linters:
+  Rubocop:
+    enabled: true

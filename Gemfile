@@ -89,6 +89,8 @@ group :development, :test do
   gem "debug", "~> 1.9", platforms: %i[mri windows]
   gem "standard", "~> 1.40", require: false
   gem "foreman", "~> 0.88", require: false
+  gem "erb_lint", require: false
+  gem "rubocop-erb", "~> 0.6.0"
   gem "dotenv-rails", "~> 3.1"
 end
 
