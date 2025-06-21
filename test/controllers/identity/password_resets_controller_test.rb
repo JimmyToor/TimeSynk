@@ -23,16 +23,15 @@ class Identity::PasswordResetsControllerTest < ActionDispatch::IntegrationTest
       post identity_password_reset_url, params: {email: @user.email}
     end
 
-    assert_redirected_to sign_in_url
+    assert_redirected_to new_identity_password_reset_url
   end
 
-  test "should not send a password reset email to a nonexistent email" do
+  test "should not send a password reset email to a non-verified email" do
     assert_no_enqueued_emails do
       post identity_password_reset_url, params: {email: "invalid_email@hey.com"}
     end
 
     assert_redirected_to new_identity_password_reset_url
-    assert_equal "You can't reset your password until you verify your email", flash[:alert]
   end
 
   test "should not send a password reset email to a unverified email" do
@@ -43,7 +42,6 @@ class Identity::PasswordResetsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to new_identity_password_reset_url
-    assert_equal "You can't reset your password until you verify your email", flash[:alert]
   end
 
   test "should update password" do

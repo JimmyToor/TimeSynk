@@ -124,6 +124,8 @@ en:
       success: "Permissions successfully updated."
       error: "There was an error updating the permissions."
   availability:
+    help:
+      no_schedules: "You can click here to set your default availability times, or set them later through your profile."
     create:
       success: "Availability successfully created."
       error: "There was a problem creating the availability."
@@ -218,3 +220,4 @@ en:
   registration:
     create:
       error: "There was a problem creating your account."
+      success: "Welcome to TimeSynk! Please check your email to verify your account."

@@ -1,4 +1,5 @@
 class Identity::EmailsController < ApplicationController
+  add_flash_types :success, :error
   before_action :check_if_email_verified_by_other_user, only: %i[update]
   before_action :set_user
   skip_after_action :verify_authorized
@@ -8,9 +9,15 @@ class Identity::EmailsController < ApplicationController
   end
 
   def update
+    original_email = @user.email
+    original_verified_status = @user.verified
+
     if @user.update(user_params)
-      redirect_to_root
+      redirect_to_edit
     else
+      @user.email = original_email
+      @user.verified = original_verified_status
+      flash.now[:error] = {message: I18n.t("identity.email.update.error"), options: {list_items: @user.errors.full_messages}}
       render :edit, status: :unprocessable_entity
     end
   end
@@ -22,17 +29,22 @@ class Identity::EmailsController < ApplicationController
   end
 
   def user_params
-    params.permit(:email, :password_challenge).with_defaults(password_challenge: "")
+    params.require(:user).permit(:email, :password_challenge).with_defaults(password_challenge: "")
   end
 
-  def redirect_to_root
+  def redirect_to_edit
     if @user.email_previously_changed?
-      msg = I18n.t("identity.email.update.success")
-      msg += I18n.t("identity.email.verification_sent", email: @user.email) unless @user.email.blank?
-      resend_email_verification
-      redirect_to root_path, success: {message: msg, options: {highlight: @user.email}}
+      if @user.email.blank?
+        redirect_to edit_identity_email_path, success: {message: I18n.t("identity.email.destroy.success")}
+      else
+        resend_email_verification
+        redirect_to edit_identity_email_path, success: {
+          message: "#{I18n.t("identity.email.update.success")} #{I18n.t("identity.email.verification_sent", email: @user.email)}",
+          options: {highlight: @user.email}
+        }
+      end
     else
-      redirect_to root_path
+      redirect_to edit_identity_email_path
     end
   end
 

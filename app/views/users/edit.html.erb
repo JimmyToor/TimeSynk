@@ -3,8 +3,11 @@
   <div>
     <%= form.label :avatar, style: "display:block", class: "text-2xl block mb-2 font-medium text-gray-900 dark:text-white" %>
     <%= user_avatar(Current.user, size_x: 64) %>
-    <%= form.file_field :avatar, id:"user_avatar_input", accept: "image/jpeg,image/png,image/gif", class: "mt-2" %>
-    <br>
+    <%= form.file_field :avatar,
+                        id:"user_avatar_input",
+                        'aria-label': "Upload a new avatar",
+                        accept: "image/jpeg,image/png,image/gif", class: "mt-2" %>
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">PNG, JPG or GIF (MAX 1MB).</p>
     <%= render "shared/buttons/form_submit_button", form: form, text: "Update Avatar", extra_classes: "mt-2 me-2 mb-2"  %>
   </div>
 <% end %>
@@ -13,7 +16,7 @@
     <%= form.hidden_field :avatar, value: "" %>
     <%= render "shared/buttons/form_danger_submit_button", form: form, text: "Remove Avatar"%>
   </div>
-<% end %>
+<% end if Current.user.avatar.present? %>
 <div class="my-4">
   <%= render "shared/buttons/secondary_link", path: edit_user_availability_path, text: "Set Default Availability" %>
 </div>
@@ -24,14 +27,5 @@
   <div class="flex space-x-4">
     <%= render "shared/buttons/secondary_link", path: edit_password_path, text: "Change Password" %>
     <%= render "shared/buttons/secondary_link", path: edit_identity_email_path, text: "Change email address" %>
-  </div>
-</div>
-
-<div class="mt-8">
-  <h2 class="text-4xl mb-4">Access history</h2>
-
-  <div class="flex space-x-4">
-    <%= render "shared/buttons/secondary_link", path: sessions_path, text: "Devices & Sessions" %>
-    <%= render "shared/buttons/delete_button", resource: Current.session, text: "Sign out", confirm: false %>
   </div>
 </div>

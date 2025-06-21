@@ -1,14 +1,20 @@
-<p style="color: red"><%= alert %></p>
+  <h1 class="text-xl font-bold dark:text-white">Forgot your password?</h1>
+  <%= render "shared/notification", id: "password_reset" %>
 
-<h1>Forgot your password?</h1>
+  <%= form_with(url: identity_password_reset_path) do |form| %>
+    <div>
+      <%= form.label :email, "Email", style: "display: block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+      <%= form.email_field :email,
+                           autofocus: true,
+                           autocomplete: "email",
+                           class:  "#{input_field_classes}",
+                           placeholder: "name@email.com"%>
+    </div>
 
-<%= form_with(url: identity_password_reset_path) do |form| %>
-  <div>
-    <%= form.label :email, style: "display: block" %>
-    <%= form.email_field :email, required: true, autofocus: true %>
+    <div class="flex justify-between mt-4">
+      <%= render "shared/buttons/form_submit_button", text: "Send password reset email", form: form %>
+      <%= link_to "Sign in", sign_in_path, class: "font-medium text-primary-600 hover:underline dark:text-primary-500" %>
+    </div>
+  <% end %>
+  <div class="mt-4">
   </div>
-
-  <div>
-    <%= form.submit "Send password reset email" %>
-  </div>
-<% end %>

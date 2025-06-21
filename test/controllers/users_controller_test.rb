@@ -13,7 +13,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
   test "should update user avatar" do
     patch user_url(@user), params: {user: {avatar: fixture_file_upload("avatar/avatar.png", "image/png")}}
-    assert_response :success
+    assert_redirected_to settings_url
   end
 
   test "should not update user with invalid avatar file type" do

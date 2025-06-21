@@ -45,7 +45,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_match(/Username can&#39;t be blank/, response.body)
+    assert_match(/Username cannot be blank./, response.body)
   end
 
   test "should fail to sign up with no username" do
@@ -54,7 +54,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_match(/Username can&#39;t be blank/, response.body)
+    assert_match(/Username cannot be blank./, response.body)
   end
 
   test "should fail to sign up with existing username" do
@@ -81,7 +81,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_match(/Email is invalid/, response.body)
+    assert_select "li", /Email is invalid/
   end
 
   test "should fail to sign up with invalid password" do
@@ -90,7 +90,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_match(/Password is too short/, response.body)
+    assert_select "li", /Password/
   end
 
   test "should fail to sign up with invalid password confirmation" do
@@ -99,6 +99,6 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_match(/Password confirmation doesn&#39;t match Password/, response.body)
+    assert_select "li", /Password confirmation doesn't match password./
   end
 end

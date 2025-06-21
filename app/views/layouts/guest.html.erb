@@ -10,7 +10,20 @@
   <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
 </head>
 
-<body class="bg-tertiary-50 dark:bg-gray-900">
-  <%= yield %>
+<body class="bg-tertiary-50 dark:bg-gray-900 dark:text-white">
+  <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+
+    <div class="flex items-center mb-6 text-2xl font-semibold">
+      <%= inline_svg_tag "icons/game-controller.svg", class: "w-8 h-8 mr-2" %>
+      TimeSynk
+    </div>
+    <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+      <section>
+        <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+          <%= yield %>
+        </div>
+      </section>
+    </div>
+  </div>
 </body>
 </html>

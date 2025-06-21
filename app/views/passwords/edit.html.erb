@@ -1,46 +1,39 @@
-<p style="color: red"><%= alert %></p>
+<section>
+  <h1 class="text-xl font-bold dark:text-white">Change your password</h1>
 
-<h1>Change your password</h1>
+  <%= form_with(model: @user, url: password_path, method: :patch, class:"flex flex-col gap-y-4 md:gap-y-6 w-full sm:max-w-md") do |form| %>
+    <%= render "shared/notification", id: "user_#{Current.user.id}" %>
 
-<%= form_with(url: password_path, method: :patch) do |form| %>
-  <% if @user.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+    <div>
+      <%= form.label :password_challenge, "Current Password", style: "display: block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+      <%= form.password_field :password_challenge,
+                              minlength: 8,
+                              autocomplete: "current-password",
+                              placeholder: "••••••••",
+                              class:  "#{input_field_classes}",
+                              required: "" %>
+    </div>
 
-      <ul>
-        <% @user.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+    <div>
+      <%= form.label :password, "New Password", style: "display: block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+      <%= form.password_field :password,
+                              minlength: 8,
+                              autocomplete: "confirm-password",
+                              placeholder: "••••••••",
+                              class:  "#{input_field_classes}",
+                              required: "" %>
+      <div>8 characters minimum.</div>
+    </div>
+
+    <div>
+      <%= render "shared/buttons/form_submit_button",
+                 form: form,
+                 text: "Save Changes",
+                 extra_classes: "mt-2 me-2 mb-2" %>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :password_challenge, style: "display: block" %>
-    <%= form.password_field :password_challenge, required: true, autofocus: true, autocomplete: "current-password" %>
-  </div>
+  <br>
 
-  <div>
-    <%= form.label :password, "New password", style: "display: block" %>
-    <%= form.password_field :password, required: true, autocomplete: "new-password" %>
-    <div>12 characters minimum.</div>
-  </div>
-
-  <div>
-    <%= form.label :password_confirmation, "Confirm new password", style: "display: block" %>
-    <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password" %>
-  </div>
-
-  <div>
-    <%= render "shared/buttons/form_submit_button",
-               form: form,
-               text: "Save Changes",
-               extra_classes: "mt-2 me-2 mb-2" %>
-  </div>
-<% end %>
-
-<br>
-
-<div>
   <%= render "shared/buttons/cancel_button", path: settings_path  %>
-</div>
+</section>

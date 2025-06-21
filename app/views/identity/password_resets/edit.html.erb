@@ -1,32 +1,38 @@
-<h1>Reset your password</h1>
+<h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">Reset your password</h1>
+<%= render "shared/notification", id: "user_#{@user.id}" %>
 
-<%= form_with(url: identity_password_reset_path, method: :patch) do |form| %>
-  <% if @user.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
-
-      <ul>
-        <% @user.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+<%= form_with(url: identity_password_reset_path, method: :patch, class:"space-y-2") do |form| %>
 
   <%= form.hidden_field :sid, value: params[:sid] %>
 
   <div>
-    <%= form.label :password, "New password", style: "display: block" %>
-    <%= form.password_field :password, required: true, autofocus: true, autocomplete: "new-password" %>
-    <div>12 characters minimum.</div>
+    <%= form.label :password, "New Password", style: "display: block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+    <%= form.password_field :password,
+                            minlength: 8,
+                            autocomplete: "new-password",
+                            placeholder: "••••••••",
+                            class:  "#{input_field_classes}",
+                            required: "" %>
   </div>
 
   <div>
-    <%= form.label :password_confirmation, "Confirm new password", style: "display: block" %>
-    <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password" %>
+    <%= form.label :password_confirmation, "Confirm New Password", style: "display: block", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+    <%= form.password_field :password_confirmation,
+                            minlength: 8,
+                            autocomplete: "confirm-password",
+                            placeholder: "••••••••",
+                            class:  "#{input_field_classes}",
+                            required: "" %>
+    <div class="dark:text-white">8 characters minimum.</div>
   </div>
 
   <div>
-    <%= form.submit "Save changes" %>
+    <%= render "shared/buttons/form_submit_button",
+               form: form,
+               text: "Save Changes",
+               extra_classes: "mt-2 me-2 mb-2" %>
+
   </div>
+
+
 <% end %>

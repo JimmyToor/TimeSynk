@@ -1,0 +1,3 @@
+<%= turbo_stream.replace("notification_container_user_#{Current.user.id}",
+                         partial: "shared/notification",
+                         locals: {id: "notification_user_#{Current.user.id}"}) %>

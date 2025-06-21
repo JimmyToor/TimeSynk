@@ -6,24 +6,22 @@ class UsersController < ApplicationController
   before_action :set_game_session, only: %i[show]
   skip_after_action :verify_authorized, except: %i[update]
   skip_after_action :verify_policy_scoped
-  
 
   def index
   end
 
   def show
-    locals = {user: @user.includes(:roles),
+    locals = {user: @user,
               group: @group,
-              group_roles: @group_roles,
               game_proposal: @game_proposal,
               game_session: @game_session}
 
     respond_to do |format|
-      format.html { render :show, locals: locals}
+      format.html { render :show, locals: locals }
       format.turbo_stream { render :show, locals: locals }
     end
   end
-  
+
   def edit
   end
 
@@ -32,11 +30,12 @@ class UsersController < ApplicationController
     @user.avatar.purge if params.key?(:remove_avatar)
     respond_to do |format|
       if @user.update(user_params)
-        flash[:success] = {message: I18n.t("user.avatar.update.success")}
         format.html { redirect_to settings_path, success: {message: I18n.t("user.avatar.update.success")} }
       else
-        format.html { redirect_to settings_path, error: {message: I18n.t("user.avatar.update.error"),
-                                                          options: {list_items: @user.errors.full_messages}} }
+        flash.now[:error] = {message: I18n.t("user.avatar.update.error"),
+                        options: {list_items: @user.errors.full_messages}}
+        format.html { render :edit, status: :unprocessable_entity }
+        format.turbo_stream { render partial: "users/update_fail", status: :unprocessable_entity }
       end
     end
   end

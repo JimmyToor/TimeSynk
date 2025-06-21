@@ -1,4 +1,5 @@
 class SessionsController < ApplicationController
+  add_flash_types :success, :info, :error
   skip_before_action :authenticate, only: %i[new create]
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
@@ -25,14 +26,14 @@ class SessionsController < ApplicationController
 
       redirect_to root_path
     else
-      redirect_to sign_in_path(email_hint: params[:username_or_email]), alert: "That email or password is incorrect"
+      redirect_to sign_in_path(email_hint: params[:username_or_email]), error: I18n.t("session.create.error")
     end
   end
 
   def destroy
     @session.destroy
     cookies.delete(:session_token)
-    redirect_to(sessions_path, notice: "That session has been logged out")
+    redirect_to(sessions_path)
   end
 
   private
