@@ -56,6 +56,7 @@ yarn-debug.log*
 *.secrets
 *.secret
 /config/credentials/production.key
+/config/credentials/production.yml.enc
 /.env.production
 /.env.development
 
@@ -65,3 +66,8 @@ yarn-debug.log*
 /node_modules
 /gitkey
 .gem_rbs_collection
+
+.idea/
+.vscode/
+
+*.gem
