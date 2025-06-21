@@ -1,21 +1,35 @@
 <%# locals: (schedule:) %>
 <%= turbo_frame_tag dom_id(schedule) do %>
-  <div>
-    Name: <%= schedule.name %>
-  </div>
-  <div>
-    Description: <%= schedule.description %>
-  </div>
-  <div>
-    Duration:
-    <%= format_interval(schedule.duration) %>
-  </div>
-    Frequency: <%= schedule.frequency %>
-  <div>
-    Start: <%= schedule.start_time.in_time_zone(Current.user.timezone).strftime("%B %d, %Y, %I:%M %p") %>
-  </div>
-  <div>
-    End: <%= schedule.end_time.in_time_zone(Current.user.timezone).strftime("%B %d, %Y, %I:%M %p") %>
-  </div>
+  <dl>
+    <div class="flex space-x-2">
+      <dt class="font-semibold">Description:</dt>
+      <dd>
+        <% if schedule.description.present? %>
+          <%= schedule.description %>
+        <% else %>
+          N/A
+        <% end %>
+      </dd>
+    </div>
 
+    <div class="flex space-x-2">
+      <dt class="font-semibold">Duration:</dt>
+      <dd><%= format_interval(schedule.duration) %></dd>
+    </div>
+
+    <div class="flex space-x-2">
+      <dt class="font-semibold">Frequency:</dt>
+      <dd><%= schedule.frequency %></dd>
+    </div>
+
+    <div class="flex space-x-2">
+      <dt class="font-semibold">Start:</dt>
+      <dd><%= schedule.start_time.in_time_zone(Current.user.timezone).strftime("%B %d, %Y, %I:%M %p") %></dd>
+    </div>
+
+    <div class="flex space-x-2">
+      <dt class="font-semibold">End:</dt>
+      <dd><%= schedule.end_time.in_time_zone(Current.user.timezone).strftime("%B %d, %Y, %I:%M %p") %></dd>
+    </div>
+  </dl>
 <% end %>

@@ -119,4 +119,21 @@ class ScheduleTest < ActiveSupport::TestCase
 
     assert_equal expected_calendar_schedule, schedule.make_calendar_schedule
   end
+
+  test "search returns schedules matching the name" do
+    query = "XYZ123"
+    results = Schedule.search(query)
+    assert_equal 1, results.count
+    assert results.all? { |s| s.name.include?(query) }
+  end
+
+  test "search returns no schedules for a non-matching query" do
+    results = Schedule.search("nosuchschedule")
+    assert_empty results
+  end
+
+  test "search is case-insensitive" do
+    results = Schedule.search("xyz123")
+    assert_equal 1, results.count
+  end
 end

@@ -1,12 +1,13 @@
 <%= form_with(model: schedule, id: dom_id(schedule, :form),
               data: { controller: "rails-nested-form",
                       rails_nested_form_wrapper_selector_value: '.nested-form-wrapper',
-                      refresh_calendar_on_submit:"" }) do |form| %>
+                      refresh_calendar_on_submit:"" },
+              class: "flex flex-col align-items-center") do |form| %>
   <%= render 'shared/notification', id: schedule.new_record? ? "schedule_new" : "schedule_#{schedule.id}"  %>
 
-  <div class="dark:bg-gray-800 p-4 rounded-lg">
+  <div class="flex w-fit flex-col items-center self-center rounded-lg p-4 space-y-2 dark:bg-gray-800">
     <div>
-      <%= form.label :name, style: "display: block" %>
+      <%= render "shared/form_label", form: form, field: :name, extra_classes: "block" %>
       <%= form.text_field :name %>
     </div>
 
@@ -14,8 +15,10 @@
       <%= form.hidden_field :user_id, value: Current.user.id %>
     </div>
 
-    <div data-controller="mutually-exclusive-select" data-mutually-exclusive-select-rails-nested-form-outlet="#<%=dom_id(schedule, :form)%>">
-      Include in availability
+    <div data-controller="mutually-exclusive-select"
+         data-mutually-exclusive-select-rails-nested-form-outlet="#<%=dom_id(schedule, :form) %>",
+         class="ml-2" %>
+      <%= render "shared/form_label", form: form, field: :availability_schedule, text: "Include in availabilities" %>
       <%= form.fields_for :availability_schedules do |availability_schedule_subform| %>
         <%= render "schedules/availability_schedule_form", form: availability_schedule_subform %>
       <% end %>
@@ -28,54 +31,66 @@
                                mutually_exclusive_select_target:"addButton"} %>
     </div>
 
-    <div>
-      <%= form.label :description, style: "display: block" %>
-      <%= form.text_area :description %>
-    </div>
-
     <template data-rails-nested-form-target="template">
       <%= form.fields_for :availability_schedules, schedule.availability_schedules.build, child_index: "NEW_RECORD" do |availability_schedule_subform| %>
         <%= render "schedules/availability_schedule_form", form: availability_schedule_subform %>
       <% end %>
     </template>
+
+    <div>
+      <%= render "shared/form_label", form: form, field: :description, extra_classes: "block" %>
+      <%= form.text_area :description %>
+    </div>
+
     <div class="flatpickr" data-controller="flatpickr" data-flatpickr-timezone-value="<%= Current.user.timezone %>">
-      <%= form.label :start_time, "Starting on", class: "block" %>
+      <%= render "shared/form_label", form: form, field: :start_time, text: "Starting on", extra_classes: "block" %>
       <%= form.datetime_field :start_time, data: { flatpickr_target: "startDate"}, value: schedule.start_time&.in_time_zone(Current.user.timezone) %>
     </div>
 
-    <%= content_tag :div, class:"flex items-center" do %>
-      <%= form.label :duration, "Duration:", class:"mr-2" %>
-      <div class="flex flex-col items-center">
-        <%= form.label :duration_days, "Days", class: "block" %>
-        <%= form.number_field :duration_days, min:0, max:30, required: true,
-                              value: (schedule.duration&.parts&.[](:days) || 0),
-                              class: "w-16 h-8 p-1 text-center" %>
+    <div class="flex flex-col">
+      <%= render "shared/form_label", form: form, field: :duration, extra_classes: "mr-2 block" %>
+      <div class="flex flex-row">
+        <div class="flex flex-col items-center">
+          <%= form.number_field :duration_days, min:0, max:30, required: true,
+                                value: (schedule.duration&.parts&.[](:days) || 0),
+                                class: "w-16 h-8 p-1 text-center" %>
+          <%= render "shared/form_label", text: "Days", form: form, field: :duration_days, extra_classes: "block" %>
+        </div>
+        <div class="flex flex-col items-center">
+          <%= form.number_field :duration_hours, min:0, max:23, required: true,
+                                value: (schedule.duration&.parts&.[](:hours) || schedule.new_record? ? 1 : 0),
+                                class: "w-16 h-8 p-1 text-center" %>
+          <%= render "shared/form_label", text: "Hours", form: form, field: :duration_hours, extra_classes: "block" %>
+        </div>
+        <div class="mx-2 text-4xl font-bold leading-7 -translate-y-1">:</div>
+        <div class="flex flex-col items-center">
+          <%= form.select :duration_minutes,
+                          options_for_select((0..3).map { |i| [i * 15, i * 15] },
+                          selected: (schedule.duration&.parts&.[](:minutes) || 0)),
+                          {},
+                          class: "w-16 h-8 p-1 text-center" %>
+          <%= render "shared/form_label",
+                     text: "Minutes",
+                     form: form,
+                     field: :duration_minutes,
+                     extra_classes: "block" %>
+        </div>
       </div>
-      <div class="flex flex-col items-center">
-        <%= form.label :duration_hours, "Hours", class: "block" %>
-        <%= form.number_field :duration_hours, min:0, max:23, required: true,
-                              value: (schedule.duration&.parts&.[](:hours) || schedule.new_record? ? 1 : 0),
-                              class: "w-16 h-8 p-1 text-center" %>
-      </div>
-      <div class="mx-2 text-4xl translate-y-2 font-bold leading-7">:</div>
-      <div class="flex flex-col items-center">
-        <%= form.label :duration_minutes, "Minutes", class: "block" %>
-        <%= form.select :duration_minutes,
-                        options_for_select((0..3).map { |i| [i * 15, i * 15] },
-                        selected: (schedule.duration&.parts&.[](:minutes) || 0)),
-                        {},
-                        class: "w-16 h-8 p-1 text-center" %>
-      </div>
-    <% end %>
+    </div>
 
     <div data-controller="schedule-summary-watcher">
-      <%= form.label :schedule_pattern, "Occurs", class: "block" %>
+      <%= render "shared/form_label", form: form, field: :schedule_pattern, text: "Occurs", extra_classes: "block" %>
+
       <%= form.select_recurring :schedule_pattern, nil, allow_blank: true, initialize_flatpickr: true, static:true %>
       <%= form.hidden_field :frequency, data: {schedule_summary_watcher_target: "frequencyInput"} %>
     </div>
 
     <div>
-      <%= render "shared/buttons/form_submit_button", form: form, text: "Save Schedule", data: { turbo_submits_with: "Saving..." }, extra_classes: "mt-2 me-2 mb-2" %>
+      <% if modal_wrapper? %>
+        <%= render "shared/buttons/form_submit_button", form: form, text: "Save Schedule", data: { turbo_submits_with: "Saving..." }, extra_classes: "mt-2 me-2 mb-2" %>
+      <% else %>
+        <%= render "shared/buttons/form_submit_button", form: form, text: "Save Schedule", data: { turbo: false }, extra_classes: "mt-2 me-2 mb-2" %>
+      <% end %>
     </div>
 
   </div>

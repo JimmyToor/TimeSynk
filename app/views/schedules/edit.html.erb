@@ -1,4 +1,7 @@
-<h1>Editing schedule</h1>
+<%= render "shared/header_primary",
+           text: safe_join(["Edit Schedule: ",
+                            content_tag(:span, @schedule.name, class: "font-bold text-primary-600")]),
+           extra_classes: "text-center" %>
 
 <%= modal_wrapper(@schedule.name) do %>
   <%= render "form", schedule: @schedule %>

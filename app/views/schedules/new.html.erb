@@ -1,4 +1,4 @@
-<h1>New schedule</h1>
+<%= render "shared/header_primary", text: "New Schedule", extra_classes: "text-center" %>
 
 <%= modal_wrapper(@schedule.name) do %>
   <%= render "form", schedule: @schedule %>

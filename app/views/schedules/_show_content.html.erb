@@ -1,11 +1,13 @@
 <%# locals: (schedule:) %>
 <%= modal_wrapper(schedule.name) do %>
   <%= content_tag(:div, id:dom_id(schedule, :content)) do %>
+    <h1 class="text-2xl font-semibold mb-4"><%= schedule.name %></h1>
     <%= render schedule %>
 
     <div class="flex space-x-2 mt-2">
       <%= render "shared/buttons/icon_link",
                  path: edit_schedule_path(schedule),
+                 data: { turbo_frame: "modal_frame" },
                  extra_classes: "text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100",
                  title:"Edit Schedule",
                  svg_name:"edit" if policy(schedule).edit? %>

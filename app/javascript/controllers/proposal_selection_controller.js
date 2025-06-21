@@ -8,6 +8,7 @@ export default class extends Controller {
   static targets = [
     "gameName",
     "gameArt",
+    "groupName",
     "form",
     "collectionSelect",
     "formFrame",
@@ -26,18 +27,21 @@ export default class extends Controller {
         detail: { proposalId },
       }),
     );
-
     // Fetch the game info for the selected proposal
     fetch(`/game_proposals/${proposalId}.json`)
       .then((response) => response.json())
-      .then(({ game_id }) => fetch(`/games/${game_id}.json`))
+      .then((proposalData) => {
+        this.updateGroupName(proposalData.group_name);
+        return proposalData;
+      })
+      .then((data) => fetch(`/games/${data.game_id}.json`))
       .then((response) => response.json())
-      .then((data) => {
-        this.updateGameInfo(data);
+      .then((gamedata) => {
+        this.updateGameInfo(gamedata);
 
         const url = new URL(this.formTarget.action);
-
         this.updateForm(url, proposalId);
+
         this.stopBusy();
 
         this.element.dispatchEvent(
@@ -47,13 +51,15 @@ export default class extends Controller {
           }),
         );
       })
-      .catch(() => {
+      .catch((error) => {
+        alert("There was an error while switching games: " + error);
+        console.error("There was an error switching games: ", error);
         this.stopBusy();
 
         this.element.dispatchEvent(
           new CustomEvent("fetch-end", {
             bubbles: true,
-            detail: { success: true },
+            detail: { success: false },
           }),
         );
       });
@@ -73,16 +79,21 @@ export default class extends Controller {
     }
   }
 
+  updateGroupName(groupName) {
+    if (this.hasGroupNameTarget) {
+      this.groupNameTarget.innerHTML = `${groupName}`;
+    }
+  }
+
   updateForm(url, proposalId) {
     if (!this.hasFormTarget) return;
-
     this.formTarget.action = url.pathname.replace(
       /game_proposals\/\d+/,
       `game_proposals/${proposalId}`,
     );
 
-    // Update the form proposal ID
-    url = url.pathname.replace(
+    // Update the frame proposal ID
+    url.pathname = url.pathname.replace(
       /game_proposals\/\d+\/game_sessions/,
       `game_proposals/${proposalId}/game_sessions/new`,
     );

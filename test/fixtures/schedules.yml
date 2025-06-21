@@ -16,7 +16,7 @@ user_1_daily_90_minutes:
   end_time: 2024-12-03 16:00:00
   duration: 5400
   schedule_pattern: {"interval": 1, "rule_type": "IceCube::DailyRule", "validations": {}}
-  name: Another Schedule
+  name: User 1 Daily 90 Minutes Schedule
 
 user_2_default:
   id: 3
@@ -34,7 +34,7 @@ user_2_single_hour:
   end_time: 2024-07-06 13:30:00
   duration: 3600
   schedule_pattern: {}
-  name: Default Schedule
+  name: User 2 Single Hour Schedule
 
 user_2_daily_hour:
   id: 5
@@ -43,7 +43,7 @@ user_2_daily_hour:
   end_time: 2024-07-06 15:00:00
   duration: 3600
   schedule_pattern: {"interval": 1, "rule_type": "IceCube::DailyRule", "validations": {}}
-  name: Default Schedule
+  name: User 2 Daily Hour Schedule
 
 user_3_unique_name:
   id: 6

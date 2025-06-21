@@ -4,19 +4,25 @@
 <section class="bg-tertiary-50 dark:bg-gray-900">
   <div class="mx-auto max-w-screen-xl ">
     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden"
+         role="search"
          data-controller="search frame-reload"
          data-search-src-value="<%= frame_path %>"
+         data-search-search-complete-message-value="<%= t('search.complete_message') %>"
          data-frame-reload-events-value="modal-form-submit-success">
       <%= render partial:"schedules/table/schedule_table_header" %>
-      <%= turbo_frame_tag "schedule_table",
-                          src: frame_path,
-                          data: { controller:"reload_on_restore",
-                                  reload_on_restore_src_value:frame_path,
-                                  turbo_prefetch:"false",
-                                  search_target: "frame",
-                                  frame_reload_target:"frame"} do %>
-        Loading...
-      <% end %>
+      <div class="relative">
+        <%= turbo_frame_tag "schedule_table",
+                            data: { controller:"reload-on-restore",
+                                    src: frame_path,
+                                    reload_on_restore_src_value:frame_path,
+                                    turbo_prefetch:"false",
+                                    search_target: "frame",
+                                    frame_reload_target:"frame"} do %>
+          <%= render "schedules/table/schedule_table", schedules: schedules %>
+        <% end %>
+        <%= render "shared/spinner_absolute", start_hidden: true %>
+      </div>
+      <span class="sr-only" aria-live="polite" data-search-target="status"></span>
     </div>
   </div>
 </section>

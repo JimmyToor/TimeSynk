@@ -7,7 +7,7 @@
     <%= render "shared/buttons/secondary_link", path: schedules_path, text: "Back to Schedules" %>
   </div>
 
-  <div data-controller="calendar" data-calendar-interactive="true" data-calendar-schedule-id=<%= schedule.id %> data-turbo-permanent>
+  <div data-controller="calendar" data-calendar-interactive-value="true" data-calendar-schedule-id=<%= schedule.id %> data-turbo-permanent>
     <%= render partial: 'calendars/calendar' %>
   </div>
 
