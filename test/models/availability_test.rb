@@ -46,8 +46,6 @@ class AvailabilityTest < ActiveSupport::TestCase
     assert_includes availability.errors[:base], I18n.t("availability.destroy.only_availability")
   end
 
-  # --- Association Destruction Tests (Split from original combined test) ---
-
   test "destroying availability cascades to proposal_availability" do
     user = users(:admin)
     proposal_availability_record = proposal_availabilities(:user_1_proposal_1_availability)
@@ -56,6 +54,8 @@ class AvailabilityTest < ActiveSupport::TestCase
     # Link the proposal availability
     availability_for_proposal = Availability.create!(name: "Temp Availability for Proposal", user: user)
     proposal_availability_record.update!(availability: availability_for_proposal)
+    # Ensure the record is linked
+    availability_for_proposal.reload
 
     assert ProposalAvailability.exists?(proposal_availability_id), "ProposalAvailability fixture record missing before destroy"
     assert_difference -> { Availability.count }, -1 do
@@ -74,6 +74,8 @@ class AvailabilityTest < ActiveSupport::TestCase
     # Link the group availability
     availability_for_group = Availability.create!(name: "Temp Availability for Group", user: user)
     group_availability_record.update!(availability: availability_for_group)
+    # Ensure the record is linked
+    availability_for_group.reload
 
     assert GroupAvailability.exists?(group_availability_id), "GroupAvailability fixture record missing before destroy"
     assert_difference -> { Availability.count }, -1 do
