@@ -90,7 +90,7 @@ class GroupMembershipsController < ApplicationController
     @invite = Invite.with_token(token)
 
     unless token.present? && @invite.present? && @invite.expires_at > Time.current
-      flash[:error] = @invite.nil? ? I18n.t("invite.invalid") : I18n.t("invite.validation.expired")
+      flash[:error] = @invite.nil? ? I18n.t("invite.invalid") : I18n.t("invite.expired")
       redirect_to join_group_path(invite_token: token) and return
     end
     params[:group_membership][:assigned_role_ids] = @invite.assigned_role_ids if params[:group_membership].present? && params[:group_membership][:assigned_role_ids].blank?
