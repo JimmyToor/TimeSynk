@@ -47,6 +47,10 @@ class Invite < ApplicationRecord
     false
   end
 
+  def expired?
+    expires_at.present? && expires_at <= Time.current
+  end
+
   def self.destroy_expired_invites
     expired.destroy_all
   end

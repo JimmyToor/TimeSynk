@@ -1,7 +1,7 @@
 class GroupMembershipsController < ApplicationController
   add_flash_types :success, :error
   before_action :set_group_membership, only: %i[show destroy]
-  before_action :set_invite, only: %i[create new_from_invite]
+  before_action :set_invite, only: %i[create new]
   before_action :set_group, only: %i[index create]
   before_action :set_game_proposal, only: %i[show]
   before_action :set_game_session, only: %i[show]
@@ -32,10 +32,6 @@ class GroupMembershipsController < ApplicationController
 
   # GET /group_memberships/new
   def new
-    render :new
-  end
-
-  def new_from_invite
     render :new, locals: {invite: @invite}
   end
 
@@ -86,14 +82,23 @@ class GroupMembershipsController < ApplicationController
 
   def set_invite
     return unless invite_required?
-    token = (params[:invite_token] || params.dig(:group_membership, :invite_token))&.sub(%r{.*invite_token=}, "")
+
+    token = extract_token(params)
+    return if token.blank?
+
+    handle_invite(token)
+  end
+
+  def extract_token(params)
+    (params[:invite_token] || params.dig(:group_membership, :invite_token))&.sub(%r{.*invite_token=}, "")
+  end
+
+  def handle_invite(token)
     @invite = Invite.with_token(token)
 
-    unless token.present? && @invite.present? && @invite.expires_at > Time.current
+    if !@invite.present? || @invite.expired?
       flash[:error] = @invite.nil? ? I18n.t("invite.invalid") : I18n.t("invite.expired")
-      redirect_to join_group_path(invite_token: token) and return
     end
-    params[:group_membership][:assigned_role_ids] = @invite.assigned_role_ids if params[:group_membership].present? && params[:group_membership][:assigned_role_ids].blank?
   end
 
   def set_group

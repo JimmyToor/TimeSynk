@@ -13,8 +13,8 @@ Rails.application.routes.draw do
   get "calendars", to: "calendars#show"
   get "calendars/new", to: "calendars#new"
   get "groups/join", to: "group_memberships#new", as: :join_group
-  get "invites/accept", to: "group_memberships#new_from_invite", as: :accept_invite
-  get "invites/accept/:invite_token", to: "group_memberships#new_from_invite", as: :accept_invite_with_token
+  get "invites/accept", to: "group_memberships#new", as: :accept_invite
+  get "invites/accept/:invite_token", to: "group_memberships#new", as: :accept_invite_with_token
   resources :users
   shallow do
     resources :groups do

@@ -43,7 +43,7 @@ class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
     get accept_invite_url(invite_token: invite.invite_token)
 
     assert_response :ok
-    assert_recognizes({controller: "group_memberships", action: "new_from_invite"},
+    assert_recognizes({controller: "group_memberships", action: "new"},
       path: accept_invite_url(invite_token: invite.invite_token))
   end
 
@@ -60,7 +60,7 @@ class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to group_url(invite.group)
   end
 
-  test "expired invite should not create membership" do
+  test "expired invite should result in an expired invite error" do
     @user = users(:two)
     sign_in_as(@user)
 
@@ -68,6 +68,14 @@ class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
 
     travel_to 1.week.from_now
     get accept_invite_url(invite_token: invite.invite_token)
-    assert_redirected_to join_group_path(invite_token: invite.invite_token)
+    assert_equal I18n.t("invite.expired"), flash[:error]
+  end
+
+  test "invalid invite should result in an invalid invite error" do
+    @user = users(:two)
+    sign_in_as(@user)
+
+    get accept_invite_url(invite_token: "invalid_token")
+    assert_equal I18n.t("invite.invalid"), flash[:error]
   end
 end
