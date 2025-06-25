@@ -1,5 +1,4 @@
-<h1>New invite to <span class="font-bold text-primary-600"><%= @group.name %></span></h1>
-
+<%= render "shared/header_primary", text: safe_join(["New invite to ", content_tag(:span, @group.name, class: "font-bold text-primary-600")]) %>
 <div class="my-4 space-x-2">
   <%= modal_wrapper "New Invite" do %>
     <%= render "form", invite: @invite, group: @group, roles: @roles %>

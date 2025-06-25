@@ -4,6 +4,7 @@
   <button id="new-dropdown-button"
           aria-label="Open creation dropdown"
           aria-haspopup="menu"
+          aria-controls="new-dropdown"
           data-action="dropdown#toggle click@window->dropdown#hide"
           data-dropdown-target="toggleButton"
           class="relative inline-flex items-center rounded-lg text-center text-sm font-medium focus:ring-4 focus:outline-none
@@ -34,9 +35,11 @@
       <% end if can_propose %>
 
       <%= content_tag :li, class: "flex hover:border-gray-600 dark:hover:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600" do %>
-        <%= link_to new_group_invite_path(group), title: "New Invite",
+        <%= link_to new_group_invite_path(group),
+                    title: "New Invite",
+                    'aria-haspopup': "dialog",
                     class: "flex h-fit px-2 items-center hover:bg-gray-200 dark:hover:bg-gray-600 w-full py-1",
-                    data: { action: "dropdown#toggle" } do %>
+                    data: { action: "dropdown#toggle", turbo_frame: "modal_frame" } do %>
           <%= inline_svg_tag "icons/envelope.svg" %>
           <span class="ml-2">New Invite</span>
         <% end %>

@@ -86,6 +86,7 @@ en:
     invalid_link: "Invalid group invite link."
     destroy:
       success: "Group %{name} successfully deleted."
+      title: "Delete Group"
     update:
       success: "Group name changed to %{name}."
   group_membership:
@@ -100,6 +101,8 @@ en:
     create:
       success: "You have joined %{group_name}!"
       error: "There was a problem joining %{group_name}!"
+    new:
+      title: "Join a Group"
   proposal_vote:
     validation:
       vote_unique: "You have already voted on this proposal."

@@ -21,8 +21,9 @@
   </div>
 
   <div class="flex justify-between">
-    <%= button_to "Delete", group, method: :delete, title: "Delete Group",
+    <%= button_to "Delete", group, method: :delete, title: t("group.destroy.title"),
                   data: { confirmation_target: "item" },
+                  'aria-haspopup': "dialog",
                   disabled: "true",
                   class: "disabled:cursor-not-allowed disabled:bg-red-300 rounded-full bg-red-600 px-3
                                   py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline

@@ -1,8 +1,9 @@
 <%# locals: (path:, title: "Delete", svg_name: "trash", data: {}, extra_classes: "", confirm_text:"Are you sure?") %>
 
 <%= link_to path,
-  data: {turbo_method: "delete", turbo_confirm: confirm_text}.merge(data),
-  title: title,
-  class: "text-notice-400 #{extra_classes}" do %>
+            data: {turbo_method: "delete", turbo_confirm: confirm_text}.merge(data),
+            'aria-haspopup': "dialog",
+            title: title,
+            class: "text-notice-400 #{extra_classes}" do %>
   <%= content_tag(:span, inline_svg("icons/#{svg_name}.svg")) %>
 <% end %>

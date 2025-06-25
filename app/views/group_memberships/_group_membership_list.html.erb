@@ -12,9 +12,13 @@
            data-anchor-position-position-style-value="absolute"
            class="flex relative">
         <div data-controller="stimulus-popover" class="group_membership_<%= membership.id %>">
-          <div class="flex relative" data-action="mouseenter->stimulus-popover#show mouseleave->stimulus-popover#hide">
+          <div class="flex relative"
+               data-action="mouseenter->stimulus-popover#show mouseleave->stimulus-popover#hide focusin->stimulus-popover#show focusout->stimulus-popover#hide">
 
-            <button popovertarget="<%= dialog_popover_id %>" data-action="click->anchor-position#triggerUpdate">
+            <button popovertarget="<%= dialog_popover_id %>"
+                    aria-label="View roles for <%= membership.user.username %> in <%= membership.group.name %>"
+                    aria-details="popover_group_membership_<%= membership.id %>"
+                    data-action="click->anchor-position#triggerUpdate">
               <%= user_avatar(membership.user, size_x: 32) %>
             </button>
           </div>
@@ -24,7 +28,7 @@
                      extra_classes: "top-7 left-8 -translate-x-1/2 w-max" do %>
             <div class="pb-3">
               <div class="bg-gray-100 dark:bg-gray-700 border-b-2 rounded-t-lg border-gray-400 dark:border-gray-600 text-center">
-                <span class="font-bold text-primary-600"><%= membership.user.username %></span>
+                <span class="font-bold text-primary-600 mx-2"><%= membership.user.username %></span>
               </div>
 
               <div class="px-3">

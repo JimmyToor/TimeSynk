@@ -20,7 +20,7 @@
            data-action="mouseenter->stimulus-popover#show mouseleave->stimulus-popover#hide focusin->stimulus-popover#show focusout->stimulus-popover#hide">
         <button popovertarget="<%= dialog_popover_id %>"
                 aria-label="View roles for <%= proposal_vote.user.username %> in <%= proposal_vote.game_name %> for <%= proposal_vote.group_name %>"
-                aria-describedby="popover_proposal_vote_<%= proposal_vote.id %>"
+                aria-details="popover_proposal_vote_<%= proposal_vote.id %>"
                 data-action="click->anchor-position#triggerUpdate">
           <%= user_avatar(proposal_vote.user, size_x: 24, size_y: 24, svg_icon: icon) %>
         </button>

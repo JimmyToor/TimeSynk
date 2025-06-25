@@ -43,7 +43,7 @@ module UsersHelper
         title = highest_role.resource_type.titleize + " " + highest_role.name.titleize
         concat(inline_svg("icons/star.svg", class: "absolute -left-4 h-3", title: title))
       end
-      concat(content_tag(:span, user.username, class: "break-all", title: user.username))
+      concat(content_tag(:span, user.username, class: "whitespace-break-spaces", title: user.username))
     end
   end
 

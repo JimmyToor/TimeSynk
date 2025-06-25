@@ -11,6 +11,7 @@
                extra_classes: "text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100",
                title: "Edit Invite",
                data: {turbo_frame: "modal_frame"},
+               link_attributes: {'aria-haspopup': "dialog" },
                svg_name: "edit" if policy(invite).edit? %>
   </td>
   <td class="whitespace-nowrap font-medium text-gray-900 dark:text-white">

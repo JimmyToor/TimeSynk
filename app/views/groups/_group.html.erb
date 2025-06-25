@@ -27,6 +27,7 @@
 
     <div class="group_<%= group.id %>_membership_details mt-2 flex flex-col gap-2"
          data-controller="dialog"
+         role="presentation"
          data-dialog-ignore-submit-success-value="true">
         <%= render "group_memberships/full_group_membership_button", group: group %>
         <%= render "group_memberships/group_membership_list", group: group, limit: 8 %>
