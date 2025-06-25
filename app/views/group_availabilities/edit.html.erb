@@ -16,13 +16,14 @@
       This availability will also be used for all of this group's game proposals and game sessions that do not have an availability set.
     </p>
   <% end %>
+
   <%= render "form", group_availability: @group_availability, availabilities: @availabilities %>
 
   <div class="my-6">
     <%= render "shared/buttons/delete_button", confirm: false, resource: @group_availability, text: "Unset Group Availability" %>
   </div>
 
-  <div class="my-6">
+  <div class="my-6 space-y-2">
     <%= render "shared/buttons/secondary_link",
                path: @group_availability.group,
                text:"Back to Group" %>
@@ -32,7 +33,11 @@
   </div>
 
   <h2 class="text-2xl font-bold tracking-tight text-black dark:text-white text-center">Preview</h2>
-  <div id="calendar_holder"  data-controller="calendar" data-calendar-interactive-value="true" data-calendar-availability-id="<%= @group_availability&.id || @availabilities.first %>" data-turbo-permanent>
+  <div id="calendar_holder"
+       data-controller="calendar"
+       data-calendar-interactive-value="true"
+       data-calendar-availability-id="<%= @group_availability&.id || @availabilities.first %>"
+       data-turbo-permanent>
     <%= render partial: 'calendars/calendar' %>
   </div>
 </div>

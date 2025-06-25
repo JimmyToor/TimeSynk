@@ -22,13 +22,21 @@
     <%= render "shared/buttons/delete_button", confirm: false, resource: @proposal_availability, text: "Unset Proposal Availability" %>
   </div>
 
-  <div class="my-6">
-    <%= render "shared/buttons/secondary_link", path: @proposal_availability.game_proposal, text:"Back to Game Proposal" %>
-    <%= render "shared/buttons/secondary_link", path: @proposal_availability.availability, text:"View Current Availability: #{@proposal_availability.availability.name}" %>
+  <div class="my-6 space-y-2">
+    <%= render "shared/buttons/secondary_link",
+               path: @proposal_availability.game_proposal,
+               text:"Back to Game Proposal" %>
+    <%= render "shared/buttons/secondary_link",
+               path: @proposal_availability.availability,
+               text:"View Current Availability: #{@proposal_availability.availability.name}" %>
   </div>
 
   <h2 class="text-2xl font-bold tracking-tight text-black dark:text-white text-center">Preview</h2>
-  <div id="calendar_holder" data-controller="calendar" data-calendar-interactive-value="true" data-calendar-availability-id="<%= @availabilities.first.id %>" data-turbo-permanent>
+  <div id="calendar_holder"
+       data-controller="calendar"
+       data-calendar-interactive-value="true"
+       data-calendar-availability-id="<%= @availabilities.first.id %>"
+       data-turbo-permanent>
     <%= render partial: 'calendars/calendar' %>
   </div>
 </div>

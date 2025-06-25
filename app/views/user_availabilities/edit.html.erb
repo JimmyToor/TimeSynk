@@ -11,7 +11,9 @@
              id: "tooltip-user-availability",
              extra_classes: "inline-block px-3 py-2 font-medium text-black bg-gray-200 dark:text-white
               dark:bg-gray-300 rounded-xl shadow-xl tooltip max-w-xxs sm:max-w-md lg:max-w-lg mr-5" do %>
-    <p class="whitespace-normal wrap-normal">Set a default availability here to automatically use it for all your groups, game proposals, and game sessions that do not have an availability set.</p>
+    <p class="whitespace-normal wrap-normal">
+      Set a default availability here to automatically use it for all your groups, game proposals, and game sessions that do not have an availability set.
+    </p>
   <% end %>
   <%= render "form", user_availability: @user_availability, availabilities: @availabilities %>
 
@@ -20,7 +22,11 @@
   </div>
 
   <h2 class="text-2xl font-bold tracking-tight text-black dark:text-white text-center">Preview</h2>
-  <div id="calendar_holder" data-controller="calendar" data-calendar-interactive-value="true" data-calendar-availability-id="<%= @user_availability&.id || @availabilities.first %>" data-turbo-permanent>
+  <div id="calendar_holder"
+       data-controller="calendar"
+       data-calendar-interactive-value="true"
+       data-calendar-availability-id="<%= @user_availability&.id || @availabilities.first %>"
+       data-turbo-permanent>
     <%= render partial: 'calendars/calendar' %>
   </div> 
 
