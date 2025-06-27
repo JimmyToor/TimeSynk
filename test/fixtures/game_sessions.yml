@@ -1,31 +1,26 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 proposal_1_session_1:
-  id: 1
-  game_proposal_id: 1
+  game_proposal: group_1_game_1
   date: 2024-06-06 10:00:00
   duration: 3600
 
 proposal_2_session_1:
-  id: 2
-  game_proposal_id: 2
+  game_proposal: group_2_game_2
   date: 2024-06-07 10:00:00
   duration: 7600
 
 proposal_3_session_1:
-  id: 3
-  game_proposal_id: 3
+  game_proposal: group_3_game_1
   date: 2024-06-06 10:00:00
   duration: 9600
 
 proposal_3_session_2:
-  id: 4
-  game_proposal_id: 3
+  game_proposal: group_3_game_1
   date: 2024-09-09 10:00:00
   duration: 9600
 
 proposal_3_session_3:
-  id: 5
-  game_proposal_id: 3
+  game_proposal: group_3_game_1
   date: 2024-09-10 10:00:00
   duration: 9600

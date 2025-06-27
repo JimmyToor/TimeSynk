@@ -2,35 +2,31 @@
 
 
 admin:
-  id: 1
   email: AdminUser@admin.com
   username: AdminUser
   password_digest: <%= BCrypt::Password.create("Secret1*3*5*") %>
   verified: true
   timezone: "America/Los_Angeles"
-  account_id: 1
+  account: admin
 
-two:
-  id: 2
+cooluserguy:
   email: Cooluserguy@hotmail.com
   username: CoolUserGuy
   password_digest: <%= BCrypt::Password.create("Secret1*3*5*") %>
   verified: true
   timezone: "America/Los_Angeles"
-  account_id: 2
+  account: two
 
-three:
-  id: 3
+radperson:
   username: RadPerson
   password_digest: <%= BCrypt::Password.create("Secret1*3*5*") %>
   verified: false
   timezone: "America/Los_Angeles"
-  account_id: 3
+  account: three
 
-four:
-  id: 4
+groupsmemberuser:
   username: GroupsMemberUser
   password_digest: <%= BCrypt::Password.create("Secret1*3*5*") %>
   verified: false
   timezone: "America/Los_Angeles"
-  account_id: 4
+  account: four

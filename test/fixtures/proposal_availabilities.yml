@@ -5,7 +5,6 @@
 # below each fixture, per the syntax in the comments below
 #
 user_1_proposal_1_availability:
-  id: 1
-  availability_id: 1 # default availability
-  game_proposal_id: 1
-  user_id: 1
+  availability: user_1_default_availability # default availability
+  game_proposal: group_1_game_1
+  user: admin

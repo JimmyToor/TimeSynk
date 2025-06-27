@@ -2,8 +2,8 @@ require "test_helper"
 
 class GamesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @game = games(:one)
-    @user = users(:two)
+    @game = games(:thief_2)
+    @user = users(:cooluserguy)
     sign_in_as @user
   end
 

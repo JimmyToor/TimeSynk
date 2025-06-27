@@ -6,7 +6,7 @@ class GroupAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index" do
-    user = users(:two)
+    user = users(:cooluserguy)
     sign_in_as(user)
 
     get group_availabilities_url
@@ -14,7 +14,7 @@ class GroupAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get new" do
-    user = users(:three)
+    user = users(:radperson)
     sign_in_as(user)
 
     get new_group_group_availability_url(groups(:three_members))
@@ -22,7 +22,7 @@ class GroupAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "new should get edit when there is an existing group_availability" do
-    user = users(:two)
+    user = users(:cooluserguy)
     sign_in_as(user)
 
     get new_group_group_availability_url(groups(:two_members))
@@ -30,7 +30,7 @@ class GroupAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create group_availability" do
-    user = users(:three)
+    user = users(:radperson)
     sign_in_as(user)
     group = groups(:three_members)
 
@@ -42,7 +42,7 @@ class GroupAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show group_availability" do
-    user = users(:two)
+    user = users(:cooluserguy)
     sign_in_as(user)
 
     get group_availability_url(@group_availability)
@@ -50,7 +50,7 @@ class GroupAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get edit" do
-    user = users(:two)
+    user = users(:cooluserguy)
     sign_in_as(user)
 
     get edit_group_availability_url(@group_availability)
@@ -58,7 +58,7 @@ class GroupAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update group_availability" do
-    user = users(:two)
+    user = users(:cooluserguy)
     sign_in_as(user)
     availability = availabilities(:user_2_empty_availability)
 
@@ -69,7 +69,7 @@ class GroupAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should destroy group_availability" do
-    user = users(:two)
+    user = users(:cooluserguy)
     sign_in_as(user)
 
     assert_difference("GroupAvailability.count", -1) do

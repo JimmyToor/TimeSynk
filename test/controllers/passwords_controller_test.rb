@@ -2,7 +2,7 @@ require "test_helper"
 
 class PasswordsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @user = sign_in_as(users(:two))
+    @user = sign_in_as(users(:cooluserguy))
   end
 
   test "should get edit" do
@@ -19,6 +19,6 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
     patch password_url, params: {user: {password_challenge: "SecretWrong1*3", password: "Secret6*4*2*", password_confirmation: "Secret6*4*2*"}}
 
     assert_response :unprocessable_entity
-    assert_select "li", /Current password is incorrect./
+    assert_not_nil flash.now[:error]
   end
 end

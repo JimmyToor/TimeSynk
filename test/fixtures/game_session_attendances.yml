@@ -1,7 +1,61 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  id: 1
-  game_session_id: 1
-  user_id: 1
+proposal_1_session_1_admin:
+  game_session: proposal_1_session_1
+  user: admin
   attending: true
+
+proposal_2_session_1_cooluserguy:
+  game_session: proposal_2_session_1
+  user: cooluserguy
+  attending: true
+
+proposal_3_session_1_radperson:
+  game_session: proposal_3_session_1
+  user: radperson
+  attending: true
+
+proposal_2_session_1_radperson:
+  game_session: proposal_2_session_1
+  user: radperson
+  attending:
+
+proposal_3_session_1_cooluserguy:
+  game_session: proposal_3_session_1
+  user: cooluserguy
+  attending:
+
+proposal_3_session_1_groupsmemberuser:
+  game_session: proposal_3_session_1
+  user: groupsmemberuser
+  attending:
+
+proposal_3_session_2_cooluserguy:
+  game_session: proposal_3_session_2
+  user: cooluserguy
+  attending:
+
+proposal_3_session_2_radperson:
+  game_session: proposal_3_session_2
+  user: radperson
+  attending:
+
+proposal_3_session_2_groupsmemberuser:
+  game_session: proposal_3_session_2
+  user: groupsmemberuser
+  attending:
+
+proposal_3_session_3_cooluserguy:
+  game_session: proposal_3_session_3
+  user: cooluserguy
+  attending:
+
+proposal_3_session_3_radperson:
+  game_session: proposal_3_session_3
+  user: radperson
+  attending:
+
+proposal_3_session_3_groupsmemberuser:
+  game_session: proposal_3_session_3
+  user: groupsmemberuser
+  attending:

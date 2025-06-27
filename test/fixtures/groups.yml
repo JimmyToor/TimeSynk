@@ -5,17 +5,13 @@
 # below each fixture, per the syntax in the comments below
 #
 one_member: # users: 1
-  id: 1
   name: "Only Admin Group"
 
 two_members: # users: 2
-  id: 2
   name: "2 Members Group"
 
 three_members: # users: 2,3,4
-  id: 3
   name: "3 Members Group"
 
 three_members_0_proposals:
-  id: 4
   name: "3 Members 0 Proposals Group"

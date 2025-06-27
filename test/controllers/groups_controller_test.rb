@@ -3,7 +3,7 @@ require "test_helper"
 class GroupsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @group = groups(:two_members)
-    @user = users(:two)
+    @user = users(:cooluserguy)
     sign_in_as @user
   end
 

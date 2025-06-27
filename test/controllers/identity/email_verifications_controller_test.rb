@@ -36,7 +36,7 @@ class Identity::EmailVerificationsControllerTest < ActionDispatch::IntegrationTe
   end
 
   test "should not verify email if already verified by another user" do
-    user = sign_in_as(users(:three))
+    user = sign_in_as(users(:radperson))
     other_user = users(:admin)
     other_user.update! verified: false
 

@@ -2,7 +2,7 @@ require "test_helper"
 
 class InvitesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @invite = invites(:group_1)
+    @invite = invites(:group_1_no_roles)
   end
 
   test "should get index" do
@@ -25,12 +25,13 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
     @user = users(:admin)
     sign_in_as(@user)
     group = groups(:one_member)
+    role = roles(:manage_invites_1)
 
     assert_difference("Invite.count") do
       post group_invites_url group, params: {invite: {expires_at: 1.day.from_now,
                                                       group_id: group.id,
                                                       invite_token: "iWXu1mS7SNgX8xFYGiQGPoCU",
-                                                      assigned_role_ids: ["", 5],
+                                                      assigned_role_ids: ["", role.id],
                                                       user_id: @user.id}}
     end
 
@@ -89,7 +90,7 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "non-admin should get new with no roles" do
-    @user = users(:three)
+    @user = users(:radperson)
     sign_in_as(@user)
 
     get new_group_invite_url(groups(:three_members))
@@ -98,7 +99,7 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not create invite for another user" do
-    @user = users(:three)
+    @user = users(:radperson)
     sign_in_as(@user)
 
     assert_no_difference("Invite.count") do
@@ -106,14 +107,14 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
                                                                group_id: groups(:three_members).id,
                                                                invite_token: "iWXu1mS7SNgX8xFYGiQGPoCU",
                                                                assigned_role_ids: ["", 1],
-                                                               user_id: users(:two).id}}
+                                                               user_id: users(:cooluserguy).id}}
     end
 
     assert_response :forbidden
   end
 
   test "should not create invite for another group" do
-    @user = users(:three)
+    @user = users(:radperson)
     sign_in_as(@user)
     group = groups(:one_member)
 

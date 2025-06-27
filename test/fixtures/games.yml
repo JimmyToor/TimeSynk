@@ -4,40 +4,35 @@
 # model remove the "{}" from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one:
-  id: 1
+thief_2:
   igdb_id: 1
   name: "Thief II: The Metal Age"
   cover_image_url: "https://images.igdb.com/igdb/image/upload/t_thumb/co698n.jpg"
   platforms: ["PC (Microsoft Windows)"]
   igdb_url: "https://www.igdb.com/games/"
 
-two:
-  id: 2
+gta:
   igdb_id: 980
   name: "Grand Theft Auto"
   cover_image_url: "https://images.igdb.com/igdb/image/upload/t_thumb/co2lb0.jpg"
   platforms: ["Nintendo 64,PC (Microsoft Windows)","PlayStation","DOS"]
   igdb_url: "https://www.igdb.com/games/"
 
-three:
-  id: 3
+ocarina_of_time:
   igdb_id: 3
   name: "The Legend of Zelda: Ocarina of Time"
   cover_image_url: "https://images.igdb.com/igdb/image/upload/t_thumb/co1v3t.jpg"
   platforms: ["Nintendo 64","Nintendo GameCube","iQue Player","Wii","Wii U","Nintendo 3DS"]
   igdb_url: "https://www.igdb.com/games/"
 
-four:
-  id: 4
+majoras_mask:
   igdb_id: 4
   name: "The Legend of Zelda: Majora's Mask"
   cover_image_url: "https://images.igdb.com/igdb/image/upload/t_thumb/co1v3t.jpg"
   platforms: ["Nintendo 64","Nintendo GameCube","Wii","Wii U","Nintendo 3DS"]
   igdb_url: "https://www.igdb.com/games/"
 
-five:
-  id: 5
+link_to_the_past:
   igdb_id: 5
   name: "The Legend of Zelda: A Link to the Past"
   cover_image_url: "https://images.igdb.com/igdb/image/upload/t_thumb/co1v3t.jpg"

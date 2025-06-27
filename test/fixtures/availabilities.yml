@@ -1,31 +1,25 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 user_1_default_availability:
-  id: 1
-  user_id: 1
+  user: admin
   name: Default Availability
 
 user_2_default_availability:
-  id: 2
-  user_id: 2
+  user: cooluserguy
   name: Default Availability
 
 user_1_empty_availability:
-  id: 3
-  user_id: 1
+  user: admin
   name: Empty Availability
 
 user_2_empty_availability:
-  id: 4
-  user_id: 2
+  user: cooluserguy
   name: Empty 2nd Availability
 
 user_3_default_availability:
-  id: 5
-  user_id: 3
+  user: radperson
   name: Default Availability
 
 user_4_default_availability:
-  id: 6
-  user_id: 4
+  user: groupsmemberuser
   name: Default Availability

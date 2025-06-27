@@ -1,37 +1,32 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 group_1_game_1:
-  id: 1
-  group_id: 1
-  game_id: 1
+  group: one_member
+  game: thief_2
   yes_votes_count: 1
   no_votes_count: 0
 
 group_2_game_2:
-  id: 2
-  group_id: 2
-  game_id: 2
+  group: two_members
+  game: gta
   yes_votes_count: 1
   no_votes_count: 1
 
 group_3_game_1:
-  id: 3
-  group_id: 3
-  game_id: 1
+  group: three_members
+  game: thief_2
   yes_votes_count: 0
   no_votes_count: 0
 
 group_3_game_2:
-  id: 4
-  group_id: 3
-  game_id: 2
+  group: three_members
+  game: gta
   yes_votes_count: 0
   no_votes_count: 0
 
 group_2_game_1:
-  id: 5
-  group_id: 2
-  game_id: 1
+  group: two_members
+  game: thief_2
   yes_votes_count: 0
   no_votes_count: 0
 

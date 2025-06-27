@@ -1,96 +1,95 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
+# Cannot just use labels for habtm join table fixtures, so we use need to find the user_id and role_id
 user_1_site_admin:
-  # User 1 is a site administrator (global role)
-  user_id: 1
-  role_id: 1
+  user_id: <%= ActiveRecord::FixtureSet.identify(:admin) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:site_admin) %>
 
 user_1_group_1_owner:
   # User 1 is an owner of Group 1 ( Proposal 1 )
-  user_id: 1
-  role_id: 2
+  user_id: <%= ActiveRecord::FixtureSet.identify(:admin) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:owner_1) %>
 
 user_2_group_2_owner:
   # User 2 is an owner of Group 2 ( Proposal 2 )
-  user_id: 2
-  role_id: 11
+  user_id: <%= ActiveRecord::FixtureSet.identify(:cooluserguy) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:owner_2) %>
 
 user_1_game_proposal_1_owner:
   # User 1 is an owner of GameProposal 1 ( Session 1 )
-  user_id: 1
-  role_id: 29
+  user_id: <%= ActiveRecord::FixtureSet.identify(:admin) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:game_proposal_1_owner) %>
 
 user_2_game_proposal_2_owner:
   # User 2 is an owner of GameProposal 2 ( Session 2 )
-  user_id: 2
-  role_id: 30
+  user_id: <%= ActiveRecord::FixtureSet.identify(:cooluserguy) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:game_proposal_2_owner) %>
 
 user_2_game_proposal_3_owner:
   # User 2 is an owner of GameProposal 3 ( Sessions 3,4,5 )
-  user_id: 2
-  role_id: 33
+  user_id: <%= ActiveRecord::FixtureSet.identify(:cooluserguy) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:game_proposal_3_owner) %>
 
 user_3_game_proposal_4_owner:
   # User 3 is an owner of GameProposal 4
-  user_id: 3
-  role_id: 34
+  user_id: <%= ActiveRecord::FixtureSet.identify(:radperson) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:game_proposal_4_owner) %>
 
 user_1_game_proposal_5_owner:
   # User 1 is an owner of GameProposal 5
-  user_id: 1
-  role_id: 35
+  user_id: <%= ActiveRecord::FixtureSet.identify(:admin) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:game_session_3_owner) %>
 
 user_1_game_session_1_owner:
   # User 1 is an owner of GameSession 1 ( Proposal 1 )
-  user_id: 1
-  role_id: 31
+  user_id: <%= ActiveRecord::FixtureSet.identify(:admin) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:game_session_1_owner) %>
 
 user_2_game_session_2_owner:
   # User 2 is an owner of GameSession 2 ( Proposal 2 )
-  user_id: 2
-  role_id: 32
+  user_id: <%= ActiveRecord::FixtureSet.identify(:cooluserguy) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:game_session_2_owner) %>
 
 user_2_group_3_owner:
   # User 2 is an owner of Group 3 ( Proposals 3,4 )
-  user_id: 2
-  role_id: 20
+  user_id: <%= ActiveRecord::FixtureSet.identify(:cooluserguy) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:owner_3) %>
 
 user_3_group_3_manage_invites:
   # User 3 can create invites for Group 3 ( Proposals 3,4 )
-  user_id: 3
-  role_id: 23
+  user_id: <%= ActiveRecord::FixtureSet.identify(:radperson) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:manage_invites_3) %>
 
 user_3_group_3_create_proposals:
   # User 3 can create proposals for Group 3 ( Proposals 3,4 )
-  user_id: 3
-  role_id: 25
+  user_id: <%= ActiveRecord::FixtureSet.identify(:radperson) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:create_proposals_3) %>
 
 user_3_group_3_admin:
   # User 3 is an admin for Group 3 ( Proposals 3,4 )
-  user_id: 3
-  role_id: 21
+  user_id: <%= ActiveRecord::FixtureSet.identify(:radperson) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:admin_3) %>
 
 user_4_group_4_owner:
   # User 4 is an owner of Group 4
-  user_id: 4
-  role_id: 36
+  user_id: <%= ActiveRecord::FixtureSet.identify(:groupsmemberuser) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:owner_4) %>
 
 user_3_group_4_admin:
   # User 3 is an admin for Group 4
-  user_id: 3
-  role_id: 37
+  user_id: <%= ActiveRecord::FixtureSet.identify(:radperson) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:admin_4) %>
 
 user_3_game_session_3_owner:
   # User 3 is an owner of GameSession 3
-  user_id: 3
-  role_id: 35
+  user_id: <%= ActiveRecord::FixtureSet.identify(:radperson) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:game_session_3_owner) %>
 
 user_3_game_session_4_owner:
   # User 3 is an owner of GameSession 4
-  user_id: 3
-  role_id: 48
+  user_id: <%= ActiveRecord::FixtureSet.identify(:radperson) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:game_session_4_owner) %>
 
 user_3_game_session_5_owner:
   # User 3 is an owner of GameSession 5
-  user_id: 3
-  role_id: 49
+  user_id: <%= ActiveRecord::FixtureSet.identify(:radperson) %>
+  role_id: <%= ActiveRecord::FixtureSet.identify(:game_session_5_owner) %>

@@ -2,49 +2,40 @@
 
 # Group 1 - Owner: user_id 1
 group_1_owner_1:
-  id: 1
-  group_id: 1
-  user_id: 1
+  group: one_member
+  user: admin
 
 # Group 2 - Owner: user_id 3, No Role: user_id 2
 group_2_user_3:
-  id: 2
-  group_id: 2
-  user_id: 3
+  group: two_members
+  user: radperson
 
 group_2_user_2:
-  id: 3
-  group_id: 2
-  user_id: 2
+  group: two_members
+  user: cooluserguy
 
 # Group 3 - Owner: user_id 2, Admin: user_id 3, Manage_Invites: user_id 3, Create_Proposals: user_id 3, No Role: user_id 4
 group_3_user_2:
-  id: 4
-  group_id: 3
-  user_id: 2
+  group: three_members
+  user: cooluserguy
 
 group_3_user_3:
-  id: 5
-  group_id: 3
-  user_id: 3
+  group: three_members
+  user: radperson
 
 group_3_user_4:
-  id: 6
-  group_id: 3
-  user_id: 4
+  group: three_members
+  user: groupsmemberuser
 
 # Group 4 - Owner: user_id 4, Admin: user_id 3, No Role: user_id 2
 group_4_user_4:
-  id: 7
-  group_id: 4
-  user_id: 4
+  group: three_members_0_proposals
+  user: groupsmemberuser
 
 group_4_user_3:
-  id: 8
-  group_id: 4
-  user_id: 3
+  group: three_members_0_proposals
+  user: radperson
 
 group_4_user_2:
-  id: 9
-  group_id: 4
-  user_id: 2
+  group: three_members_0_proposals
+  user: cooluserguy

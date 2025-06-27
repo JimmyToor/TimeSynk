@@ -66,7 +66,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "should not update email if email is already verified by another user" do
-    user = users(:three)
+    user = users(:radperson)
     user.update! verified: false
 
     assert_raises(ActiveRecord::RecordInvalid) do
@@ -75,8 +75,8 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "should clear identical email from other users on verification" do
-    user = users(:three)
-    other_user = users(:four)
+    user = users(:radperson)
+    other_user = users(:groupsmemberuser)
 
     user.update!(email: "newemail@test.com", verified: false)
     other_user.update!(email: "newemail@test.com", verified: false)
@@ -90,7 +90,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "membership_for_group returns correct membership" do
-    user = users(:two)
+    user = users(:cooluserguy)
     group = groups(:two_members)
     membership = user.get_membership_for_group(group)
     assert_equal group, membership.group
@@ -98,7 +98,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "get_vote_for_proposal returns user's vote" do
-    user = users(:two)
+    user = users(:cooluserguy)
     vote = proposal_votes(:proposal_2_user_2_yes)
     proposal = vote.game_proposal
     assert_equal vote, user.get_vote_for_proposal(proposal)
@@ -121,18 +121,8 @@ class UserTest < ActiveSupport::TestCase
     assert_equal user.user_availability.availability, user.nearest_proposal_availability(proposal)
   end
 
-  test "roles_for_resource returns roles for given resource" do
-    user = users(:admin)
-    resource = game_proposals(:group_1_game_1)
-    role1 = roles(:game_proposal_1_owner) # user already has this role
-    role2 = roles(:game_proposal_1_admin)
-    user.roles << role2
-    assert_includes user.roles_for_resource(resource), role1
-    assert_includes user.roles_for_resource(resource), role2
-  end
-
-  test "roles_for_game_proposal returns roles for given game proposal" do
-    user = users(:two)
+  test "roles_for_resource returns roles for given game proposal" do
+    user = users(:cooluserguy)
     proposal = game_proposals(:group_2_game_2)
     role1 = roles(:game_proposal_2_owner) # user already has this role
     role2 = roles(:game_proposal_2_admin)
@@ -140,21 +130,21 @@ class UserTest < ActiveSupport::TestCase
     assert_equal [role1, role2], user.roles_for_resource(proposal).to_a
   end
 
-  test "roles_for_game_session returns roles for given game session" do
+  test "roles_for_resource returns roles for given game session" do
     user = users(:admin)
     game_session = game_sessions(:proposal_1_session_1)
     role = roles(:game_session_1_owner)
     assert_includes user.roles_for_resource(game_session), role
   end
 
-  test "supersedes_user_in_game_proposal returns true if user supersedes role user" do
+  test "supersedes_user_in_resource returns true if user supersedes role user" do
     user = users(:admin)
-    role_user = users(:two)
+    role_user = users(:cooluserguy)
     game_proposal = game_proposals(:group_1_game_1)
     assert user.supersedes_user_in_resource?(role_user, game_proposal)
   end
 
-  test "highest_role_for_game_proposal returns highest role for game proposal" do
+  test "most_permissive_role_for_resource returns highest role for game proposal" do
     user = users(:admin)
     game_proposal = game_proposals(:group_1_game_1)
     role = roles(:admin_1)
@@ -163,8 +153,8 @@ class UserTest < ActiveSupport::TestCase
     assert_equal expected, user.most_permissive_role_for_resource(game_proposal)
   end
 
-  test "highest_cascading_role_for_game_proposal returns superseding group role" do
-    user = users(:three)
+  test "most_permissive_cascading_role_for_resource returns superseding group role" do
+    user = users(:radperson)
     game_proposal = game_proposals(:group_3_game_1)
     role = roles(:game_proposal_2_admin)
     expected = roles(:admin_3)
@@ -172,23 +162,23 @@ class UserTest < ActiveSupport::TestCase
     assert_equal expected, user.most_permissive_cascading_role_for_resource(game_proposal)
   end
 
-  test "supersedes_user_in_group returns true if user supersedes role user in group" do
-    user = users(:two) # already has owner role
-    role_user = users(:three)
+  test "supersedes_user_in_resource returns true if user supersedes role user in group" do
+    user = users(:cooluserguy) # already has owner role
+    role_user = users(:radperson)
     group = groups(:two_members)
     role_user.roles << roles(:admin_2)
     assert user.supersedes_user_in_resource?(role_user, group)
   end
 
-  test "supersedes_user_in_group returns false if user does not supersede role user in group" do
-    user = users(:three)
-    role_user = users(:two) # already has owner role
+  test "supersedes_user_in_resource returns false if user does not supersede role user in group" do
+    user = users(:radperson)
+    role_user = users(:cooluserguy) # already has owner role
     group = groups(:two_members)
     assert_not user.supersedes_user_in_resource?(role_user, group)
   end
 
   test "most_permissive_role_for_resource returns most permissive role for resource" do
-    user = users(:two) # already has owner role
+    user = users(:cooluserguy) # already has owner role
     resource = game_proposals(:group_2_game_2)
     user.roles << roles(:admin_1)
     expected = roles(:game_proposal_2_owner)

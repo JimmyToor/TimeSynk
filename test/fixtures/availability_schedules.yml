@@ -1,16 +1,13 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 availability_1_schedule_1:
-  id: 1
-  availability_id: 1
-  schedule_id: 1
+  availability: user_1_default_availability
+  schedule: user_1_default
 
 availability_1_schedule_2:
-  id: 2
-  availability_id: 1
-  schedule_id: 2
+  availability: user_1_default_availability
+  schedule: user_1_daily_90_minutes
 
 availability_2_schedule_3:
-  id: 3
-  availability_id: 2
-  schedule_id: 3
+  availability: user_2_default_availability
+  schedule: user_2_default

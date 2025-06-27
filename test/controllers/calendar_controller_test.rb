@@ -2,7 +2,7 @@ require "test_helper"
 
 class CalendarControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @user = users(:two)
+    @user = users(:cooluserguy)
     sign_in_as(@user)
   end
 

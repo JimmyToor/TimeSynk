@@ -5,7 +5,7 @@ class GameSessionsControllerTest < ActionDispatch::IntegrationTest
     @game_session = game_sessions(:proposal_2_session_1)
     @game_proposal = @game_session.game_proposal
     @group = @game_proposal.group
-    @user = users(:three)
+    @user = users(:radperson)
     sign_in_as(@user)
   end
 

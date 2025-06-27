@@ -1,21 +1,17 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 user_1:
-  id: 1
-  availability_id: 1
-  user_id: 1
+  availability: user_1_default_availability
+  user: admin
 
 user_2:
-  id: 2
-  availability_id: 2
-  user_id: 2
+  availability: user_2_default_availability
+  user: cooluserguy
 
 user_3:
-  id: 3
-  availability_id: 5
-  user_id: 3
+  availability: user_3_default_availability
+  user: radperson
 
 user_4:
-  id: 4
-  availability_id: 6
-  user_id: 4
+  availability: user_4_default_availability
+  user: groupsmemberuser

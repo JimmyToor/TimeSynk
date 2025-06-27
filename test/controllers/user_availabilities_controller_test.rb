@@ -3,7 +3,7 @@ require "test_helper"
 class UserAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user_availability = user_availabilities(:user_2)
-    @user = users(:two)
+    @user = users(:cooluserguy)
     sign_in_as(@user)
   end
 

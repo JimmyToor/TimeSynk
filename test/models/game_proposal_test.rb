@@ -29,7 +29,7 @@ class GameProposalTest < ActiveSupport::TestCase
     session3 = game_sessions(:proposal_3_session_3)
 
     # Session 1 from fixtures (proposal_3_session_1) should be excluded by the range
-    session_owner = users(:three)
+    session_owner = users(:radperson)
 
     # Expected structure for session2 fixture
     valid_calendar_schedule2 = {
@@ -69,21 +69,21 @@ class GameProposalTest < ActiveSupport::TestCase
 
   test "user_voted? returns true if the user has voted" do
     game_proposal = game_proposals(:group_2_game_2)
-    voted_user = users(:two) # User 'two' has voted in fixtures
+    voted_user = users(:cooluserguy) # User 'two' has voted in fixtures
 
     assert game_proposal.user_voted?(voted_user), "Should return true for user who has voted"
   end
 
   test "user_voted? returns false if the user has not voted" do
     game_proposal = game_proposals(:group_1_game_1)
-    non_voting_user = users(:two) # User 'two' has not voted on this proposal
+    non_voting_user = users(:cooluserguy) # User 'two' has not voted on this proposal
 
     assert_not game_proposal.user_voted?(non_voting_user), "Should return false for user who has not voted"
   end
 
   test "user_voted_yes_or_no? returns true if the user has voted yes or no" do
     game_proposal = game_proposals(:group_3_game_1)
-    undecided_user = users(:two) # User with initially undecided vote
+    undecided_user = users(:cooluserguy) # User with initially undecided vote
 
     # Use existing undecided vote from fixtures
     vote = proposal_votes(:proposal_3_user_2_undecided)
@@ -110,14 +110,14 @@ class GameProposalTest < ActiveSupport::TestCase
 
   test "user_voted_yes? returns true if the user has voted yes" do
     game_proposal = game_proposals(:group_2_game_2)
-    yes_vote_user = users(:two) # User 'two' has a yes vote in fixtures
+    yes_vote_user = users(:cooluserguy) # User 'two' has a yes vote in fixtures
 
     assert game_proposal.user_voted_yes?(yes_vote_user), "Should return true for user with yes vote"
   end
 
   test "user_voted_yes? returns false if the user has not voted yes" do
     game_proposal = game_proposals(:group_2_game_2)
-    no_vote_user = users(:three) # User 'three' has a no vote in fixtures
+    no_vote_user = users(:radperson) # User 'three' has a no vote in fixtures
     no_vote_record_user = users(:admin) # User 'admin' has no vote record in fixtures
 
     assert_not game_proposal.user_voted_yes?(no_vote_user), "Should be false for user with no vote"
@@ -126,14 +126,14 @@ class GameProposalTest < ActiveSupport::TestCase
 
   test "user_voted_no? returns true if the user has voted no" do
     game_proposal = game_proposals(:group_2_game_2)
-    no_vote_user = users(:three) # User 'three' has a no vote in fixtures
+    no_vote_user = users(:radperson) # User 'three' has a no vote in fixtures
 
     assert game_proposal.user_voted_no?(no_vote_user), "Should return true for user with no vote"
   end
 
   test "user_voted_no? returns false if the user has not voted no" do
     game_proposal = game_proposals(:group_2_game_2)
-    yes_vote_user = users(:two) # User 'two' has a yes vote in fixtures
+    yes_vote_user = users(:cooluserguy) # User 'two' has a yes vote in fixtures
     no_vote_record_user = users(:admin) # User 'admin' has no vote record in fixtures
 
     assert_not game_proposal.user_voted_no?(yes_vote_user), "Should be false for user with yes vote"
@@ -145,7 +145,6 @@ class GameProposalTest < ActiveSupport::TestCase
     vote_to_change = proposal_votes(:proposal_2_user_3_no) # User 'three' has a no vote in fixtures
 
     # Initial state from fixtures: user 2 voted yes, user 3 voted no
-
     vote_to_change.update!(yes_vote: true)
 
     game_proposal.update_vote_counts!
@@ -174,7 +173,7 @@ class GameProposalTest < ActiveSupport::TestCase
 
   test "user_get_or_build_vote returns the user's vote if it exists" do
     game_proposal = game_proposals(:group_2_game_2)
-    user_with_vote = users(:two) # User 'two' has a vote in fixtures
+    user_with_vote = users(:cooluserguy) # User 'two' has a vote in fixtures
     expected_vote = proposal_votes(:proposal_2_user_2_yes)
 
     assert_equal expected_vote, game_proposal.user_get_or_build_vote(user_with_vote),

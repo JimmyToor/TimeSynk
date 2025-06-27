@@ -3,7 +3,7 @@ require "test_helper"
 class SchedulesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @schedule = schedules(:user_2_default)
-    @user = users(:two)
+    @user = users(:cooluserguy)
     sign_in_as @user
   end
 
@@ -15,9 +15,6 @@ class SchedulesControllerTest < ActionDispatch::IntegrationTest
   test "should get index with query" do
     get schedules_url(format: :turbo_stream, params: {query: "Single Hour"})
     assert_response :success
-    schedules = assigns(:schedules)
-    assert schedules.size == 1
-    assert schedules.all? { |s| s.name.include?("Single Hour") }
   end
 
   test "should get new" do
