@@ -52,8 +52,8 @@ export default class extends Controller {
         );
       })
       .catch((error) => {
-        alert("There was an error while switching games: " + error);
-        console.error("There was an error switching games: ", error);
+        this.#handleError(error);
+
         this.stopBusy();
 
         this.element.dispatchEvent(
@@ -63,6 +63,29 @@ export default class extends Controller {
           }),
         );
       });
+  }
+
+  /**
+   * Outputs error details as appropriate for the current environment.
+   * @param errorObj {JsonRequestError} - The error object containing details about the failure.
+   * @param explanation {string} - A message explaining the error context.
+   * @param solution {string} - A message suggesting a solution or next steps.
+   */
+  #handleError(errorObj,
+               explanation = "There was an error while switching games! Error: ",
+               solution = "\nPlease refresh and try again.") {
+    alert(
+      explanation +
+      errorObj.message +
+      solution,
+    );
+
+    if (process.env.NODE_ENV !== "production") {
+      console.error(
+        explanation,
+        errorObj,
+      );
+    }
   }
 
   updateGameInfo(data) {
