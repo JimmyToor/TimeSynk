@@ -7,13 +7,11 @@ export default class CalendarService {
   /**
    * Constructs a new CalendarService instance.
    * @param {HTMLElement} calendarElement - The DOM element to render the calendar in.
-   * @param {Boolean} disambiguate - Prepend group information to calendar titles.
    * @param {Object} options - Configuration options for the calendar.
    */
-  constructor(calendarElement, disambiguate, options) {
+  constructor(calendarElement, options) {
     this.fullCalendarObj = this.#createFullCalendar(
       calendarElement,
-      disambiguate,
       options,
     );
     this.allCalendars = new Map(); // <calendarId, calendar>
@@ -26,26 +24,18 @@ export default class CalendarService {
   /**
    * Creates a FullCalendar instance with custom options.
    * @param {HTMLElement} calendarEl - The DOM element to render the calendar in.
-   * @param {Boolean} disambiguate - Prepend group information to calendar titles.
    * @param {Object} optionsOverrides - Additional options to override defaults.
    * @returns {Calendar} A FullCalendar instance.
    */
-  #createFullCalendar(calendarEl, disambiguate = false, optionsOverrides = {}) {
+  #createFullCalendar(calendarEl, optionsOverrides = {}) {
     const options = {
       eventSourceSuccess: (retrievedCalendars, response) => {
-        return this.#processCalendars(retrievedCalendars, disambiguate); // Pass disambiguate here
+        return this.#processCalendars(retrievedCalendars);
       },
-      eventSourceFailure: function (errorObj) {
+      eventSourceFailure:(errorObj)=> {
         if (!(errorObj instanceof JsonRequestError)) return;
 
-        console.error(
-          "There was an error while fetching the calendar: ",
-          errorObj,
-        );
-        alert(
-          "There was an error while fetching the calendar! Error: " +
-            errorObj.message,
-        );
+        this.#handleError(errorObj);
       },
     };
 
@@ -56,19 +46,36 @@ export default class CalendarService {
   }
 
   /**
+   * Outputs error details as appropriate for the current environment.
+   * @param errorObj {JsonRequestError} - The error object containing details about the failure.
+   * @param explanation {string} - A message explaining the error context.
+   * @param solution {string} - A message suggesting a solution or next steps.
+   */
+  #handleError(errorObj,
+               explanation = "There was an error while fetching the calendar! Error: ",
+               solution = "\nPlease refresh and try again.") {
+    alert(
+      explanation +
+      errorObj.message +
+      solution,
+    );
+
+    if (process.env.NODE_ENV !== "production") {
+      console.error(
+        explanation,
+        errorObj,
+      );
+    }
+  }
+
+  /**
    * Processes retrieved calendars and transforms them into FullCalendar events.
    * @param {Array} retrievedCalendars - Array of calendar objects.
    * @returns {Array} An array of FullCalendar event objects.
    */
-  #processCalendars(retrievedCalendars, disambiguate = false) {
+  #processCalendars(retrievedCalendars) {
     let events = [];
     this.resetData();
-
-    if (disambiguate)
-      retrievedCalendars = this.#disambiguateCalendars(
-        retrievedCalendars,
-        "game",
-      );
 
     retrievedCalendars.forEach((calendar) => {
       this.#processCalendar(calendar, events);
@@ -77,23 +84,6 @@ export default class CalendarService {
     return events;
   }
 
-  /**
-   * Disambiguate calendars by appending group information to their titles.
-   * Assumes calendar schedules have a group property.
-   *
-   * @param {Array} calendars - Array of calendar objects to process.
-   * @param {string} type - The type of calendars to disambiguate.
-   * @returns {Array} The updated array of calendars.
-   */
-  #disambiguateCalendars(calendars, type) {
-    calendars.forEach((calendar) => {
-      if (calendar.type !== type || calendar.schedules.length === 0) return;
-
-      // Append group to title for disambiguation
-      calendar.title = `${calendar.schedules[0].group} - ${calendar.name}`;
-    });
-    return calendars;
-  }
 
   /**
    * Processes a single calendar and updates the events array.

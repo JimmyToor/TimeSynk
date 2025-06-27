@@ -25,6 +25,7 @@
   <div data-controller="calendar"
        data-calendar-interactive-value="true"
        data-calendar-dialog-outlet=".dialog"
+       data-calendar-disambiguate-value=true
        data-calendar-flatpickr-outlet=".flatpickr"
        <% if @group.present? %>
         data-calendar-group-id="<%= @group.id %>"

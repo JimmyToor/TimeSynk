@@ -48,7 +48,7 @@ export default class extends Controller {
     this.debouncedRefreshCallback = this.debounce(this.refreshCallback, 300);
     this.eventFrameLoadCallback = null;
     this.dateFrameLoadCallback = null;
-    this.frameErrorHandler = this.handleFrameError.bind(this);
+    this.frameMissingHandler = this.#handleFrameMissing.bind(this);
   }
 
   connect() {
@@ -87,7 +87,6 @@ export default class extends Controller {
 
     this.calendarService = new CalendarService(
       calendarEl,
-      this.disambiguateValue,
       {
         plugins: [
           rrulePlugin,
@@ -130,7 +129,7 @@ export default class extends Controller {
 
     document.removeEventListener("turbo:submit-end", this.eventRefreshCallback);
 
-    document.removeEventListener("turbo:frame-error", this.frameErrorHandler);
+    document.removeEventListener("turbo:frame-error", this.frameMissingHandler);
 
     if (this.eventFrameLoadCallback) {
       document.removeEventListener(
@@ -151,7 +150,7 @@ export default class extends Controller {
       "turbo:before-stream-render",
       this.eventRefreshCallback,
     );
-    document.addEventListener("turbo:frame-error", this.frameErrorHandler);
+    document.addEventListener("turbo:frame-missing", this.frameMissingHandler);
 
     document.addEventListener("turbo:submit-end", this.eventRefreshCallback);
   }
@@ -259,6 +258,25 @@ export default class extends Controller {
       "aria-label",
       `View ${info.event.title} - Starts at ${startTime} on ${startDate} - Ends at ${endTime} on ${endDate}`,
     );
+    if (this.disambiguateValue && info.event.extendedProps.group) {
+      const eventFrame = info.el.querySelector(".fc-event-main-frame");
+
+      if (!eventFrame && process.env.NODE_ENV !== "production") {
+        console.warn(
+          "Event frame not found for disambiguation. Ensure the calendar is set up correctly.",
+        );
+        return;
+      }
+
+      this.disambiguateEvent(eventFrame, info.event.extendedProps.group);
+    }
+  }
+
+  disambiguateEvent(containerEl, textContent) {
+    const groupNode = document.createElement("div");
+    groupNode.classList.add("fc-event-group");
+    groupNode.textContent = textContent
+    containerEl.appendChild(groupNode)
   }
 
   onSubmitSuccess(event) {
@@ -309,23 +327,10 @@ export default class extends Controller {
   }
 
   /**
-   * Handles HTML response errors.
+   * Handles missing turbo frame errors.
    * @param {Event} event - The event object.
    */
-  handleError(event) {
-    const frame = event.target;
-    const errorContainer = frame.querySelector("[data-status-code]");
-    if (errorContainer) {
-      this.hideLoading();
-      this.manualRefresh();
-    }
-  }
-
-  /**
-   * Handles errors when loading a turbo frame.
-   * @param {Event} event - The event object.
-   */
-  handleFrameError(event) {
+  #handleFrameMissing(event) {
     if (
       event.target.id !== this.frameIdValue ||
       !event.detail ||
@@ -334,6 +339,17 @@ export default class extends Controller {
       return;
     }
 
+    event.preventDefault();
+
+    const explanation = "Oops! That game session may have been deleted."
+    alert(explanation);
+    if (process.env.NODE_ENV !== "production") {
+      console.error(
+        explanation,
+        "Response from server: ",
+        event.detail.response,
+      );
+    }
     this.hideLoading();
     this.manualRefresh();
   }
@@ -724,7 +740,7 @@ export default class extends Controller {
   onEventFrameLoad(frameId, event) {
     if (event.target.id === frameId) {
       this.hideLoading();
-      this.handleError(event);
+
       document.removeEventListener(
         "turbo:frame-load",
         this.eventFrameLoadCallback,
