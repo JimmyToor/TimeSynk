@@ -31,7 +31,9 @@
       <%= render "shared/popover_stimulus",
                  id: "popover_game_session_attendance_#{game_session_attendance.id}",
                  extra_classes: "top-7 left-8 -translate-x-1/2 w-max" do %>
-        <span class="sr-only"><%= game_session_attendance.user.username %>'s vote for <%= game_session_attendance.game_name %> in <%= game_session_attendance.group_name %></span>
+        <span class="sr-only">
+          <%= game_session_attendance.user.username %>'s vote for <%= game_session_attendance.game_name %> in <%= game_session_attendance.group_name %>
+        </span>
         <div class="pb-3">
           <div class="bg-gray-100 dark:bg-gray-700 border-b-2 rounded-t-lg border-gray-400 dark:border-gray-600 text-center">
             <span class="font-bold text-primary-600" aria-hidden="true">
@@ -58,7 +60,9 @@
     </div>
 
     <%= render "shared/popover_top_layer", id: dialog_popover_id, extra_classes: "p-4" do %>
-      <span class="sr-only"><%= game_session_attendance.user.username %>'s roles for <%= game_session_attendance.game_name %> in <%= game_session_attendance.group_name %></span>
+      <span class="sr-only">
+        <%= game_session_attendance.user.username %>'s roles for <%= game_session_attendance.game_name %> in <%= game_session_attendance.group_name %>
+      </span>
       <%= turbo_frame_tag frame_id,
                           role: "presentation",
                           src: game_session_permission_set_path(user_id: game_session_attendance.user.id, game_session_id: game_session_attendance.game_session.id),

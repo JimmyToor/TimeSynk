@@ -1,0 +1,9 @@
+<%= turbo_stream.replace(dom_id(@game_session_attendance, :form),
+                         partial: "game_session_attendances/form",
+                         locals: {game_session: nil,
+                                  game_session_attendance: @game_session_attendance}) %>
+
+<%= turbo_stream_toast(:error,
+                       I18n.t("game_session_attendance.update.error"),
+                       "game_session_attendance_#{@game_session_attendance.id}",
+                       list_items: @game_session_attendance.errors.full_messages) %>

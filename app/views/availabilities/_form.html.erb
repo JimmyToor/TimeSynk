@@ -16,7 +16,7 @@
           <div class="relative bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
             <%= render "schedules/table/schedule_table_form_header", availability: availability %>
             <div class="relative">
-              <%= turbo_frame_tag "schedule_table_form",
+              <%= turbo_frame_tag "schedule_table",
                                   src: schedules_path(availability_id: availability.id,
                                                       separate_included: true,
                                                       format: :turbo_stream),
@@ -24,8 +24,9 @@
                                          availability_id: availability.id,
                                          search_target:"frame",
                                          turbo_prefetch:"false" } do %>
-              Loading...
+                <div class="h-[50vh] w-full"></div>
               <% end %>
+              <%= render "shared/spinner_absolute", start_hidden: true %>
             </div>
           </div>
         </div>

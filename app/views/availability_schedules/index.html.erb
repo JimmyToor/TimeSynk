@@ -8,7 +8,7 @@
          data-search-search-complete-message-value="<%= t('search.complete_message') %>">
       <%= render "schedules/table/schedule_table_form_header", availability: availability  %>
       <div class="relative">
-        <%= turbo_frame_tag "schedule_table_form",
+        <%= turbo_frame_tag "schedule_table",
                             src: schedules_path(availability_id: availability.id,
                                                 separate_included: true,
                                                 format: :turbo_stream) do %>

@@ -1,5 +1,5 @@
-<% if @included_schedules.present? %>
-  <%= turbo_stream.update("schedule_table_form",
+<% if params[:separate_included].present? %>
+  <%= turbo_stream.update("schedule_table",
                           partial:"schedules/table/schedule_table_form",
                           locals: {availability:@availability, schedules:@schedules, included_schedules: @included_schedules}) %>
 <% else %>

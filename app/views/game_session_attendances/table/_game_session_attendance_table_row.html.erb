@@ -1,13 +1,14 @@
 <%# locals: (game_session_attendance:) %>
 <tr class="text-center hover:bg-gray-100 dark:hover:bg-gray-700 h-fit">
-  <th scope="row" class="sticky left-0 z-10 pl-3 py-4 pr-3 min-w-32 font-medium text-gray-900 dark:text-white
-    w-40">
+  <th scope="row" class="sticky left-0 z-10 pl-3 py-4 pr-3 min-w-32 font-medium text-gray-900 dark:text-white w-40">
     <div data-controller="anchor-position"
          data-anchor-position-position-style-value="fixed"
          data-action="anchor-position#updatePosition"
          class="flex items-center relative translate-z-0">
       <div class="space-x-2">
-        <button popovertarget="table_popover_permission_set_user_<%= game_session_attendance.user.id %>_game_session_<%= game_session_attendance.game_session.id %>"
+        <% dialog_popover_id = "table_popover_permission_set_user_#{game_session_attendance.user.id}_game_session_#{game_session_attendance.game_session.id}_#{SecureRandom.alphanumeric(3)}" %>
+
+        <button popovertarget="<%= dialog_popover_id %>"
                 data-action="click->anchor-position#updatePosition"
                 aria-label="View permissions for <%= game_session_attendance.user.username %>"
                 aria-haspopup="true"
@@ -16,10 +17,11 @@
         </button>
         <span class="ml-1"><%= game_session_attendance.user.username %></span>
       </div>
-      <%= render "shared/popover_top_layer", extra_classes: "p-4",
-                 id:                                        "table_popover_permission_set_user_#{game_session_attendance.user.id}_game_session_#{game_session_attendance.game_session.id}" do %>
-        <%= turbo_frame_tag derive_permission_set_frame_id(user: game_session_attendance.user, game_session: game_session_attendance.game_session),
-                            src: game_session_permission_set_path(user_id: game_session_attendance.user.id, game_session_id: game_session_attendance.game_session.id),
+      <%= render "shared/popover_top_layer", id: dialog_popover_id, extra_classes: "p-4" do %>
+        <%= turbo_frame_tag derive_permission_set_frame_id(user: game_session_attendance.user,
+                                                           game_session: game_session_attendance.game_session),
+                            src: game_session_permission_set_path(user_id: game_session_attendance.user.id,
+                                                                  game_session_id: game_session_attendance.game_session.id),
                             data: { action: "turbo:frame-load->anchor-position#triggerUpdate"},
                             role: "presentation",
                             loading:"lazy" do %>

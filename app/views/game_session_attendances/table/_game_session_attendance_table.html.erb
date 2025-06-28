@@ -14,7 +14,8 @@
       </thead>
       <tbody class="divide-y-2">
         <% game_session_attendances.each do |game_session_attendance| %>
-          <%= render partial:"game_session_attendances/table/game_session_attendance_table_row", locals: {game_session_attendance: game_session_attendance} %>
+          <%= render partial:"game_session_attendances/table/game_session_attendance_table_row",
+                     locals: {game_session_attendance: game_session_attendance} %>
         <% end %>
       </tbody>
     </table>

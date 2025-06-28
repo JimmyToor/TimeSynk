@@ -4,7 +4,7 @@
     <%= form_with(id: "search-form",
                   url:game_proposal_proposal_votes_path(game_proposal_id: game_proposal.id, format: :turbo_stream),
                   method: :get, class:"flex items-center",
-                  data: {search_target: "form"}) do |form| %>
+                  data: {search_target: "form", turbo_frame: "proposal_vote_index" }) do |form| %>
       <label for="query" class="sr-only">Search</label>
       <div class="relative w-full">
         <div class="pointer-events-none absolute inset-y-0 flex items-center start-0 ps-3">
@@ -22,7 +22,7 @@
                                dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500
                                dark:focus:border-primary-500",
                               placeholder:"Search Users..." %>
-          <%= render "shared/buttons/search_submit_button", form: form, turbo_frame_id: "proposal_vote_index" %>
+          <%= render "shared/buttons/search_submit_button", form: form %>
           <%= render "shared/buttons/search_reset_button", form: form, extra_classes: "end-12" %>
         </div>
       </div>

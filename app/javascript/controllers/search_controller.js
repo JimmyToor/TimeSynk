@@ -15,6 +15,7 @@ export default class extends Controller {
   };
 
   initialize() {
+    this.beforeFetchRequestListener = this.beforeFetchRequest.bind(this);
     this.searchBusyListener = this.searchBusyHandler.bind(this);
     this.searchCompleteListener = this.searchCompleteHandler.bind(this);
   }
@@ -26,6 +27,13 @@ export default class extends Controller {
 
   disconnect() {
     this.removeSearchListeners();
+  }
+
+  beforeFetchRequest(event) {
+    const frameId = this.formTarget.dataset.turboFrame;
+    if (frameId) {
+      event.detail.fetchOptions.headers["Turbo-Frame"] = frameId;
+    }
   }
 
   searchBusyHandler(event) {
@@ -41,6 +49,10 @@ export default class extends Controller {
   }
 
   addSearchListeners() {
+    this.formTarget.addEventListener(
+      "turbo:before-fetch-request",
+      this.beforeFetchRequestListener,
+    );
     this.element.addEventListener(
       "turbo:submit-start",
       this.searchBusyListener,
@@ -52,6 +64,10 @@ export default class extends Controller {
   }
 
   removeSearchListeners() {
+    this.formTarget.removeEventListener(
+      "turbo:before-fetch-request",
+      this.beforeFetchRequestListener,
+    );
     this.element.removeEventListener(
       "turbo:submit-start",
       this.searchBusyListener,

@@ -17,7 +17,7 @@
         <span class="ml-1"><%= proposal_vote.user.username %></span>
       </div>
       <%= render "shared/popover_top_layer", extra_classes: "p-4",
-                 id:                                        "table_popover_permission_set_user_#{proposal_vote.user.id}_game_proposal_#{proposal_vote.game_proposal.id}" do %>
+                 id: "table_popover_permission_set_user_#{proposal_vote.user.id}_game_proposal_#{proposal_vote.game_proposal.id}" do %>
         <%= turbo_frame_tag derive_permission_set_frame_id(user: proposal_vote.user, game_proposal: proposal_vote.game_proposal),
                             src: game_proposal_permission_set_path(user_id: proposal_vote.user.id, game_proposal_id: proposal_vote.game_proposal.id),
                             data: { action: "turbo:frame-load->anchor-position#triggerUpdate"},

@@ -1,10 +1,10 @@
-<%# locals: (game_session:) %>
+<%# locals: (game_session:, frame_id:) %>
 <div class="flex flex-col items-center justify-between p-4 md:flex-row space-y-3 md:space-y-0 md:space-x-4">
   <div class="w-full">
     <%= form_with(id: "search-form",
                   url:game_session_game_session_attendances_path(game_session_id: game_session.id, format: :turbo_stream),
                   method: :get, class:"flex items-center",
-                  data: {search_target: "form"}) do |form| %>
+                  data: {search_target: "form", turbo_frame: frame_id}) do |form| %>
       <label for="query" class="sr-only">Search</label>
       <div class="relative w-full">
         <div class="pointer-events-none absolute inset-y-0 flex items-center start-0 ps-3">
@@ -20,7 +20,7 @@
                                dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500
                                dark:focus:border-primary-500",
                               placeholder:"Search Users..." %>
-          <%= render "shared/buttons/search_submit_button", form: form, turbo_frame_id: "game_session_attendance_index" %>
+          <%= render "shared/buttons/search_submit_button", form: form %>
           <%= render "shared/buttons/search_reset_button", form: form, extra_classes: "end-12" %>
         </div>
       </div>

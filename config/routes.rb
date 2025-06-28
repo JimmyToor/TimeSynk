@@ -24,7 +24,7 @@ Rails.application.routes.draw do
       resources :group_availabilities
       resources :game_proposals do
         resources :game_sessions do
-          resources :game_session_attendances
+          resources :game_session_attendances, only: [:index, :edit, :update]
         end
         resources :proposal_availabilities
         resources :proposal_votes
