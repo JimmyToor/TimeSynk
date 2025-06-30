@@ -2,8 +2,6 @@ class CalendarsController < ApplicationController
   skip_after_action :verify_policy_scoped
   skip_after_action :verify_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
-  # TODO: Add authorizations and scopes
-  # TODO: Add caching
 
   def show
     @calendars = CalendarCreationService.call(calendar_params, Current.user)

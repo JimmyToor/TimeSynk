@@ -19,6 +19,10 @@ export default class extends Controller {
   static outlets = ["rails-nested-form", "calendar", "dialog"];
 
   initialize() {
+    this.debouncedCalendarUpdate = this.debounce(
+      this.updateCalendar.bind(this),
+      500,
+    );
     this.submitSuccessCallback = this.onSubmitSuccess.bind(this);
   }
 
@@ -121,7 +125,7 @@ export default class extends Controller {
       container.after(idInput);
     }
 
-    this.updateCalendar();
+    this.debouncedCalendarUpdate();
   }
 
   /**
@@ -149,7 +153,7 @@ export default class extends Controller {
     });
     if (checkbox) checkbox.checked = false;
 
-    this.updateCalendar();
+    this.debouncedCalendarUpdate();
   }
 
   makeHollowEvent(attributes) {
@@ -180,6 +184,14 @@ export default class extends Controller {
     });
   }
 
+  debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+  }
+
   // This ensures that the checkboxes are in sync with the saved schedules.
   scheduleToggleTargetConnected(element) {
     const scheduleId = element.dataset.scheduleId;
@@ -193,14 +205,14 @@ export default class extends Controller {
   }
 
   calendarOutletConnected() {
-    this.updateCalendar();
+    this.debouncedCalendarUpdate();
   }
 
-  dialogOutletConnected(dialog, element) {
+  dialogOutletConnected(dialog) {
     dialog.addSubmitSuccessListener(this.submitSuccessCallback);
   }
 
-  dialogOuterDisconnected(dialog, element) {
+  dialogOuterDisconnected(dialog) {
     dialog.removeSubmitSuccessListener(this.submitSuccessCallback);
   }
 }

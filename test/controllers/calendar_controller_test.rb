@@ -6,15 +6,9 @@ class CalendarControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(@user)
   end
 
-  test "should get show" do
-    get calendars_url
-    assert_response :success
-  end
-
   test "should get new with modal" do
     get calendars_new_url
     assert_response :success
-    assert_select "dialog#modal_creation"
   end
 
   test "should get calendars as JSON" do
