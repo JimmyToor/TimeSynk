@@ -7,16 +7,16 @@
             xs:flex-row xs:max-w-xl dark:border-gray-700 dark:bg-gray-800">
     <%= display_game_art_and_name(game: game_session.game,
                                   only_art: true,
-                                  img_classes: "object-cover rounded-lg md:h-auto md:rounded-none mt-4 md:mt-0
-                                      md:rounded-s-lg w-24 h-16 ml-2",
+                                  img_classes: "object-cover rounded-lg xs:h-auto xs:rounded-none mt-4 md:mt-0
+                                      xs:rounded-s-lg w-24 h-16 ml-2 min-w-24",
                                   img_size: GameImageSize::LOGO_MED) %>
 
     <div class="flex flex-col justify-between p-4 leading-normal">
       <div class="flex">
 
-        <h3 class="mb-2 text-lg font-semibold tracking-tight text-gray-900 game-name dark:text-white">
+        <h2 class="mb-2 text-lg font-semibold tracking-tight text-gray-900 game-name dark:text-white">
           <%= game_session.game_name %>
-        </h3>
+        </h2>
 
         <% if policy(game_session).destroy? %>
             <%= render "shared/delete_modal",
@@ -62,8 +62,9 @@
         <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400" role="presentation">
           <%= inline_svg_tag "icons/clock.svg", title: "Duration", aria_hidden: true, class:"h-6" %>
           <div id="game_session_<%= game_session.id %>_details_duration" role="presentation">
-            <span class="sr-only">Session Duration: </span>
-            <%= format_interval(game_session.duration) %>
+            <span id="game_session_duration_<%= game_session.id %>" class="hidden">Session Duration: </span>
+            <time aria-hidden="true"><%= format_interval(game_session.duration) %></time>
+            <time class="sr-only"><%= format_interval_sr(game_session.duration) %></time>
           </div>
         </div>
       </div>

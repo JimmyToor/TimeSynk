@@ -47,6 +47,16 @@ module ApplicationHelper
     parts.join(" ")
   end
 
+  # Formats a time interval into a screen reader friendly string
+  # @param interval [ActiveSupport::Duration] The time interval to format
+  def format_interval_sr(interval)
+    parts = []
+    parts << pluralize(interval.parts[:days], t("time.day")).to_s if interval.parts[:days]
+    parts << pluralize(interval.parts[:hours], t("time.hour")).to_s if interval.parts[:hours]
+    parts << pluralize(interval.parts[:minutes], t("time.minute")).to_s if interval.parts[:minutes]
+    parts.join(" ")
+  end
+
   def input_field_classes
     "bg-tertiary-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg
                               focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700
