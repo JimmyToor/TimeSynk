@@ -1,4 +1,4 @@
-<%# locals: (game_session:, game_proposals: nil) %>
+<%# locals: (game_session:) %>
 <%= render "shared/header_primary",
            text: safe_join(["New ",
                             content_tag(:span, @game_session.game_name, class: "font-bold text-primary-600"),
@@ -8,13 +8,13 @@
 
 <%= modal_wrapper(game_session.game_name) do %>
   <%= content_tag(:div, id:dom_id(game_session, :content)) do %>
-    <%= render "form", game_session: game_session,
-               game_proposal: game_session.game_proposal,
-               initial_game_proposal: game_session.game_proposal,
-               game_proposals: game_proposals %>
+    <%= render "form",
+               game_session: game_session,
+               initial_game_proposal: game_session.game_proposal %>
   <% end %>
 <% end %>
 
 <div>
-  <%= link_to "Back to game sessions", game_sessions_path %>
+  <%= link_to "Back to game proposal", @game_session.game_proposal %>
 </div>
+<% content_for(:page_title, t("game_session.title")) %>

@@ -1,4 +1,4 @@
-<%# locals: (modal_body: "", modal_title: "New", date: Time.current, groups: nil, schedule: nil, game_proposal: nil, game_proposals: nil, initial_game_proposal: nil) %>
+<%# locals: (modal_body: "", modal_title: "New", date: Time.current, groups: nil, schedule: nil, game_proposals: nil, initial_game_proposal: nil) %>
 <%= turbo_frame_tag "modal_frame" do %>
   <dialog id="modal_creation"
           tabindex="-1"
@@ -17,7 +17,7 @@
         </h2>
 
         <!-- Tabs -->
-        <% has_proposal = game_proposal || game_proposals %>
+        <% has_proposal = initial_game_proposal || game_proposals %>
         <div id="modal_tabs">
           <div class="flex border-b border-gray-200 dark:border-gray-700">
             <ul class="-mb-px flex text-center text-sm font-medium" id="default-tab" data-tabs-toggle="#tab_content" role="tablist">
@@ -47,11 +47,13 @@
         <!-- Tab content -->
         <div id="tab_content">
           <% if has_proposal %>
-            <div class="hidden rounded-lg bg-tertiary-50p-4 dark:bg-gray-800" id="game_session_form" role="tabpanel" aria-labelledby="new-game-session-tab">
+            <div id="game_session_form"
+                 class="hidden rounded-lg bg-tertiary-50p-4 dark:bg-gray-800"
+                 role="tabpanel"
+                 aria-labelledby="new-game-session-tab">
               <%= render partial: "game_sessions/form",
-                         locals: { game_proposal: game_proposal || game_proposals&.first,
-                                   initial_game_proposal: initial_game_proposal,
-                                   game_session: GameSession.new(game_proposal: game_proposal || game_proposals&.first, duration: 1.hour, date: date),
+                         locals: { initial_game_proposal: initial_game_proposal || game_proposals&.first,
+                                   game_session: GameSession.new(game_proposal: initial_game_proposal || game_proposals&.first, duration: 1.hour, date: date),
                                    game_proposals: game_proposals || nil,
                                    groups: groups || nil} %>
             </div>

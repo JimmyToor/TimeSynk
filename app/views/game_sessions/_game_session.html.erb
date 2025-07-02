@@ -2,10 +2,9 @@
 <%= turbo_frame_tag dom_id(game_session),
                     role: "presentation",
                     class:"flex" do %>
-  <div data-turbo-frame="modal_frame"
-       role="presentation"
-       class="flex w-full flex-col items-center rounded-lg border bg-white border-gray-200 shadow game-display
-       xs:flex-row xs:max-w-xl dark:border-gray-700 dark:bg-gray-800">
+  <article role="presentation"
+           class="flex w-full flex-col items-center rounded-lg border bg-white border-gray-200 shadow game-display
+            xs:flex-row xs:max-w-xl dark:border-gray-700 dark:bg-gray-800">
     <%= display_game_art_and_name(game: game_session.game,
                                   only_art: true,
                                   img_classes: "object-cover rounded-lg md:h-auto md:rounded-none mt-4 md:mt-0
@@ -86,6 +85,6 @@
         <%= render "game_session_attendances/game_session_attendance_list", game_session: game_session %>
       </div>
     </div>
-  </div>
+  </article>
 <% end %>
 <%= turbo_stream_from(game_session, data: {single_stream_target: "stream"}, 'aria-hidden': true) %>

@@ -11,6 +11,7 @@ class GameSession < ApplicationRecord
   scope :for_current_user_groups, -> { joins(game_proposal: :group).where(groups: {id: Current.user.groups.ids}) }
   scope :for_group, ->(group_id) { joins(game_proposal: :group).where(groups: {id: group_id}) }
   scope :for_game_proposal, ->(game_proposal_id) { where(game_proposal_id: game_proposal_id) }
+  scope :upcoming, -> { where("date >= ?", Time.current.utc) }
 
   validates :duration, presence: true, numericality: {greater_than: 0, allow_nil: true}
   validate :validate_duration_length

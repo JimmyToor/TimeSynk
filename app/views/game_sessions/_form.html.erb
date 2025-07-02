@@ -1,43 +1,48 @@
-<%# locals: (initial_game_proposal:, game_session:, game_proposal:nil, game_proposals: nil, groups:nil) %>
-<%= form_with(model: [game_proposal, game_session], id: dom_id(game_session, :form),
-              data: {controller:"proposal-selection", proposal_selection_target:"form", refresh_calendar_on_submit:""}) do |form| %>
+<%# locals: (game_session:, initial_game_proposal: nil, game_proposals: nil, groups:nil) %>
+<%= form_with(model: [initial_game_proposal, game_session],
+              id: dom_id(game_session, :form),
+              data: {controller:"proposal-selection",
+                     proposal_selection_target:"form",
+                     refresh_calendar_on_submit:"",
+                     turbo: modal_wrapper? ? "true" : "false"}) do |form| %>
   <%= render "shared/notification", id: "game_session_#{game_session.new_record? ? "new" : game_session.id}" %>
 
   <section class="flex w-full flex-col items-center self-center rounded-lg p-4 space-y-2 dark:bg-gray-800">
-      <div class="flex justify-center">
-        <%= display_game_art_and_name(game: game_session.game,
-                                      only_art: true,
-                                      img_classes: "border-4 border-primary-900",
-                                      img_size: GameImageSize::COVER_SMALL) if game_session.game.present? %>
-      </div>
-      <% if !game_proposals.present? || !game_session.new_record? %>
-        <%= hidden_field_tag :single_game_proposal, true %>
-        <%= form.hidden_field :game_proposal_id, value: initial_game_proposal.id, 'aria-label': "Game proposal" %>
-      <% else %>
-        <span data-proposal-selection-target="groupName" class="font-semibold"><%= initial_game_proposal.group.name %></span>
-        <% if groups.present? && groups.length > 1 %>
-          <%= form.grouped_collection_select :game_proposal_id,
-                                           groups.reject { |group| group.game_proposals.empty? },
-                                           :game_proposals,
-                                           :name,
-                                           :id,
-                                           :game_name,
-                                           {selected: initial_game_proposal.id,                                            'aria-label': "Game proposal",
-                                             },
-                                           data: { proposal_selection_target:"collectionSelect" } %>
-        <% else %>
-          <%= form.collection_select :game_proposal_id,
-                               game_proposals,
-                               :id,
-                               :game_name,
-                               {selected: initial_game_proposal.id}, data: { proposal_selection_target:"collectionSelect" } %>
-        <% end %>
-      <% end %>
+    <div class="flex justify-center">
+      <%= display_game_art_and_name(game: game_session.game,
+                                    only_art: true,
+                                    img_classes: "border-4 border-primary-900",
+                                    img_size: GameImageSize::COVER_SMALL) if game_session.game.present? %>
+    </div>
 
-    <%= turbo_frame_tag "game_session_form_fields",
-                        role: "presentation",
-                        data: {proposal_selection_target:"formFrame"},
-                        class:"flex flex-col w-fit space-y-2" do %>
+    <% if !game_session.new_record? || (!game_proposals.present? && !groups.present?) %>
+      <%= form.hidden_field :game_proposal_id, value: game_session.game_proposal.id, 'aria-label': "Game proposal" %>
+    <% else %>
+      <span data-proposal-selection-target="groupName" class="font-semibold"><%= game_session.group_name %></span>
+      <% if groups.present? %>
+        <%= hidden_field_tag :use_groups, true %>
+        <%= form.grouped_collection_select :game_proposal_id,
+                                         groups.reject { |group| group.game_proposals.empty? },
+                                         :game_proposals,
+                                         :name,
+                                         :id,
+                                         :game_name,
+                                         { selected: game_session.game_proposal.id, 'aria-label': "Game proposal" },
+                                         data: { proposal_selection_target:"collectionSelect" } %>
+      <% else %>
+        <%= hidden_field_tag :single_group, initial_game_proposal.id %>
+        <%= form.collection_select :game_proposal_id,
+                             game_proposals,
+                             :id,
+                             :game_name,
+                             {selected: initial_game_proposal.id}, data: { proposal_selection_target:"collectionSelect" } %>
+      <% end %>
+    <% end %>
+
+    <div id="game_session_form_fields"
+         role="presentation"
+         data-proposal-selection-target="formFrame"
+         class="flex flex-col w-fit space-y-2">
       <% if policy(game_session).create? %>
         <div data-controller="flatpickr" class="flatpickr" data-flatpickr-timezone-value="<%= Current.user.timezone %>">
           <%= render "shared/form_label", form: form, field: :date, extra_classes: "block" %>
@@ -84,20 +89,19 @@
           </div>
         </div>
 
-
-          <%= form.submit "Save Game Session",
-                          data: { turbo_submits_with: "Saving...",
-                                  proposal_selection_target:"submitButton" },
-                          class:"text-black mt-2 cursor-pointer focus:outline-none dark:text-white bg-primary-400
-                            hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2
-                            dark:bg-primary-700 dark:hover:bg-primary-600 disabled:opacity-20 disabled:cursor-not-allowed disabled" %>
-          <span class="sr-only"></span>
+        <%= form.submit "Save Game Session",
+                        data: { turbo_submits_with: "Saving...",
+                                proposal_selection_target:"submitButton"},
+                        class:"text-black mt-2 cursor-pointer focus:outline-none dark:text-white bg-primary-400
+                          hover:bg-primary-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2
+                          dark:bg-primary-700 dark:hover:bg-primary-600 disabled:opacity-20 disabled:cursor-not-allowed disabled" %>
+        <span class="sr-only"></span>
       <% else %>
         <div>
           You don't have permission to create game sessions for <%= game_session.game_proposal.game_name %> in <%= game_session.game_proposal.group.name %>.
         </div>
       <% end %>
-    <% end %>
+    </div>
   </section>
 
 <% end %>

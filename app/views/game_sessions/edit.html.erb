@@ -8,18 +8,11 @@
 
 <%= modal_wrapper("Edit #{game_session.group_name} - #{game_session.game_name}") do %>
   <%= content_tag(:div, id:dom_id(game_session, :content)) do %>
-
-    <%= render "form",
-               game_session: game_session,
-               game_proposal: nil,
-               initial_game_proposal: game_session.game_proposal,
-               groups: groups %>
-
+    <%= render "form", game_session: game_session %>
   <% end %>
 <% end %>
-
-<br>
 
 <div>
   <%= render "shared/buttons/secondary_link", path: game_sessions_path, text: "Back to Game Sessions" %>
 </div>
+<% content_for(:page_title, t("game_session.title")) %>
