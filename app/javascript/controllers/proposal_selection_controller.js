@@ -27,6 +27,7 @@ export default class extends Controller {
         detail: { proposalId },
       }),
     );
+
     // Fetch the game info for the selected proposal
     fetch(`/game_proposals/${proposalId}.json`)
       .then((response) => response.json())
@@ -36,8 +37,8 @@ export default class extends Controller {
       })
       .then((data) => fetch(`/games/${data.game_id}.json`))
       .then((response) => response.json())
-      .then((gamedata) => {
-        this.updateGameInfo(gamedata);
+      .then((gameData) => {
+        this.updateGameInfo(gameData);
 
         const url = new URL(this.formTarget.action);
         this.updateForm(url, proposalId);
@@ -71,20 +72,15 @@ export default class extends Controller {
    * @param explanation {string} - A message explaining the error context.
    * @param solution {string} - A message suggesting a solution or next steps.
    */
-  #handleError(errorObj,
-               explanation = "There was an error while switching games! Error: ",
-               solution = "\nPlease refresh and try again.") {
-    alert(
-      explanation +
-      errorObj.message +
-      solution,
-    );
+  #handleError(
+    errorObj,
+    explanation = "There was an error while switching games! Error: ",
+    solution = "\nPlease refresh and try again.",
+  ) {
+    alert(explanation + errorObj.message + solution);
 
     if (process.env.NODE_ENV !== "production") {
-      console.error(
-        explanation,
-        errorObj,
-      );
+      console.error(explanation, errorObj);
     }
   }
 
@@ -93,7 +89,7 @@ export default class extends Controller {
       this.gameNameTarget.innerHTML = `<h3>${data.name}</h3>`;
     }
     if (this.hasGameArtTarget) {
-      // Fetch the rendered HTML for the game art
+      // Fetch the HTML for the game art
       fetch(`/games/${data.id}?${PARAMS}`)
         .then((response) => response.text())
         .then((html) => {
@@ -114,18 +110,6 @@ export default class extends Controller {
       /game_proposals\/\d+/,
       `game_proposals/${proposalId}`,
     );
-
-    // Update the frame proposal ID
-    url.pathname = url.pathname.replace(
-      /game_proposals\/\d+\/game_sessions/,
-      `game_proposals/${proposalId}/game_sessions/new`,
-    );
-
-    if (this.hasDateInputTarget) {
-      url.searchParams.set("game_session[date]", this.dateInputTarget.value);
-    }
-
-    this.formFrameTarget.src = url;
   }
 
   setBusy() {
