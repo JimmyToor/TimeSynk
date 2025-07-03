@@ -38,6 +38,8 @@ class Invite < ApplicationRecord
     end
   end
 
+  # Finds an invite by its token.
+  # @return [Invite, nil] the invite if found, otherwise nil
   def self.with_token(token)
     find_by(invite_token: token)
   end
@@ -53,6 +55,21 @@ class Invite < ApplicationRecord
 
   def self.destroy_expired_invites
     expired.destroy_all
+  end
+
+  # Finds the invite associated with the given token.
+  # @return [Invite] the invite if found, otherwise a new Invite with an appropriate error.
+  def self.from_token(token)
+    invite = Invite.with_token(token)
+
+    if invite.nil?
+      invite = Invite.new(invite_token: token)
+      invite.errors.add(:base, I18n.t("invite.invalid"))
+    elsif invite.expired?
+      invite.errors.add(:base, I18n.t("invite.expired"))
+    end
+
+    invite
   end
 
   private

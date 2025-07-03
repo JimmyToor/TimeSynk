@@ -9,7 +9,7 @@ class GroupMembershipsController < ApplicationController
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
 
-  # GET /group_memberships or /group_memberships.json
+  # GET /group_memberships
   def index
     @group_memberships = params[:query].present? ? @group.group_memberships.search(params[:query]) : @group.group_memberships.sorted_scope
     @pagy, @group_memberships = pagy(@group_memberships, limit: 10)
@@ -17,11 +17,10 @@ class GroupMembershipsController < ApplicationController
     respond_to do |format|
       format.html { render :index, locals: {group_memberships: @group_memberships, group: @group} }
       format.turbo_stream
-      format.json { render json: @group_memberships }
     end
   end
 
-  # GET /group_memberships/1 or /group_memberships/1.json
+  # GET /group_memberships/1
   def show
     respond_to do |format|
       format.html {
@@ -32,29 +31,27 @@ class GroupMembershipsController < ApplicationController
 
   # GET /group_memberships/new
   def new
-    render :new, locals: {invite: @invite}
+    render :new, locals: {invite: @invite}, status: ((@invite.nil? || @invite.errors.any?) ? :unprocessable_entity : :ok)
   end
 
-  # POST /group_memberships or /group_memberships.json
+  # POST /group_memberships
   def create
     @group_membership = InviteAcceptanceService.call(group_membership_params)
 
     respond_to do |format|
       if @group_membership.persisted?
         format.html { redirect_to group_path(@group_membership.group), success: {message: I18n.t("group_membership.create.success", group_name: @group_membership.group.name)} }
-        format.json { render :show, status: :created, location: @group_membership }
       else
         format.html {
-          redirect_to join_group_path, status: :unprocessable_entity,
-            error: {message: I18n.t("group_membership.invite_not_valid"),
-                    options: {list_items: @group_membership.errors.full_messages}}
+          flash.now[:error] = {message: I18n.t("group_membership.invite_not_valid"),
+                               options: {list_items: @group_membership.errors.full_messages}}
+          render :new, status: :unprocessable_entity
         }
-        format.json { render json: @group_membership.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # DELETE /group_memberships/1 or /group_memberships/1.json
+  # DELETE /group_memberships/1
   def destroy
     @group_membership.destroy!
 
@@ -70,7 +67,6 @@ class GroupMembershipsController < ApplicationController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_group_membership
     @group_membership = GroupMembership.find(params[:id])
   end
@@ -82,10 +78,7 @@ class GroupMembershipsController < ApplicationController
 
   def set_invite
     return unless invite_required?
-
     token = extract_token(params)
-    return if token.blank?
-
     handle_invite(token)
   end
 
@@ -93,18 +86,20 @@ class GroupMembershipsController < ApplicationController
     (params[:invite_token] || params.dig(:group_membership, :invite_token))&.sub(%r{.*invite_token=}, "")
   end
 
-  def handle_invite(token)
-    @invite = Invite.with_token(token)
+  def handle_invite(token = "")
+    @invite = Invite.from_token(token)
 
-    if !@invite.present? || @invite.expired?
-      flash[:error] = @invite.nil? ? I18n.t("invite.invalid") : I18n.t("invite.expired")
+    if @invite.errors.any?
+      flash.now[:error] = {message: I18n.t("group_membership.invite_not_valid"),
+                           options: {list_items: @invite.errors.full_messages}}
     end
   end
 
   def set_group
     @group = params[:group_id] ? Group.find(params[:group_id]) : @invite&.group
     unless @group
-      flash[:error] = I18n.t("invite.invalid")
+      flash[:error] = {message: I18n.t("group_membership.invite_not_valid"),
+                       options: {list_items: t("invite.invalid")}}
       redirect_to join_group_path(invite_token: @invite&.token) and return
     end
     params[:group_id] = @group.id if params[:group_membership].present? && params[:group_membership][:group_id].blank?
@@ -123,6 +118,6 @@ class GroupMembershipsController < ApplicationController
   end
 
   def redirect_if_member
-    redirect_to @group if @group.is_user_member?(Current.user)
+    redirect_to @group, notice: {message: t("group_membership.already_member")} if @group.is_user_member?(Current.user)
   end
 end

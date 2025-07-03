@@ -41,7 +41,8 @@ class InviteAcceptanceService < ApplicationService
       @group = Group.find_by(id: @group_id)
       user = User.find_by(id: @user_id)
 
-      return invalid_invite if !@group || !user || (!@invite && !user.has_role?(:site_admin))
+      return invalid_invite unless @group && user && (@invite || user.has_role?(:site_admin))
+      return expired_invite if @invite&.expired?
 
       @group_membership = new_member(user)
 
@@ -63,13 +64,21 @@ class InviteAcceptanceService < ApplicationService
 
   private
 
-  # Creates a GroupMembership instance with an error indicating an invalid invite scenario.
-  # This is used when the group, user, or invite token is not valid (and user is not an admin).
+  # Creates a GroupMembership instance with an error indicating an invalid invite.
   #
   # @return [GroupMembership] The new, unsaved GroupMembership with errors.
   def invalid_invite
     @group_membership = GroupMembership.new(user_id: @user_id, group_id: @group_id)
-    @group_membership.errors.add(:base, I18n.t("group_membership.invite_not_valid"))
+    @group_membership.errors.add(:base, I18n.t("invite.invalid"))
+    @group_membership
+  end
+
+  # Creates a GroupMembership instance with an error indicating an expired invite.
+  #
+  # @return [GroupMembership] The new, unsaved GroupMembership with errors.
+  def expired_invite
+    @group_membership = GroupMembership.new(user_id: @user_id, group_id: @group_id)
+    @group_membership.errors.add(:base, I18n.t("invite.expired"))
     @group_membership
   end
 
