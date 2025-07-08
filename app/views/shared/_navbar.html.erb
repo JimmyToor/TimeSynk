@@ -1,10 +1,10 @@
-<div data-controller="sidebar">
+<header data-controller="sidebar">
   <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
     <div class="px-3 py-3 lg:px-5 lg:pl-3 font-body">
       <div class="flex items-center justify-between">
         <div aria-label="TimeSynk Logo" class="flex items-center justify-start rtl:justify-end">
           <button data-sidebar-target="toggleButton"
-                  data-action="sidebar#toggleSidebar"
+                  data-action="sidebar#debouncedToggleSidebar"
                   aria-controls="logo-sidebar"
                   type="button"
                   class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100
@@ -150,7 +150,7 @@
       </ul>
     </div>
   </aside>
-  <template data-siderbar-target="backdropTemplate">
+  <template data-sidebar-target="backdropTemplate">
     <div class="fixed inset-0 bg-gray-900/50 dark:bg-opacity-80 transition-opacity"></div>
   </template>
-</div>
+</header>

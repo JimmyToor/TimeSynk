@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
-import Calendar_controller from "./calendar_controller";
+import Utility from "../../../lib/util/utility";
 
 // Connects to data-controller="schedule-selection"
 export default class extends Controller {
@@ -19,8 +19,8 @@ export default class extends Controller {
   static outlets = ["rails-nested-form", "calendar", "dialog"];
 
   initialize() {
-    this.debouncedCalendarUpdate = this.debounce(
-      this.updateCalendar.bind(this),
+    this.debouncedCalendarUpdate = Utility.debounceFn(
+      () => this.updateCalendar,
       500,
     );
     this.submitSuccessCallback = this.onSubmitSuccess.bind(this);
@@ -182,14 +182,6 @@ export default class extends Controller {
       },
       id: id,
     });
-  }
-
-  debounce(func, wait) {
-    let timeout;
-    return function (...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
-    };
   }
 
   // This ensures that the checkboxes are in sync with the saved schedules.

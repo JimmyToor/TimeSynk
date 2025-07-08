@@ -6,7 +6,7 @@ import listPlugin from "@fullcalendar/list";
 import interaction from "@fullcalendar/interaction";
 import CalendarService from "../services/calendar_service";
 import consumer from "../channels/consumer";
-
+import Utility from "../../../lib/util/utility";
 /**
  * Main controller class for the calendar functionality.
  * Mainly concerned with UI interactions and rendering.
@@ -45,7 +45,10 @@ export default class extends Controller {
     this.initCalendar();
     this.eventRefreshCallback = this.eventRefresh.bind(this);
     this.submitSuccessCallback = this.onSubmitSuccess.bind(this);
-    this.debouncedRefreshCallback = this.debounce(this.refreshCallback, 300);
+    this.debouncedRefreshCallback = Utility.debounceFn(
+      this.refreshCallback,
+      300,
+    );
     this.eventFrameLoadCallback = null;
     this.dateFrameLoadCallback = null;
     this.frameMissingHandler = this.#handleFrameMissing.bind(this);
@@ -85,38 +88,35 @@ export default class extends Controller {
 
     let interactive = this.interactiveValue;
 
-    this.calendarService = new CalendarService(
-      calendarEl,
-      {
-        plugins: [
-          rrulePlugin,
-          interaction,
-          dayGridPlugin,
-          timeGridPlugin,
-          listPlugin,
-        ],
-        initialView: "dayGridMonth",
-        headerToolbar: {
-          left: "prev,next today",
-          center: "title",
-          right: "dayGridMonth,timeGridWeek,listWeek",
-        },
-        timeZone: "local",
-        loading: this.load.bind(this),
-        events: eventSrc,
-        eventInteractive: interactive,
-        eventClick: interactive ? this.eventClick.bind(this) : undefined,
-        eventDidMount: interactive ? this.eventDidMount.bind(this) : undefined,
-        selectable: false,
-        selectMirror: true,
-        dateClick: interactive ? this.dateClick.bind(this) : undefined,
-        unselectCancel: ".dialog",
-        height: "auto",
-        displayEventEnd: true,
-        eventDisplay: "block",
-        datesSet: this.hideNotifier.bind(this),
+    this.calendarService = new CalendarService(calendarEl, {
+      plugins: [
+        rrulePlugin,
+        interaction,
+        dayGridPlugin,
+        timeGridPlugin,
+        listPlugin,
+      ],
+      initialView: "dayGridMonth",
+      headerToolbar: {
+        left: "prev,next today",
+        center: "title",
+        right: "dayGridMonth,timeGridWeek,listWeek",
       },
-    );
+      timeZone: "local",
+      loading: this.load.bind(this),
+      events: eventSrc,
+      eventInteractive: interactive,
+      eventClick: interactive ? this.eventClick.bind(this) : undefined,
+      eventDidMount: interactive ? this.eventDidMount.bind(this) : undefined,
+      selectable: false,
+      selectMirror: true,
+      dateClick: interactive ? this.dateClick.bind(this) : undefined,
+      unselectCancel: ".dialog",
+      height: "auto",
+      displayEventEnd: true,
+      eventDisplay: "block",
+      datesSet: this.hideNotifier.bind(this),
+    });
 
     this.refreshCallback = this.refresh.bind(this);
   }
@@ -212,14 +212,6 @@ export default class extends Controller {
     this.updateNotificationTarget.classList.add("hidden");
   }
 
-  debounce(func, wait) {
-    let timeout;
-    return function (...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-  }
-
   replaceEventSource(oldSrcId, newSrc) {
     this.calendarService.replaceEventSource(oldSrcId, newSrc);
   }
@@ -275,8 +267,8 @@ export default class extends Controller {
   disambiguateEvent(containerEl, textContent) {
     const groupNode = document.createElement("div");
     groupNode.classList.add("fc-event-group");
-    groupNode.textContent = textContent
-    containerEl.appendChild(groupNode)
+    groupNode.textContent = textContent;
+    containerEl.appendChild(groupNode);
   }
 
   onSubmitSuccess(event) {
@@ -341,7 +333,7 @@ export default class extends Controller {
 
     event.preventDefault();
 
-    const explanation = "Oops! That game session may have been deleted."
+    const explanation = "Oops! That game session may have been deleted.";
     alert(explanation);
     if (process.env.NODE_ENV !== "production") {
       console.error(

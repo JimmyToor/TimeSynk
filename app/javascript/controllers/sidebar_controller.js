@@ -1,17 +1,27 @@
 import { Controller } from "@hotwired/stimulus";
+import Utility from "../../../lib/util/utility";
 
 // Connects to data-controller="sidebar"
 export default class extends Controller {
   static targets = ["sidebar", "toggleButton", "backdropTemplate"];
   static BACKDROP_CLASS = "sidebar-backdrop";
+
   initialize() {
     this.visiblityObserver = new IntersectionObserver(
       this._visibilityCallback.bind(this),
     );
-    this.sidebarVisible = true;
+    this.sidebarVisible =
+      this.sidebarTarget.getAttribute("aria-hidden") === "false";
+
+    this.debouncedToggle = Utility.debounceFn(() => this.toggleSidebar(), 50);
   }
 
-  toggleDrawer() {
+  debouncedToggleSidebar() {
+    // Debounce the toggleSidebar method to prevent flickering
+    this.debouncedToggle();
+  }
+
+  toggleSidebar() {
     this.sidebarVisible ? this.hide() : this.show();
   }
 
@@ -31,6 +41,7 @@ export default class extends Controller {
   show(backdrop = true) {
     this.sidebarVisible = true;
     this.sidebarTarget.setAttribute("aria-hidden", "false");
+
     // Translate the sidebar into view for mobile devices
     this.sidebarTarget.classList.remove("-translate-x-full");
     if (backdrop) this.addBackdrop();
