@@ -1,4 +1,4 @@
-<%# locals: (text: "Primary Header Text", extra_classes: "") %>
-<h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white <%= extra_classes %>">
-  <%= text %>
-</h1>
+<%# locals: (extra_classes: "") %>
+<h2 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white <%= extra_classes %>">
+  <%= yield %>
+</h2>

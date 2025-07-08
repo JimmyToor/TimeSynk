@@ -3,12 +3,10 @@
   <div class="flex justify-between mb-4">
     <div>
       <% if @group.present? %>
-        <%= render "shared/header_primary",
-                   text: safe_join(["Game Proposals for ",
-                                    content_tag(:span, @group.name, class: "font-bold text-primary-600")
-                                   ]) %>
-      <% else %>
-        <%= render "shared/header_primary", text: "Game Proposals" %>
+        <%= render "shared/header_primary" do %>
+          <%= t("game_proposal.index.title",
+                group_name: content_tag(:span, @group.name, class: 'font-bold text-primary-600')).html_safe %>
+        <% end %>
       <% end %>
     </div>
     <div>

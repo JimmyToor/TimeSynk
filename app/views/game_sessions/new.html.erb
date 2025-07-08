@@ -1,10 +1,9 @@
 <%# locals: (game_session:) %>
-<%= render "shared/header_primary",
-           text: safe_join(["New ",
-                            content_tag(:span, @game_session.game_name, class: "font-bold text-primary-600"),
-                            " session in ",
-                           content_tag(:span, @game_session.group.name, class: "font-bold text-primary-600")]),
-           extra_classes: "text-center" %>
+<%= render "shared/header_primary", extra_classes: "text-center" do %>
+  <%= t("game_session.new.title",
+        game_name: content_tag(:span, game_session.game_name, class: 'font-bold text-primary-600'),
+        group_name: content_tag(:span, game_session.group_name, class: 'font-bold text-primary-600')).html_safe %>
+<% end %>
 
 <%= modal_wrapper(game_session.game_name) do %>
   <%= content_tag(:div, id:dom_id(game_session, :content)) do %>

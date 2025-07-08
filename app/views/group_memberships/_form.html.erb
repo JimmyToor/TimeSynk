@@ -1,5 +1,7 @@
 <%= form_with(url: accept_invite_path, scope: :group_membership, method: :get) do |form| %>
-  <%= render "shared/header_primary", text: t("group_membership.new.title") %>
+  <%= render "shared/header_primary" do %>
+    <%= t("group_membership.new.title") %>
+  <% end %>
   <%= form.hidden_field :user_id, value: Current.user.id %>
   <%= form.text_field :invite_token,
                       placeholder: "Invite Token",
