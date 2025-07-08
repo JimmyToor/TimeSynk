@@ -12,3 +12,4 @@
     <%= render "shared/buttons/secondary_link", path: group_game_proposals_path(@groups.first), text: "Back to #{@groups.first.name}" %>
 <% end %>
 </div>
+<%= content_for(:page_title, t("game_proposal.title")) %>

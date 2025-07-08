@@ -9,3 +9,4 @@
   <%= render "shared/buttons/secondary_link", text: "See all invites for #{@invite.group.name}",path: group_invites_path(@invite.group)%>
   <%= render "shared/buttons/secondary_link", text: "Go to group: #{@invite.group.name}", path: @invite.group  %>
 </div>
+<% content_for(:page_title, t("invite.title")) %>

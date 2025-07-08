@@ -12,3 +12,4 @@
   <%= render "shared/buttons/secondary_link", path: @schedule, text: "Show this schedule" %>
   <%= render "shared/buttons/secondary_link", path: schedules_path, text: "Back to schedules" %>
 </div>
+<%= content_for(:page_title, t("schedule.title")) %>

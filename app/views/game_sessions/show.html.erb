@@ -5,3 +5,4 @@
 <div data-controller="calendar" data-calendar-interactive-value="false" data-calendar-game-session-id="<%= @game_session.id %>" data-turbo-permanent>
   <%= render partial: 'calendars/calendar' %>
 </div>
+<%= content_for(:page_title, t("game_session.title")) %>

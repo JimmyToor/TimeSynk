@@ -21,6 +21,9 @@
             <span class="sr-only">Navigate to home</span>
           <% end %>
         </div>
+        <h1 class="text-2xl font-semibold text-gray-900 dark:text-white sm:block">
+          <%= yield(:page_title) || "Dashboard" %>
+        </h1>
         <div aria-label="User Menu and Avatar" class="flex items-center text-sm text-gray-900 dark:text-white">
           <span aria-label="Your username">
             <%= Current.user.username %>

@@ -23,12 +23,15 @@
     <%= render "shared/buttons/cancel_button", text: "Cancel", path: @group, extra_classes: "mt-2 me-2 mb-2" %>
   </div>
 
-  <h2 class="text-2xl font-bold tracking-tight text-black dark:text-white text-center">Preview</h2>
-  <div id="calendar_holder"
-       data-controller="calendar"
-       data-calendar-interactive-value="true"
-       data-calendar-availability-id="<%= @availabilities.first.id %>"
-       data-turbo-permanent>
-    <%= render partial: 'calendars/calendar' %>
-  </div>
+  <section>
+    <h2 class="text-2xl font-bold tracking-tight text-black dark:text-white text-center">Preview</h2>
+    <div id="calendar_holder"
+         data-controller="calendar"
+         data-calendar-interactive-value="true"
+         data-calendar-availability-id="<%= @availabilities.first.id %>"
+         data-turbo-permanent>
+      <%= render partial: 'calendars/calendar' %>
+    </div>
+  </section>
 </div>
+<%= content_for(:page_title, t("availability.title")) %>

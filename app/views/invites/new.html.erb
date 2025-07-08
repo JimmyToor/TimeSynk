@@ -8,3 +8,4 @@
 <div class="mt-4 space-x-2">
   <%= render "shared/buttons/secondary_link", text: "Back to group invites", path: group_invites_path(@invite.group) %>
 </div>
+<% content_for(:page_title, t("invite.title")) %>

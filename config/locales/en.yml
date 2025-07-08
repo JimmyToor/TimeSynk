@@ -89,6 +89,7 @@ en:
       title: "Delete Group"
     update:
       success: "Group name changed to %{name}."
+    title: "Groups"
   group_membership:
     invite_not_valid: "There was a problem with the invite."
     already_member: "You are already a member of this group."
@@ -122,6 +123,7 @@ en:
     destroy:
       success: "Schedule successfully deleted."
       error: "There was an error deleting the schedule."
+    title: "Schedules"
   permission_set:
     update:
       success: "Permissions successfully updated."
@@ -140,6 +142,7 @@ en:
       error: "There was an error deleting the availability."
       only_availability: "Cannot delete your only availability."
     no_schedules: "You can create schedules to indicate the times you're available. You can then select them here to be combined to create this availability. Get started by creating a new schedule."
+    title: "Availabilities"
   proposal_availability:
     create:
       success: "Availability set for %{game_name}."
@@ -167,6 +170,9 @@ en:
         invalid: "contained invalid roles. Please refresh the page and try again."
       expires_at:
         presence: "cannot be blank."
+    index:
+      title: "Invites for %{group_name}"
+    title: "Invites"
   game_session:
     validation:
       name:
@@ -190,6 +196,13 @@ en:
       success: "Game session for %{name} successfully updated."
       error: "There was an error updating the %{name} game session."
     not_found: "Game session not found. It may have been deleted."
+    upcoming:
+      title: "Upcoming Game Sessions for %{game_name} in %{group_name}"
+    edit:
+      title: "Edit #{game_name} session in #{group_name}"
+    new:
+      title: "New %{game_name} session in %{group_name}"
+    title: "Game Sessions"
   game_session_attendance:
     create:
       success: "Attendance for %{name} saved."
@@ -201,20 +214,25 @@ en:
       success: "Attendance for %{name} saved."
       error: "There was an error saving your attendance."
   game_proposal:
-      create:
-        success: "Game proposal for %{name} successfully created ."
-        error: "There was an error creating the proposal for %{name}."
-      destroy:
-        success: "Game proposal for %{name} successfully deleted."
-        error: "There was an error deleting the proposal for %{name}."
-      update:
-        success: "Game proposal for %{name} successfully updated."
-        error: "There was an error updating the proposal for %{name}."
+    create:
+      success: "Game proposal for %{name} successfully created ."
+      error: "There was an error creating the proposal for %{name}."
+    destroy:
+      success: "Game proposal for %{name} successfully deleted."
+      error: "There was an error deleting the proposal for %{name}."
+    update:
+      success: "Game proposal for %{name} successfully updated."
+      error: "There was an error updating the proposal for %{name}."
+    index:
+      title: "Game Proposals for %{group_name}"
+    title: "Game Proposals"
   user:
     avatar:
       update:
         success: "Avatar updated."
         error: "There was a problem changing your avatar."
+    edit:
+      title: "Settings"
   session:
     create:
       error: "That username/email and password is incorrect."
@@ -224,3 +242,17 @@ en:
     create:
       error: "There was a problem creating your account."
       success: "Welcome to TimeSynk! Please check your email to verify your account."
+  time:
+    day: "Day"
+    hour: "Hour"
+    minute: "Minute"
+  schedules:
+    new:
+      title: "New Schedule"
+  invites:
+    new:
+      title: "New invite to %{group_name}"
+  dashboard:
+    title: "Dashboard"
+  game:
+    title: "Games"
