@@ -1,6 +1,7 @@
 class GameProposal < ApplicationRecord
-  include Permissionable
+  include Restrictable
   resourcify
+  restrict(min_weight: RoleHierarchy::ROLE_WEIGHTS[:"game_proposal.admin"])
 
   include PgSearch::Model
   pg_search_scope :search,

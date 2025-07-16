@@ -1,12 +1,14 @@
-module Permissionable
+module Restrictable
   extend ActiveSupport::Concern
 
-  included do
-    min_weight = RoleHierarchy::ROLE_WEIGHTS[:"#{model_name.singular}.admin"] || RoleHierarchy::NON_PERMISSIVE_WEIGHT
-    const_set(:MIN_PERMISSION_EDIT_WEIGHT, min_weight)
+  class_methods do
+    def restrict(min_weight: nil)
+      default_weight = RoleHierarchy::NON_PERMISSIVE_WEIGHT
+      const_set(:MIN_PERMISSION_EDIT_WEIGHT, min_weight || default_weight)
+    end
+  end
 
-    # @return [PermissionSet] a new instance of PermissionSet for the passed users with their current roles in relation to the resource
-    #
+  included do
     # @param users [Array<User>] the users to create the permission set for.
     # @return [PermissionSet] the permission set where attribute users_roles has the user ids as keys with user and role ids as values. e.g.  { 1 => { user: User, role_ids: [1, 2, 3] }}
     def make_permission_set(users)

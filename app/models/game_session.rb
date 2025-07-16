@@ -1,5 +1,8 @@
 class GameSession < ApplicationRecord
+  include Restrictable
+
   resourcify
+  restrict(min_weight: RoleHierarchy::ROLE_WEIGHTS[:"game_session.owner"])
 
   require "rounding"
 

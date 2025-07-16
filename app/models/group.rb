@@ -1,6 +1,7 @@
 class Group < ApplicationRecord
-  include Permissionable
+  include Restrictable
   resourcify
+  restrict(min_weight: RoleHierarchy::ROLE_WEIGHTS[:"group.admin"])
 
   has_many :group_memberships, dependent: :destroy
   has_many :users, through: :group_memberships
