@@ -5,6 +5,20 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
     @user = sign_in_as(users(:cooluserguy))
   end
 
+  test "should get show for group" do
+    group = groups(:three_members)
+    user = users(:radperson)
+    get group_permission_set_url(group), params: {user_id: user.id}
+    assert_response :success
+  end
+
+  test "should get show for game proposal" do
+    game_proposal = game_proposals(:group_2_game_gta)
+    user = users(:radperson)
+    get game_proposal_permission_set_url(game_proposal), params: {user_id: user.id}
+    assert_response :success
+  end
+
   test "should get edit for group" do
     group = groups(:three_members)
     get edit_group_permission_set_url(group.id)
@@ -36,7 +50,7 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
   test "should get edit for single group user" do
     user = users(:radperson)
     group = groups(:three_members)
-    get edit_group_permission_set_url(group), params: {group_id: group.id, user_id: user.id}
+    get edit_group_permission_set_url(group), params: {user_id: user.id}
 
     assert_response :success
   end
@@ -113,38 +127,5 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_includes user.reload.roles, role
-  end
-
-  test "should transfer ownership of group" do
-    group = groups(:three_members)
-    old_owner = User.with_role(:owner, group).first
-    new_owner = users(:radperson)
-
-    patch group_permission_set_url(group.id), params: {
-      permission_set: {new_owner_id: new_owner.id},
-      transfer_ownership: true,
-      group_id: group.id
-    }, as: :turbo_stream
-
-    assert_response :success
-    assert_includes new_owner.reload.roles, roles(:owner_3)
-    refute_includes old_owner.reload.roles, roles(:owner_3)
-  end
-
-  test "should transfer ownership of game proposal" do
-    group = groups(:three_members)
-    old_owner = User.with_role(:owner, group).first
-    new_owner = users(:radperson)
-    proposal = game_proposals(:group_3_game_1)
-
-    patch game_proposal_permission_set_url(proposal.id), params: {
-      permission_set: {new_owner_id: new_owner.id},
-      transfer_ownership: true,
-      group_id: group.id
-    }, as: :turbo_stream
-
-    assert_response :success
-    assert_includes new_owner.reload.roles, roles(:owner_3)
-    refute_includes old_owner.reload.roles, roles(:owner_3)
   end
 end

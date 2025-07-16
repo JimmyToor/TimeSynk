@@ -84,7 +84,7 @@ gem "pg_search", "~> 2.3"
 
 gem "rounding", "~> 1.0"
 
-gem 'whenever', require: false
+gem "whenever", require: false
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -108,5 +108,4 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara", "~> 3.40"
   gem "selenium-webdriver", "~> 4.24"
-  gem "rails-controller-testing"
 end

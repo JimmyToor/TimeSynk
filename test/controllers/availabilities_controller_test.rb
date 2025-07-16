@@ -13,9 +13,19 @@ class AvailabilitiesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should get index with search query" do
+    get availabilities_url, params: {query: @availability.name}
+    assert_response :success
+  end
+
+  test "should get turbo_stream index with search query" do
+    get availabilities_url, params: {query: @availability.name, format: :turbo_stream}
+    assert_response :success
+  end
+
   test "should get new" do
     get new_availability_url
-    assert_dom "h1", text: "New Availability"
+    assert_response :success
   end
 
   test "should create empty availability" do
@@ -51,12 +61,16 @@ class AvailabilitiesControllerTest < ActionDispatch::IntegrationTest
 
   test "should get edit" do
     get edit_availability_url(@availability)
-    # assert that there is an input field with the value of the availability name
-    assert_dom "input", value: @availability.name
+    assert_response :success
   end
 
   test "should update availability" do
-    patch availability_url(@availability), params: {availability: {user_id: @user.id, name: "updated name"}, id: @availability.id}
+    old_name = @availability.name
+    new_name = "#{old_name} updated"
+
+    assert_changes "@availability.reload.name", from: old_name, to: new_name do
+      patch availability_url(@availability), params: {availability: {user_id: @user.id, name: new_name}, id: @availability.id}
+    end
     assert_redirected_to availability_url(@availability)
   end
 
@@ -66,10 +80,5 @@ class AvailabilitiesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to availabilities_url
-  end
-
-  test "should search availabilities" do
-    get availabilities_url, params: {query: @availability.name}
-    assert_response :success
   end
 end

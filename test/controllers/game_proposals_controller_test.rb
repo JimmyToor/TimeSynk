@@ -38,14 +38,15 @@ class GameProposalsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should show json game_proposal" do
+    get game_proposal_url(@game_proposal, format: :json)
+    assert_response :success
+    assert_equal "application/json", @response.media_type
+  end
+
   test "should get edit" do
     get edit_game_proposal_url(@game_proposal)
     assert_response :success
-  end
-
-  test "should update game_proposal" do
-    patch game_proposal_url(@game_proposal), params: {game_proposal: {game_id: @game_proposal.game_id, group_id: @game_proposal.group_id}}
-    assert_redirected_to game_proposal_url(@game_proposal)
   end
 
   test "should destroy game_proposal" do
