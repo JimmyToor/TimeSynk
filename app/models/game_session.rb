@@ -36,6 +36,23 @@ class GameSession < ApplicationRecord
     [:game_proposal]
   end
 
+  def reload(options = nil)
+    @owner = nil
+    super
+  end
+
+  def associated_users
+    group.associated_users
+  end
+
+  def associated_users_without_owner
+    group.associated_users_without_owner
+  end
+
+  def owner
+    @owner ||= User.with_role(:owner, self).first
+  end
+
   def user_get_attendance(user)
     game_session_attendances.find_by(user_id: user.id)
   end
@@ -66,10 +83,6 @@ class GameSession < ApplicationRecord
 
   def group_name
     game_proposal.group.name
-  end
-
-  def owner
-    @owner ||= User.with_role(:owner, self).first
   end
 
   def in_range(icecube_schedule: nil, start_time: nil, end_time: nil)
@@ -106,7 +119,7 @@ class GameSession < ApplicationRecord
     schedule[:id] = id
     schedule[:name] = name
     schedule[:duration] = duration
-    schedule[:user_id] = User.with_role(:owner, self)&.first&.id
+    schedule[:user_id] = owner.id
     schedule[:selectable] = selectable
     schedule[:group] = game_proposal.group.name
 

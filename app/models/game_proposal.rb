@@ -28,6 +28,23 @@ class GameProposal < ApplicationRecord
     [:group]
   end
 
+  def reload(options = nil)
+    @owner = nil
+    super
+  end
+
+  def associated_users
+    group.associated_users
+  end
+
+  def associated_users_without_owner
+    group.associated_users_without_owner
+  end
+
+  def owner
+    @owner ||= User.with_role(:owner, self).first
+  end
+
   def get_upcoming_game_sessions(date_limit: nil)
     if date_limit.nil?
       game_sessions.where("date >= ?", Time.current)
@@ -184,10 +201,6 @@ class GameProposal < ApplicationRecord
       targets: "#game_proposal_#{id}_votes",
       partial: "proposal_votes/proposal_vote_list"
     )
-  end
-
-  def owner
-    @owner ||= User.with_role(:owner, self).first
   end
 
   def notify_calendar_update(cascade = true)

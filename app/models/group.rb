@@ -17,8 +17,25 @@ class Group < ApplicationRecord
     presence: {message: I18n.t("group.validation.name.presence")},
     length: {maximum: 50, message: I18n.t("group.validation.name.length", count: 50)}
 
+  def reload(options = nil)
+    @owner = nil
+    super
+  end
+
   def get_user_group_availability(user)
     group_availabilities.find_by(user: user)
+  end
+
+  def associated_users
+    users
+  end
+
+  def associated_users_without_owner
+    users.where.not(id: owner.id)
+  end
+
+  def owner
+    @owner ||= User.with_role(:owner, self).first
   end
 
   def is_user_member?(user)
@@ -31,10 +48,6 @@ class Group < ApplicationRecord
 
   def create_roles
     Role.create_roles_for_group(self)
-  end
-
-  def owner
-    User.with_role(:owner, self).first
   end
 
   def members
