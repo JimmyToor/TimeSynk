@@ -71,62 +71,53 @@ class User < ApplicationRecord
     end
   end
 
+  # Retrieves the user's permission service, caching it in Current for the duration of the request.
+  # @return [UserPermissionsService] The permission service for the user.
+  def permission_service
+    Current.permission_services[id] ||= UserPermissionsService.new(self)
+  end
+
+  # (see UserPermissionsService#roles_for_resource)
   def roles_for_resource(resource)
-    roles.where(resource: resource)
+    permission_service.roles_for_resource(resource)
   end
 
-  def supersedes_user_in_resource?(role_user, resource)
-    role_user_most_permissive_role = role_user.most_permissive_cascading_role_for_resource(resource)
-    our_most_permissive_role = most_permissive_cascading_role_for_resource(resource)
-    RoleHierarchy.supersedes?(our_most_permissive_role, role_user_most_permissive_role)
+  # (see UserPermissionsService#supersedes_user_in_resource?)
+  def supersedes_user_in_resource?(peer_user, resource)
+    permission_service.supersedes_user_in_resource?(peer_user, resource)
   end
 
-  # Returns the highest role a user has for a particular resource.
+  # (see UserPermissionsService#most_permissive_role_for_resource)
   def most_permissive_role_for_resource(resource)
-    roles.where(resource: resource).min_by { |role| RoleHierarchy.role_weight(role) }
+    permission_service.most_permissive_role_for_resource(resource)
   end
 
+  # (see UserPermissionsService#most_permissive_role_weight_for_resource)
   def most_permissive_role_weight_for_resource(resource)
-    roles.where(resource: resource).map { |role| RoleHierarchy.role_weight(role) }.min || RoleHierarchy::NON_PERMISSIVE_WEIGHT
+    permission_service.most_permissive_role_weight_for_resource(resource)
   end
 
-  # Returns the highest role a user has for a particular resource, including roles from parent resources.
+  # (see UserPermissionsService#most_permissive_cascading_role_for_resource)
   def most_permissive_cascading_role_for_resource(resource)
-    current_highest_role = most_permissive_role_for_resource(resource)
-
-    return current_highest_role unless resource.class.respond_to?(:role_providing_associations)
-
-    resource.class.role_providing_associations.each do |association_name|
-      parent_resource = resource.send(association_name)
-      next if parent_resource.nil?
-
-      parent_highest_role = most_permissive_cascading_role_for_resource(parent_resource)
-
-      if RoleHierarchy.supersedes?(parent_highest_role, current_highest_role)
-        current_highest_role = parent_highest_role
-      end
-    end
-    current_highest_role
+    permission_service.most_permissive_cascading_role_for_resource(resource)
   end
 
-  # @return [Hash<Role>] The roles that we can add/remove for the affected user relative to the resource
-  def available_roles_for_resource(affected_user, resource, cascading: false)
-    roles = {}
-    most_permissive_role = most_permissive_cascading_role_for_resource(resource)
-    return roles if most_permissive_role.nil? || most_permissive_role == RoleHierarchy::NON_PERMISSIVE_WEIGHT
+  # (see UserPermissionsService#can_update_resource_permissions_for_peer_user?)
+  def can_update_resource_permissions_for_peer_user?(peer_user, resource, most_permissive_role: nil, peer_user_most_permissive_role: nil)
+    permission_service.can_update_resource_permissions_for_peer_user?(peer_user,
+      resource,
+      most_permissive_role: most_permissive_role,
+      peer_user_most_permissive_role: peer_user_most_permissive_role)
+  end
 
-    if supersedes_user_in_resource?(affected_user, resource)
-      roles[resource.model_name.param_key.to_sym] = resource.roles.reject { |role| RoleHierarchy.special?(role) }
-      if cascading && resource.class.respond_to?(:role_providing_associations)
-        resource.class.role_providing_associations.each do |association_name|
-          parent_resource = resource.send(association_name)
-          next if parent_resource.nil?
+  # (see UserPermissionsService#has_any_role_for_resource?)
+  def has_any_role_for_resource?(roles_to_check, resource)
+    permission_service.has_any_role_for_resource?(roles_to_check, resource)
+  end
 
-          roles.merge!(available_roles_for_resource(affected_user, parent_resource, cascading: true))
-        end
-      end
-    end
-    roles
+  # (see UserPermissionsService#assignable_roles_for_resource)
+  def assignable_roles_for_resource(peer_user, resource, most_permissive_role = nil)
+    permission_service.assignable_roles_for_resource(peer_user, resource, most_permissive_role)
   end
 
   def update_roles(add_roles: [], remove_roles: [])
@@ -169,6 +160,8 @@ class User < ApplicationRecord
     errors.add(:user_availability, message: "could not be created: #{e.message}")
   end
 
+  # Returns game sessions that occur after the current time but before the date_limit.
+  # @param date_limit [ActiveSupport::Duration, nil] The maximum date for the game sessions to return.
   def upcoming_game_sessions(date_limit: 1.month.from_now)
     if date_limit.nil?
       game_sessions.where("date >= ?", Time.current)
@@ -195,6 +188,8 @@ class User < ApplicationRecord
     end
   end
 
+  # Broadcasts a user's role change for a resource.
+  # @param resource [ActiveRecord::Base] The resource for which the role change is broadcasted.
   def broadcast_role_change_for_resource(resource)
     broadcast_action_to(
       "user_roles_#{id}",
@@ -204,8 +199,13 @@ class User < ApplicationRecord
     )
   end
 
-  def has_any_role_for_resource?(roles_to_check, resource)
-    roles_to_check.any? { |role| has_cached_role?(role, resource) }
+  # Broadcasts a role change for a resource for all users with the specified user_ids.
+  # @param resource [ActiveRecord::Base] The resource for which the role change is broadcasted.
+  # @param user_ids [Array<Integer>] The IDs of users to whom the role change should be broadcasted.
+  def self.broadcast_role_change_for_resource(resource, user_ids)
+    User.where(id: user_ids).each do |user|
+      user.broadcast_role_change_for_resource(resource)
+    end
   end
 
   # Clears the email of other users who have the same email address when this user is verified.

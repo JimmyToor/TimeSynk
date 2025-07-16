@@ -1,6 +1,10 @@
 require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
+  setup do
+    Current.permission_services = {}
+  end
+
   test "user creation creates initial user availability" do
     user = User.new(email: "test@example.com", username: "testuser", password: "password")
     user.save!
