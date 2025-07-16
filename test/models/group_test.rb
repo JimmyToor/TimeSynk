@@ -7,7 +7,7 @@ class GroupTest < ActiveSupport::TestCase
 
   test "get_user_group_availability returns correct availability" do
     user = users(:cooluserguy)
-    availability = group_availabilities(:user_2_group_2_availability)
+    availability = group_availabilities(:user_cooluserguy_group_2_availability)
     @group.group_availabilities << availability
     assert_equal availability, @group.get_user_group_availability(user)
   end

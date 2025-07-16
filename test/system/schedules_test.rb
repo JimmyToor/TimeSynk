@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class SchedulesTest < ApplicationSystemTestCase
   setup do
-    @schedule = schedules(:user_1_default)
+    @schedule = schedules(:user_admin_default)
   end
 
   test "visiting the index" do

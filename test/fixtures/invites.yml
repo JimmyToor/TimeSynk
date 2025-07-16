@@ -7,16 +7,16 @@ group_1_no_roles:
   assigned_role_ids: [""]
   expires_at: <%= 1.day.from_now %>
 
-group_2_role_6:
+group_2_role_group_2_manage_users:
   user: cooluserguy
   group: two_members
   invite_token: "StTcjEw2ZDDcNcMLM4tw2yf6"
-  assigned_role_ids: ["",6]
+  assigned_role_ids: ["",ActiveRecord::FixtureSet.identify(:group_1_manage_users)]
   expires_at: <%= 1.day.from_now %>
 
-group_1_role_3_expired:
+group_1_role_admin_expired:
   user: admin
   group: one_member
   invite_token: "yseXyHbgRC1MzDoir3BfBRA2"
-  assigned_role_ids: ["",3]
+  assigned_role_ids: ["",ActiveRecord::FixtureSet.identify(:group_1_admin)]
   expires_at: <%= 1.day.ago %>

@@ -2,10 +2,10 @@ require "test_helper"
 
 class GameSessionsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @game_session = game_sessions(:proposal_2_session_1)
+    @game_session = game_sessions(:group_2_game_gta_session_1)
     @game_proposal = @game_session.game_proposal
     @group = @game_proposal.group
-    @user = users(:radperson)
+    @user = users(:cooluserguy)
     sign_in_as(@user)
   end
 

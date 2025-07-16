@@ -2,9 +2,9 @@ require "test_helper"
 
 class AvailabilitiesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @availability = availabilities(:user_2_default_availability)
+    @availability = availabilities(:user_cooluserguy_default_availability)
     @user = users(:cooluserguy)
-    @schedule = schedules(:user_2_default)
+    @schedule = schedules(:user_cooluserguy_default)
     sign_in_as @user
   end
 

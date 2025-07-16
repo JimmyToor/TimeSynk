@@ -99,21 +99,21 @@ class UserTest < ActiveSupport::TestCase
 
   test "get_vote_for_proposal returns user's vote" do
     user = users(:cooluserguy)
-    vote = proposal_votes(:proposal_2_user_2_yes)
+    vote = proposal_votes(:group_2_game_gta_user_cooluserguy_yes)
     proposal = vote.game_proposal
     assert_equal vote, user.get_vote_for_proposal(proposal)
   end
 
   test "nearest_proposal_availability follows fallback hierarchy" do
     user = users(:admin)
-    proposal = game_proposals(:group_1_game_1)
+    proposal = game_proposals(:group_1_game_thief)
 
     # Test proposal availability
-    assert_equal proposal_availabilities(:user_1_proposal_1_availability).availability, user.nearest_proposal_availability(proposal)
+    assert_equal proposal_availabilities(:user_admin_group_1_game_thief_availability).availability, user.nearest_proposal_availability(proposal)
 
     # Test fallback to group availability
     proposal.proposal_availabilities.destroy_all
-    assert_equal group_availabilities(:user_1_group_1_availability).availability, user.nearest_proposal_availability(proposal)
+    assert_equal group_availabilities(:user_admin_group_1_availability).availability, user.nearest_proposal_availability(proposal)
 
     # Test fallback to user availability
     group = groups(:one_member)
@@ -123,41 +123,41 @@ class UserTest < ActiveSupport::TestCase
 
   test "roles_for_resource returns roles for given game proposal" do
     user = users(:cooluserguy)
-    proposal = game_proposals(:group_2_game_2)
-    role1 = roles(:game_proposal_2_owner) # user already has this role
-    role2 = roles(:game_proposal_2_admin)
+    proposal = game_proposals(:group_2_game_gta)
+    role1 = roles(:group_2_game_gta_owner) # user already has this role
+    role2 = roles(:group_2_game_gta_admin)
     user.roles << role2
     assert_equal [role1, role2], user.roles_for_resource(proposal).to_a
   end
 
   test "roles_for_resource returns roles for given game session" do
     user = users(:admin)
-    game_session = game_sessions(:proposal_1_session_1)
-    role = roles(:game_session_1_owner)
+    game_session = game_sessions(:group_1_game_thief_session_1)
+    role = roles(:group_1_game_thief_session_1_owner)
     assert_includes user.roles_for_resource(game_session), role
   end
 
   test "supersedes_user_in_resource returns true if user supersedes role user" do
     user = users(:admin)
     role_user = users(:cooluserguy)
-    game_proposal = game_proposals(:group_1_game_1)
+    game_proposal = game_proposals(:group_1_game_thief)
     assert user.supersedes_user_in_resource?(role_user, game_proposal)
   end
 
   test "most_permissive_role_for_resource returns highest role for game proposal" do
     user = users(:admin)
-    game_proposal = game_proposals(:group_1_game_1)
-    role = roles(:admin_1)
+    game_proposal = game_proposals(:group_1_game_thief)
+    role = roles(:group_1_admin)
     user.roles << role
-    expected = roles(:game_proposal_1_owner)
+    expected = roles(:group_1_game_thief_owner)
     assert_equal expected, user.most_permissive_role_for_resource(game_proposal)
   end
 
   test "most_permissive_cascading_role_for_resource returns superseding group role" do
     user = users(:radperson)
-    game_proposal = game_proposals(:group_3_game_1)
-    role = roles(:game_proposal_2_admin)
-    expected = roles(:admin_3)
+    game_proposal = game_proposals(:group_3_game_thief)
+    role = roles(:group_3_game_thief_admin)
+    expected = roles(:group_3_admin)
     user.roles << role
     assert_equal expected, user.most_permissive_cascading_role_for_resource(game_proposal)
   end
@@ -166,7 +166,7 @@ class UserTest < ActiveSupport::TestCase
     user = users(:cooluserguy) # already has owner role
     role_user = users(:radperson)
     group = groups(:two_members)
-    role_user.roles << roles(:admin_2)
+    role_user.roles << roles(:group_2_admin)
     assert user.supersedes_user_in_resource?(role_user, group)
   end
 
@@ -179,17 +179,17 @@ class UserTest < ActiveSupport::TestCase
 
   test "most_permissive_role_for_resource returns most permissive role for resource" do
     user = users(:cooluserguy) # already has owner role
-    resource = game_proposals(:group_2_game_2)
-    user.roles << roles(:admin_1)
-    expected = roles(:game_proposal_2_owner)
+    resource = game_proposals(:group_2_game_gta)
+    user.roles << roles(:group_1_admin)
+    expected = roles(:group_2_game_gta_owner)
     assert_equal expected, user.most_permissive_role_for_resource(resource)
   end
 
   test "most_permissive_role_weight_for_resource returns most permissive role weight for resource" do
     user = users(:admin)
-    resource = game_proposals(:group_1_game_1)
-    expected = RoleHierarchy.role_weight(roles(:game_proposal_1_owner))
-    role = roles(:admin_1)
+    resource = game_proposals(:group_1_game_thief)
+    expected = RoleHierarchy.role_weight(roles(:group_1_game_thief_owner))
+    role = roles(:group_1_admin)
     user.roles << role
     assert_equal expected, user.most_permissive_role_weight_for_resource(resource)
   end
@@ -197,7 +197,7 @@ class UserTest < ActiveSupport::TestCase
   test "update_roles adds and removes roles correctly" do
     user = users(:admin)
     role_to_add = roles(:site_admin)
-    role_to_remove = roles(:admin_1)
+    role_to_remove = roles(:group_1_admin)
     existing_roles = user.roles.to_a
 
     user.roles << role_to_remove

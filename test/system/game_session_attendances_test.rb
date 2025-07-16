@@ -2,8 +2,8 @@ require "application_system_test_case"
 
 class GameSessionAttendancesTest < ApplicationSystemTestCase
   setup do
-    @game_session_attendance = game_session_attendances(:one)
-    @game_session = game_sessions(:proposal_1_session_1)
+    @game_session_attendance = game_session_attendances(:proposal_1_session_1_admin)
+    @game_session = game_sessions(:group_1_game_thief_session_1)
   end
 
   test "visiting the index" do

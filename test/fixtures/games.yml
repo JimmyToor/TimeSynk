@@ -4,7 +4,7 @@
 # model remove the "{}" from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-thief_2:
+thief:
   igdb_id: 1
   name: "Thief II: The Metal Age"
   cover_image_url: "https://images.igdb.com/igdb/image/upload/t_thumb/co698n.jpg"

@@ -2,7 +2,7 @@ require "test_helper"
 
 class SchedulesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @schedule = schedules(:user_2_default)
+    @schedule = schedules(:user_cooluserguy_default)
     @user = users(:cooluserguy)
     sign_in_as @user
   end

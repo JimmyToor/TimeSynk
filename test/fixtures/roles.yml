@@ -5,290 +5,358 @@ site_admin:
   created_at: 2024-11-15 21:09:13.989530
   updated_at: 2024-11-15 21:09:13.989530
 
-owner_1:
+# Group 1 ('one_member')
+group_1_owner:
   name: "owner"
   resource: one_member (Group)
   created_at: 2024-11-15 21:41:30.298949
   updated_at: 2024-11-15 21:41:30.298949
 
-admin_1:
+group_1_admin:
   name: "admin"
   resource: one_member (Group)
   created_at: 2024-11-15 21:41:30.300073
   updated_at: 2024-11-15 21:41:30.300073
 
-create_invites_1:
+group_1_create_invites:
   name: "create_invites"
   resource: one_member (Group)
   created_at: 2024-11-15 21:41:30.301005
   updated_at: 2024-11-15 21:41:30.301005
 
-manage_invites_1:
+group_1_manage_invites:
   name: "manage_invites"
   resource: one_member (Group)
   created_at: 2024-11-15 21:41:30.301899
   updated_at: 2024-11-15 21:41:30.301899
 
-manage_users_1:
+group_1_manage_users:
   name: "manage_users"
   resource: one_member (Group)
   created_at: 2024-11-15 21:41:30.302732
   updated_at: 2024-11-15 21:41:30.302732
 
-create_proposals_1:
+group_1_create_proposals:
   name: "create_proposals"
   resource: one_member (Group)
   created_at: 2024-11-15 21:41:30.304932
   updated_at: 2024-11-15 21:41:30.304932
 
-manage_all_proposals_1:
+group_1_manage_all_proposals:
   name: "manage_all_proposals"
   resource: one_member (Group)
   created_at: 2024-11-15 21:41:30.306994
   updated_at: 2024-11-15 21:41:30.306994
 
-create_any_sessions_1:
-  name: "create_game_sessions"
-  resource: group_1_game_1 (GameProposal)
-  created_at: 2024-11-15 21:41:30.310895
-  updated_at: 2024-11-15 21:41:30.310895
-
-manage_all_sessions_1:
-  name: "manage_all_game_sessions"
-  resource: group_1_game_1 (GameProposal)
-  created_at: 2024-11-15 21:41:30.314869
-  updated_at: 2024-11-15 21:41:30.314869
-
-owner_2:
-  name: "owner"
-  resource: two_members (Group)
-  created_at: 2024-11-15 21:41:30.298949
-  updated_at: 2024-11-15 21:41:30.298949
-
-admin_2:
-  name: "admin"
-  resource: two_members (Group)
-  created_at: 2024-11-15 21:41:30.300073
-  updated_at: 2024-11-15 21:41:30.300073
-
-create_invites_2:
-  name: "create_invites"
-  resource: two_members (Group)
-  created_at: 2024-11-15 21:41:30.301005
-  updated_at: 2024-11-15 21:41:30.301005
-
-manage_invites_2:
-  name: "manage_invites"
-  resource: two_members (Group)
-  created_at: 2024-11-15 21:41:30.301899
-  updated_at: 2024-11-15 21:41:30.301899
-
-manage_users_2:
-  name: "manage_users"
-  resource: two_members (Group)
-  created_at: 2024-11-15 21:41:30.302732
-  updated_at: 2024-11-15 21:41:30.302732
-
-create_proposals_2:
-  name: "create_proposals"
-  resource: two_members (Group)
-  created_at: 2024-11-15 21:41:30.304932
-  updated_at: 2024-11-15 21:41:30.304932
-
-manage_all_proposals_2:
-  name: "manage_all_proposals"
-  resource: two_members (Group)
-  created_at: 2024-11-15 21:41:30.306994
-  updated_at: 2024-11-15 21:41:30.306994
-
-create_any_sessions_2:
-  name: "create_game_sessions"
-  resource: group_2_game_2 (GameProposal)
-  created_at: 2024-11-15 21:41:30.310895
-  updated_at: 2024-11-15 21:41:30.310895
-
-manage_all_sessions_2:
-  name: "manage_all_game_sessions"
-  resource: group_2_game_2 (GameProposal)
-  created_at: 2024-11-15 21:41:30.314869
-  updated_at: 2024-11-15 21:41:30.314869
-
-owner_3:
-  name: "owner"
-  resource: three_members (Group)
-  created_at: 2024-11-15 21:41:30.298949
-  updated_at: 2024-11-15 21:41:30.298949
-
-admin_3:
-  name: "admin"
-  resource: three_members (Group)
-  created_at: 2024-11-15 21:41:30.300073
-  updated_at: 2024-11-15 21:41:30.300073
-
-create_invites_3:
-  name: "create_invites"
-  resource: three_members (Group)
-  created_at: 2024-11-15 21:41:30.301005
-  updated_at: 2024-11-15 21:41:30.301005
-
-manage_invites_3:
-  name: "manage_invites"
-  resource: three_members (Group)
-  created_at: 2024-11-15 21:41:30.301899
-  updated_at: 2024-11-15 21:41:30.301899
-
-manage_users_3:
-  name: "manage_users"
-  resource: three_members (Group)
-  created_at: 2024-11-15 21:41:30.302732
-  updated_at: 2024-11-15 21:41:30.302732
-
-create_proposals_3:
-  name: "create_proposals"
-  resource: three_members (Group)
-  created_at: 2024-11-15 21:41:30.304932
-  updated_at: 2024-11-15 21:41:30.304932
-
-manage_all_proposals_3:
-  name: "manage_all_proposals"
-  resource: three_members (Group)
-  created_at: 2024-11-15 21:41:30.306994
-  updated_at: 2024-11-15 21:41:30.306994
-
-create_any_sessions_3:
-  name: "create_game_sessions"
-  resource: group_3_game_1 (GameProposal)
-  created_at: 2024-11-15 21:41:30.310895
-  updated_at: 2024-11-15 21:41:30.310895
-
-manage_all_sessions_3:
-  name: "manage_all_game_sessions"
-  resource: group_3_game_1 (GameProposal)
-  created_at: 2024-11-15 21:41:30.314869
-  updated_at: 2024-11-15 21:41:30.314869
-
-game_proposal_1_owner:
-  name: "owner"
-  resource: group_1_game_1 (GameProposal)
-  created_at: 2024-11-15 21:41:30.298949
-  updated_at: 2024-11-15 21:41:30.298949
-
-game_proposal_2_owner:
-  name: "owner"
-  resource: group_2_game_2 (GameProposal)
-  created_at: 2024-11-15 21:41:30.298949
-  updated_at: 2024-11-15 21:41:30.298949
-
-game_session_1_owner:
-  name: "owner"
-  resource: proposal_1_session_1 (GameSession)
-  created_at: 2024-11-15 21:41:30.298949
-  updated_at: 2024-11-15 21:41:30.298949
-
-game_session_2_owner:
-  name: "owner"
-  resource: proposal_2_session_1 (GameSession)
-  created_at: 2024-11-15 21:41:30.298949
-  updated_at: 2024-11-15 21:41:30.298949
-
-game_proposal_3_owner:
-  name: "owner"
-  resource: group_1_game_1 (GameProposal)
-  created_at: 2024-11-15 21:41:30.298949
-  updated_at: 2024-11-15 21:41:30.298949
-
-game_proposal_4_owner:
-  name: "owner"
-  resource: group_2_game_2 (GameProposal)
-  created_at: 2024-11-15 21:41:30.298949
-  updated_at: 2024-11-15 21:41:30.298949
-
-game_session_3_owner:
-  name: "owner"
-  resource: proposal_1_session_1 (GameSession)
-  created_at: 2024-11-15 21:41:30.298949
-  updated_at: 2024-11-15 21:41:30.298949
-
-owner_4:
-  name: "owner"
-  resource: three_members_0_proposals (Group)
-  created_at: 2024-11-15 21:41:30.298949
-  updated_at: 2024-11-15 21:41:30.298949
-
-admin_4:
-  name: "admin"
-  resource: three_members_0_proposals (Group)
-  created_at: 2024-11-15 21:41:30.300073
-  updated_at: 2024-11-15 21:41:30.300073
-
-kick_users_4:
+group_1_kick_users:
   name: "kick_users"
+  resource: one_member (Group)
+  created_at: 2024-11-15 21:41:30.308123
+  updated_at: 2024-11-15 21:41:30.308123
+
+# Group 1 -> Game Proposal 1 ('group_1_game_thief')
+group_1_game_thief_owner:
+  name: "owner"
+  resource: group_1_game_thief (GameProposal)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+group_1_game_thief_admin:
+  name: "admin"
+  resource: group_1_game_thief (GameProposal)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+group_1_game_thief_create_game_sessions:
+  name: "create_game_sessions"
+  resource: group_1_game_thief (GameProposal)
+  created_at: 2024-11-15 21:41:30.310895
+  updated_at: 2024-11-15 21:41:30.310895
+
+group_1_game_thief_manage_all_game_sessions:
+  name: "manage_all_game_sessions"
+  resource: group_1_game_thief (GameProposal)
+  created_at: 2024-11-15 21:41:30.314869
+  updated_at: 2024-11-15 21:41:30.314869
+
+# Group 1 -> Game Proposal 1 -> Game Session 1 ('proposal_1_session_1')
+group_1_game_thief_session_1_owner:
+  name: "owner"
+  resource: group_1_game_thief_session_1 (GameSession)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+# Group 2 ('two_members')
+group_2_owner:
+  name: "owner"
+  resource: two_members (Group)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+group_2_admin:
+  name: "admin"
+  resource: two_members (Group)
+  created_at: 2024-11-15 21:41:30.300073
+  updated_at: 2024-11-15 21:41:30.300073
+
+group_2_create_invites:
+  name: "create_invites"
+  resource: two_members (Group)
+  created_at: 2024-11-15 21:41:30.301005
+  updated_at: 2024-11-15 21:41:30.301005
+
+group_2_manage_invites:
+  name: "manage_invites"
+  resource: two_members (Group)
+  created_at: 2024-11-15 21:41:30.301899
+  updated_at: 2024-11-15 21:41:30.301899
+
+group_2_manage_users:
+  name: "manage_users"
+  resource: two_members (Group)
+  created_at: 2024-11-15 21:41:30.302732
+  updated_at: 2024-11-15 21:41:30.302732
+
+group_2_create_proposals:
+  name: "create_proposals"
+  resource: two_members (Group)
+  created_at: 2024-11-15 21:41:30.304932
+  updated_at: 2024-11-15 21:41:30.304932
+
+group_2_manage_all_proposals:
+  name: "manage_all_proposals"
+  resource: two_members (Group)
+  created_at: 2024-11-15 21:41:30.306994
+  updated_at: 2024-11-15 21:41:30.306994
+
+group_2_kick_users:
+  name: "kick_users"
+  resource: two_members (Group)
+  created_at: 2024-11-15 21:41:30.308123
+  updated_at: 2024-11-15 21:41:30.308123
+
+# Group 2 -> Game Proposal 1 ('group_2_game_thief')
+group_2_game_thief_owner:
+  name: "owner"
+  resource: group_2_game_thief (GameProposal)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+group_2_game_thief_admin:
+  name: "admin"
+  resource: group_2_game_thief (GameProposal)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+group_2_game_thief_create_game_sessions:
+  name: "create_game_sessions"
+  resource: group_2_game_thief (GameProposal)
+  created_at: 2024-11-15 21:41:30.310895
+  updated_at: 2024-11-15 21:41:30.310895
+
+group_2_game_thief_manage_all_game_sessions:
+  name: "manage_all_game_sessions"
+  resource: group_2_game_thief (GameProposal)
+  created_at: 2024-11-15 21:41:30.314869
+  updated_at: 2024-11-15 21:41:30.314869
+
+# Group 2 -> Game Proposal 2 ('group_2_game_gta')
+group_2_game_gta_owner:
+  name: "owner"
+  resource: group_2_game_gta (GameProposal)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+group_2_game_gta_admin:
+  name: "admin"
+  resource: group_2_game_gta (GameProposal)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+group_2_game_gta_create_game_sessions:
+  name: "create_game_sessions"
+  resource: group_2_game_gta (GameProposal)
+  created_at: 2024-11-15 21:41:30.310895
+  updated_at: 2024-11-15 21:41:30.310895
+
+group_2_game_gta_manage_all_game_sessions:
+  name: "manage_all_game_sessions"
+  resource: group_2_game_gta (GameProposal)
+  created_at: 2024-11-15 21:41:30.314869
+  updated_at: 2024-11-15 21:41:30.314869
+
+# Group 2 -> Game Proposal 2 -> Game Session 1 ('group_2_game_gta_session_1')
+group_2_game_gta_session_1_owner:
+  name: "owner"
+  resource: group_2_game_gta_session_1 (GameSession)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+# Group 3 ('three_members')
+group_3_owner:
+  name: "owner"
+  resource: three_members (Group)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+group_3_admin:
+  name: "admin"
+  resource: three_members (Group)
+  created_at: 2024-11-15 21:41:30.300073
+  updated_at: 2024-11-15 21:41:30.300073
+
+group_3_create_invites:
+  name: "create_invites"
+  resource: three_members (Group)
+  created_at: 2024-11-15 21:41:30.301005
+  updated_at: 2024-11-15 21:41:30.301005
+
+group_3_manage_invites:
+  name: "manage_invites"
+  resource: three_members (Group)
+  created_at: 2024-11-15 21:41:30.301899
+  updated_at: 2024-11-15 21:41:30.301899
+
+group_3_manage_users:
+  name: "manage_users"
+  resource: three_members (Group)
+  created_at: 2024-11-15 21:41:30.302732
+  updated_at: 2024-11-15 21:41:30.302732
+
+group_3_create_proposals:
+  name: "create_proposals"
+  resource: three_members (Group)
+  created_at: 2024-11-15 21:41:30.304932
+  updated_at: 2024-11-15 21:41:30.304932
+
+group_3_manage_all_proposals:
+  name: "manage_all_proposals"
+  resource: three_members (Group)
+  created_at: 2024-11-15 21:41:30.306994
+  updated_at: 2024-11-15 21:41:30.306994
+
+group_3_kick_users:
+  name: "kick_users"
+  resource: three_members (Group)
+  created_at: 2024-11-15 21:41:30.308123
+  updated_at: 2024-11-15 21:41:30.308123
+
+# Group 3 -> Game Proposal 1 ('group_3_game_thief')
+group_3_game_thief_owner:
+  name: "owner"
+  resource: group_3_game_thief (GameProposal)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+group_3_game_thief_admin:
+  name: "admin"
+  resource: group_3_game_thief (GameProposal)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+group_3_game_thief_create_game_sessions:
+  name: "create_game_sessions"
+  resource: group_3_game_thief (GameProposal)
+  created_at: 2024-11-15 21:41:30.310895
+  updated_at: 2024-11-15 21:41:30.310895
+
+group_3_game_thief_manage_all_game_sessions:
+  name: "manage_all_game_sessions"
+  resource: group_3_game_thief (GameProposal)
+  created_at: 2024-11-15 21:41:30.314869
+  updated_at: 2024-11-15 21:41:30.314869
+
+# Group 3 -> Game Proposal 1 -> Game Session 1 ('group_3_game_thief_session_1')
+group_3_game_thief_session_1_owner:
+  name: "owner"
+  resource: group_3_game_thief_session_1 (GameSession)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+# Group 3 -> Game Proposal 1 -> Game Session 2 ('group_3_game_thief_session_2')
+group_3_game_thief_session_2_owner:
+  name: "owner"
+  resource: group_3_game_thief_session_2 (GameSession)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+# Group 3 -> Game Proposal 1 -> Game Session 3 ('group_3_game_thief_session_3')
+group_3_game_thief_session_3_owner:
+  name: "owner"
+  resource: group_3_game_thief_session_3 (GameSession)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+# Group 3 -> Game Proposal 2 ('group_3_game_gta')
+group_3_game_gta_owner:
+  name: "owner"
+  resource: group_3_game_gta (GameProposal)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+group_3_game_gta_admin:
+  name: "admin"
+  resource: group_3_game_gta (GameProposal)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+group_3_game_gta_create_game_sessions:
+  name: "create_game_sessions"
+  resource: group_3_game_gta (GameProposal)
+  created_at: 2024-11-15 21:41:30.310895
+  updated_at: 2024-11-15 21:41:30.310895
+
+group_3_game_gta_manage_all_game_sessions:
+  name: "manage_all_game_sessions"
+  resource: group_3_game_gta (GameProposal)
+  created_at: 2024-11-15 21:41:30.314869
+  updated_at: 2024-11-15 21:41:30.314869
+
+# Group 4 ('three_members_0_proposals')
+group_4_owner:
+  name: "owner"
+  resource: three_members_0_proposals (Group)
+  created_at: 2024-11-15 21:41:30.298949
+  updated_at: 2024-11-15 21:41:30.298949
+
+group_4_admin:
+  name: "admin"
+  resource: three_members_0_proposals (Group)
+  created_at: 2024-11-15 21:41:30.300073
+  updated_at: 2024-11-15 21:41:30.300073
+
+group_4_create_invites:
+  name: "create_invites"
   resource: three_members_0_proposals (Group)
   created_at: 2024-11-15 21:41:30.301005
   updated_at: 2024-11-15 21:41:30.301005
 
-manage_invites_4:
+group_4_manage_invites:
   name: "manage_invites"
   resource: three_members_0_proposals (Group)
   created_at: 2024-11-15 21:41:30.301899
   updated_at: 2024-11-15 21:41:30.301899
 
-create_game_proposals_4:
+group_4_manage_users:
+  name: "manage_users"
+  resource: three_members_0_proposals (Group)
+  created_at: 2024-11-15 21:41:30.302732
+  updated_at: 2024-11-15 21:41:30.302732
+
+group_4_create_game_proposals:
   name: "create_game_proposals"
   resource: three_members_0_proposals (Group)
   created_at: 2024-11-15 21:41:30.302732
   updated_at: 2024-11-15 21:41:30.302732
 
-manage_all_proposals_4:
+group_4_manage_all_proposals:
   name: "manage_all_proposals"
   resource: three_members_0_proposals (Group)
   created_at: 2024-11-15 21:41:30.306994
   updated_at: 2024-11-15 21:41:30.306994
 
-game_proposal_4_admin:
-  name: "admin"
-  resource: group_3_game_2 (GameProposal)
-  created_at: 2024-11-15 21:41:30.298949
-  updated_at: 2024-11-15 21:41:30.298949
-
-create_any_sessions_4:
-  name: "create_game_sessions"
-  resource: group_3_game_2 (GameProposal)
-  created_at: 2024-11-15 21:41:30.310895
-  updated_at: 2024-11-15 21:41:30.310895
-
-manage_all_sessions_4:
-  name: "manage_all_game_sessions"
-  resource: group_3_game_2 (GameProposal)
-  created_at: 2024-11-15 21:41:30.314869
-  updated_at: 2024-11-15 21:41:30.314869
-
-game_proposal_1_admin:
-  name: "admin"
-  resource: group_1_game_1 (GameProposal)
-  created_at: 2024-11-15 21:41:30.298949
-  updated_at: 2024-11-15 21:41:30.298949
-
-game_proposal_2_admin:
-  name: "admin"
-  resource: group_2_game_2 (GameProposal)
-  created_at: 2024-11-15 21:41:30.298949
-  updated_at: 2024-11-15 21:41:30.298949
-
-game_proposal_3_admin:
-  name: "admin"
-  resource: group_3_game_1 (GameProposal)
-  created_at: 2024-11-15 21:41:30.298949
-  updated_at: 2024-11-15 21:41:30.298949
-
-game_session_4_owner:
-  name: "owner"
-  resource: proposal_3_session_2 (GameSession)
-  created_at: 2024-11-15 21:41:30.298949
-  updated_at: 2024-11-15 21:41:30.298949
-
-game_session_5_owner:
-  name: "owner"
-  resource: proposal_3_session_3 (GameSession)
-  created_at: 2024-11-15 21:41:30.298949
-  updated_at: 2024-11-15 21:41:30.298949
+group_4_kick_users:
+  name: "kick_users"
+  resource: three_members_0_proposals (Group)
+  created_at: 2024-11-15 21:41:30.301005
+  updated_at: 2024-11-15 21:41:30.301005

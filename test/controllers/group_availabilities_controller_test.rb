@@ -3,6 +3,7 @@ require "test_helper"
 class GroupAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @group_availability = group_availabilities(:user_2_group_2_availability)
+    @group_availability = group_availabilities(:user_cooluserguy_group_2_availability)
   end
 
   test "should get index" do
@@ -26,7 +27,7 @@ class GroupAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(user)
 
     get new_group_group_availability_url(groups(:two_members))
-    assert_redirected_to edit_group_availability_url(group_availabilities(:user_2_group_2_availability))
+    assert_redirected_to edit_group_availability_url(group_availabilities(:user_cooluserguy_group_2_availability))
   end
 
   test "should create group_availability" do
@@ -35,7 +36,10 @@ class GroupAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
     group = groups(:three_members)
 
     assert_difference("GroupAvailability.count") do
-      post group_group_availabilities_url(group), params: {group_availability: {availability_id: availabilities(:user_3_default_availability).id, group_id: group.id, user_id: user.id}}
+      post group_group_availabilities_url(group),
+        params: {group_availability: {availability_id: availabilities(:user_radperson_default_availability).id,
+                                      group_id: group.id,
+                                      user_id: @user.id}}
     end
 
     assert_redirected_to group_url(group)
@@ -58,9 +62,7 @@ class GroupAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update group_availability" do
-    user = users(:cooluserguy)
-    sign_in_as(user)
-    availability = availabilities(:user_2_empty_availability)
+    availability = availabilities(:user_cooluserguy_empty_availability)
 
     patch group_availability_url(@group_availability), params: {group_availability: {availability_id: availability.id}}
 

@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class GamesTest < ApplicationSystemTestCase
   setup do
-    @game = games(:one)
+    @game = games(:thief)
   end
 
   test "visiting the index" do

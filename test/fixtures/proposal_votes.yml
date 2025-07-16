@@ -1,63 +1,63 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 # Group 1, Proposal 1 (Game 1)
-proposal_1_user_1_undecided:
-  game_proposal: group_1_game_1
+group_1_game_thief_user_admin_undecided:
+  game_proposal: group_1_game_thief
   user: admin
   yes_vote: nil
 
 # Group 2, Proposal 2 (Game 2)
-proposal_2_user_2_yes:
-  game_proposal: group_2_game_2
+group_2_game_gta_user_cooluserguy_yes:
+  game_proposal: group_2_game_gta
   user: cooluserguy
   yes_vote: true
   comment: "I love this game!"
 
-proposal_2_user_3_no:
-  game_proposal: group_2_game_2
+group_2_game_gta_user_radperson_no:
+  game_proposal: group_2_game_gta
   user: radperson
   yes_vote: false
   comment: "I hate this game!"
 
 # Group 2, Proposal 5 (Game 1)
-proposal_5_user_2_undecided:
-  game_proposal: group_2_game_1
+group_2_game_thief_user_cooluserguy_undecided:
+  game_proposal: group_2_game_thief
   user: cooluserguy
   yes_vote: nil
 
-proposal_5_user_3_yes:
-  game_proposal: group_2_game_1
+group_2_game_thief_user_radperson_yes:
+  game_proposal: group_2_game_thief
   user: radperson
   yes_vote: true
 
 # Group 3, Proposal 3 (Game 1)
-proposal_3_user_2_undecided:
-  game_proposal: group_3_game_1
+group_3_game_thief_user_cooluserguy_undecided:
+  game_proposal: group_3_game_thief
   user: cooluserguy
   yes_vote: nil
 
-proposal_3_user_3_undecided:
-  game_proposal: group_3_game_1
+group_3_game_thief_user_radperson_undecided:
+  game_proposal: group_3_game_thief
   user: radperson
   yes_vote: nil
 
-proposal_3_user_4_yes:
-  game_proposal: group_3_game_1
+group_3_game_thief_user_groupsmemberuser_yes:
+  game_proposal: group_3_game_thief
   user: groupsmemberuser
   yes_vote: true
 
 # Group 3, Proposal 4 (Game 2)
-proposal_4_user_2_undecided:
-  game_proposal: group_3_game_2
+group_3_game_gta_user_cooluserguy_undecided:
+  game_proposal: group_3_game_gta
   user: cooluserguy
   yes_vote: nil
 
-proposal_4_user_3_no:
-  game_proposal: group_3_game_2
+group_3_game_gta_user_radperson_no:
+  game_proposal: group_3_game_gta
   user: radperson
   yes_vote: false
 
-proposal_4_user_4_undecided:
-  game_proposal: group_3_game_2
+group_3_game_gta_user_groupsmemberuser_undecided:
+  game_proposal: group_3_game_gta
   user: groupsmemberuser
   yes_vote: nil

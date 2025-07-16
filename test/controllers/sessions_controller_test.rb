@@ -2,7 +2,7 @@ require "test_helper"
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @user = users(:two)
+    @user = users(:cooluserguy)
   end
 
   test "should get new" do

@@ -2,7 +2,7 @@ require "test_helper"
 
 class ProposalVotesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @proposal_vote = proposal_votes(:proposal_2_user_2_yes)
+    @proposal_vote = proposal_votes(:group_2_game_gta_user_cooluserguy_yes)
     @game_proposal = @proposal_vote.game_proposal
     @user = @proposal_vote.user
     sign_in_as(@user)
@@ -14,7 +14,7 @@ class ProposalVotesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not create proposal_vote when one exists" do
-    game_proposal = game_proposals(:group_2_game_1)
+    game_proposal = game_proposals(:group_2_game_thief)
     assert_no_difference("ProposalVote.count") do
       post game_proposal_proposal_votes_url(game_proposal), params: {proposal_vote: {game_proposal_id: game_proposal.id, user_id: @user.id, yes_vote: true}}
     end

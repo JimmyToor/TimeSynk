@@ -1,6 +1,6 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-user_1_default:
+user_admin_default:
   user: admin
   start_time: 2024-06-06 14:45:00
   end_time: 2024-06-06 15:45:00
@@ -8,7 +8,7 @@ user_1_default:
   schedule_pattern: {"interval": 1, "rule_type": "IceCube::DailyRule", "validations": {}}
   name: Default Schedule
 
-user_1_daily_90_minutes:
+user_admin_daily_90_minutes:
   user: admin
   start_time: 2024-12-03 14:30:00
   end_time: 2024-12-03 16:00:00
@@ -16,7 +16,7 @@ user_1_daily_90_minutes:
   schedule_pattern: {"interval": 1, "rule_type": "IceCube::DailyRule", "validations": {}}
   name: User 1 Daily 90 Minutes Schedule
 
-user_2_default:
+user_cooluserguy_default:
   user: cooluserguy
   start_time: 2024-07-06 12:00:00
   end_time: 2024-07-06 13:00:00
@@ -24,7 +24,7 @@ user_2_default:
   schedule_pattern: {"interval": 1, "rule_type": "IceCube::DailyRule", "validations": {}}
   name: Default Schedule
 
-user_2_single_hour:
+user_cooluserguy_single_hour:
   user: cooluserguy
   start_time: 2024-07-06 12:30:00
   end_time: 2024-07-06 13:30:00
@@ -32,7 +32,7 @@ user_2_single_hour:
   schedule_pattern: {}
   name: User 2 Single Hour Schedule
 
-user_2_daily_hour:
+user_cooluserguy_daily_hour:
   user: cooluserguy
   start_time: 2024-07-06 14:00:00
   end_time: 2024-07-06 15:00:00
@@ -40,7 +40,7 @@ user_2_daily_hour:
   schedule_pattern: {"interval": 1, "rule_type": "IceCube::DailyRule", "validations": {}}
   name: User 2 Daily Hour Schedule
 
-user_3_unique_name:
+user_radperson_unique_name:
   user: radperson
   start_time: 2024-07-06 12:30:00
   end_time: 2024-07-06 13:30:00

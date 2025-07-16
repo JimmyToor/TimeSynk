@@ -2,7 +2,7 @@ require "test_helper"
 
 class GameProposalsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @game_proposal = game_proposals(:group_3_game_1)
+    @game_proposal = game_proposals(:group_3_game_thief)
     @user = users(:radperson)
     @group = groups(:three_members)
     sign_in_as @user
@@ -28,8 +28,8 @@ class GameProposalsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not create game_proposal for game with existing proposal" do
-    game = games(:thief_2)
-    post group_game_proposals_url @group, params: {game_proposal: {game_id: game.id, group_id: @group.id}}
+    game = games(:thief)
+    post group_game_proposals_url(@group, params: {game_proposal: {game_id: game.id, group_id: @group.id}}, format: :turbo_stream)
     assert_response :unprocessable_entity
   end
 

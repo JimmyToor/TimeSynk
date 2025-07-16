@@ -2,11 +2,7 @@ require "test_helper"
 
 class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @group_membership = group_memberships(:group_2_user_3)
-  end
-
-  test "should not create group_membership without invite" do
-    group = groups(:two_members)
+    @group_membership = group_memberships(:group_2_membership_user_radperson)
     @user = users(:cooluserguy)
     sign_in_as @user
 

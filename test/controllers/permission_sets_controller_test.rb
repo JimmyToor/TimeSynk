@@ -12,9 +12,9 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update group permission set" do
-    manage_proposals_role = roles(:manage_all_proposals_3)
-    create_proposals_role = roles(:create_proposals_3)
-    create_invites_role = roles(:create_invites_3)
+    manage_proposals_role = roles(:group_3_manage_all_proposals)
+    create_proposals_role = roles(:group_3_create_proposals)
+    create_invites_role = roles(:group_3_create_invites)
     user1 = users(:cooluserguy)
     user2 = users(:radperson)
     expected_user1_roles = (user1.roles + [manage_proposals_role, create_invites_role]).to_set
@@ -43,7 +43,7 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
 
   test "should update single group user permission set" do
     user = users(:radperson)
-    manage_proposals_role = roles(:manage_all_proposals_3)
+    manage_proposals_role = roles(:group_3_manage_all_proposals)
     group = groups(:three_members)
     patch group_permission_set_url(group.id), params: {
       permission_set: {
@@ -61,7 +61,7 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get edit for game proposal" do
-    proposal = game_proposals(:group_3_game_1)
+    proposal = game_proposals(:group_3_game_thief)
 
     get edit_game_proposal_permission_set_url(proposal.id), params: {game_proposal_id: proposal.id}
 
@@ -69,8 +69,8 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update game proposal permission set" do
-    proposal = game_proposals(:group_3_game_1)
-    manage_sessions_role = roles(:manage_all_sessions_3)
+    proposal = game_proposals(:group_3_game_thief)
+    manage_sessions_role = roles(:group_3_game_thief_manage_all_game_sessions)
 
     patch game_proposal_permission_set_url(proposal.id), params: {
       permission_set: {
@@ -87,7 +87,7 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get edit for single game proposal user" do
-    proposal = game_proposals(:group_3_game_1)
+    proposal = game_proposals(:group_3_game_thief)
     user = users(:radperson)
 
     get edit_game_proposal_permission_set_url(proposal.id), params: {game_proposal_id: proposal.id, user_id: user.id}
@@ -96,9 +96,9 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update single game proposal user permission set" do
-    proposal = game_proposals(:group_3_game_1)
+    proposal = game_proposals(:group_3_game_thief)
     user = users(:radperson)
-    role = roles(:game_proposal_1_admin)
+    role = roles(:group_1_game_thief_admin)
 
     patch game_proposal_permission_set_url(proposal.id), params: {
       permission_set: {

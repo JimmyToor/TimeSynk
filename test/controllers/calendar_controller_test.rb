@@ -6,13 +6,13 @@ class CalendarControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(@user)
   end
 
-  test "should get new with modal" do
+  test "should get new" do
     get calendars_new_url
     assert_response :success
   end
 
   test "should get calendars as JSON" do
-    schedule1 = schedules(:user_2_single_hour)
+    schedule1 = schedules(:user_cooluserguy_single_hour)
     get calendars_url(format: :json, params: {schedule_id: schedule1.id})
 
     # not mocked because the test is about the response matching this output

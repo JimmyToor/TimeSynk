@@ -1,12 +1,12 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 
-user_1_group_1_availability:
-  availability: user_1_default_availability
+user_admin_group_1_availability:
+  availability: user_admin_default_availability
   group: one_member
   user: admin
 
-user_2_group_2_availability:
-  availability: user_2_default_availability
+user_cooluserguy_group_2_availability:
+  availability: user_cooluserguy_default_availability
   group: two_members
   user: cooluserguy

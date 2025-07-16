@@ -3,6 +3,7 @@ require "test_helper"
 class InvitesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @invite = invites(:group_1_no_roles)
+    @invite = invites(:group_2_role_group_2_manage_users)
   end
 
   test "should get index" do
@@ -24,8 +25,8 @@ class InvitesControllerTest < ActionDispatch::IntegrationTest
   test "should create invite" do
     @user = users(:admin)
     sign_in_as(@user)
-    group = groups(:one_member)
-    role = roles(:manage_invites_1)
+    group = groups(:two_members)
+    role = roles(:group_2_manage_invites)
 
     assert_difference("Invite.count") do
       post group_invites_url group, params: {invite: {expires_at: 1.day.from_now,

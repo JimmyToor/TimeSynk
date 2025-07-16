@@ -2,7 +2,7 @@ require "test_helper"
 
 class UserAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @user_availability = user_availabilities(:user_2)
+    @user_availability = user_availabilities(:user_cooluserguy_default)
     @user = users(:cooluserguy)
     sign_in_as(@user)
   end
@@ -18,8 +18,8 @@ class UserAvailabilitiesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update user_availability" do
-    new_availability = availabilities(:user_2_empty_availability)
+    new_availability = availabilities(:user_cooluserguy_empty_availability)
     patch user_availability_url(@user_availability), params: {user_availability: {availability_id: new_availability.id}}
-    assert_equal availabilities(:user_2_empty_availability), @user_availability.reload.availability
+    assert_equal availabilities(:user_cooluserguy_empty_availability), @user_availability.reload.availability
   end
 end

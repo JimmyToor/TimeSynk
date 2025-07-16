@@ -24,7 +24,7 @@ class AvailabilityTest < ActiveSupport::TestCase
   end
 
   test "should enforce uniqueness of name scoped to user" do
-    existing_availability = availabilities(:user_1_default_availability)
+    existing_availability = availabilities(:user_admin_default_availability)
     user = existing_availability.user
     duplicate = Availability.new(name: existing_availability.name, user: user)
     refute duplicate.valid?
@@ -32,12 +32,12 @@ class AvailabilityTest < ActiveSupport::TestCase
   end
 
   test "should return the user's username" do
-    availability = availabilities(:user_1_default_availability)
+    availability = availabilities(:user_admin_default_availability)
     assert_equal availability.user.username, availability.username
   end
 
   test "should not allow deletion if it's the only availability" do
-    availability = availabilities(:user_4_default_availability)
+    availability = availabilities(:user_groupsmemberuser_default_availability)
     assert_equal 1, availability.user.availabilities.count, "Fixture setup assumption failed: User should only have one availability for this test"
 
     assert_no_difference "Availability.count" do
@@ -48,7 +48,7 @@ class AvailabilityTest < ActiveSupport::TestCase
 
   test "destroying availability cascades to proposal_availability" do
     user = users(:admin)
-    proposal_availability_record = proposal_availabilities(:user_1_proposal_1_availability)
+    proposal_availability_record = proposal_availabilities(:user_admin_group_1_game_thief_availability)
     proposal_availability_id = proposal_availability_record.id
 
     # Link the proposal availability
@@ -68,7 +68,7 @@ class AvailabilityTest < ActiveSupport::TestCase
 
   test "destroying availability cascades to group_availability" do
     user = users(:admin)
-    group_availability_record = group_availabilities(:user_1_group_1_availability)
+    group_availability_record = group_availabilities(:user_admin_group_1_availability)
     group_availability_id = group_availability_record.id
 
     # Link the group availability
@@ -88,7 +88,7 @@ class AvailabilityTest < ActiveSupport::TestCase
 
   test "destroying availability set as default re-assigns user_availability" do
     user = users(:admin)
-    original_user_availability_record = user_availabilities(:user_1)
+    original_user_availability_record = user_availabilities(:user_admin_default)
     original_fallback_availability = original_user_availability_record.availability
 
     # Link user availability

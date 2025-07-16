@@ -1,41 +1,41 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 # Group 1 - Owner: user_id 1
-group_1_owner_1:
+group_1_membership_user_admin:
   group: one_member
   user: admin
 
 # Group 2 - Owner: user_id 3, No Role: user_id 2
-group_2_user_3:
+group_2_membership_user_radperson:
   group: two_members
   user: radperson
 
-group_2_user_2:
+group_2_membership_user_three_members:
   group: two_members
   user: cooluserguy
 
 # Group 3 - Owner: user_id 2, Admin: user_id 3, Manage_Invites: user_id 3, Create_Proposals: user_id 3, No Role: user_id 4
-group_3_user_2:
+group_3_membership_user_cooluserguy:
   group: three_members
   user: cooluserguy
 
-group_3_user_3:
+group_3_membership_user_radperson:
   group: three_members
   user: radperson
 
-group_3_user_4:
+group_3_membership_user_groupsmemberuser:
   group: three_members
   user: groupsmemberuser
 
 # Group 4 - Owner: user_id 4, Admin: user_id 3, No Role: user_id 2
-group_4_user_4:
+group_4_membership_user_groupsmemberuser:
   group: three_members_0_proposals
   user: groupsmemberuser
 
-group_4_user_3:
+group_4_membership_user_radperson:
   group: three_members_0_proposals
   user: radperson
 
-group_4_user_2:
+group_4_membership_user_cooluserguy:
   group: three_members_0_proposals
   user: cooluserguy
