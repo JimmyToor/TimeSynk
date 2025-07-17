@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   before_action :set_group, only: %i[show]
   before_action :set_game_proposal, only: %i[show]
   before_action :set_game_session, only: %i[show]
-  skip_after_action :verify_authorized, except: %i[update]
+  skip_after_action :verify_authorized, only: %i[show edit destroy]
   skip_after_action :verify_policy_scoped
 
   def index

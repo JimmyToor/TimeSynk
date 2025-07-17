@@ -31,7 +31,7 @@ class GroupMembershipsController < ApplicationController
 
   # GET /group_memberships/new
   def new
-    render :new, locals: {invite: @invite}, status: ((@invite.nil? || @invite.errors.any?) ? :unprocessable_entity : :ok)
+    render :new, locals: {invite: @invite}, status: (@invite&.errors&.any? ? :unprocessable_entity : :ok)
   end
 
   # POST /group_memberships
@@ -77,9 +77,14 @@ class GroupMembershipsController < ApplicationController
   end
 
   def set_invite
-    return unless invite_required?
+    return unless invite_required? && token_present?
+
     token = extract_token(params)
     handle_invite(token)
+  end
+
+  def token_present?
+    params.key?(:invite_token) || params.dig(:group_membership, :invite_token)
   end
 
   def extract_token(params)
@@ -88,7 +93,6 @@ class GroupMembershipsController < ApplicationController
 
   def handle_invite(token = "")
     @invite = Invite.from_token(token)
-
     if @invite.errors.any?
       flash.now[:error] = {message: I18n.t("group_membership.invite_not_valid"),
                            options: {list_items: @invite.errors.full_messages}}

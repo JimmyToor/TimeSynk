@@ -1,5 +1,5 @@
-<%# locals: (invite:, group: nil, roles: [] %>
-<%= form_with(model: [group, invite]) do |form| %>
+<%# locals: (invite:, group: nil, roles: []) %>
+<%= form_with(model: [group, invite], data: {turbo: modal_wrapper? ? "true" : "false"}, class:"space-y-2") do |form| %>
   <% id = invite.new_record? ? "invite_new" : "invite_#{invite.id}" %>
   <%= render "shared/notification", id: id %>
 
@@ -16,21 +16,22 @@
   </div>
 
   <div>
-    <%= form.label :assigned_role_ids, "Permissions", style: "display: block" %>
+    <%= render "shared/form_label", text: "Permissions", form: form, field: :assigned_role_ids, extra_classes: "block" %>
     <%= form.collection_check_boxes :assigned_role_ids, roles, :id, :name, include_hidden: true do |box| %>
-      <div>
+      <div class="flex items-center space-x-2">
         <%= box.check_box(checked: invite.assigned_role_ids.include?(box.value.to_i)) %>
         <%= box.label { box.text.humanize } %>
       </div>
     <% end if roles.present? %>
   </div>
 
-  <div class="flatpickr" data-controller="flatpickr" data-flatpickr-timezone-value="<%= Current.user.timezone %>">
-    <%= form.label :expires_at, style: "display: block" %>
+  <div data-controller="flatpickr" class="flatpickr" data-flatpickr-timezone-value="<%= Current.user.timezone %>">
+    <%= render "shared/form_label", form: form, field: :expires_at, extra_classes: "block" %>
     <%= form.datetime_field :expires_at,
                             data: { flatpickr_target: "startDate" },
-                            value: invite.expires_at&.in_time_zone(Current.user.timezone) || (1.week.from_now)
-                              .in_time_zone(Current.user.timezone) %>
+                            required: true,
+                            value: invite.expires_at&.in_time_zone(Current.user.timezone) ||
+                              (1.week.from_now).in_time_zone(Current.user.timezone) %>
   </div>
 
   <div class="mt-3">

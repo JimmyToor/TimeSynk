@@ -3,10 +3,9 @@ class AvailabilitiesController < ApplicationController
   before_action :set_schedules, only: %i[new edit create]
   before_action :add_no_schedules_flash, only: %i[new edit create]
 
-  # GET /availabilities or /availabilities.json
+  # GET /availabilities
   def index
     @availabilities = params[:query].present? ? policy_scope(Availability).search(params[:query]) : policy_scope(Availability)
-    authorize(@availabilities)
     @pagy, @availabilities = pagy(@availabilities)
     respond_to do |format|
       format.html { render :index, locals: {availabilities: @availabilities} }
@@ -14,7 +13,7 @@ class AvailabilitiesController < ApplicationController
     end
   end
 
-  # GET /availabilities/1 or /availabilities/1.json
+  # GET /availabilities/1
   def show
   end
 
@@ -37,7 +36,7 @@ class AvailabilitiesController < ApplicationController
     end
   end
 
-  # POST /availabilities or /availabilities.json
+  # POST /availabilities
   def create
     @availability = Availability.new(availability_params)
     authorize(@availability)
@@ -46,43 +45,37 @@ class AvailabilitiesController < ApplicationController
     respond_to do |format|
       if @availability.save
         format.html { redirect_to availability_url(@availability), success: {message: "Availability was successfully created."} }
-        format.json { render :show, status: :created, location: @availability }
       else
         flash.now[:alert] = {message: I18n.t("availability.create.error"),
                              options: {list_items: @availability.errors.full_messages}}
         format.html { render :new, locals: {schedules: @schedules, availability: @availability}, status: :unprocessable_entity }
-        format.json { render json: @availability.errors, status: :unprocessable_entity }
         format.turbo_stream { render "create_fail" }
       end
     end
   end
 
-  # PATCH/PUT /availabilities/1 or /availabilities/1.json
+  # PATCH/PUT /availabilities/1
   def update
     respond_to do |format|
       if @availability.update(availability_params)
         format.html { redirect_to availability_url(@availability), notice: "Availability was successfully updated." }
-        format.json { render :show, status: :ok, location: @availability }
       else
         flash.now[:alert] = {message: I18n.t("availability.update.error"),
                              options: {list_items: @availability.errors.full_messages}}
         format.html { render :edit, locals: {schedules: @schedules, availability: @availability}, status: :unprocessable_entity }
-        format.json { render json: @availability.errors, status: :unprocessable_entity }
         format.turbo_stream { render "update_fail" }
       end
     end
   end
 
-  # DELETE /availabilities/1 or /availabilities/1.json
+  # DELETE /availabilities/1
   def destroy
     respond_to do |format|
       if @availability.destroy
         format.html { redirect_to availabilities_url, notice: "Availability was successfully destroyed." }
-        format.json { head :no_content }
         format.turbo_stream
       else
         format.html { redirect_to availabilities_url, alert: "Availability could not be destroyed." }
-        format.json { render json: @availability.errors, status: :unprocessable_entity }
         format.turbo_stream { render :destroy_fail }
       end
     end
@@ -90,7 +83,6 @@ class AvailabilitiesController < ApplicationController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_availability
     @availability = authorize(Availability.find(params[:id]))
   end

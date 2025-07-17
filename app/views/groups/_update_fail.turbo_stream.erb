@@ -1,0 +1,8 @@
+<%= turbo_stream.replace("group_form_#{@group.id}",
+                         partial: "groups/form",
+                         locals: {group: @group}) %>
+
+<%= turbo_stream_toast(:error,
+                       t("group.update.error"),
+                       "group_#{@group.id}_update_error",
+                       options: {list_items: @group.errors}) %>

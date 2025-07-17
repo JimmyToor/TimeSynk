@@ -3,7 +3,7 @@ class AvailabilitySchedulesController < ApplicationController
   skip_after_action :verify_authorized
   skip_after_action :verify_policy_scoped
 
-  # GET /availability_schedules or /availability_schedules.json
+  # GET /availability_schedules.json
   def index
     authorize(@availability, :show?, policy_class: AvailabilityPolicy)
     @availability_schedules = @availability.availability_schedules.includes(:schedule)

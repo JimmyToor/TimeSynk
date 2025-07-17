@@ -1,9 +1,9 @@
-<%# locals: (group:, can_invite: false, can_propose: false, group_availability: nil, group_permission_set: nil) %>
+<%# locals: (group:, group_availability: nil, group_permission_set: nil) %>
 <div class="flex align-top space-x-1">
 
-  <%= render "new_dropdown_button", group: group, can_invite: can_invite, can_propose: can_propose if can_invite || can_propose %>
+  <%= render "new_dropdown_button", group: group, can_propose: policy(group).create_game_proposal? %>
 
-  <% if group_permission_set.present? && group_permission_set_policy(group_permission_set).edit? %>
+  <% if group_permission_set.present? && policy(group_permission_set).edit? %>
     <%= render partial: "permission_sets/edit_button", locals: { permission_set: group_permission_set } %>
   <% end %>
 

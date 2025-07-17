@@ -4,4 +4,6 @@
 
 <%= turbo_stream.update("modal_frame") %>
 
-<%= frame_reload("invite_table_#{@invite.group.id}") %>
+<%= turbo_stream.update("invite_table_row_#{@invite.id}",
+                        partial: "invites/table/invite_table_row",
+                        locals: { invite: @invite}) %>

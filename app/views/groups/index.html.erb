@@ -1,26 +1,22 @@
+<%# locals: (groups: []) %>
 <section>
   <div class="flex justify-between mb-4">
-    <div>
-      <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-        Groups
-      </h1>
-    </div>
     <div class="flex space-x-2">
-      <%= render "shared/buttons/primary_link",
+      <%= render "shared/buttons/secondary_link",
                  path: new_group_path,
                  text: "New Group",
                  attributes: {'aria-haspopup': true},
                  data: { turbo_frame: "modal_frame" } %>
-      <%= render "shared/buttons/secondary_link",
+      <%= render "shared/buttons/primary_link",
                  path: join_group_path,
                  text: "Join Group" %>
     </div>
   </div>
 
-  <%= render 'shared/notification', id: "groups" %>
 
-  <div id="groups" class="relative space-y-4">
-    <% @groups.each do |group| %>
+  <%= turbo_frame_tag "groups", data: {src: groups_path}, class:"relative space-y-4 mb-4" do %>
+    <%= render 'shared/notification', id: "groups" %>
+    <% groups.each do |group| %>
       <div class="group-container relative flex" id="group_<%= group.id %>_container">
         <%= render group,
                    group_availability:   group.get_user_group_availability(Current.user),
@@ -28,6 +24,7 @@
         <%= render "groups/card_link", group: group %>
       </div>
     <% end %>
-  </div>
+    <%= render "shared/table_nav" %>
+  <% end %>
 </section>
 <% content_for(:page_title, t("group.title")) %>

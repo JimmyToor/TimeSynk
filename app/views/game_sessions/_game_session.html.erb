@@ -47,19 +47,10 @@
       </div>
       <div class="game_session_<%= game_session.id %>_details space-y-1.5">
         <% if include_group %>
-          <div class="mb-3 flex items-center gap-2 text-sm" role="presentation">
-            <%= inline_svg "icons/group.svg", title: "Group", aria_hidden: true, class: "h-6 w-6" %>
-              <%= link_to "#{game_session.game_proposal.group.name}",
-                          group_path(game_session.game_proposal.group),
-                          title: "Go to group: #{game_session.game_proposal.group.name}",
-                          data: {turbo_frame: "_top"},
-                          'aria-label': "Go to group: #{game_session.game_proposal.group.name}",
-                          class:"game-name font-semibold text-primary-950 dark:text-white underline
-             decoration-2 hover:decoration-4 decoration-secondary-500 dark:decoration-secondary-200" %>
-          </div>
+          <%= render "groups/group_link", group: game_session.group %>
         <% end %>
-        <div class="mb-3 flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400" role="presentation">
 
+        <div class="mb-3 flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400" role="presentation">
           <%= inline_svg_tag "icons/calendar.svg", title: "Date", aria_hidden: true, class:"h-6" %>
           <div id="game_session_<%= game_session.id %>_details_date" role="presentation">
             <%= render "game_sessions/game_session_date", game_session: game_session %>

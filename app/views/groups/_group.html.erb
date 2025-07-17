@@ -19,9 +19,7 @@
       <div class="flex align-top space-x-1">
         <%= render partial:"options", locals: { group:group,
                                                 group_availability: group_availability,
-                                                group_permission_set: group_permission_set,
-                                                can_invite: policy(group.invites.build).new?,
-                                                can_propose: policy(group).create_game_proposal? } %>
+                                                group_permission_set: group_permission_set } %>
       </div>
     </div>
 

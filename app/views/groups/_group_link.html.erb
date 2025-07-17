@@ -1,0 +1,11 @@
+<%# locals: (group:) %>
+<div class="mb-3 flex items-center gap-2 text-sm group_link_<%= group.id %> %>" role="presentation">
+  <%= inline_svg "icons/group.svg", title: "Group Name", aria_hidden: true, class: "h-6 w-6" %>
+  <%= link_to "#{group.name}",
+              group_path(group),
+              title: "Go to group: #{group.name}",
+              data: {turbo_frame: "_top"},
+              'aria-label': "Go to group: #{group.name}",
+              class:"game-name font-semibold text-primary-950 dark:text-white underline decoration-2
+                          hover:decoration-4 decoration-secondary-500 dark:decoration-secondary-200" %>
+</div>

@@ -1,0 +1,8 @@
+<%= turbo_stream.replace("group_#{@group.id}_delete_form",
+                         partial: "groups/delete_form",
+                         locals: {group: @group}) %>
+
+<%= turbo_stream_toast(:error,
+                       t("group.destroy.error"),
+                       "group_#{@group.id}_destroy_error",
+                       options: {list_items: @group.errors}) %>

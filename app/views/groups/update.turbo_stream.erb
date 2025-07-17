@@ -1,8 +1,8 @@
-<%= turbo_stream.replace(@group,
-                         partial: "groups/group",
-                         locals: { group: @group,
-                                   group_availability: @group_availability,
-                                   group_permission_set: @group_permission_set }) %>
+<%= turbo_stream.update_all(".group_name_#{@group.id}", @group.name) %>
+
+<%= turbo_stream.update_all(".group_link_#{@group.id}",
+                            partial: "groups/group_link",
+                            locals: {group: @group}) %>
 
 <%= turbo_stream.update("modal_frame") %>
 

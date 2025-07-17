@@ -1,4 +1,4 @@
-<%# locals: (group:, can_propose: false) %>
+<%# locals: (game_proposal:, can_create_session: false) %>
 <%= content_tag :div, data: {controller:"dropdown"}, class:"relative" do %>
   <button id="new-dropdown-button"
           title="Open Creation Dropdown"
@@ -25,14 +25,15 @@
     <ul class="py-2 text-sm text-black dark:text-white z-10 " aria-labelledby="new-dropdown-button">
 
       <%= content_tag :li, class: "flex hover:border-gray-600 dark:hover:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600" do %>
-        <%= link_to new_group_game_proposal_path(group),
-                    title: "New Game Proposal",
+        <%= link_to new_game_proposal_game_session_path(game_proposal),
+                    title: "New Game Session",
                     class: "flex h-fit px-2 items-center hover:bg-gray-200 dark:hover:bg-gray-600 w-full py-1",
-                    data:  { action: "dropdown#toggle", turbo_frame: "_top" } do %>
+                    'aria-haspopup': "dialog",
+                    data:  { action: "dropdown#toggle", turbo_frame: "modal_frame" } do %>
           <%= inline_svg_tag "icons/rectangle_stack.svg" %>
-          <span class="ml-2">New Game Proposal</span>
+          <span class="ml-2">New Game Session</span>
         <% end %>
-      <% end if can_propose %>
+      <% end if can_create_session %>
     </ul>
   </div>
-<% end if can_propose %>
+<% end if can_create_session %>

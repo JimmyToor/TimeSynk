@@ -14,8 +14,8 @@ class GroupMembershipPolicy < ApplicationPolicy
   end
 
   def destroy?
-    return true if user === record.user && user.has_cached_role?(:owner, record)
-    user.has_cached_role?(:kick_users, record.group) || user_is_owner_or_admin?
+    return false if record.user.has_role?(:owner, record.group)
+    user_has_kick_permission? || user === record.user
   end
 
   class Scope < ApplicationPolicy::Scope
@@ -27,7 +27,7 @@ class GroupMembershipPolicy < ApplicationPolicy
 
   private
 
-  def user_is_owner_or_admin?
-    user.has_cached_role?(:site_admin) || (user.has_any_role_for_resource?([:owner, :admin], record.group) && user.supersedes_user_in_resource?(record.user, record.group))
+  def user_has_kick_permission?
+    user.has_cached_role?(:site_admin) || user.has_any_role_for_resource?([:owner, :admin, :kick_users], record.group)
   end
 end

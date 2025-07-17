@@ -28,7 +28,7 @@ class InvitePolicy < ApplicationPolicy
   end
 
   def edit?
-    record.user == user || create?
+    create? || record.user == user
   end
 
   def update?

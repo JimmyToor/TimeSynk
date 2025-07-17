@@ -4,8 +4,8 @@ class SchedulesController < ApplicationController
   before_action :calc_end_param, only: %i[create update]
   before_action :set_availability, only: %i[index]
   before_action :set_schedule, only: %i[show edit update destroy]
-  skip_after_action :verify_authorized, except: %i[index edit update destroy]
-  skip_after_action :verify_policy_scoped, except: :index
+  skip_after_action :verify_authorized, only: %i[show new create]
+  skip_after_action :verify_policy_scoped, only: %i[show new edit create update destroy]
 
   # GET /schedules or /schedules.json
   def index

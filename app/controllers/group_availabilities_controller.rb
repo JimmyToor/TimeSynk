@@ -2,7 +2,6 @@ class GroupAvailabilitiesController < ApplicationController
   before_action :set_group_availability, only: %i[show edit update destroy]
   before_action :set_group, only: %i[new create]
   before_action :set_availabilities, only: %i[new edit create]
-  skip_after_action :verify_authorized, only: %i[index]
   skip_after_action :verify_policy_scoped
 
   # GET /group_availabilities or /group_availabilities.json
@@ -26,49 +25,43 @@ class GroupAvailabilitiesController < ApplicationController
   def edit
   end
 
-  # POST /group_availabilities or /group_availabilities.json
+  # POST /group_availabilities
   def create
-    @availability = authorize(Availability.find_by!(id: group_availability_params[:availability_id]))
+    @availability = Availability.find_by!(id: group_availability_params[:availability_id])
     @group_availability = authorize(@group.group_availabilities.new(group_availability_params))
 
     respond_to do |format|
       if @group_availability.save
         format.html { redirect_to @group, notice: "Group availability was successfully created." }
-        format.json { render :show, status: :created, location: @group_availability }
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @group_availability.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # PATCH/PUT /group_availabilities/1 or /group_availabilities/1.json
+  # PATCH/PUT /group_availabilities/1
   def update
     respond_to do |format|
       if @group_availability.update(group_availability_params)
         format.html { redirect_to @group_availability.group, notice: "Group availability was successfully updated." }
-        format.json { render :show, status: :ok, location: @group_availability }
       else
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @group_availability.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # DELETE /group_availabilities/1 or /group_availabilities/1.json
+  # DELETE /group_availabilities/1
   def destroy
     group = @group_availability.group
     @group_availability.destroy!
 
     respond_to do |format|
       format.html { redirect_to group, notice: "Group availability was successfully destroyed." }
-      format.json { head :no_content }
     end
   end
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_group_availability
     @group_availability = authorize(GroupAvailability.find(params[:id]))
   end

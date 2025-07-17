@@ -1,16 +1,19 @@
 class GroupsController < ApplicationController
   add_flash_types :success, :error
   before_action :set_group, only: %i[show edit update destroy]
-  before_action :set_group_membership, only: %i[update]
 
-  # GET /groups or /groups.json
+  # GET /groups
   def index
     @groups = policy_scope(Group)
-    @group_memberships = Current.user.group_memberships
-    authorize @groups
+    @pagy, @groups = pagy(@groups, limit: 10)
+    respond_to do |format|
+      format.html {
+        render :index, locals: {groups: @groups}
+      }
+    end
   end
 
-  # GET /groups/1 or /groups/1.json
+  # GET /groups/1
   def show
     @group_membership = GroupMembership.find_by(group: @group, user: Current.user)
     respond_to do |format|
@@ -34,80 +37,59 @@ class GroupsController < ApplicationController
   # GET /groups/1/edit
   def edit
     authorize(@group)
-
-    respond_to do |format|
-      format.html
-      format.turbo_stream {
-        render turbo_stream: turbo_stream.replace("modal_frame",
-          partial: "groups/edit")
-      }
-    end
   end
 
-  # POST /groups or /groups.json
+  # POST /groups
   def create
+    authorize(Group)
     @group = GroupCreationService.call(group_params, Current.user)
-
     respond_to do |format|
       if @group.persisted?
-        authorize @group
-        @group_permission_set = @group.make_permission_set(@group.users.to_a)
-        format.html {
-          redirect_to group_url(@group),
-            success: {message: I18n.t("group.create.success", name: @group.name),
-                      options: {highlight: @group.name}}
+        format.turbo_stream {
+          redirect_to group_url(@group), success: {message: I18n.t("group.create.success", name: @group.name), options: {highlight: @group.name}}
         }
-        format.json { render :show, status: :created, location: @group }
-        format.turbo_stream
       else
-        flash.now[:error] = {message: I18n.t("group.create.error"),
-                              options: {list_items: @group.errors.full_messages.uniq}}
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @group.errors, status: :unprocessable_entity }
+        format.turbo_stream {
+          flash.now[:error] = {message: I18n.t("group.create.error"),
+                               options: {list_items: @group.errors.full_messages}}
+          render partial: "groups/create_fail", status: :unprocessable_entity
+        }
       end
     end
   end
 
-  # PATCH/PUT /groups/1 or /groups/1.json
+  # PATCH/PUT /groups/1
   def update
     authorize(@group)
-    original_name = @group.name
     respond_to do |format|
       if @group.update(group_params)
-        @group_membership = GroupMembership.find_by(group: @group, user: Current.user)
-        @group_availability = @group.get_user_group_availability(Current.user)
-        @group_permission_set = @group.make_permission_set(@group.users.to_a)
-        format.html {
-          redirect_to group_url(@group), message: I18n.t("group.update.success", name: @group.name),
-            options:                    {highlight: @group.name}
-        }
-        format.json { render :show, status: :ok, location: @group }
         format.turbo_stream
       else
-        format.html { render :edit, status: :unprocessable_entity, locals: {group: @group, original_name: original_name} }
-        format.json { render json: @group.errors, status: :unprocessable_entity }
+        format.turbo_stream {
+          flash.now[:error] = {message: I18n.t("group.update.error"),
+                                options: {list_items: @group.errors.full_messages}}
+          render partial: "update_fail", status: :unprocessable_entity
+        }
       end
     end
   end
 
-  # DELETE /groups/1 or /groups/1.json
+  # DELETE /groups/1
   def destroy
     authorize(@group)
-    @group.destroy!
-
     respond_to do |format|
-      format.html {
-        redirect_to groups_url, success: {message: I18n.t("group.destroy.success", name: @group.name),
-                                          options: {highlight: @group.name}}
-      }
-      format.json { head :no_content }
-      format.turbo_stream
+      if @group.destroy
+        format.turbo_stream {
+          redirect_to groups_path, success: {message: I18n.t("group.destroy.success", name: @group.name), id: "groups"}
+        }
+      else
+        format.turbo_stream { render partial: "destroy_fail", status: :unprocessable_entity }
+      end
     end
   end
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_group
     @group = authorize(Group.find(params[:id]))
   end

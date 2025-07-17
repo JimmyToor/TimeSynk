@@ -20,8 +20,6 @@
 
   <% body_content = capture do %>
     <%= render form_partial, resource.model_name.param_key.to_sym => resource %>
-    <%= render "shared/notification", id: "#{resource.model_name.param_key}_#{resource.id}" %>
-  
   <% end %>
 
   <%= render "shared/confirmation_modal",

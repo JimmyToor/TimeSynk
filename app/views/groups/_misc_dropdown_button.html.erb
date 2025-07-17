@@ -12,7 +12,6 @@
     <%= inline_svg_tag "icons/chevron-down.svg", aria_hidden: true %>
   </button>
 
-
   <div id="misc-dropdown" data-dropdown-target="menu" class="absolute left-full z-40 hidden w-48
       -translate-x-full transform rounded-lg bg-slate-100 shadow transition divide-y
       divide-gray-100 dark:bg-gray-700"
@@ -23,7 +22,7 @@
     <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="<%= group.name %>-group-misc-dropdown-button">
       <li class="flex hover:border-gray-600 dark:hover:border-gray-500 hover:bg-gray-200 dark:hover:bg-gray-600">
         <%= link_to group_game_proposals_path(group), title: "View Game Proposals", class: "flex items-center px-2 py-1 w-full",
-                    data: { action: "dropdown#toggle" } do %>
+                    data: { action: "dropdown#toggle", turbo_frame: "_top" } do %>
           <%= inline_svg_tag "icons/rectangle_stack.svg" %>
           <span class="ml-2">View Game Proposals</span>
         <% end %>
@@ -32,24 +31,22 @@
       <li class="flex hover:border-gray-600 dark:hover:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
         <%= link_to group_invites_path(group), title: "View Invites",
                     class: "flex h-fit w-full items-center px-2 py-1",
-                    data: { action: "dropdown#toggle" } do %>
+                    data: { action: "dropdown#toggle", turbo_frame: "_top" } do %>
           <%= inline_svg_tag "icons/envelope.svg" %>
           <span class="ml-2">View Invites</span>
         <% end %>
       </li>
 
       <li class="flex hover:border-gray-600 dark:hover:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
-        <% if group_availability.present? %>
-          <%= link_to edit_group_availability_path(group_availability), title: "Change your group availability",
-                      class: "flex h-fit w-full items-center px-2 py-1" do %>
-
-            <%= inline_svg_tag "icons/calendar.svg" %>
-            <span class="ml-2">Edit Group Availability</span>
-
-      <% end %>
-        <% else %>
-          <%= link_to new_group_group_availability_path(group), title: "Change your group availability",
-                      class: "flex h-fit w-full items-center px-2 py-1" do %>
+        <% has_availability = group_availability.present? %>
+        <%= link_to has_availability ? edit_group_availability_path(group_availability) : new_group_group_availability_path(group),
+                    data: { turbo_frame: "_top"},
+                    title: "Change your group availability",
+                    class: "flex h-fit w-full items-center px-2 py-1" do %>
+          <%= inline_svg_tag "icons/calendar.svg" %>
+          <span class="ml-2"><%= has_availability ? "Edit" : "Set" %> Group Availability</span>
+        <% end %>
+      </li>
 
       <% if policy(group).transfer_ownership? && group.associated_users_without_owner.any? %>
         <% transfer_button_content = capture do %>

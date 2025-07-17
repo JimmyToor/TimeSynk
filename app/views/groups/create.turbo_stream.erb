@@ -1,9 +1,4 @@
-<%= turbo_stream.append "groups" do %>
-  <div class="group-container relative flex" id="<%= @group.id %>_container">
-    <%= render @group, group_availability: @group.get_user_group_availability(Current.user), group_permission_set: @group_permission_set %>
-    <%= render "groups/card_link", group: @group %>
-  </div>
-<% end %>
+<%= frame_reload "groups" %>
 
 <%= turbo_stream.update "modal_frame", "" %>
 

@@ -1,15 +1,8 @@
 <%# locals: (game_proposal:, proposal_availability: nil, proposal_permission_set: nil) %>
 <div class="flex align-top space-x-1">
+  <%= render "game_proposals/new_dropdown_button", game_proposal: game_proposal, can_create_session: policy(game_proposal).create_game_session? %>
 
-  <%= render "shared/buttons/icon_link",
-             path: new_game_proposal_game_session_path(game_proposal, single_game_proposal: true),
-             svg_name: "add",
-             link_attributes: {'aria-haspopup': "dialog" },
-             extra_classes: "text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100 size-6",
-             data: { turbo_frame: "modal_frame" },
-             title: "New game session" if policy(game_proposal).create_game_session? %>
-
-  <%  if proposal_permission_set.present? && game_proposal_permission_set_policy(proposal_permission_set).edit? %>
+  <%  if proposal_permission_set.present? && policy(proposal_permission_set).edit? %>
     <%= render partial: "permission_sets/edit_button", locals: { permission_set: proposal_permission_set } %>
   <% end %>
 

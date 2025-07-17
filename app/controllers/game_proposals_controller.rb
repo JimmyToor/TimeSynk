@@ -1,13 +1,14 @@
 class GameProposalsController < ApplicationController
-  before_action :set_game_proposal, :set_game, only: %i[show edit update destroy]
+  add_flash_types :success
+  before_action :set_game_proposal, :set_game, only: %i[show edit destroy]
   before_action :set_groups, only: %i[edit new]
   before_action :set_game_proposals, only: %i[index]
   skip_after_action :verify_policy_scoped
-
-  # GET /game_proposals or /game_proposals.json
+  # GET /game_proposals
   def index
-    @pagy, @game_proposals = pagy(@game_proposals)
+    @pagy, @game_proposals = pagy(@game_proposals, limit: 8)
     @group = Group.find_by_id(params[:group_id]) if params[:group_id].present?
+
     respond_to do |format|
       format.html { render :index, locals: {game_proposals: @game_proposals} }
     end
@@ -43,37 +44,18 @@ class GameProposalsController < ApplicationController
   def edit
   end
 
-  # POST /game_proposals or /game_proposals.json
+  # POST /game_proposals
   def create
     @game_proposal = authorize(GameProposal.new(**game_proposal_params))
 
-    respond_to do |format|
-      if @game_proposal.save
-        format.html { redirect_to game_proposal_url(@game_proposal) }
-        format.json { render :show, status: :created, location: @game_proposal }
-      else
-        @groups = Current.user.groups_user_can_create_proposals_for
-        format.html { render :new, locals: {game_proposal: @game_proposal, groups: @groups}, status: :unprocessable_entity }
-        format.json { render json: @game_proposal.errors, status: :unprocessable_entity }
-        format.turbo_stream { render "create_fail" }
-      end
+    if @game_proposal.save
+      redirect_to game_proposal_url(@game_proposal)
+    else
+      render "create_fail", status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /game_proposals/1 or /game_proposals/1.json
-  def update
-    authorize @game_proposal
-    respond_to do |format|
-      if @game_proposal.update(game_proposal_params)
-        format.html { redirect_to game_proposal_url(@game_proposal), notice: "Game proposal was successfully updated." }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @game_proposal.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /game_proposals/1 or /game_proposals/1.json
+  # DELETE /game_proposals/1
   def destroy
     authorize(@game_proposal).destroy!
 
@@ -87,7 +69,6 @@ class GameProposalsController < ApplicationController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_game_proposal
     @game_proposal = authorize(GameProposal.find(params[:id]))
   end
@@ -98,6 +79,8 @@ class GameProposalsController < ApplicationController
 
   def set_game_proposals
     @game_proposals = if params[:group_id]
+      group = Group.find(params[:group_id])
+      authorize(group, :show, policy_class: GroupPolicy)
       GameProposal.for_group(params[:group_id])
     else
       policy_scope(GameProposal)

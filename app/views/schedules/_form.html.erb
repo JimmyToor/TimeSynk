@@ -3,9 +3,10 @@
                       rails_nested_form_wrapper_selector_value: '.nested-form-wrapper',
                       refresh_calendar_on_submit:"" },
               class: "flex flex-col align-items-center") do |form| %>
-  <%= render 'shared/notification', id: schedule.new_record? ? "schedule_new" : "schedule_#{schedule.id}"  %>
-
   <div class="flex w-fit flex-col items-center self-center rounded-lg p-4 space-y-2 dark:bg-gray-800">
+
+    <%= render 'shared/notification', id: schedule.new_record? ? "schedule_new" : "schedule_#{schedule.id}"  %>
+
     <div>
       <%= render "shared/form_label", form: form, field: :name, extra_classes: "block" %>
       <%= form.text_field :name %>

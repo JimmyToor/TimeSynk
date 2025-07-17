@@ -27,15 +27,7 @@
           </div>
 
           <div id="game_proposal_details" class="space-y-1.5">
-            <div class="mb-3 flex items-center gap-2 text-sm">
-              <%= inline_svg "icons/group.svg", aria_hidden: true, class: "h-6 w-6" %>
-              <%= link_to "#{game_proposal.group_name}",
-                          group_path(game_proposal.group),
-                          title: "Go to group: #{game_proposal.group_name}",
-                          data: {turbo_frame: "_top"},
-                          class:"game-name font-semibold text-primary-950 dark:text-white underline
-             decoration-2 hover:decoration-4 decoration-secondary-500 dark:decoration-secondary-200" %>
-            </div>
+            <%= render "groups/group_link", group: game_proposal.group%>
 
             <div class="flex flex-wrap items-center text-sm text-gray-700 dark:text-gray-400">
               <%= render "proposal_votes/full_proposal_vote_button", game_proposal: game_proposal do %>

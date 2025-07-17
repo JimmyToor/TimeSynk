@@ -13,11 +13,10 @@ class ProposalVotesController < ApplicationController
     respond_to do |format|
       format.html { render :index, locals: {proposal_votes: @proposal_votes, game_proposal: @game_proposal} }
       format.turbo_stream
-      format.json { render json: @group_memberships }
     end
   end
 
-  # GET /proposal_votes/1 or /proposal_votes/1.json
+  # GET /proposal_votes/1
   def show
   end
 
@@ -30,7 +29,7 @@ class ProposalVotesController < ApplicationController
   def edit
   end
 
-  # POST /proposal_votes or /proposal_votes.json
+  # POST /proposal_votes
   def create
     @proposal_vote = @game_proposal.proposal_votes.build(proposal_vote_params)
     respond_to do |format|
@@ -39,7 +38,6 @@ class ProposalVotesController < ApplicationController
           flash[:success] = {message: I18n.t("proposal_vote.create.success")}
           redirect_to new_game_proposal_proposal_vote_path(@game_proposal)
         }
-        format.json { render :show, status: :created, location: @proposal_vote }
         format.turbo_stream
       else
         format.html {
@@ -47,7 +45,6 @@ class ProposalVotesController < ApplicationController
                   options: {list_items: @proposal_vote.errors.full_messages}}
           redirect_to new_game_proposal_proposal_vote_path(@game_proposal)
         }
-        format.json { render json: @proposal_vote.errors, status: :unprocessable_entity }
         format.turbo_stream {
           flash.now[:error] = {message: I18n.t("proposal_vote.create.error"), options: {list_items: @proposal_vote.errors.full_messages}}
         }
@@ -55,7 +52,7 @@ class ProposalVotesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /proposal_votes/1 or /proposal_votes/1.json
+  # PATCH/PUT /proposal_votes/1
   def update
     respond_to do |format|
       if @proposal_vote.update(proposal_vote_params)
@@ -63,14 +60,12 @@ class ProposalVotesController < ApplicationController
           flash[:success] = {message: I18n.t("proposal_vote.update.success")}
           redirect_to edit_proposal_vote_path(@proposal_vote)
         }
-        format.json { render :show, status: :ok, location: @proposal_vote }
         format.turbo_stream
       else
         format.html {
           flash[:error] = {message: I18n.t("proposal_vote.update.error"), options: {list_items: @proposal_vote.errors.full_messages}}
           redirect_to edit_proposal_vote_path(@proposal_vote)
         }
-        format.json { render json: @proposal_vote.errors, status: :unprocessable_entity }
         format.turbo_stream {
           flash.now[:error] = {message: I18n.t("proposal_vote.update.error"), options: {list_items: @proposal_vote.errors.full_messages}}
           render "update_fail"
@@ -79,7 +74,7 @@ class ProposalVotesController < ApplicationController
     end
   end
 
-  # DELETE /proposal_votes/1 or /proposal_votes/1.json
+  # DELETE /proposal_votes/1
   def destroy
     @game_proposal = @proposal_vote.game_proposal
     @proposal_vote.destroy!
