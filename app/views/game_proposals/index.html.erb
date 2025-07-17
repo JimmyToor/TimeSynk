@@ -2,12 +2,14 @@
 <section>
   <div class="flex justify-between mb-4">
     <div>
-      <% if @group.present? %>
         <%= render "shared/header_primary" do %>
-          <%= t("game_proposal.index.title",
-                group_name: content_tag(:span, @group.name, class: 'font-bold text-primary-600')).html_safe %>
+          <% if @group.present? %>
+            <%= t("game_proposal.index.title",
+                        group_name: content_tag(:span, @group.name, class: 'font-bold text-primary-600')).html_safe %>
+          <% else %>
+            <%= t("game_proposal.title") %>
+          <% end %>
         <% end %>
-      <% end %>
     </div>
     <div>
       <%= render "shared/buttons/primary_link", path: new_game_proposal_path(group_id: @group), text: "New Game Proposal" %>
