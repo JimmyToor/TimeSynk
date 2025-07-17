@@ -59,7 +59,7 @@ class Group < ApplicationRecord
   end
 
   def game_proposals_user_can_create_sessions_for(user)
-    game_proposals.select do |proposal|
+    game_proposals.includes(:group).select do |proposal|
       GameProposalPolicy.new(user, proposal).create_game_session?
     end
   end

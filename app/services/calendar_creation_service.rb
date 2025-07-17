@@ -22,7 +22,7 @@ class CalendarCreationService < ApplicationService
   # @param params [ActionController::Parameters] Parameters controlling calendar generation.
   # @option params [String] :start The start date/time for the calendar view (ISO 8601 format).
   # @option params [String] :end The end date/time for the calendar view (ISO 8601 format).
-  # @option params [Integer] :user_id ID of the user for whom to generate group calendars.
+  # @option params [Integer] :user_id ID of the user for whom to generate group calendars (includes group availabilities).
   # @option params [Integer] :group_id ID of the group for which to generate calendars.
   # @option params [Integer] :schedule_id ID of a specific schedule to generate a calendar for.
   # @option params [Array<Integer>] :schedule_ids IDs of multiple schedules to generate calendars for.
@@ -42,10 +42,11 @@ class CalendarCreationService < ApplicationService
   def call
     @calendars = []
     if @params[:user_id].present?
-      User.find(@params[:user_id]).groups.each do |group|
-        group.game_proposals.reject { |proposal| proposal.game_sessions.empty? }.each do |game_proposal|
-          @calendars << make_game_proposal_calendar(game_proposal)
-        end
+      GameProposal.joins(group: :users)
+        .where(users: {id: @params[:user_id]})
+        .joins(:game_sessions)
+        .distinct.each do |game_proposal|
+        @calendars << make_game_proposal_calendar(game_proposal)
       end
     end
 
@@ -195,7 +196,6 @@ class CalendarCreationService < ApplicationService
         duration: ActiveSupport::Duration.build(overlap.end - overlap.start),
         user_id: nil).make_calendar_schedule(selectable: false)
     }
-    Rails.logger.debug "Overlap schedules: #{overlap_schedules.inspect}"
     Calendar.new(
       schedules: overlap_schedules,
       name: "Everyone Available",
