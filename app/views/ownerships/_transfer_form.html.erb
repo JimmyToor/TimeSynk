@@ -1,0 +1,30 @@
+<%# locals: (resource:) %>
+<% resource_type = resource.class.name %>
+<div id="<%= resource.class %>_<%= resource.id %>_transfer_ownership_form" data-controller="confirmation">
+  <%= render "shared/notification", id: "#{resource.class}_#{resource.id}_transfer_ownership_form" -%>
+
+  <%= form_with(url: transfer_ownership_path(resource), method: :patch) do |owner_form| %>
+    <div class="flex flex-col space-y-4 items-center">
+      <div class="flex flex-col">
+        <%= render "shared/form_label", form: owner_form, field: :new_owner_id, text: t("ownership.new_owner_label") %>
+        <%= owner_form.collection_select(:new_owner_id, resource.associated_users_without_owner, :id, :username) %>
+      </div>
+
+      <label>
+        <input data-confirmation-target="input" data-action="confirmation#check" type="checkbox" autofocus/>
+        <%= t("ownership.confirm_transfer", resource_type: resource_type) %>
+      </label>
+
+      <div class="flex w-full justify-between">
+        <%= owner_form.submit t("ownership.transfer"), title: t("ownership.transfer"),
+                      data: { confirmation_target: "item", turbo_frame: "_top" },
+                      'aria-haspopup': "dialog",
+                      disabled: "true",
+                      class: "disabled:cursor-not-allowed disabled:bg-red-300 rounded-full bg-red-600 px-3
+                              py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline
+                              focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600" %>
+        <button type="button" data-action="dialog#close">Cancel</button>
+      </div>
+    </div>
+  <% end %>
+</div>

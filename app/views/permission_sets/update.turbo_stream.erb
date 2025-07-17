@@ -1,10 +1,6 @@
-<% if params.key?("transfer_ownership") %>
-  <%= turbo_stream.refresh request_id:nil %>
-<% else %>
-  <%= turbo_stream.replace("form_#{@resource.model_name.param_key}_permission_set",
+<%= turbo_stream.replace("form_#{@resource.model_name.param_key}_permission_set",
                            partial:"permission_sets/form",
                            locals: {permission_set: @permission_set, url: polymorphic_path([@permission_set.resource,:permission_set]),
                                     roles: @resource.roles}) %>
-<% end %>
 
 <%= turbo_stream_toast(:success, I18n.t("permission_set.update.success"), "permission_set_#{@permission_set.resource.id}") %>

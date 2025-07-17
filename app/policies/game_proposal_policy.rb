@@ -37,9 +37,9 @@ class GameProposalPolicy < ApplicationPolicy
       user.has_any_role_for_resource?([:owner, :admin, :manage_all_game_proposals], record.group)
   end
 
-  def change_owner?
+  def transfer_ownership?
     user.has_cached_role?(:owner, record) ||
-      user.has_any_role_for_resource?([:admin, :owner], record.group) ||
+      user.has_any_role_for_resource?([:admin, :owner, :manage_all_game_proposals], record.group) ||
       user.has_cached_role?(:site_admin)
   end
 

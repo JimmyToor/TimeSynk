@@ -11,6 +11,8 @@ class Role < ApplicationRecord
 
   scopify
 
+  scope :non_special, -> { where.not(name: RoleHierarchy::SPECIAL_ROLE_NAMES) }
+
   def self.create_roles_for_group(group)
     Role.create(name: "owner", resource: group)
     Role.create(name: "admin", resource: group)

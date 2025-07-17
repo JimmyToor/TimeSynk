@@ -2,8 +2,6 @@
 <%= modal_wrapper(title) do %>
   <%= render "shared/notification", id: "#{permission_set.resource.model_name.param_key}_#{permission_set.resource.id}_permission_set" %>
 
-  <%= content_tag :p, notice,
-                  id: "#{permission_set.resource.model_name.param_key}_#{permission_set.resource.id}_permission_set_edit_notice" %>
   <%= render "form",
              permission_set: permission_set,
              url: polymorphic_path([permission_set.resource,:permission_set]),

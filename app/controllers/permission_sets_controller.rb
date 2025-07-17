@@ -2,13 +2,9 @@ class PermissionSetsController < ApplicationController
   before_action :set_resource, only: %i[edit update]
   before_action :set_users, only: %i[edit update]
   before_action :set_user, :set_game_session, :set_game_proposal, :set_group, only: %i[show]
-  before_action :set_role_changes_and_affected_users, only: %i[update], unless: -> { params.key?("transfer_ownership") }
   skip_after_action :verify_policy_scoped
   skip_after_action :verify_authorized, only: %i[show]
   rescue_from ActionController::ParameterMissing, with: :handle_parameter_missing
-
-  def index
-  end
 
   def show
     respond_to do |format|
@@ -25,22 +21,19 @@ class PermissionSetsController < ApplicationController
   def edit
     @permission_set = @resource.make_permission_set(@users)
     authorize(@permission_set)
-    render :edit, locals: {permission_set: @permission_set, roles: @resource.roles, title: @title}
+    render :edit, locals: {permission_set: @permission_set, roles: @resource.roles.non_special, title: @title}
   end
 
   def update
-    unless params[:permission_set].blank?
-      if params.key?("transfer_ownership")
-        transfer_ownership
-      else
-        update_permissions
-      end
-    end
+    authorize(@resource.make_permission_set(User.where(id: params.dig(:role_changes)&.keys)))
+    update_permissions
 
     respond_to do |format|
       @permission_set = @resource.make_permission_set(@users)
-      @affected_users&.each do |affected_user|
-        affected_user.reload.broadcast_role_change_for_resource(@resource)
+      if @affected_users.present?
+        User.where(id: @affected_users.map(&:id)).each do |reloaded_user|
+          reloaded_user.broadcast_role_change_for_resource(@resource)
+        end
       end
       format.html { redirect_to @resource, success: {message: "Permissions were successfully updated."} }
       format.turbo_stream
@@ -50,9 +43,7 @@ class PermissionSetsController < ApplicationController
   private
 
   def permission_set_params
-    params.require(:permission_set).permit(:user_id,
-      :new_owner_id,
-      role_changes: [add_roles: [], remove_roles: []])
+    params.require(:permission_set).permit(:user_id, role_changes: [add_roles: [], remove_roles: []])
   end
 
   def set_resource
@@ -73,50 +64,25 @@ class PermissionSetsController < ApplicationController
   def set_users
     @users = if params[:user_id].present?
       [User.find(params[:user_id])]
-    elsif @resource.is_a?(Group)
-      @resource.users
-    elsif @resource.is_a?(GameProposal)
-      @resource.group.users
-    elsif @resource.is_a?(GameSession)
-      @resource.game_proposal.group.users
+    elsif @resource.respond_to?(:associated_users)
+      @resource.associated_users
     else
       []
     end
   end
 
-  def set_role_changes_and_affected_users
-    # Extract role changes from params
-    role_changes = permission_set_params[:role_changes].to_h.transform_keys(&:to_i) || {}
-
-    # Get all relevant users and add them to the role changes hash
-    users = User.where(id: role_changes.keys).index_by(&:id)
-    @role_changes = role_changes.each_with_object({}) do |(user_id, changes), hash|
-      hash[user_id] = changes.merge(user: users[user_id])
-    end
-    @affected_users = users.values
-  end
-
   def update_permissions
-    @permission_set = @resource.make_permission_set(@affected_users)
-    authorize(@permission_set, policy_class: "#{@resource.class.name}PermissionSetPolicy".constantize)
-    @role_changes.each do |user_id, role_changes|
-      role_user = role_changes[:user]
-      role_user.update_roles(add_roles: role_changes[:add_roles], remove_roles: role_changes[:remove_roles])
-    end
-  end
-
-  def transfer_ownership
-    authorize(@resource, :change_owner?)
-    new_owner = User.find(permission_set_params[:new_owner_id])
-    TransferOwnershipService.call(new_owner, @resource)
-    @affected_users = [new_owner, Current.user]
+    @affected_users = PermissionSetUpdateService.call(permission_set_params, Current.user, @resource)
   end
 
   def user_not_authorized(message)
-    @message = message
+    notification = {message: t("permission_set.update.authorization_error")}
     respond_to do |format|
-      format.html { redirect_back_or_to @resource, alert: message }
-      format.turbo_stream { render "update_fail_auth", status: :forbidden }
+      format.html { redirect_back_or_to @resource, error: notification, status: :forbidden }
+      format.turbo_stream {
+        flash.now[:error] = notification
+        render "update_fail_auth", status: :forbidden
+      }
     end
   end
 

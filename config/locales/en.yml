@@ -86,10 +86,17 @@ en:
     invalid_link: "Invalid group invite link."
     destroy:
       success: "Group %{name} successfully deleted."
+      error: "There was an error deleting the group."
       title: "Delete Group"
     update:
       success: "Group name changed to %{name}."
+      error: "There was an error updating the group."
     title: "Groups"
+    not_found: "Sorry, we couldn't find that group."
+    new:
+      title: "New Group"
+    edit:
+      title: "Edit Group"
   group_membership:
     invite_not_valid: "There was a problem with the invite."
     already_member: "You are already a member of this group."
@@ -128,6 +135,7 @@ en:
     update:
       success: "Permissions successfully updated."
       error: "There was an error updating the permissions."
+      authorization_error: "You do not have permission to update those roles."
   availability:
     help:
       no_schedules: "You can click here to set your default availability times, or set them later through your profile."
@@ -173,6 +181,8 @@ en:
     index:
       title: "Invites for %{group_name}"
     title: "Invites"
+    edit:
+      title: "Edit Group Invite - %{group_name}"
   game_session:
     validation:
       name:
@@ -197,11 +207,11 @@ en:
       error: "There was an error updating the %{name} game session."
     not_found: "Game session not found. It may have been deleted."
     upcoming:
-      title: "Upcoming Game Sessions for %{game_name} in %{group_name}"
+      title: "Upcoming Game Sessions for %{game_name} - %{group_name}"
     edit:
-      title: "Edit #{game_name} session in #{group_name}"
+      title: "Edit %{game_name} session - %{group_name}"
     new:
-      title: "New %{game_name} session in %{group_name}"
+      title: "New %{game_name} session - %{group_name}"
     title: "Game Sessions"
   game_session_attendance:
     create:
@@ -256,3 +266,13 @@ en:
     title: "Dashboard"
   game:
     title: "Games"
+  ownership:
+    update:
+      success: "Ownership was transferred to %{new_owner}."
+      error: "There was an error transferring ownership."
+    transfer: "Transfer Ownership"
+    new_owner_label: "New Owner"
+    confirm_transfer: "I confirm that I want to transfer ownership of this %{resource_type}."
+    transfer_ownership_title: "Transfer ownership of %{resource_type} - %{resource_title}"
+  generic:
+    refresh_try_again: "Please refresh and try again."

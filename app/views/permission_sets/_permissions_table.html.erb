@@ -5,7 +5,7 @@
     <th scope="col" class="sticky top-0 left-0 z-20 px-6 py-3 bg-tertiary-50 dark:bg-gray-600">
       User
     </th>
-    <% roles.reject{ |role| RoleHierarchy.special?(role) }.each do |role| %>
+    <% roles.each do |role| %>
       <th scope="col" class="sticky top-0 z-10 px-6 py-3 bg-tertiary-50 dark:bg-gray-600">
         <%= role.name.humanize %>
       </th>
@@ -13,10 +13,11 @@
   </tr>
   </thead>
   <tbody>
-  <% can_change_owner = policy(permission_set.resource).change_owner? %>
+  <% most_permissive_role = Current.user.most_permissive_cascading_role_for_resource(permission_set.resource) %>
+
   <% permission_set.users_roles.each do |user_id, user_info| %>
     <% user = user_info[:user] %>
-    <% disabled = !PermissionSetPolicy.new(Current.user, permission_set).update?(peer_user: user) %>
+    <% disabled = !Current.user.can_update_resource_permissions_for_peer_user?(user, permission_set.resource, most_permissive_role: most_permissive_role) %>
     <tr class="border-b bg-white dark:bg-gray-800 dark:border-gray-700 persistent-scrollbar">
       <th scope="row" class="sticky left-0 z-10 pr-3 pl-5 py-4 font-medium text-gray-900
                 dark:text-white bg-white dark:bg-gray-800 min-w-32 text-wrap" >
@@ -25,20 +26,10 @@
 
         <% if user.has_cached_role?(:owner, permission_set.resource) %>
           <span class="text-xs text-gray-500 dark:text-gray-400">Owner</span>
-        <% elsif can_change_owner %>
-          <%= fields_for :permission_set, permission_set do |owner_form| %>
-            <%= owner_form.hidden_field :new_owner_id, value: user_id %>
-            <%= owner_form.submit "Transfer Ownership",
-                                  name: "transfer_ownership",
-                                  data: { turbo_confirm: "Are you sure you want to transfer ownership to #{user.username}?"},
-                                  class: "text-xs text-gray-500 cursor-pointer dark:text-white
-                                           underline decoration-2 dark:decoration-2 dark:hover:decoration-4
-                                           hover:decoration-4 decoration-secondary-500 dark:decoration-secondary-200" %>
-          <% end %>
         <% end %>
       </th>
 
-      <% roles.reject{ |role| RoleHierarchy.special?(role) }.each do |role| %>
+      <% roles.each do |role| %>
         <td class="px-6 py-4 text-center">
           <%= fields_for "permission_set[role_changes][#{user_id}]" do |subform|  %>
             <% checked = user_info[:role_ids].include?(role.id) %>

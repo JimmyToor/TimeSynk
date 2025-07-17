@@ -15,17 +15,17 @@ class User < ApplicationRecord
   has_many :groups, through: :group_memberships # user is a member of
   has_many :invites, dependent: :destroy
   has_many :availabilities, dependent: :destroy
-  has_many :game_proposals, dependent: :destroy, through: :groups
-  has_many :game_sessions, dependent: :destroy, through: :game_proposals
+  has_many :game_proposals, through: :groups
+  has_many :game_sessions, through: :game_proposals
   has_many :game_session_attendances, dependent: :destroy
   has_many :proposal_votes, dependent: :destroy
   has_many :schedules, dependent: :destroy
   has_one :user_availability, dependent: :destroy
   has_many :group_availabilities, dependent: :destroy
   has_many :proposal_availabilities, dependent: :destroy
-  has_many :user_availability_schedules, through: :user_availability, source: :schedules, dependent: :destroy
-  has_many :group_availability_schedules, through: :group_availabilities, source: :schedules, dependent: :destroy
-  has_many :proposal_availability_schedules, through: :proposal_availabilities, source: :schedules, dependent: :destroy
+  has_many :user_availability_schedules, through: :user_availability, source: :schedules
+  has_many :group_availability_schedules, through: :group_availabilities, source: :schedules
+  has_many :proposal_availability_schedules, through: :proposal_availabilities, source: :schedules
   has_one_attached :avatar
 
   normalizes :username, with: ->(username) { username.squish }
@@ -41,7 +41,7 @@ class User < ApplicationRecord
   validates :username, presence: true, uniqueness: true, length: {minimum: 3, maximum: 20}
   validates :password, allow_nil: false, length: {minimum: 8}, if: :password_digest_changed?
 
-  normalizes :email, with: -> { _1.strip.downcase }
+  normalizes :email, with: ->(email) { email.strip.downcase }
 
   before_validation if: :email_changed?, on: :update do
     self.verified = false
@@ -170,8 +170,12 @@ class User < ApplicationRecord
     end
   end
 
+  # Returns game proposals that the user has not yet voted on.
   def pending_game_proposals
-    game_proposals.reject { |proposal| proposal.user_voted?(self) }.sort_by(&:created_at)
+    game_proposals
+      .joins(:proposal_votes)
+      .where(proposal_votes: {yes_vote: nil, user_id: id})
+      .order("game_proposals.created_at DESC")
   end
 
   def pending_game_proposal_count
@@ -183,7 +187,7 @@ class User < ApplicationRecord
   end
 
   def game_proposals_user_can_create_sessions_for
-    game_proposals.select do |proposal|
+    game_proposals.includes(:group).select do |proposal|
       GameProposalPolicy.new(self, proposal).create_game_session?
     end
   end

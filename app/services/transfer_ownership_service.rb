@@ -13,7 +13,7 @@ class TransferOwnershipService < ApplicationService
   # @param new_owner [User] The user who will become the new owner.
   # @param resource [ActiveRecord::Base] The resource whose ownership will be transferred (must have Rolify included).
   def initialize(new_owner, resource)
-    @current_owner = User.with_role(:owner, resource).first
+    @current_owner = resource.owner
     @new_owner = new_owner
     @resource = resource
   end
@@ -22,9 +22,27 @@ class TransferOwnershipService < ApplicationService
   # Removes the `:owner` role from the current owner (if found) and grants
   # the `:owner` role to the new owner for the specified resource.
   #
-  # @return [void]
+  # @return [Boolean] true if the transfer was successful, false otherwise.
   def call
-    @current_owner&.remove_role(:owner, @resource)
-    @new_owner.add_role(:owner, @resource)
+    return false unless transfer_ownership
+
+    broadcast_change
+    true
+  rescue => e
+    Rails.logger.error("Ownership transfer failed: #{e.message}")
+    false
+  end
+
+  private
+
+  def transfer_ownership
+    ActiveRecord::Base.transaction do
+      @current_owner&.remove_role(:owner, @resource)
+      @new_owner.add_role(:owner, @resource)
+    end
+  end
+
+  def broadcast_change
+    User.broadcast_role_change_for_resource(@resource, [@new_owner.id, @current_owner.id])
   end
 end

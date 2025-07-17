@@ -34,6 +34,12 @@ class GameSessionPolicy < ApplicationPolicy
     edit?
   end
 
+  def transfer_ownership?
+    user.has_cached_role?(:site_admin) || user.has_cached_role?(:owner, record) ||
+      user.has_any_role_for_resource?([:admin, :owner, :manage_all_game_sessions], record.game_proposal) ||
+      user.has_any_role_for_resource?([:admin, :owner, :manage_all_game_proposals], record.group)
+  end
+
   class Scope < ApplicationPolicy::Scope
     # NOTE: Be explicit about which records you allow access to!
     def resolve

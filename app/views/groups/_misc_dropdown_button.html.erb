@@ -51,28 +51,44 @@
           <%= link_to new_group_group_availability_path(group), title: "Change your group availability",
                       class: "flex h-fit w-full items-center px-2 py-1" do %>
 
-            <%= inline_svg_tag "icons/calendar.svg" %>
-            <span class="ml-2">Set Group Availability</span>
-
-      <% end %>
+      <% if policy(group).transfer_ownership? && group.associated_users_without_owner.any? %>
+        <% transfer_button_content = capture do %>
+          <button type="button"
+                  aria-haspopup="dialog"
+                  data-action="dialog#open"
+                  class="flex w-full items-center px-2 py-1 text-notice-400">
+            <%= inline_svg_tag "icons/transfer.svg" %>
+            <span class="ml-2"><%= t("ownership.transfer") %></span>
+          </button>
         <% end %>
-      </li>
+
+        <%= render "shared/transfer_ownership_modal",
+                   button_content: transfer_button_content,
+                   resource_title: group.name,
+                   container_tag: :li,
+                   container_classes:"flex hover:bg-gray-200 dark:hover:bg-gray-600 w-full hover:border-gray-600
+                    dark:hover:border-gray-300 ",
+                   form_partial:"ownerships/transfer_form",
+                   resource: group %>
+      <% end %>
 
       <% if policy(group).destroy? %>
-        <% button_content = capture do %>
-          <button type="button" data-action="dialog#open" class="flex w-full items-center px-2 py-1 text-notice-400">
-
+        <% delete_button_content = capture do %>
+          <button type="button"
+                  aria-haspopup="dialog"
+                  data-action="dialog#open"
+                  class="flex w-full items-center px-2 py-1 text-notice-400">
             <%= inline_svg_tag "icons/trash.svg" %>
-            <span class="ml-2">Delete Group</span>
-
+            <span class="ml-2"><%= t("group.destroy.title") %></span>
           </button>
         <% end %>
 
         <%= render "shared/delete_modal",
-                   button_content: button_content,
+                   button_content: delete_button_content,
                    resource_title: group.name,
                    container_tag: :li,
-                   container_classes:"flex hover:bg-notice-100 w-full hover:border-gray-600 dark:hover:border-gray-300 ",
+                   container_classes:"flex hover:bg-gray-200 dark:hover:bg-gray-600 w-full hover:border-gray-600
+                    dark:hover:border-gray-300 ",
                    form_partial:"groups/delete_form",
                    resource: group %>
       <% end %>

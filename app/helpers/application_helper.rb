@@ -67,4 +67,12 @@ module ApplicationHelper
   def modal_link_classes
     "text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100"
   end
+
+  def policy_class_for_resource(resource)
+    policy_class_name = "#{resource.class}Policy"
+    policy_class = policy_class_name.safe_constantize
+    raise NameError, "Uninitialized constant #{policy_class_name}. Could not find the policy for #{resource.class.name}." unless policy_class
+
+    policy_class
+  end
 end

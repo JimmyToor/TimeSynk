@@ -27,18 +27,13 @@ class GroupPolicy < ApplicationPolicy
     user.has_any_role_for_resource?([:owner, :admin, :manage_invites], record)
   end
 
-  def change_owner?
+  def transfer_ownership?
     user.has_cached_role?(:owner, record) || user.has_cached_role?(:site_admin)
   end
 
   class Scope < ApplicationPolicy::Scope
     def resolve
-      if user.has_cached_role?(:site_admin)
-        scope.all
-      else
-        group_ids = user.group_memberships.pluck(:group_id)
-        scope.where(id: group_ids)
-      end
+      user.groups
     end
   end
 

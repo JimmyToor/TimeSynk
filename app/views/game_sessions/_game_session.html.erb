@@ -18,6 +18,24 @@
           <%= game_session.game_name %>
         </h2>
 
+        <% if policy(game_session).transfer_ownership? && game_session.associated_users_without_owner.any? %>
+          <% transfer_button_content = capture do %>
+            <button type="button"
+                    aria-haspopup="dialog"
+                    data-action="dialog#open"
+                    title="<%= t("ownership.transfer") %>"
+                    class="flex w-full items-center text-notice-600 dark:text-notice-400 hover:text-notice-500 dark:hover:text-notice-300">
+              <%= inline_svg_tag "icons/transfer.svg" %>
+            </button>
+          <% end %>
+
+          <%= render "shared/transfer_ownership_modal",
+                     button_content: transfer_button_content,
+                     resource_title: game_session.game_name,
+                     form_partial:"ownerships/transfer_form",
+                     resource: game_session %>
+        <% end %>
+
         <% if policy(game_session).destroy? %>
             <%= render "shared/delete_modal",
                        resource: game_session,

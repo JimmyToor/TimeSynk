@@ -1,7 +1,10 @@
 <%# locals: (permission_set:, url:, roles:) %>
 <%= render "shared/notification", id: "permission_set_#{permission_set.resource.id}" %>
 
-<%= form_with(url: url, id:"form_#{permission_set.resource.model_name.param_key}_permission_set", method: :patch,
+<%= form_with(url: url,
+              id:"form_#{permission_set.resource.model_name.param_key}_permission_set",
+              format: modal_wrapper? ? :turbo_stream : :html,
+              method: :patch,
               data: {controller:"form-change-watcher"}) do |form| %>
   <div class="relative max-h-full" data-controller="role-removal">
     <div class="overflow-y-auto persistent-scrollbar max-h-[calc(100vh-200px)] min-h-24">

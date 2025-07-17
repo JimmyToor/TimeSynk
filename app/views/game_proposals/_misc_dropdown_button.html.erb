@@ -35,27 +35,37 @@
     </li>
 
     <li class="flex hover:border-gray-600 dark:hover:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
-      <% if proposal_availability.present? %>
-        <%= link_to edit_proposal_availability_path(proposal_availability),
-                    title: "Change your game proposal availability",
-                    class: "flex px-2 items-center w-full py-1",
-                    role: "menuitem",
-                    data: { turbo_frame: "_top" } do %>
-          <%= inline_svg_tag "icons/calendar.svg", aria_hidden: true %>
-          <span class="ml-2">Edit Proposal Availability</span>
-        <% end %>
-      <% else %>
-        <%= link_to new_game_proposal_proposal_availability_path(game_proposal), title: "Set your game proposal availability",
-                    class: "flex px-2 items-center w-full py-1",
-                    role: "menuitem",
-                    data: { turbo_frame: "_top" } do %>
-
-          <%= inline_svg_tag "icons/calendar.svg", aria_hidden: true %>
-          <span class="ml-2">Set Proposal Availability</span>
-
-        <% end %>
+      <% has_availability = proposal_availability.present? %>
+      <%= link_to has_availability ? edit_proposal_availability_path(proposal_availability) : new_game_proposal_proposal_availability_path(game_proposal),
+                  title: "Change your game proposal availability",
+                  class: "flex px-2 items-center w-full py-1",
+                  role: "menuitem",
+                  data: { turbo_frame: "_top" } do %>
+        <%= inline_svg_tag "icons/calendar.svg", aria_hidden: true %>
+        <span class="ml-2"><%= has_availability ? "Edit" : "Set" %> Proposal Availability</span>
       <% end %>
     </li>
+
+    <% if policy(game_proposal).transfer_ownership? && game_proposal.associated_users_without_owner.any? %>
+      <% transfer_button_content = capture do %>
+        <button type="button"
+                aria-haspopup="dialog"
+                data-action="dialog#open"
+                class="flex w-full items-center px-2 py-1 text-notice-400">
+          <%= inline_svg_tag "icons/transfer.svg" %>
+          <span class="ml-2"><%= t("ownership.transfer") %></span>
+        </button>
+      <% end %>
+
+      <%= render "shared/transfer_ownership_modal",
+                 button_content: transfer_button_content,
+                 resource_title: game_proposal.game_name,
+                 container_tag: :li,
+                 container_classes:"flex hover:bg-gray-200 dark:hover:bg-gray-600 w-full hover:border-gray-600
+                    dark:hover:border-gray-300 ",
+                 form_partial:"ownerships/transfer_form",
+                 resource: game_proposal %>
+    <% end %>
 
     <% if policy(game_proposal).destroy? %>
 

@@ -18,12 +18,15 @@ Rails.application.routes.draw do
   resources :users
   shallow do
     resources :groups do
+      patch :transfer_ownership, to: "ownerships#update", as: :transfer_ownership
       resources :schedules
       resources :group_memberships, except: [:edit, :update]
       resources :invites
       resources :group_availabilities
       resources :game_proposals do
+        patch :transfer_ownership, to: "ownerships#update", as: :transfer_ownership
         resources :game_sessions do
+          patch :transfer_ownership, to: "ownerships#update", as: :transfer_ownership
           resources :game_session_attendances, only: [:index, :edit, :update]
         end
         resources :proposal_availabilities

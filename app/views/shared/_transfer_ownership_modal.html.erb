@@ -1,0 +1,30 @@
+<%# locals: (resource:, resource_title: "", button_content: nil, form_partial:, container_tag: :div, container_classes:"", ignore_success: true) %>
+<%= content_tag container_tag,
+                role: "presentation",
+                data: {controller: "dialog", dialog_ignore_submit_success_value: ignore_success},
+                class: container_classes do %>
+  <% if button_content.present? %>
+    <%= button_content %>
+  <% end %>
+
+  <% title_content = capture do %>
+    <div class="flex items-center px-2">
+      <span class="text-notice-400"><%= inline_svg_tag "icons/exclamation-triangle.svg" %></span>
+      <h2 class="ml-1 text-lg font-semibold">
+        <%= t("ownership.transfer_ownership_title",
+          resource_type: resource.class.name.titleize,
+          resource_title: resource_title.blank? ? "" : "#{resource_title}"
+        ) %>
+      </h2>
+    </div>
+  <% end %>
+
+  <% body_content = capture do %>
+    <%= render form_partial, resource: resource %>
+  <% end %>
+
+  <%= render "shared/confirmation_modal",
+             title_content: title_content,
+             body_content: body_content,
+             id: "#{resource.model_name.param_key}_#{resource.id}"%>
+<% end %>

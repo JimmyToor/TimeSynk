@@ -6,7 +6,7 @@ class PermissionSetPolicy < ApplicationPolicy
   # code, beware of possible changes to the ancestors:
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
-  def initialize(user, record, most_permissive_role: nil)
+  def initialize(user, record, most_permissive_role = nil)
     super(user, record)
     @most_permissive_role = most_permissive_role || user.most_permissive_cascading_role_for_resource(record.resource)
   end
@@ -17,7 +17,29 @@ class PermissionSetPolicy < ApplicationPolicy
     has_base_edit_permissions?
   end
 
-  def update?(peer_user: nil, peer_user_most_permissive_role: nil)
+  def update?
+    # only admins and owners for the resource (or the resource's role providing resources) can change roles for others,
+    # and only for users with lower permissions
+    # e.g. site_admin > group_owner > group_admin > game_proposal_owner > game_proposal_admin
+
+    # Check if the user has the necessary permissions
+    return false unless has_base_edit_permissions?
+
+    users_by_id = User.where(id: record.users_roles.keys).index_by(&:id)
+
+    record.users_roles.each do |peer_user_id, role_ids|
+      peer_user = users_by_id[peer_user_id]
+      next unless peer_user
+
+      peer_most_permissive_role = peer_user.most_permissive_cascading_role_for_resource(record.resource)
+      return false if role_ids.include?(@most_permissive_role.id) # Cannot assign our highest role to another user
+      return false unless RoleHierarchy.supersedes?(@most_permissive_role, peer_most_permissive_role)
+    end
+
+    true
+  end
+
+  def update_single_peer?(peer_user, peer_user_most_permissive_role = nil)
     # only admins and owners for the resource (or the resource's role providing resources) can change roles for others,
     # and only for users with lower permissions
     # e.g. site_admin > group_owner > group_admin > game_proposal_owner > game_proposal_admin
@@ -26,20 +48,9 @@ class PermissionSetPolicy < ApplicationPolicy
     return false unless has_base_edit_permissions?
 
     # Only one user is being compared against
-    if peer_user.present?
-      peer_user_most_permissive_role ||= peer_user.most_permissive_cascading_role_for_resource(record.resource)
-      return false if record.users_roles[peer_user.id].include?(most_permissive_role.id) # Cannot assign our highest role to another user
-      return RoleHierarchy.supersedes?(most_permissive_role, peer_user_most_permissive_role)
-    end
-
-    record.users_roles.each do |peer_user_id, role_ids|
-      return false if peer_user_id == user.id
-      peer_most_permissive_role = User.find(peer_user_id).most_permissive_cascading_role_for_resource(record.resource)
-      return false if role_ids.include?(most_permissive_role.id) # Cannot assign our highest role to another user
-      return false unless RoleHierarchy.supersedes?(most_permissive_role, peer_most_permissive_role)
-    end
-
-    true
+    peer_user_most_permissive_role ||= peer_user.most_permissive_cascading_role_for_resource(record.resource)
+    return false if record.users_roles[peer_user.id].include?(@most_permissive_role.id) # Cannot assign our highest role to another user
+    RoleHierarchy.supersedes?(@most_permissive_role, peer_user_most_permissive_role)
   end
 
   class Scope < ApplicationPolicy::Scope
@@ -53,7 +64,7 @@ class PermissionSetPolicy < ApplicationPolicy
 
   def has_base_edit_permissions?
     if record.resource.class.const_defined?(:MIN_PERMISSION_EDIT_WEIGHT)
-      RoleHierarchy.role_weight(most_permissive_role) <= record.resource.class::MIN_PERMISSION_EDIT_WEIGHT
+      RoleHierarchy.role_weight(@most_permissive_role) <= record.resource.class::MIN_PERMISSION_EDIT_WEIGHT
     else
       false
     end

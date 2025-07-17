@@ -1,2 +1,4 @@
-<%= turbo_stream.update("#{resource.model_name.param_key}_#{@resource.id}_permission_set_edit_notice",
-                        html: raw("#{@message}")) %>
+<%= turbo_stream_toast(:error, t("permission_set.update.authorization_error")) %>
+<%= turbo_stream.replace("notification_container_#{@resource.model_name.param_key}_#{@resource.id}_permission_set",
+                         partial: "shared/notification",
+                         locals: { id: "#{@resource.model_name.param_key}_#{@resource.id}_permission_set" }) %>

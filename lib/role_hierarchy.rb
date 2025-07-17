@@ -28,6 +28,12 @@ module RoleHierarchy
     :"game_session.owner"
   ]).freeze
 
+  def self.unscoped_special_role_names
+    SPECIAL_ROLES.map { |role| role.to_s.sub(/^\w+\./, "") }
+  end
+
+  SPECIAL_ROLE_NAMES = unscoped_special_role_names.freeze
+
   # Determines if a given role supersedes another role based on their weights.
   #
   # @param role [Role] check if this role supersedes comparison role
@@ -55,6 +61,9 @@ module RoleHierarchy
   def self.role_to_key(role)
     # Convert a Rolify role object to the key format
     # Expects role to have name and resource attributes
+    if role.resource_type.nil?
+      return role.name.to_sym
+    end
     resource_name = role.resource_type.underscore
     :"#{resource_name}.#{role.name}"
   end
