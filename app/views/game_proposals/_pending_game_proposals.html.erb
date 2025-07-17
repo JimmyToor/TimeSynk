@@ -4,7 +4,7 @@
                     class: "empty:hidden",
                     data: {controller:"reload-on-restore", src: "/"} do %>
   <% if pending_game_proposals.present? %>
-    <h1 id="pending-game-proposals" class="text-2xl font-bold mb-1">Pending Proposals</h1>
+    <h2 id="pending-game-proposals" class="text-2xl font-bold mb-1"><%= t("game_proposal.pending.title") %></h2>
     <section aria-labelledby="pending-game-proposals" class="flex rounded-lg dark:border-gray-600">
       <ul aria-labelledby="pending-game-proposals">
         <% pending_game_proposals.sort_by(&:created_at).first(limit).each do |game_proposal| %>

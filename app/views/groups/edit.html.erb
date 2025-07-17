@@ -1,12 +1,8 @@
-<h1>Editing group</h1>
+<%= render "shared/header_primary", extra_classes: "text-center" do %>
+  <%= t("group.edit.title") %>
+<% end %>
 <%= modal_wrapper(local_assigns[:original_name] || @group.name) do %>
   <%= render "form", group: @group %>
-
-  <br>
-
-  <div>
-    <%= link_to "Cancel", "#", data: {action: "click->dialog#close", turbo: "false"} %>
-  </div>
 <% end %>
 
 <%= link_to "Back to groups", groups_path %>

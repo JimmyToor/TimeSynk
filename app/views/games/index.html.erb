@@ -4,17 +4,20 @@
      data-search-src-value="<%= games_path(format: :turbo_stream) %>"
      data-search-search-complete-message-value="<%= t('search.complete_message') %>">
   <%= render "games/game_list_header" %>
-  <%= turbo_frame_tag "game_list",
-                      role: "presentation",
-                      src: games_path(format: :turbo_stream), data: {search_target:"frame"},
-                      class: "mx-3" do %>
-    <div class="items-center justify-center h-[calc(100vh-5rem)] w-full border border-gray-200 rounded-lg
-        bg-tertiary-50 dark:bg-gray-800 dark:border-gray-700">
-      <div class="px-3 py-1 font-medium leading-none h-full text-center text-primary-50 bg-blue-200
-        rounded-full animate-pulse dark:bg-blue-900 dark:text-blue-200">
-        Loading Games...
+  <div class="relative">
+    <%= turbo_frame_tag "game_list",
+                        role: "presentation",
+                        src: games_path(format: :turbo_stream), data: {search_target:"frame"},
+                        class: "mx-3" do %>
+      <div class="grid grid-cols-3 gap-4 md:grid-cols-6 lg:grid-cols-9 py-3 sm:py-5 w-full h-full" aria-hidden="true">
+        <% 18.times do %>
+          <div class="aspect-[3/4]">
+            <div class="bg-gray-200 dark:bg-gray-700 h-full w-full rounded-lg animate-pulse"></div>
+          </div>
+        <% end %>
       </div>
-    </div>
-  <% end %>
+    <% end %>
+    <%= render "shared/spinner_absolute", start_hidden: true %>
+  </div>
 </div>
 <% content_for(:page_title, t("game.title")) %>

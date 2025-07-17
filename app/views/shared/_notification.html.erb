@@ -6,6 +6,7 @@
     <% next if content.blank? %>
     <% is_string = content.is_a?(String) %>
     <% content = content.with_indifferent_access unless is_string %>
+    <% next if content[:id].present? && content[:id] != id unless is_string %>
     <div id="notification_<%= id %>"
          data-controller="notification"
          data-notification-delay-value="0"

@@ -1,11 +1,13 @@
 <%# locals: (group:, group_availability: nil, group_permission_set: nil) %>
-<%= content_tag :div, id:dom_id(group) do %>
+<%= content_tag :article, id:dom_id(group) do %>
   <div class="p-4 border border-gray-200 rounded-lg shadow-md bg-white dark:shadow-md
   dark:bg-gray-800 dark:border-gray-700">
     <div class="relative flex justify-between">
 
       <div class="mr-4 flex items-center justify-between space-x-2">
-        <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"><%= group.name %></h2>
+        <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white group_name_<%= group.id %>">
+          <%= group.name %>
+        </h2>
         <% if policy(group).edit? %>
           <%= render "shared/buttons/icon_link",
                      path:edit_group_path(group),

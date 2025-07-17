@@ -71,3 +71,7 @@ button.selected {
 .fixed [popover] {
     position: fixed;
 }
+
+.field_with_errors label {
+    @apply underline decoration-notice-400 decoration-2
+}

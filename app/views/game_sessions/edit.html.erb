@@ -5,7 +5,9 @@
         group_name: content_tag(:span, game_session.group_name, class: 'font-bold text-primary-600')).html_safe %>
 <% end %>
 
-<%= modal_wrapper("Edit #{game_session.group_name} - #{game_session.game_name}") do %>
+<%= modal_wrapper(t("game_session.edit.title",
+        game_name: content_tag(:span, game_session.game_name, class: 'font-bold text-primary-600'),
+        group_name: content_tag(:span, game_session.group_name, class: 'font-bold text-primary-600')).html_safe) do %>
   <%= content_tag(:div, id:dom_id(game_session, :content)) do %>
     <%= render "form", game_session: game_session %>
   <% end %>

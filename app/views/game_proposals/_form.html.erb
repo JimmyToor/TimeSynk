@@ -26,7 +26,12 @@
                         data: {turbo_prefetch:false, game_selection_target: "frame", search_target:"frame",
                                controller:"reload-on-restore", reload_on_restore_src_value:games_path(format: :turbo_stream)},
                         class:"mx-3" do %>
-      <div class="items-center justify-center h-[50vh] w-full border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+      <div class="grid grid-cols-3 gap-4 md:grid-cols-6 lg:grid-cols-9 py-3 sm:py-5 w-full h-full" aria-hidden="true">
+        <% 18.times do %>
+          <div class="aspect-[3/4]">
+            <div class="bg-gray-200 dark:bg-gray-700 h-full w-full rounded-lg animate-pulse"></div>
+          </div>
+        <% end %>
       </div>
     <% end %>
     <%= render "shared/spinner_absolute", start_hidden: true %>

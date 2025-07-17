@@ -1,5 +1,6 @@
 <%# locals: (hide_when_empty: false) %>
-<nav class="flex flex-col items-start justify-between p-4 space-y-3 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
+<nav class="flex flex-col items-start justify-between p-4 space-y-3 md:flex-row md:items-center md:space-y-0"
+     aria-label="Table navigation">
   <ul class="inline-flex items-stretch -space-x-px">
     <li data-controller="pagy-initializer">
       <% if @pagy&.pages > 1 %>
@@ -11,7 +12,7 @@
   <span role="status"
         data-search-target="tableNavStatus"
         aria-atomic="true"
-        class="text-sm font-normal text-gray-700 dark:text-gray-200 <%= @pagy.count == 0 ? "hidden" : "" if hide_when_empty %>">
+        class="text-sm font-normal text-gray-900 dark:text-gray-200 <%= @pagy.count == 0 ? "hidden" : "" if hide_when_empty %>">
     <%== pagy_info(@pagy) %>
     <%= yield if block_given? %>
   </span>

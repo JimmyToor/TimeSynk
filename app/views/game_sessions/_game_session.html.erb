@@ -12,11 +12,11 @@
                                   img_size: GameImageSize::LOGO_MED) %>
 
     <div class="flex flex-col justify-between p-4 leading-normal">
-      <div class="flex">
+      <div class="flex space-x-2">
 
-        <h2 class="mb-2 text-lg font-semibold tracking-tight text-gray-900 game-name dark:text-white">
+        <h3 class="mb-2 text-lg font-semibold tracking-tight text-gray-900 game-name dark:text-white">
           <%= game_session.game_name %>
-        </h2>
+        </h3>
 
         <% if policy(game_session).transfer_ownership? && game_session.associated_users_without_owner.any? %>
           <% transfer_button_content = capture do %>
@@ -59,7 +59,7 @@
           <% if policy(game_session).edit? %>
             <%= render "shared/buttons/icon_link",
                        svg_name: "edit",
-                       title: "Edit Game Session for #{game_session.game_name} in #{game_session.group_name}",
+                       title: t("game_session.edit.title", game_name: game_session.game_name, group_name: game_session.group_name),
                        path: edit_game_session_path(game_session),
                        data: {turbo_frame: "modal_frame", turbo_prefetch: "false", action: "click->dialog#startLoading"},
                           extra_classes: "align-top ml-2 text-secondary-500 hover:text-secondary-400 dark:text-secondary-200
@@ -72,8 +72,11 @@
           <%= inline_svg_tag "icons/clock.svg", title: "Duration", aria_hidden: true, class:"h-6" %>
           <div id="game_session_<%= game_session.id %>_details_duration" role="presentation">
             <span id="game_session_duration_<%= game_session.id %>" class="hidden">Session Duration: </span>
-            <time aria-hidden="true"><%= format_interval(game_session.duration) %></time>
-            <time class="sr-only"><%= format_interval_sr(game_session.duration) %></time>
+            <time datetime="<%= game_session.duration.iso8601 %>"
+                  aria-labelledby="game_session_duration_<%= game_session.id %>">
+              <span aria-hidden="true"><%= format_interval(game_session.duration) %></span>
+              <span class="sr-only"><%= format_interval_sr(game_session.duration) %></span>
+            </time>
           </div>
         </div>
       </div>

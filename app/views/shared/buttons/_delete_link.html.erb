@@ -5,5 +5,5 @@
             'aria-haspopup': "dialog",
             title: title,
             class: "text-notice-400 #{extra_classes}" do %>
-  <%= content_tag(:span, inline_svg("icons/#{svg_name}.svg")) %>
+  <%= content_tag(:span, inline_svg("icons/#{svg_name}.svg", aria_hidden: true)) %>
 <% end %>

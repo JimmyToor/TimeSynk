@@ -35,16 +35,18 @@
            data-frame-reload-events-value="modal-form-submit-success"
            data-search-search-complete-message-value="<%= t('search.complete_message') %>">
         <%= render partial:"group_memberships/table/group_membership_table_header", locals: {group: group} %>
-        <%= turbo_frame_tag "group_membership_table_#{group.id}",
-                            src: frame_path,
-                            class: "relative",
-                            data: { controller:"reload_on_restore",
-                                    reload_on_restore_src_value:frame_path,
-                                    turbo_prefetch:"false",
-                                    search_target: "frame",
-                                    frame_reload_target:"frame"} do %>
-        <% end %>
-        <%= render "shared/spinner_absolute", start_hidden: true %>
+        <div class="relative">
+          <%= turbo_frame_tag "group_membership_table_#{group.id}",
+                              src: frame_path,
+                              class: "relative",
+                              data: { controller:"reload_on_restore",
+                                      reload_on_restore_src_value:frame_path,
+                                      turbo_prefetch:"false",
+                                      search_target: "frame",
+                                      frame_reload_target:"frame"} do %>
+          <% end %>
+          <%= render "shared/spinner_absolute", start_hidden: true %>
+        </div>
       </div>
 
     </div>

@@ -237,6 +237,8 @@ en:
     index:
       title: "Game Proposals for %{group_name}"
     title: "Game Proposals"
+    pending:
+      title: "Pending Proposals"
   user:
     avatar:
       update:

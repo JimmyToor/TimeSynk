@@ -58,7 +58,7 @@
                                    groups: groups || nil} %>
             </div>
           <% end %>
-            <div class="hidden rounded-lg bg-tertiary-50p-4 dark:bg-gray-800" id="schedule_form" role="tabpanel" aria-labelledby="new-schedule-tab">
+            <div class="hidden rounded-lg bg-tertiary-50 p-4 dark:bg-gray-800" id="schedule_form" role="tabpanel" aria-labelledby="new-schedule-tab">
               <%= render partial: "schedules/form", locals: { schedule: schedule || Schedule.new_default(Current.user) } %>
             </div>
         </div>

@@ -5,7 +5,7 @@
                     data: {controller:"reload-on-restore", src:"/"} do %>
     <% if upcoming_game_sessions.present? %>
       <section aria-labelledby="upcoming-game-sessions">
-        <h1 id="upcoming-game-sessions" class="text-2xl font-bold mb-1">Upcoming Sessions</h1>
+        <h2 id="upcoming-game-sessions" class="text-2xl font-bold mb-1">Upcoming Sessions</h2>
         <div class="flex rounded-lg dark:border-gray-600 h-128">
           <ul aria-labelledby="upcoming-game-sessions">
             <% upcoming_game_sessions.sort_by(&:date).first(limit).each do |game_session| %>
