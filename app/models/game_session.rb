@@ -16,8 +16,9 @@ class GameSession < ApplicationRecord
   scope :for_game_proposal, ->(game_proposal_id) { where(game_proposal_id: game_proposal_id) }
   scope :upcoming, -> { where("date >= ?", Time.current.utc) }
 
-  validates :duration, presence: true, numericality: {greater_than: 0, allow_nil: true}
+  validates :duration, presence: true, numericality: {greater_than: 0}
   validate :validate_duration_length
+  validates_datetime :date, presence: true, timeliness: {type: :datetime}
 
   attr_readonly :game_proposal_id
 
@@ -204,7 +205,8 @@ class GameSession < ApplicationRecord
   end
 
   def validate_duration_length
-    if !duration.present? || duration.minutes % 15 != 0
+    return unless duration.present? && duration.is_a?(Numeric)
+    if duration.minutes % 15 != 0
       errors.add(:duration, I18n.t("game_session.validation.duration.length"))
     end
   end

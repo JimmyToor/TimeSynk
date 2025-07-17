@@ -22,8 +22,8 @@ class Schedule < ApplicationRecord
 
   validates :name, presence: true, uniqueness: {scope: :user}, length: {maximum: 300}
   validates :description, allow_blank: true, length: {maximum: 300}
-  validates :start_time, timeliness: {on_or_before: :end_time, type: :datetime}, presence: true
-  validates :end_time, timeliness: {on_or_after: :start_time, type: :datetime}
+  validates_datetime :start_time, timeliness: {before: :end_time, type: :datetime}, presence: true
+  validates_datetime :end_time, timeliness: {after: :start_time, type: :datetime}, presence: true
 
   after_commit :touch_availabilities
 

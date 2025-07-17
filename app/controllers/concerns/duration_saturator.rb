@@ -9,19 +9,26 @@ module DurationSaturator
   # @param key_path [Array<Symbol>] the key path to the duration hash
   def populate_duration_param(key_path)
     param_hash = params.dig(*key_path)
-    return if !param_hash.present? || param_hash[:duration].present?
+    return unless param_hash.present? && param_hash[:duration].blank?
+
     param_hash[:duration_days] = param_hash[:duration_days].to_i
     param_hash[:duration_hours] = param_hash[:duration_hours].to_i
     param_hash[:duration_minutes] = param_hash[:duration_minutes].to_i
+
     if param_hash[:duration_minutes].present? && param_hash[:duration_minutes] > 59
       param_hash[:duration_hours] = param_hash[:duration_hours] + (param_hash[:duration_minutes] / 60)
       param_hash[:duration_minutes] = param_hash[:duration_minutes] % 60
     end
+
     if param_hash[:duration_hours].present? && param_hash[:duration_hours] > 23
       param_hash[:duration_days] = param_hash[:duration_days] + (param_hash[:duration_hours] / 24)
       param_hash[:duration_hours] = param_hash[:duration_hours] % 24
     end
-    param_hash[:duration] = param_hash[:duration_days].days + param_hash[:duration_hours].hours + param_hash[:duration_minutes].minutes
+
+    param_hash[:duration] = param_hash[:duration_days].days +
+      param_hash[:duration_hours].hours +
+      param_hash[:duration_minutes].minutes
+
     param_hash.delete(:duration_minutes)
     param_hash.delete(:duration_days)
     param_hash.delete(:duration_hours)
