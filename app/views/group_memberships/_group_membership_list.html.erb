@@ -25,16 +25,10 @@
 
           <%= render "shared/popover_stimulus",
                      id: "popover_group_membership_#{membership.id}",
-                     extra_classes: "top-7 left-8 -translate-x-1/2 w-max" do %>
-            <div class="pb-3">
-              <div class="bg-gray-100 dark:bg-gray-700 border-b-2 rounded-t-lg border-gray-400 dark:border-gray-600 text-center">
+                     extra_classes: "top-7 left-5 -translate-x-1/2 w-max" do %>
+              <div class="bg-gray-100 dark:bg-gray-700 rounded-lg border-gray-400 dark:border-gray-600 text-center">
                 <span class="font-bold text-primary-600 mx-2"><%= membership.user.username %></span>
               </div>
-
-              <div class="px-3">
-                <%= render "users/roles", user: membership.user, group: group %>
-              </div>
-            </div>
           <% end %>
         </div>
         <%= render "shared/popover_top_layer", id: dialog_popover_id, extra_classes: "p-4" do %>
