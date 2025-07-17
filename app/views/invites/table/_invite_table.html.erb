@@ -1,9 +1,9 @@
 <%# locals: (invites:) %>
 <div class="text-center">
-  <table class="w-full text-left text-gray-500 dark:text-gray-400">
-    <thead class="text-gray-700 uppercase bg-tertiary-50 dark:bg-gray-700 dark:text-gray-400">
+  <table data-controller="element-toggle" class="w-full text-left text-gray-800 dark:text-gray-400">
+    <thead class="text-gray-900 uppercase bg-tertiary-50 dark:bg-gray-700 dark:text-gray-300">
       <tr class="text-center">
-        <th scope="col"></th>
+        <th scope="col" role="presentation"></th>
         <th scope="col" class="px-4 py-3">Creator</th>
         <th scope="col" class="px-4 py-3">Invite Token</th>
         <th scope="col" class="px-4 py-3 hidden md:table-cell">Roles</th>
@@ -11,16 +11,16 @@
       </tr>
     </thead>
     <% if invites.any? %>
-      <tbody data-controller="element-toggle" >
-        <% invites.each do |invite| %>
+      <% invites.each do |invite| %>
+        <tbody id="invite_table_row_<%= invite.id %>">
           <%= render partial:"invites/table/invite_table_row", locals: {invite: invite} %>
-        <% end %>
-      </tbody>
+        </tbody>
+      <% end %>
     <% end %>
   </table>
 </div>
 <%= render "shared/table_nav" do %>
-  <div class="text-gray-500">
+  <div class="text-gray-800 dark:text-gray-400">
     Some invites may be hidden due to your permissions.
   </div>
 <% end %>

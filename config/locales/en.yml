@@ -180,6 +180,7 @@ en:
         presence: "cannot be blank."
     index:
       title: "Invites for %{group_name}"
+      empty: "No invites found for this group."
     title: "Invites"
     edit:
       title: "Edit Group Invite - %{group_name}"

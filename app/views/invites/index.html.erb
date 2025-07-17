@@ -1,19 +1,19 @@
 <%= render "shared/notification", id: "invites" %>
-<div id="invites" class="max-w-4xl mx-auto">
-  <%= render partial:"invites/table/invite_table_header", locals: {group: @invites.first.group} if @invites&.any? %>
-  <%= turbo_frame_tag "invite_table_#{@group.id}", data: {src: group_invites_path(@group)} do %>
-    <%= render partial: "invites/table/invite_table", locals: { invites: @invites} if @invites&.any? %>
+<section id="invites" class="max-w-4xl mx-auto">
+  <%= render partial:"invites/table/invite_table_header", locals: {group: @group } %>
+  <%= turbo_frame_tag "invite_table_#{@group.id}",
+                      role: "presentation",
+                      data: {src: group_invites_path(@group)} do %>
+    <% if @invites&.any? %>
+      <%= render partial: "invites/table/invite_table", locals: { invites: @invites} %>
+    <% else %>
+      <div class="text-center text-gray-500 dark:text-gray-400 mb-4">
+        <p><%= t("invite.index.empty") %></p>
+      </div>
+    <% end %>
   <% end %>
-</div>
-<div class="flex space-x-4">
-  <div>
-    <%= render "shared/buttons/icon_link_thick",
-               path: new_group_invite_path(@group),
-               text: "New Invite",
-               data: { turbo_frame: "modal_frame" } if @invites&.empty? && policy(Invite.new(group: @group)).new? %>
-  </div>
-  <div>
-    <%= render "shared/buttons/secondary_link", path: group_path(@group), text: "Back to group" %>
-  </div>
+</section>
+<div class="flex space-x-4 justify-between w-full">
+  <%= render "shared/buttons/secondary_link", path: group_path(@group), text: "Back to group" %>
 </div>
 <% content_for(:page_title, t("invite.title")) %>
