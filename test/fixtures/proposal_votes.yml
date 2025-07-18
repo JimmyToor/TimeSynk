@@ -1,12 +1,10 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-# Group 1, Proposal 1 (Game 1)
 group_1_game_thief_user_admin_undecided:
   game_proposal: group_1_game_thief
   user: admin
   yes_vote: nil
 
-# Group 2, Proposal 2 (Game 2)
 group_2_game_gta_user_cooluserguy_yes:
   game_proposal: group_2_game_gta
   user: cooluserguy
@@ -19,7 +17,6 @@ group_2_game_gta_user_radperson_no:
   yes_vote: false
   comment: "I hate this game!"
 
-# Group 2, Proposal 5 (Game 1)
 group_2_game_thief_user_cooluserguy_undecided:
   game_proposal: group_2_game_thief
   user: cooluserguy
@@ -30,7 +27,6 @@ group_2_game_thief_user_radperson_yes:
   user: radperson
   yes_vote: true
 
-# Group 3, Proposal 3 (Game 1)
 group_3_game_thief_user_cooluserguy_undecided:
   game_proposal: group_3_game_thief
   user: cooluserguy
@@ -46,7 +42,6 @@ group_3_game_thief_user_groupsmemberuser_yes:
   user: groupsmemberuser
   yes_vote: true
 
-# Group 3, Proposal 4 (Game 2)
 group_3_game_gta_user_cooluserguy_undecided:
   game_proposal: group_3_game_gta
   user: cooluserguy

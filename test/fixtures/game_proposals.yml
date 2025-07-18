@@ -1,34 +1,29 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-# group_1_game_1
 group_1_game_thief:
   group: one_member
   game: thief
   yes_votes_count: 1
   no_votes_count: 0
 
-# group_2_game_1
 group_2_game_thief:
   group: two_members
   game: thief
   yes_votes_count: 0
   no_votes_count: 0
 
-# group_2_game_2
 group_2_game_gta:
   group: two_members
   game: gta
   yes_votes_count: 1
   no_votes_count: 1
 
-# group_3_game_1
 group_3_game_thief:
   group: three_members
   game: thief
   yes_votes_count: 0
   no_votes_count: 0
 
-# group_3_game_2
 group_3_game_gta:
   group: three_members
   game: gta

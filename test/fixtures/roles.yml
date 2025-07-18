@@ -5,7 +5,6 @@ site_admin:
   created_at: 2024-11-15 21:09:13.989530
   updated_at: 2024-11-15 21:09:13.989530
 
-# Group 1 ('one_member')
 group_1_owner:
   name: "owner"
   resource: one_member (Group)
@@ -54,7 +53,6 @@ group_1_kick_users:
   created_at: 2024-11-15 21:41:30.308123
   updated_at: 2024-11-15 21:41:30.308123
 
-# Group 1 -> Game Proposal 1 ('group_1_game_thief')
 group_1_game_thief_owner:
   name: "owner"
   resource: group_1_game_thief (GameProposal)
@@ -79,14 +77,12 @@ group_1_game_thief_manage_all_game_sessions:
   created_at: 2024-11-15 21:41:30.314869
   updated_at: 2024-11-15 21:41:30.314869
 
-# Group 1 -> Game Proposal 1 -> Game Session 1 ('proposal_1_session_1')
 group_1_game_thief_session_1_owner:
   name: "owner"
   resource: group_1_game_thief_session_1 (GameSession)
   created_at: 2024-11-15 21:41:30.298949
   updated_at: 2024-11-15 21:41:30.298949
 
-# Group 2 ('two_members')
 group_2_owner:
   name: "owner"
   resource: two_members (Group)
@@ -135,7 +131,6 @@ group_2_kick_users:
   created_at: 2024-11-15 21:41:30.308123
   updated_at: 2024-11-15 21:41:30.308123
 
-# Group 2 -> Game Proposal 1 ('group_2_game_thief')
 group_2_game_thief_owner:
   name: "owner"
   resource: group_2_game_thief (GameProposal)
@@ -160,7 +155,6 @@ group_2_game_thief_manage_all_game_sessions:
   created_at: 2024-11-15 21:41:30.314869
   updated_at: 2024-11-15 21:41:30.314869
 
-# Group 2 -> Game Proposal 2 ('group_2_game_gta')
 group_2_game_gta_owner:
   name: "owner"
   resource: group_2_game_gta (GameProposal)
@@ -185,14 +179,12 @@ group_2_game_gta_manage_all_game_sessions:
   created_at: 2024-11-15 21:41:30.314869
   updated_at: 2024-11-15 21:41:30.314869
 
-# Group 2 -> Game Proposal 2 -> Game Session 1 ('group_2_game_gta_session_1')
 group_2_game_gta_session_1_owner:
   name: "owner"
   resource: group_2_game_gta_session_1 (GameSession)
   created_at: 2024-11-15 21:41:30.298949
   updated_at: 2024-11-15 21:41:30.298949
 
-# Group 3 ('three_members')
 group_3_owner:
   name: "owner"
   resource: three_members (Group)
@@ -241,7 +233,6 @@ group_3_kick_users:
   created_at: 2024-11-15 21:41:30.308123
   updated_at: 2024-11-15 21:41:30.308123
 
-# Group 3 -> Game Proposal 1 ('group_3_game_thief')
 group_3_game_thief_owner:
   name: "owner"
   resource: group_3_game_thief (GameProposal)
@@ -266,28 +257,24 @@ group_3_game_thief_manage_all_game_sessions:
   created_at: 2024-11-15 21:41:30.314869
   updated_at: 2024-11-15 21:41:30.314869
 
-# Group 3 -> Game Proposal 1 -> Game Session 1 ('group_3_game_thief_session_1')
 group_3_game_thief_session_1_owner:
   name: "owner"
   resource: group_3_game_thief_session_1 (GameSession)
   created_at: 2024-11-15 21:41:30.298949
   updated_at: 2024-11-15 21:41:30.298949
 
-# Group 3 -> Game Proposal 1 -> Game Session 2 ('group_3_game_thief_session_2')
 group_3_game_thief_session_2_owner:
   name: "owner"
   resource: group_3_game_thief_session_2 (GameSession)
   created_at: 2024-11-15 21:41:30.298949
   updated_at: 2024-11-15 21:41:30.298949
 
-# Group 3 -> Game Proposal 1 -> Game Session 3 ('group_3_game_thief_session_3')
 group_3_game_thief_session_3_owner:
   name: "owner"
   resource: group_3_game_thief_session_3 (GameSession)
   created_at: 2024-11-15 21:41:30.298949
   updated_at: 2024-11-15 21:41:30.298949
 
-# Group 3 -> Game Proposal 2 ('group_3_game_gta')
 group_3_game_gta_owner:
   name: "owner"
   resource: group_3_game_gta (GameProposal)
@@ -312,7 +299,6 @@ group_3_game_gta_manage_all_game_sessions:
   created_at: 2024-11-15 21:41:30.314869
   updated_at: 2024-11-15 21:41:30.314869
 
-# Group 4 ('three_members_0_proposals')
 group_4_owner:
   name: "owner"
   resource: three_members_0_proposals (Group)
