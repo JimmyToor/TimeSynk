@@ -1,0 +1,82 @@
+<%# locals: (group:, group_availability: nil) %>
+<%= render "shared/dropdown_list",
+           id: "#{group.id}_group_misc_dropdown",
+           label: t("group.miscellaneous_dropdown.title", group_name: group.name),
+           svg_path: "icons/chevron-down.svg",
+           button_classes: "relative inline-flex items-center rounded-lg text-center text-sm font-medium focus:ring-4
+            focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800",
+           list_classes: "absolute left-full z-40 hidden w-48 -translate-x-full transform rounded-lg bg-slate-100
+            shadow transition dark:bg-gray-700 py-2 text-sm text-gray-700 dark:text-gray-200" do %>
+  <li role="menuitem"
+      class="flex hover:border-gray-600 dark:hover:border-gray-500 hover:bg-gray-200 dark:hover:bg-gray-600">
+    <%= link_to group_game_proposals_path(group), title: t("game_proposal.index.label"), class: "flex items-center px-2 py-1 w-full",
+                data: { action: "dropdown#toggle", turbo_frame: "_top" } do %>
+      <%= inline_svg_tag "icons/rectangle_stack.svg" %>
+      <span class="ml-2"><%= t("game_proposal.index.label") %></span>
+    <% end %>
+  </li>
+
+  <li role="menuitem"
+      class="flex hover:border-gray-600 dark:hover:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
+    <%= link_to group_invites_path(group), title: t("invite.index.label"),
+                class: "flex h-fit w-full items-center px-2 py-1",
+                data: { action: "dropdown#toggle", turbo_frame: "_top" } do %>
+      <%= inline_svg_tag "icons/envelope.svg" %>
+      <span class="ml-2"><%= t("invite.index.label") %></span>
+    <% end %>
+  </li>
+
+  <li role="menuitem"
+      class="flex hover:border-gray-600 dark:hover:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
+    <% has_availability = group_availability.present? %>
+    <%= link_to has_availability ? edit_group_availability_path(group_availability) : new_group_group_availability_path(group),
+                data: { turbo_frame: "_top"},
+                title: "Change your group availability",
+                class: "flex h-fit w-full items-center px-2 py-1" do %>
+      <%= inline_svg_tag "icons/calendar.svg" %>
+      <span class="ml-2"><%= has_availability ? t("group_availability.edit.label") : t("group_availability.new.label") %></span>
+    <% end %>
+  </li>
+
+  <% if policy(group).transfer_ownership? && group.associated_users_without_owner.any? %>
+    <% transfer_button_content = capture do %>
+      <button type="button"
+              aria-haspopup="dialog"
+              data-action="dialog#open"
+              class="flex w-full items-center px-2 py-1 text-notice-400">
+        <%= inline_svg_tag "icons/transfer.svg" %>
+        <span class="ml-2"><%= t("ownership.transfer") %></span>
+      </button>
+    <% end %>
+
+    <li role="menuitem"
+        class="flex hover:border-gray-600 dark:hover:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
+      <%= render "shared/transfer_ownership_modal",
+                 button_content: transfer_button_content,
+                 resource_title: group.name,
+                 form_partial:"ownerships/transfer_form",
+                 resource: group %>
+    </li>
+  <% end %>
+
+  <% if policy(group).destroy? %>
+    <% delete_button_content = capture do %>
+      <button type="button"
+              aria-haspopup="dialog"
+              data-action="dialog#open"
+              class="flex w-full items-center px-2 py-1 text-notice-400">
+        <%= inline_svg_tag "icons/trash.svg" %>
+        <span class="ml-2"><%= t("group.destroy.title") %></span>
+      </button>
+    <% end %>
+
+    <li role="menuitem"
+        class="flex hover:border-gray-600 dark:hover:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
+      <%= render "shared/delete_modal",
+                 button_content: delete_button_content,
+                 resource_title: group.name,
+                 form_partial:"groups/delete_form",
+                 resource: group %>
+    </li>
+  <% end %>
+<% end %>

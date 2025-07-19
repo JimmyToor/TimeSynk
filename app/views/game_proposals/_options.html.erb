@@ -1,11 +1,10 @@
 <%# locals: (game_proposal:, proposal_availability: nil, proposal_permission_set: nil) %>
 <div class="flex align-top space-x-1">
-  <%= render "game_proposals/new_dropdown_button", game_proposal: game_proposal, can_create_session: policy(game_proposal).create_game_session? %>
+  <%= render "game_proposals/new_dropdown", game_proposal: game_proposal, can_create_session: policy(game_proposal).create_game_session? %>
 
-  <%  if proposal_permission_set.present? && policy(proposal_permission_set).edit? %>
-    <%= render partial: "permission_sets/edit_button", locals: { permission_set: proposal_permission_set } %>
+  <% if proposal_permission_set.present? && policy(proposal_permission_set).edit? %>
+    <%= render "permission_sets/edit_button", permission_set: proposal_permission_set %>
   <% end %>
 
-  <%= render partial: "game_proposals/misc_dropdown_button", locals: { game_proposal: game_proposal, proposal_availability: proposal_availability } %>
-
+  <%= render "game_proposals/misc_dropdown", game_proposal: game_proposal, proposal_availability: proposal_availability %>
 </div>

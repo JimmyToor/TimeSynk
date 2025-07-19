@@ -1,11 +1,10 @@
 <%# locals: (group:, group_availability: nil, group_permission_set: nil) %>
 <div class="flex align-top space-x-1">
-
-  <%= render "new_dropdown_button", group: group, can_propose: policy(group).create_game_proposal? %>
+  <%= render "groups/new_dropdown", group: group, can_propose: policy(group).create_game_proposal? %>
 
   <% if group_permission_set.present? && policy(group_permission_set).edit? %>
-    <%= render partial: "permission_sets/edit_button", locals: { permission_set: group_permission_set } %>
+    <%= render "permission_sets/edit_button", permission_set: group_permission_set %>
   <% end %>
 
-  <%= render "misc_dropdown_button", group: group, group_availability: group_availability %>
+  <%= render "groups/misc_dropdown", group: group, group_availability: group_availability %>
 </div>

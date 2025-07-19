@@ -1,0 +1,28 @@
+<%# locals: (id:, label:, svg_path:, button_classes: "", list_classes: "" ) %>
+<div data-controller="dropdown" class="relative" data-action="keydown.esc@window->dropdown#forceHide">
+  <button id="<%= id %>_button"
+          title="<%= label %>"
+          aria-label="<%= label %>"
+          aria-haspopup="menu"
+          aria-expanded="false"
+          aria-controls="<%= id %>_menu"
+          data-dropdown-target="toggleButton"
+          data-action="dropdown#toggle click@window->dropdown#hide"
+          class="<%= button_classes %>"
+          type="button">
+    <%= inline_svg_tag svg_path, class: "size-6", aria_hidden: true %>
+  </button>
+
+  <ul id="<%= id %>_menu"
+      role="menu"
+      data-dropdown-target="menu"
+      aria-labelledby="<%= label %>_button"
+      class="<%= list_classes %>"
+      data-transition-enter-from="opacity-0 scale-95"
+      data-transition-enter-to="opacity-100 scale-100"
+      data-transition-leave-from="opacity-100 scale-100"
+      data-transition-leave-to="opacity-0 scale-95">
+
+    <%= yield if block_given? %>
+  </ul>
+</div>

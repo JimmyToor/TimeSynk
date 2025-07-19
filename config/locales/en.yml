@@ -97,6 +97,8 @@ en:
       title: "New Group"
     edit:
       title: "Edit Group"
+    miscellaneous_dropdown:
+      title: "Open miscellaneous dropdown for %{group_name}"
   group_membership:
     invite_not_valid: "There was a problem with the invite."
     already_member: "You are already a member of this group."
@@ -181,6 +183,7 @@ en:
     index:
       title: "Invites for %{group_name}"
       empty: "No invites found for this group."
+      label: "View Invites"
     title: "Invites"
     edit:
       title: "Edit Group Invite - %{group_name}"
@@ -213,7 +216,10 @@ en:
       title: "Edit %{game_name} session - %{group_name}"
     new:
       title: "New %{game_name} session - %{group_name}"
+      label: "New Game Session"
     title: "Game Sessions"
+    index:
+      label: "View Game Sessions"
   game_session_attendance:
     create:
       success: "Attendance for %{name} saved."
@@ -236,9 +242,14 @@ en:
       error: "There was an error updating the proposal for %{name}."
     index:
       title: "Game Proposals for %{group_name}"
+      label: "View Game Proposals"
     title: "Game Proposals"
     pending:
       title: "Pending Proposals"
+    new:
+      label: "New Game Proposal"
+    miscellaneous_dropdown:
+      title: "Open miscellaneous dropdown for #{game_name}"
   user:
     avatar:
       update:
@@ -279,3 +290,13 @@ en:
     transfer_ownership_title: "Transfer ownership of %{resource_type} - %{resource_title}"
   generic:
     refresh_try_again: "Please refresh and try again."
+  game_proposal_availability:
+    edit:
+      label: "Edit Proposal Availability"
+    new:
+      label: "Set Proposal Availability"
+  group_availability:
+    edit:
+      label: "Edit Group Availability"
+    new:
+      label: "Set Group Availability"

@@ -12,4 +12,8 @@ export default class extends Dropdown {
         : "true";
     this.toggleButtonTarget.setAttribute("aria-expanded", newExpanded);
   }
+
+  forceHide() {
+    this.leave();
+  }
 }
