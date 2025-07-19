@@ -80,7 +80,7 @@ class GameProposalsController < ApplicationController
   def set_game_proposals
     @game_proposals = if params[:group_id]
       group = Group.find(params[:group_id])
-      authorize(group, :show, policy_class: GroupPolicy)
+      authorize(group, :show?, policy_class: GroupPolicy)
       GameProposal.for_group(params[:group_id])
     else
       policy_scope(GameProposal)
