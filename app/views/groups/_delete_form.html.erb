@@ -4,8 +4,9 @@
 
   <div>
     <label>
-      Type the group name to confirm deletion:
-      <input class="mt-2 w-full rounded-md px-3 text-base text-black outline outline-1
+      <%= t("group.destroy.confirm_name") %>
+      <input id="group_<%= group.id %>_delete_confirm_name_input"
+             class="mt-2 w-full rounded-md px-3 text-base text-black outline outline-1
                       outline-gray-300 bg-error-50 py-1.5 dark:text-white -outline-offset-1
                       focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-orange-600 sm:text-sm/6"
              data-confirmation-target="input"
@@ -17,8 +18,8 @@
 
   <div>
     <label>
-      <input data-confirmation-target="input" data-action="confirmation#check" type="checkbox" autofocus/>
-      I confirm that I want to permanently delete this group
+      <input id="group_<%= group.id %>_delete_confirm_checkbox_input" data-confirmation-target="input" data-action="confirmation#check" type="checkbox" autofocus/>
+      <%= t("group.destroy.confirm") %>
     </label>
   </div>
 

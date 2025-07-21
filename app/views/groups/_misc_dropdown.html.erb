@@ -1,6 +1,6 @@
 <%# locals: (group:, group_availability: nil) %>
 <%= render "shared/dropdown_list",
-           id: "#{group.id}_group_misc_dropdown",
+           id: "group_#{group.id}_misc_dropdown",
            label: t("group.miscellaneous_dropdown.title", group_name: group.name),
            svg_path: "icons/chevron-down.svg",
            button_classes: "relative inline-flex items-center rounded-lg text-center text-sm font-medium focus:ring-4

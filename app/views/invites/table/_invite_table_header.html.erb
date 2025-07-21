@@ -11,7 +11,7 @@
     md:items-center md:space-x-3 empty:hidden" do -%>
     <%= render "shared/buttons/icon_link_thick",
                path: new_group_invite_path(group),
-               text: "New Invite",
+               text: t("invite.new.label"),
                data: { turbo_frame: "modal_frame" } if policy(group.invites.build).new? -%>
   <% end %>
 </div>

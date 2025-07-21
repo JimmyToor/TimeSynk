@@ -88,6 +88,8 @@ en:
       success: "Group %{name} successfully deleted."
       error: "There was an error deleting the group."
       title: "Delete Group"
+      confirm: "I confirm that I want to permanently delete this group"
+      confirm_name: "Type the group name to confirm deletion:"
     update:
       success: "Group name changed to %{name}."
       error: "There was an error updating the group."
@@ -99,6 +101,15 @@ en:
       title: "Edit Group"
     miscellaneous_dropdown:
       title: "Open miscellaneous dropdown for %{group_name}"
+    join:
+      title: "Join Group"
+    role:
+      owner: "Owner"
+      admin: "Admin"
+      manage_invites: "Manage Invites"
+      kick_users: "Kick Users"
+      create_game_proposals: "Create Game Proposals"
+      manage_all_game_proposals: "Manage All Game Proposals"
   group_membership:
     invite_not_valid: "There was a problem with the invite."
     already_member: "You are already a member of this group."
@@ -170,6 +181,7 @@ en:
     destroy:
       success: "Invite successfully deleted."
       error: "There was an error deleting the invite."
+      label: "Delete Invite"
     update:
       success: "Invite successfully updated."
       error: "There was an error updating the invite."
@@ -187,6 +199,9 @@ en:
     title: "Invites"
     edit:
       title: "Edit Group Invite - %{group_name}"
+      label: "Edit Invite"
+    new:
+      label: "New Invite"
   game_session:
     validation:
       name:
@@ -220,6 +235,8 @@ en:
     title: "Game Sessions"
     index:
       label: "View Game Sessions"
+    role:
+      owner: "Owner"
   game_session_attendance:
     create:
       success: "Attendance for %{name} saved."
@@ -250,6 +267,11 @@ en:
       label: "New Game Proposal"
     miscellaneous_dropdown:
       title: "Open miscellaneous dropdown for #{game_name}"
+    role:
+      owner: "Owner"
+      admin: "Admin"
+      create_game_sessions: "Create Game Sessions"
+      manage_all_game_sessions: "Manage All Game Sessions"
   user:
     avatar:
       update:
@@ -300,3 +322,9 @@ en:
       label: "Edit Group Availability"
     new:
       label: "Set Group Availability"
+  nav:
+    dashboard: "Dashboard"
+    groups: "Groups"
+    game_proposals: "Proposals"
+    availabilities: "Availabilities"
+    schedules: "Schedules"

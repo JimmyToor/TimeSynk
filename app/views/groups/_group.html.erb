@@ -11,7 +11,7 @@
         <% if policy(group).edit? %>
           <%= render "shared/buttons/icon_link",
                      path:edit_group_path(group),
-                     title:"Edit Name",
+                     title: t("group.edit.title"),
                      extra_classes: "text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100",
                      svg_name:"edit",
                      data: {turbo_frame: "modal_frame"} %>
