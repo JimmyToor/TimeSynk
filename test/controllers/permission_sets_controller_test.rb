@@ -27,7 +27,7 @@ class PermissionSetsControllerTest < ActionDispatch::IntegrationTest
 
   test "should update group permission set" do
     manage_proposals_role = roles(:group_3_manage_all_proposals)
-    create_proposals_role = roles(:group_3_create_proposals)
+    create_proposals_role = roles(:group_3_create_game_proposals)
     create_invites_role = roles(:group_3_create_invites)
     user1 = users(:cooluserguy)
     user2 = users(:radperson)

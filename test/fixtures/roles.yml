@@ -29,14 +29,8 @@ group_1_manage_invites:
   created_at: 2024-11-15 21:41:30.301899
   updated_at: 2024-11-15 21:41:30.301899
 
-group_1_manage_users:
-  name: "manage_users"
-  resource: one_member (Group)
-  created_at: 2024-11-15 21:41:30.302732
-  updated_at: 2024-11-15 21:41:30.302732
-
-group_1_create_proposals:
-  name: "create_proposals"
+group_1_create_game_proposals:
+  name: "create_game_proposals"
   resource: one_member (Group)
   created_at: 2024-11-15 21:41:30.304932
   updated_at: 2024-11-15 21:41:30.304932
@@ -107,14 +101,8 @@ group_2_manage_invites:
   created_at: 2024-11-15 21:41:30.301899
   updated_at: 2024-11-15 21:41:30.301899
 
-group_2_manage_users:
-  name: "manage_users"
-  resource: two_members (Group)
-  created_at: 2024-11-15 21:41:30.302732
-  updated_at: 2024-11-15 21:41:30.302732
-
-group_2_create_proposals:
-  name: "create_proposals"
+group_2_create_game_proposals:
+  name: "create_game_proposals"
   resource: two_members (Group)
   created_at: 2024-11-15 21:41:30.304932
   updated_at: 2024-11-15 21:41:30.304932
@@ -209,14 +197,8 @@ group_3_manage_invites:
   created_at: 2024-11-15 21:41:30.301899
   updated_at: 2024-11-15 21:41:30.301899
 
-group_3_manage_users:
-  name: "manage_users"
-  resource: three_members (Group)
-  created_at: 2024-11-15 21:41:30.302732
-  updated_at: 2024-11-15 21:41:30.302732
-
-group_3_create_proposals:
-  name: "create_proposals"
+group_3_create_game_proposals:
+  name: "create_game_proposals"
   resource: three_members (Group)
   created_at: 2024-11-15 21:41:30.304932
   updated_at: 2024-11-15 21:41:30.304932
@@ -322,12 +304,6 @@ group_4_manage_invites:
   resource: three_members_0_proposals (Group)
   created_at: 2024-11-15 21:41:30.301899
   updated_at: 2024-11-15 21:41:30.301899
-
-group_4_manage_users:
-  name: "manage_users"
-  resource: three_members_0_proposals (Group)
-  created_at: 2024-11-15 21:41:30.302732
-  updated_at: 2024-11-15 21:41:30.302732
 
 group_4_create_game_proposals:
   name: "create_game_proposals"
