@@ -2,7 +2,7 @@ require "test_helper"
 
 class InvitesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @invite = invites(:group_2_role_group_2_manage_users)
+    @invite = invites(:group_twomembers_role_manage_users)
     @user = users(:cooluserguy)
     sign_in_as(@user)
   end

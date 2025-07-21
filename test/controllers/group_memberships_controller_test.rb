@@ -22,7 +22,7 @@ class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get accept invite page" do
-    invite = invites(:group_1_no_roles)
+    invite = invites(:group_onemember_no_roles)
 
     get accept_invite_url(invite_token: invite.invite_token)
 
@@ -30,7 +30,7 @@ class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create group_membership from invite" do
-    invite = invites(:group_1_no_roles)
+    invite = invites(:group_onemember_no_roles)
 
     assert_difference("GroupMembership.count", 1) do
       post group_group_memberships_url(params: {group_membership: {user_id: @user.id, invite_token: invite.invite_token}}, group_id: invite.group_id)
@@ -51,7 +51,7 @@ class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "expired invite should result in an expired invite error" do
-    invite = invites(:group_1_no_roles)
+    invite = invites(:group_onemember_no_roles)
 
     travel_to 1.week.from_now
 
