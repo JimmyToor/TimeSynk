@@ -1,43 +1,82 @@
 require "application_system_test_case"
 
 class GroupsTest < ApplicationSystemTestCase
-  setup do
-    @group = groups(:one_member)
-  end
-
   test "visiting the index" do
-    visit groups_url
+    groups(:three_members)
+    user = users(:radperson)
+    sign_in_as user
+
+    click_on I18n.t("nav.groups")
     assert_selector "h1", text: "Groups"
   end
 
   test "should create group" do
-    visit groups_url
-    click_on "New group"
+    groups(:three_members)
+    user = users(:radperson)
+    sign_in_as user
 
-    fill_in "Name", with: @group.name
-    fill_in "User", with: @group.user_id
+    new_group_name = "newgroup"
+
+    visit groups_url
+    click_on I18n.t("group.new.title")
+
+    fill_in "Name", with: new_group_name
     click_on "Create Group"
 
-    assert_text "Group was successfully created"
-    click_on "Back"
+    assert_text I18n.t("group.create.success", name: new_group_name)
+  end
+
+  test "should visit group" do
+    group = groups(:three_members)
+    user = users(:radperson)
+    sign_in_as user
+
+    visit groups_url
+    click_on "Go to #{group.name}"
+
+    assert_text group.name
+    assert_text "Leave this group"
   end
 
   test "should update Group" do
-    visit group_url(@group)
-    click_on "Edit this group", match: :first
+    group = groups(:two_members)
+    user = users(:cooluserguy)
+    sign_in_as user
 
-    fill_in "Name", with: @group.name
-    fill_in "User", with: @group.user_id
+    visit group_url(group)
+    click_on I18n.t("group.edit.title")
+
+    new_group_name = "#{group.name} - updated"
+    fill_in "group_name", with: new_group_name
     click_on "Update Group"
 
-    assert_text "Group was successfully updated"
-    click_on "Back"
+    assert_text I18n.t("group.update.success", name: new_group_name)
+  end
+
+  test "should not have edit button if not group owner" do
+    group = groups(:three_members)
+    user = users(:radperson)
+    sign_in_as user
+
+    visit group_url(group)
+
+    assert_no_text I18n.t("group.edit.title")
   end
 
   test "should destroy Group" do
-    visit group_url(@group)
-    click_on "Destroy this group", match: :first
+    group = groups(:two_members)
+    user = users(:cooluserguy)
+    sign_in_as user
 
-    assert_text "Group was successfully destroyed"
+    visit group_url(group)
+    find("#group_#{group.id}_misc_dropdown_button").click
+
+    click_on I18n.t("group.destroy.title")
+
+    fill_in I18n.t("group.destroy.confirm_name"), with: group.name
+    check I18n.t("group.destroy.confirm")
+    click_on "Delete"
+
+    assert_text I18n.t("group.destroy.success", name: group.name)
   end
 end
