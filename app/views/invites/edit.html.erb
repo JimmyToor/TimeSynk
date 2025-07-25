@@ -1,6 +1,6 @@
 <%= render "shared/header_primary" do %>
   <%= t("invite.edit.title",
-        group_name: content_tag(:span, @invite.group.name, class: 'font-bold text-primary-600')).html_safe %>
+        group_name: content_tag(:span, @invite.group_name, class: 'font-bold text-primary-600')).html_safe %>
 <% end %>
 <div class="mb-2">
   <%= modal_wrapper("Invite") do %>
@@ -9,7 +9,7 @@
 </div>
 
 <div class="space-y-2 mt-4">
-  <%= render "shared/buttons/secondary_link", text: "See all invites for #{@invite.group.name}",path: group_invites_path(@invite.group)%>
-  <%= render "shared/buttons/secondary_link", text: "Go to group: #{@invite.group.name}", path: @invite.group  %>
+  <%= render "shared/buttons/secondary_link", text: "See all invites for #{@invite.group_name}",path: group_invites_path(@invite.group)%>
+  <%= render "shared/buttons/secondary_link", text: "Go to group: #{@invite.group_name}", path: @invite.group  %>
 </div>
 <% content_for(:page_title, t("invite.title")) %>

@@ -22,6 +22,10 @@ class GameSession < ApplicationRecord
 
   attr_readonly :game_proposal_id
 
+  delegate :name, to: :game, prefix: true
+  delegate :name, to: :group, prefix: true
+  delegate :name, to: :game_proposal, prefix: true
+
   after_create :create_roles, :create_initial_attendance
   after_create_commit :broadcast_game_session_create
   after_update_commit :broadcast_game_session_update
@@ -81,14 +85,6 @@ class GameSession < ApplicationRecord
     game_session_attendances.find_by(user_id: user.id)&.destroy
   end
 
-  def game_name
-    game_proposal.game.name
-  end
-
-  def group_name
-    game_proposal.group.name
-  end
-
   def in_range(icecube_schedule: nil, start_time: nil, end_time: nil)
     return true unless start_time.present? && end_time.present?
     icecube_schedule = make_icecube_schedule if icecube_schedule.nil?
@@ -117,14 +113,14 @@ class GameSession < ApplicationRecord
   # @return [Hash] A hash representing the calendar schedule.
   def make_calendar_schedule(name: nil, icecube_schedule: nil, selectable: true)
     icecube_schedule = make_icecube_schedule if icecube_schedule.nil?
-    name = Game.find(game_proposal.game_id).name if name.nil?
+    name = game_name if name.nil?
     schedule = icecube_schedule.to_hash
 
     schedule[:id] = id
     schedule[:name] = name
     schedule[:duration] = duration
     schedule[:selectable] = selectable
-    schedule[:group] = game_proposal.group.name
+    schedule[:group] = game_proposal.group_name
 
     schedule
   end

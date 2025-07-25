@@ -12,20 +12,17 @@ class ProposalVote < ApplicationRecord
   belongs_to :user
   belongs_to :game_proposal
 
+  has_one :group, through: :game_proposal
+
+  delegate :name, to: :group, prefix: true
+  delegate :game_name, to: :game_proposal
+
   after_destroy :update_proposal_vote_counts, unless: :destroyed_via_association?
   after_commit :update_proposal_vote_counts, :broadcast_game_proposal_vote_count, :broadcast_game_proposal_votes, unless: :destroyed_via_association?
 
   validates :game_proposal, uniqueness: {scope: :user, message: I18n.t("proposal_vote.validation.vote_unique")}, on: :create
   validates :yes_vote, inclusion: {in: [true, false, nil]}, allow_nil: true
   attr_readonly :user_id, :game_proposal_id
-
-  def group_name
-    game_proposal.group.name
-  end
-
-  def game_name
-    game_proposal.game.name
-  end
 
   private
 

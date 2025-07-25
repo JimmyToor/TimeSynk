@@ -16,7 +16,7 @@
     </div>
 
     <% if !game_session.new_record? || (!game_proposals.present? && !groups.present?) %>
-      <%= form.hidden_field :game_proposal_id, value: game_session.game_proposal.id, 'aria-label': "Game proposal" %>
+      <%= form.hidden_field :game_proposal_id, value: game_session.game_proposal_id, 'aria-label': "Game proposal" %>
     <% else %>
       <span data-proposal-selection-target="groupName" class="font-semibold"><%= game_session.group_name %></span>
       <% if groups.present? %>
@@ -27,7 +27,7 @@
                                          :name,
                                          :id,
                                          :game_name,
-                                         { selected: game_session.game_proposal.id, 'aria-label': "Game proposal" },
+                                         { selected: game_session.game_proposal_id, 'aria-label': "Game proposal" },
                                          data: { proposal_selection_target:"collectionSelect" } %>
       <% else %>
         <%= hidden_field_tag :single_group, initial_game_proposal.id %>

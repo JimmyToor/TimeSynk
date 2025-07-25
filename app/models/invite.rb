@@ -15,6 +15,8 @@ class Invite < ApplicationRecord
   scope :for_group, ->(group_id) { where(group: group_id) }
   scope :expired, -> { where("expires_at < ?", Time.current) }
 
+  delegate :name, to: :group, prefix: true
+
   def assigned_roles
     Role.where(id: assigned_role_ids)
   end

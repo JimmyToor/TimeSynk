@@ -24,9 +24,11 @@ class GameProposal < ApplicationRecord
 
   validates :game, uniqueness: {scope: :group, message: "already has a proposal in this group"}
 
+  delegate :name, to: :game, prefix: true
+  delegate :name, to: :group, prefix: true
 
+  PAGE_LIMIT = 8
   PAGE_LIMIT_SHORT = 5
-  PAGE_LIMIT = 10
 
   def self.role_providing_associations
     [:group]
@@ -125,14 +127,6 @@ class GameProposal < ApplicationRecord
       game_sessions.where("(date >= ? AND date <= ?) OR (date + duration >= ? AND date + duration <= ?) OR (date < ? AND date + duration > ?)",
         start_time, end_time, start_time, end_time, start_time, end_time)
     end
-  end
-
-  def game_name
-    game.name
-  end
-
-  def group_name
-    group.name
   end
 
   def broadcast_game_proposal_create

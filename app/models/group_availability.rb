@@ -7,6 +7,10 @@ class GroupAvailability < ApplicationRecord
 
   validates :user, uniqueness: {scope: :group}
 
+  delegate :name, to: :group, prefix: true
+  delegate :name, to: :availability, prefix: true
+  delegate :username, to: :user
+
   scope :for_group, ->(group) { where(group: group) }
   scope :for_user, ->(user) { where(user: user) }
   scope :for_user_and_group, ->(user, group) { where(user: user, group: group) }
