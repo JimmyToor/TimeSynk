@@ -1,8 +1,8 @@
-<%# locals: (game_proposal:, proposal_availability: nil, proposal_permission_set:nil) %>
+<%# locals: (game_proposal:, proposal_availability: nil, proposal_permission_set:nil, reload_on_restore: true) %>
 <%= content_tag :div, id: dom_id(game_proposal) do %>
   <%= turbo_frame_tag dom_id(game_proposal, :content),
                       role: "presentation",
-                      data: { controller: "reload-on-restore",
+                      data: { controller: ("reload-on-restore" if reload_on_restore),
                               reload_on_restore_src_value: game_proposal_path(game_proposal) } do %>
     <div class="flex flex-col items-center border border-gray-200 rounded-lg shadow
       md:flex-row bg-white dark:border-gray-700 dark:bg-gray-800 w-fit bg-">

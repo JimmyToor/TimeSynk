@@ -1,16 +1,23 @@
 class GameProposalsController < ApplicationController
   add_flash_types :success
-  before_action :set_game_proposal, :set_game, only: %i[show edit destroy]
-  before_action :set_groups, only: %i[edit new]
+  before_action :set_game_proposal, :set_game, only: %i[show destroy]
+  before_action :set_groups, only: %i[new]
   before_action :set_game_proposals, only: %i[index]
   skip_after_action :verify_policy_scoped
   # GET /game_proposals
   def index
-    @pagy, @game_proposals = pagy(@game_proposals, limit: 8)
+    @pagy, @game_proposals = pagy(@game_proposals, limit: params[:limit] || GameProposal::PAGE_LIMIT)
     @group = Group.find_by_id(params[:group_id]) if params[:group_id].present?
 
     respond_to do |format|
       format.html { render :index, locals: {game_proposals: @game_proposals} }
+      format.turbo_stream {
+        if params[:pending_only]
+          render "index_pending", locals: {game_proposals: @game_proposals}
+        else
+          render "index", locals: {game_proposals: @game_proposals}
+        end
+      }
     end
   end
 
@@ -38,10 +45,6 @@ class GameProposalsController < ApplicationController
     respond_to do |format|
       format.html { render :new, locals: {game_proposal: @game_proposal, groups: @groups} }
     end
-  end
-
-  # GET /game_proposals/1/edit
-  def edit
   end
 
   # POST /game_proposals

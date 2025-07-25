@@ -35,6 +35,7 @@ export default class extends Controller {
 
   frameReload(event) {
     if (!this.hasFrameTarget) return;
-    this.frameTarget.src = this.srcValue || this.frameTarget.src;
+    this.frameTarget.src =
+      this.srcValue || this.frameTarget.dataset.src || this.frameTarget.src;
   }
 }

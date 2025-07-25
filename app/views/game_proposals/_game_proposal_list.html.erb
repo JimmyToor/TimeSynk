@@ -4,6 +4,7 @@
     <% game_proposals.order(created_at: :desc).each do |game_proposal| %>
       <li class="flex">
         <%= render game_proposal,
+                   reload_on_restore: false,
                    proposal_availability: game_proposal.get_user_proposal_availability(Current.user),
                    proposal_permission_set: game_proposal.make_permission_set(game_proposal.group.users.to_a) %>
         <%= render "card_link", game_proposal: game_proposal %>

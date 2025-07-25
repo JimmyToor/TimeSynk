@@ -24,6 +24,10 @@ class GameProposal < ApplicationRecord
 
   validates :game, uniqueness: {scope: :group, message: "already has a proposal in this group"}
 
+
+  PAGE_LIMIT_SHORT = 5
+  PAGE_LIMIT = 10
+
   def self.role_providing_associations
     [:group]
   end

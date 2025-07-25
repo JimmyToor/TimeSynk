@@ -1,34 +1,36 @@
-<%# locals: (game_proposals:) %>
+<%# locals: (game_proposals:, group: nil) %>
 <section>
   <div class="flex justify-between mb-4">
     <div>
         <%= render "shared/header_primary" do %>
-          <% if @group.present? %>
+          <% if group.present? %>
             <%= t("game_proposal.index.title",
-                        group_name: content_tag(:span, @group.name, class: 'font-bold text-primary-600')).html_safe %>
+                        group_name: content_tag(:span, group.name, class: 'font-bold text-primary-600')).html_safe %>
           <% else %>
             <%= t("game_proposal.title") %>
           <% end %>
         <% end %>
     </div>
     <div>
-      <%= render "shared/buttons/primary_link", path: new_game_proposal_path(group_id: @group), text: "New Game Proposal" %>
+      <%= render "shared/buttons/primary_link", path: new_game_proposal_path(group_id: group), text: "New Game Proposal" %>
     </div>
   </div>
 
   <%= render "shared/notification", id: "game_proposals" %>
 
-  <div id="game_proposals">
+  <%= turbo_frame_tag "game_proposals", role: "presentation",
+                     data: { controller: "reload-on-restore",
+                             reload_on_restore_src_value: "#{game_proposals_path}?limit=#{GameProposal::PAGE_LIMIT}&format=turbo_stream" } do %>
     <%= render partial: "game_proposals/game_proposal_list", locals:{game_proposals: game_proposals }%>
-  </div>
+  <% end %>
 
   <div data-controller="calendar"
        data-calendar-interactive-value="true"
        data-calendar-dialog-outlet=".dialog"
        data-calendar-disambiguate-value=true
        data-calendar-flatpickr-outlet=".flatpickr"
-       <% if @group.present? %>
-        data-calendar-group-id="<%= @group.id %>"
+       <% if group.present? %>
+        data-calendar-group-id="<%= group.id %>"
        <% else %>
         data-calendar-user-id="<%= Current.user.id %>"
        <% end %> data-turbo-permanent >
