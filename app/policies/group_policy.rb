@@ -8,7 +8,7 @@ class GroupPolicy < ApplicationPolicy
   end
 
   def edit?
-    user_is_owner_or_admin?
+    user.has_cached_role?(:owner, record)
   end
 
   def update?
@@ -35,11 +35,5 @@ class GroupPolicy < ApplicationPolicy
     def resolve
       user.groups
     end
-  end
-
-  private
-
-  def user_is_owner_or_admin?
-    user.has_cached_role?(:site_admin) || user.has_any_role_for_resource?([:admin, :owner], record)
   end
 end
