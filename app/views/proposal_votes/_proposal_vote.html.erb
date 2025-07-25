@@ -19,7 +19,10 @@
       <div class="flex"
            data-action="mouseenter->stimulus-popover#show mouseleave->stimulus-popover#hide focusin->stimulus-popover#show focusout->stimulus-popover#hide">
         <button popovertarget="<%= dialog_popover_id %>"
-                aria-label="View roles for <%= proposal_vote.user.username %> in <%= proposal_vote.game_name %> for <%= proposal_vote.group_name %>"
+                aria-label='<%= t("game_proposal.view_roles_label",
+                                  username: proposal_vote.user.username,
+                                  game_name: proposal_vote.game_name,
+                                  group_name: proposal_vote.group_name) %>'
                 aria-details="popover_proposal_vote_<%= proposal_vote.id %>"
                 data-action="click->anchor-position#triggerUpdate">
           <%= user_avatar(proposal_vote.user, size_x: 24, size_y: 24, svg_icon: icon) %>
@@ -32,8 +35,6 @@
         <%= render "proposal_votes/vote_details", proposal_vote: proposal_vote %>
       <% end %>
     </div>
-
-
 
     <%= render "shared/popover_top_layer", id: dialog_popover_id, extra_classes: "p-4" do %>
       <span class="sr-only"><%= proposal_vote.user.username %>'s roles for <%= proposal_vote.game_name %> in <%= proposal_vote.group_name %></span>

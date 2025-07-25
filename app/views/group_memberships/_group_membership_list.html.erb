@@ -16,7 +16,7 @@
                data-action="mouseenter->stimulus-popover#show mouseleave->stimulus-popover#hide focusin->stimulus-popover#show focusout->stimulus-popover#hide">
 
             <button popovertarget="<%= dialog_popover_id %>"
-                    aria-label="View roles for <%= membership.user.username %> in <%= membership.group.name %>"
+                    aria-label='<%= t("group.view_roles_label", username: membership.user.username, group_name: group.name) %>'
                     aria-details="popover_group_membership_<%= membership.id %>"
                     data-action="click->anchor-position#triggerUpdate">
               <%= user_avatar(membership.user, size_x: 32) %>

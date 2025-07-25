@@ -22,7 +22,10 @@
            data-action="mouseenter->stimulus-popover#show mouseleave->stimulus-popover#hide focusin->stimulus-popover#show focusout->stimulus-popover#hide"
            role="presentation">
         <button popovertarget="<%= dialog_popover_id %>"
-                aria-label="View roles for <%= game_session_attendance.user.username %> in <%= game_session_attendance.group_name %>"
+                aria-label='<%= t("game_proposal.view_roles_label",
+                                  username: game_session_attendance.user.username,
+                                  game_name: game_session_attendance.game_name,
+                                  group_name: game_session_attendance.group_name) %>'
                 aria-haspopup="dialog"
                 data-action="click->anchor-position#triggerUpdate">
           <%= user_avatar(game_session_attendance.user, size_x: 24, size_y: 24, svg_icon: icon) %>

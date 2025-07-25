@@ -110,6 +110,7 @@ en:
       kick_users: "Kick Users"
       create_game_proposals: "Create Game Proposals"
       manage_all_game_proposals: "Manage All Game Proposals"
+    view_roles_label: "View roles for %{username} in %{group_name}"
   group_membership:
     invite_not_valid: "There was a problem with the invite."
     already_member: "You are already a member of this group."
@@ -117,13 +118,24 @@ en:
       self:
         success: "You have successfully left %{group_name}."
         error: "There was a problem leaving %{group_name}."
+        label: "Leave Group"
       success: "%{username} is no longer a member of %{group_name}."
       error: "There was an error removing %{username} from %{group_name}."
+      confirm: "Are you sure you want to leave %{group_name}?"
+      label: "Kick %{username}"
     create:
       success: "You have joined %{group_name}!"
       error: "There was a problem joining %{group_name}!"
     new:
       title: "Join a Group"
+    index:
+      label: "View All Members"
+      button_text: "Members"
+    form:
+      token:
+        label: "Invite Token/Link"
+    accept_invite:
+      title: "You've been invited to join %{group_name}"
   proposal_vote:
     validation:
       vote_unique: "You have already voted on this proposal."
@@ -136,6 +148,11 @@ en:
     destroy:
       success: "Vote successfully deleted."
       error: "There was an error deleting your vote."
+    index:
+      label: "View All Votes"
+    edit:
+      label: "Edit your vote for %{game_name} in %{group_name}"
+      submit: "Save Vote and Comment"
   schedule:
     create:
       success: "Schedule successfully created."
@@ -149,6 +166,8 @@ en:
       success: "Permissions successfully updated."
       error: "There was an error updating the permissions."
       authorization_error: "You do not have permission to update those roles."
+    roles:
+      title: "%{resource_type} Roles"
   availability:
     help:
       no_schedules: "You can click here to set your default availability times, or set them later through your profile."
@@ -202,6 +221,7 @@ en:
       label: "Edit Invite"
     new:
       label: "New Invite"
+    accept_invite: "Accept Invite"
   game_session:
     validation:
       name:
@@ -255,6 +275,9 @@ en:
     destroy:
       success: "Game proposal for %{name} successfully deleted."
       error: "There was an error deleting the proposal for %{name}."
+      label: "Delete Game Proposal"
+      confirm: "I confirm that I want to permanently delete this game proposal and all associated game sessions"
+      confirm_name: "Type the game name to confirm deletion:"
     update:
       success: "Game proposal for %{name} successfully updated."
       error: "There was an error updating the proposal for %{name}."
@@ -264,6 +287,7 @@ en:
     title: "Game Proposals"
     pending:
       title: "Pending Proposals"
+      aria_label: "View game proposals %{count} pending."
     new:
       label: "New Game Proposal"
     miscellaneous_dropdown:
@@ -273,6 +297,7 @@ en:
       admin: "Admin"
       create_game_sessions: "Create Game Sessions"
       manage_all_game_sessions: "Manage All Game Sessions"
+    view_roles_label: "View roles for %{username} in %{game_name} for %{group_name}"
   user:
     avatar:
       update:
@@ -311,6 +336,7 @@ en:
     new_owner_label: "New Owner"
     confirm_transfer: "I confirm that I want to transfer ownership of this %{resource_type}."
     transfer_ownership_title: "Transfer ownership of %{resource_type} - %{resource_title}"
+    confirm_transfer_button: "Confirm Transfer"
   generic:
     refresh_try_again: "Please refresh and try again."
   game_proposal_availability:

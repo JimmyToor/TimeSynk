@@ -1,6 +1,8 @@
 <%# locals: (game_proposal:, proposal_availability: nil, proposal_permission_set:nil, alert:nil) %>
 <%= render "shared/notification", id: "game_proposal_#{game_proposal.id}"%>
-<h1 class="text-xl font-bold mb-1">Game Proposal</h1>
+<%= render "shared/header_primary" do %>
+  <%= t("game_proposal.title").singularize %>
+<% end %>
 <%= render partial: game_proposal,
            locals: {
              game_proposal: game_proposal,

@@ -12,12 +12,12 @@
       <%= render "shared/buttons/form_submit_button", form: form, text: "Join Group", extra_classes: "mt-2" %>
     <% end %>
   <% end %>
-  <div class="mt-2">
+  <%= content_tag :div, class:"mt-2" do %>
     <%= render "shared/buttons/delete_button",
                resource: group_membership,
-               text: "Leave this group",
-               confirm_text: "Are you sure you want to leave #{group.name}?" unless Current.user.has_cached_role?(:owner, group) || !group_membership.present? %>
-  </div>
+               text: t("group_membership.destroy.self.label"),
+               confirm_text: t("group_membership.destroy.confirm", group_name: group.name) %>
+  <% end unless policy(group).edit? %>
 </div>
 
 <div data-controller="calendar" data-calendar-interactive-value="true" data-calendar-dialog-outlet=".dialog" data-calendar-flatpickr-outlet=".flatpickr" data-calendar-group-id="<%= group.id %>" data-turbo-permanent>

@@ -1,5 +1,5 @@
 <%# locals: (user:, resource:, editable:, roles_for_display: [], assignable_roles: nil) %>
-<h3 class="font-bold text-primary-600"><%= resource.class.name.titleize %> Roles:</h3>
+<h3 class="font-bold text-primary-600"><%= t("permission_set.roles.title", resource_type: resource.class.name.titleize) %>:</h3>
 
 <%= render "permission_sets/roles",
            user_id: user.id,

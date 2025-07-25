@@ -4,7 +4,7 @@
     <% if can_kick_user?(group_membership) %>
       <%= render "shared/buttons/delete_link",
                  path: group_membership_path(group_membership),
-                 title: "Kick User",
+                 title: t("group_membership.destroy.label", username: group_membership.user.username),
                  confirm_text: "Are you sure you want to kick #{group_membership.user.username} from the group?" %>
     <% end %>
   </td>
