@@ -23,7 +23,7 @@ Rails.application.routes.draw do
       resources :group_memberships, except: [:edit, :update]
       resources :invites
       resources :group_availabilities
-      resources :game_proposals do
+      resources :game_proposals, except: [:edit] do
         patch :transfer_ownership, to: "ownerships#update", as: :transfer_ownership
         resources :game_sessions do
           patch :transfer_ownership, to: "ownerships#update", as: :transfer_ownership
