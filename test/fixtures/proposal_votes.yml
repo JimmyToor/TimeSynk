@@ -3,7 +3,6 @@
 group_1_game_thief_user_admin_undecided:
   game_proposal: group_1_game_thief
   user: admin
-  yes_vote: nil
 
 group_2_game_gta_user_cooluserguy_yes:
   game_proposal: group_2_game_gta
@@ -20,7 +19,6 @@ group_2_game_gta_user_radperson_no:
 group_2_game_thief_user_cooluserguy_undecided:
   game_proposal: group_2_game_thief
   user: cooluserguy
-  yes_vote: nil
 
 group_2_game_thief_user_radperson_yes:
   game_proposal: group_2_game_thief
@@ -30,12 +28,10 @@ group_2_game_thief_user_radperson_yes:
 group_3_game_thief_user_cooluserguy_undecided:
   game_proposal: group_3_game_thief
   user: cooluserguy
-  yes_vote: nil
 
 group_3_game_thief_user_radperson_undecided:
   game_proposal: group_3_game_thief
   user: radperson
-  yes_vote: nil
 
 group_3_game_thief_user_groupsmemberuser_yes:
   game_proposal: group_3_game_thief
@@ -45,7 +41,6 @@ group_3_game_thief_user_groupsmemberuser_yes:
 group_3_game_gta_user_cooluserguy_undecided:
   game_proposal: group_3_game_gta
   user: cooluserguy
-  yes_vote: nil
 
 group_3_game_gta_user_radperson_no:
   game_proposal: group_3_game_gta
@@ -55,4 +50,3 @@ group_3_game_gta_user_radperson_no:
 group_3_game_gta_user_groupsmemberuser_undecided:
   game_proposal: group_3_game_gta
   user: groupsmemberuser
-  yes_vote: nil

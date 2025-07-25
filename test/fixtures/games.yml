@@ -10,6 +10,7 @@ thief:
   cover_image_url: "https://images.igdb.com/igdb/image/upload/t_thumb/co698n.jpg"
   platforms: ["PC (Microsoft Windows)"]
   igdb_url: "https://www.igdb.com/games/"
+  is_popular: true
 
 gta:
   igdb_id: 980
@@ -17,6 +18,7 @@ gta:
   cover_image_url: "https://images.igdb.com/igdb/image/upload/t_thumb/co2lb0.jpg"
   platforms: ["Nintendo 64,PC (Microsoft Windows)","PlayStation","DOS"]
   igdb_url: "https://www.igdb.com/games/"
+  is_popular: true
 
 ocarina_of_time:
   igdb_id: 3
@@ -24,6 +26,7 @@ ocarina_of_time:
   cover_image_url: "https://images.igdb.com/igdb/image/upload/t_thumb/co1v3t.jpg"
   platforms: ["Nintendo 64","Nintendo GameCube","iQue Player","Wii","Wii U","Nintendo 3DS"]
   igdb_url: "https://www.igdb.com/games/"
+  is_popular: true
 
 majoras_mask:
   igdb_id: 4
@@ -31,6 +34,7 @@ majoras_mask:
   cover_image_url: "https://images.igdb.com/igdb/image/upload/t_thumb/co1v3t.jpg"
   platforms: ["Nintendo 64","Nintendo GameCube","Wii","Wii U","Nintendo 3DS"]
   igdb_url: "https://www.igdb.com/games/"
+  is_popular: true
 
 link_to_the_past:
   igdb_id: 5
@@ -38,3 +42,4 @@ link_to_the_past:
   cover_image_url: "https://images.igdb.com/igdb/image/upload/t_thumb/co1v3t.jpg"
   platforms: ["Super Nintendo Entertainment System (SNES)"]
   igdb_url: "https://www.igdb.com/games/"
+  is_popular: true
