@@ -15,15 +15,15 @@
     <%= form.hidden_field :invite_token %>
   </div>
 
-  <div>
+  <%= content_tag :div do %>
     <%= render "shared/form_label", text: "Permissions", form: form, field: :assigned_role_ids, extra_classes: "block" %>
     <%= form.collection_check_boxes :assigned_role_ids, roles, :id, :name, include_hidden: true do |box| %>
       <div class="flex items-center space-x-2">
         <%= box.check_box(checked: invite.assigned_role_ids.include?(box.value.to_i)) %>
         <%= box.label { format_group_role(box.object) } %>
       </div>
-    <% end if roles.present? %>
-  </div>
+    <% end %>
+  <% end if roles.present? %>
 
   <div data-controller="flatpickr" class="flatpickr" data-flatpickr-timezone-value="<%= Current.user.timezone %>">
     <%= render "shared/form_label", form: form, field: :expires_at, extra_classes: "block" %>

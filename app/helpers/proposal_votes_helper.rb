@@ -1,5 +1,4 @@
 module ProposalVotesHelper
-
   def format_vote(vote)
     case vote
     when true
@@ -11,4 +10,11 @@ module ProposalVotesHelper
     end
   end
 
+  def vote_icon(vote)
+    if vote.yes_vote.nil?
+      "undecided.svg"
+    else
+      vote.yes_vote ? "checkmark.svg" : "xmark.svg"
+    end
+  end
 end

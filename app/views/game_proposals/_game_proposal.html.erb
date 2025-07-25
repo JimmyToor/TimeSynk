@@ -5,11 +5,11 @@
                       data: { controller: ("reload-on-restore" if reload_on_restore),
                               reload_on_restore_src_value: game_proposal_path(game_proposal) } do %>
     <div class="flex flex-col items-center border border-gray-200 rounded-lg shadow
-      md:flex-row bg-white dark:border-gray-700 dark:bg-gray-800 w-fit bg-">
+      xs:flex-row bg-white dark:border-gray-700 dark:bg-gray-800 w-fit">
       <%= display_game_art_and_name(game: game_proposal.game,
                                     only_art: true,
-                                    img_classes: "object-cover rounded-lg h-auto md:rounded-none mt-4 md:mt-0
-                                      md:rounded-s-lg w-24 ml-2 min-w-24",
+                                    img_classes: "object-cover rounded-lg h-auto xs:rounded-none mt-4 xs:mt-0
+                                      xs:rounded-s-lg w-24 ml-2 min-w-24",
                                     img_size: GameImageSize::LOGO_MED) %>
 
       <div class="flex justify-between">
@@ -27,7 +27,7 @@
           </div>
 
           <div id="game_proposal_details" class="space-y-1.5">
-            <%= render "groups/group_link", group: game_proposal.group%>
+            <%= render "groups/group_link", group: game_proposal.group %>
 
             <div class="flex flex-wrap items-center text-sm text-gray-700 dark:text-gray-400">
               <%= render "proposal_votes/full_proposal_vote_button", game_proposal: game_proposal do %>

@@ -40,7 +40,11 @@ class GroupMembershipsController < ApplicationController
 
     respond_to do |format|
       if @group_membership.persisted?
-        format.html { redirect_to group_path(@group_membership.group), success: {message: I18n.t("group_membership.create.success", group_name: @group_membership.group.name)} }
+        format.html {
+          redirect_to group_path(@group_membership.group),
+            success: {message: I18n.t("group_membership.create.success",
+              group_name: @group_membership.group.name)}
+        }
       else
         format.html {
           flash.now[:error] = {message: I18n.t("group_membership.invite_not_valid"),
@@ -57,7 +61,10 @@ class GroupMembershipsController < ApplicationController
 
     respond_to do |format|
       if @group_membership.user.id == Current.user.id
-        format.html { redirect_to groups_path }
+        format.html {
+          redirect_to groups_path, success: {message: I18n.t("group_membership.destroy.self.success",
+            group_name: @group_membership.group.name)}
+        }
       else
         format.html { redirect_to @group_membership.group, success: {message: I18n.t("group_membership.destroy.success", username: @group_membership.user.username, group_name: @group_membership.group.name)} }
         format.turbo_stream

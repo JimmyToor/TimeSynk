@@ -6,12 +6,7 @@
        data-anchor-position-target="anchor"
        data-anchor-position-position-style-value="absolute"
        class="flex relative" >
-    <% icon = if proposal_vote.yes_vote.nil?
-                'undecided.svg'
-              else
-                proposal_vote.yes_vote ? 'checkmark.svg' : 'xmark.svg'
-              end
-    %>
+
     <% frame_id = derive_permission_set_frame_id(user: proposal_vote.user, game_proposal: proposal_vote.game_proposal) %>
     <% dialog_popover_id = "popover_#{frame_id}" %>
 
@@ -25,7 +20,7 @@
                                   group_name: proposal_vote.group_name) %>'
                 aria-details="popover_proposal_vote_<%= proposal_vote.id %>"
                 data-action="click->anchor-position#triggerUpdate">
-          <%= user_avatar(proposal_vote.user, size_x: 24, size_y: 24, svg_icon: icon) %>
+          <%= user_avatar(proposal_vote.user, size_x: 24, size_y: 24, svg_icon: vote_icon(proposal_vote)) %>
         </button>
       </div>
       <%= render "shared/popover_stimulus",

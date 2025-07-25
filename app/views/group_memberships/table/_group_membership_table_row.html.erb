@@ -12,7 +12,7 @@
     w-40">
     <div class="flex items-center space-x-2 relative">
       <%= user_avatar(group_membership.user, size_x: 24) %>
-      <span class="ml-1"><%= username_with_resource_role_icons(group_membership.user, group_membership.group) %></span>
+      <span class="ml-1 text-left"><%= username_with_resource_role_icons(group_membership.user, group_membership.group) %></span>
     </div>
     <div class="mt-1">
       <%= render "shared/time_badge", time: group_membership.created_at.strftime("%B %d, %y"), title: "Join Date" %>
