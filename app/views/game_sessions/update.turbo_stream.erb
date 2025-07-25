@@ -3,19 +3,12 @@
                          method: :morph,
                          locals: {game_session: @game_session}) %>
 
-<%= turbo_stream.replace("upcoming_game_sessions",
-                         partial: "game_sessions/upcoming_game_sessions",
-                         locals:  {upcoming_game_sessions: Current.user.upcoming_game_sessions} ) %>
-
-
 <%= turbo_stream_toast(:success,
                        I18n.t("game_session.update.success", name: @game_session.game_name),
                        "game_session_#{@game_session.id}",
                        highlight: " #{@game_session.game_name} ") %>
 
-<%= turbo_stream.frame_reload "game_sessions" %>
-
 <%= turbo_stream.replace("modal_frame",
                          partial: "game_sessions/show_content",
-                         locals: { game_session:          @game_session,
+                         locals: { game_session: @game_session,
                                    game_session_attendance: @game_session_attendance}) %>

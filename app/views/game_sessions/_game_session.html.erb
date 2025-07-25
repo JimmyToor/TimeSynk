@@ -52,7 +52,7 @@
 
         <div class="mb-3 flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400" role="presentation">
           <%= inline_svg_tag "icons/calendar.svg", title: "Date", aria_hidden: true, class:"h-6" %>
-          <div id="game_session_<%= game_session.id %>_details_date" role="presentation">
+          <div class="game_session_<%= game_session.id %>_details_date" role="presentation">
             <%= render "game_sessions/game_session_date", game_session: game_session %>
           </div>
 
@@ -70,14 +70,7 @@
 
         <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-400" role="presentation">
           <%= inline_svg_tag "icons/clock.svg", title: "Duration", aria_hidden: true, class:"h-6" %>
-          <div id="game_session_<%= game_session.id %>_details_duration" role="presentation">
-            <span id="game_session_duration_<%= game_session.id %>" class="hidden">Session Duration: </span>
-            <time datetime="<%= game_session.duration.iso8601 %>"
-                  aria-labelledby="game_session_duration_<%= game_session.id %>">
-              <span aria-hidden="true"><%= format_interval(game_session.duration) %></span>
-              <span class="sr-only"><%= format_interval_sr(game_session.duration) %></span>
-            </time>
-          </div>
+          <%= render "game_sessions/game_session_duration", game_session: game_session %>
         </div>
       </div>
       <div class="game_session_<%= game_session.id %>_attendance_details mt-2 flex flex-col gap-2">
@@ -100,4 +93,4 @@
     </div>
   </article>
 <% end %>
-<%= turbo_stream_from(game_session, data: {single_stream_target: "stream"}, 'aria-hidden': true) %>
+<%= turbo_stream_from(game_session, data: {single_stream_target: "stream"}) %>

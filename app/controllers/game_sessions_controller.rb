@@ -2,6 +2,7 @@ class GameSessionsController < ApplicationController
   include DurationSaturator
   add_flash_types :error, :success
   before_action -> { populate_duration_param([:game_session]) }, only: %i[create update]
+  before_action :set_limit, only: %i[index]
   before_action :set_game_session, only: %i[show edit update destroy]
   before_action :set_game_proposal, only: %i[index new create]
   before_action :set_game_session_attendance, only: %i[show update]
@@ -13,14 +14,21 @@ class GameSessionsController < ApplicationController
   def index
     @game_sessions = if @game_proposal
       authorize(@game_proposal, :show?, policy_class: GameProposalPolicy)
-      GameSession.for_game_proposal(params[:game_proposal_id]).upcoming
+      GameSession.for_game_proposal(params[:game_proposal_id]).limit(@limit).upcoming
     else
-      Current.user.upcoming_game_sessions
+      Current.user.upcoming_game_sessions.limit(@limit)
     end
-    @pagy, @game_sessions, = pagy(@game_sessions, limit: 6)
+    @pagy, @game_sessions, = pagy(@game_sessions, limit: @limit)
     respond_to do |format|
       format.html {
-        render :index, locals: {game_sessions: @game_sessions, upcoming: !params[:game_proposal_id].present?}
+        render :index, locals: {game_sessions: @game_sessions, game_proposal: @game_proposal}
+      }
+      format.turbo_stream {
+        if @game_proposal.present?
+          render "index_slim", locals: {game_sessions: @game_sessions, game_proposal: @game_proposal}
+        else
+          render "index", locals: {game_sessions: @game_sessions}
+        end
       }
     end
   end
@@ -108,8 +116,12 @@ class GameSessionsController < ApplicationController
 
   private
 
+  def set_limit
+    @limit = params[:limit] || GameSession::PAGE_LIMIT
+  end
+
   def set_game_proposal
-    @game_proposal = GameProposal.find(params[:game_proposal_id])
+    @game_proposal = GameProposal.find(params[:game_proposal_id]) if params[:game_proposal_id].present?
   end
 
   def set_game_session

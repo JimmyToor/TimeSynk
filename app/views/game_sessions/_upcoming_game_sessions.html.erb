@@ -1,21 +1,17 @@
-<%# locals: (upcoming_game_sessions: [], limit: 5, game_session:nil)  %>
-<%= turbo_frame_tag "upcoming_game_sessions_user_#{Current.user.id}",
+<%# locals: (src:, slim: false, game_proposal: nil, upcoming_game_sessions: [], group_id: nil, limit: GameSession::PAGE_LIMIT)  %>
+<%= turbo_frame_tag "upcoming_game_sessions",
                     role: "presentation",
                     class: "empty:hidden",
-                    data: {controller:"reload-on-restore", src:"/"} do %>
-    <% if upcoming_game_sessions.present? %>
-      <section aria-labelledby="upcoming-game-sessions">
-        <h2 id="upcoming-game-sessions" class="text-2xl font-bold mb-1">Upcoming Sessions</h2>
-        <div class="flex rounded-lg dark:border-gray-600 h-128">
-          <ul aria-labelledby="upcoming-game-sessions">
-            <% upcoming_game_sessions.sort_by(&:date).first(limit).each do |game_session| %>
-              <li aria-label="<%= game_session.game_name %> game session for <%= game_session.group_name %>" class="flex">
-                <%= render game_session, include_link: true %>
-                <%= render "game_proposals/card_link", game_proposal: game_session.game_proposal %>
-              </li>
-            <% end %>
-          </ul>
-        </div>
-      </section>
-    <% end %>
+                    data: {controller:"reload-on-restore upcoming-game-session-updates",
+                           upcoming_game_session_updates_target: "frame",
+                           upcoming_game_session_updates_max_value: limit,
+                           upcoming_game_session_updates_group_id_value: group_id,
+                           src: "#{src}?limit=#{limit}&format=turbo_stream"} do %>
+  <% if slim %>
+    <%= render "game_sessions/upcoming_game_sessions_list_slim",
+               upcoming_game_sessions: upcoming_game_sessions,
+               game_proposal: game_proposal %>
+  <% else %>
+    <%= render "game_sessions/upcoming_game_sessions_list", upcoming_game_sessions: upcoming_game_sessions %>
+  <% end %>
 <% end %>

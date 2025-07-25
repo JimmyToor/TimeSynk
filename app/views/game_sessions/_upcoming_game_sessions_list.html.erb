@@ -1,0 +1,16 @@
+<%# locals: (upcoming_game_sessions: [] %>
+<% if upcoming_game_sessions.present? %>
+  <section>
+    <%= render "shared/header_primary", id: "upcoming_game_sessions" do %>
+      <%= t("game_session.upcoming.title_generic") %>
+    <% end %>
+    <ul aria-labelledby="upcoming_game_sessions">
+      <% upcoming_game_sessions.sort_by(&:date).each do |game_session| %>
+        <li aria-label="<%= game_session.game_name %> game session for <%= game_session.group_name %>" class="flex">
+          <%= render game_session, include_link: true %>
+          <%= render "game_proposals/card_link", game_proposal: game_session.game_proposal %>
+        </li>
+      <% end %>
+    </ul>
+  </section>
+<% end %>

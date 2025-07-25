@@ -1,17 +1,11 @@
-<%= turbo_stream.replace("upcoming_game_sessions",
-                         partial: "game_sessions/upcoming_game_sessions",
-                         locals:  {upcoming_game_sessions: Current.user.upcoming_game_sessions} ) %>
-
 <%= turbo_stream.remove_all(".game_session_#{@game_session.id}_attendance_details") %>
 
 <%= turbo_stream.update("modal_frame") %>
 
 <%= turbo_stream.remove_all("modal_confirmation_game_session_#{@game_session.id}") %>
 
-<%= turbo_stream.replace("game_session_#{@game_session.id}_details",
+<%= turbo_stream.replace_all(".game_session_#{@game_session.id}_details",
                          html: raw("<p>Game Session Deleted</p>")) %>
-
-<%= frame_reload("game_sessions") %>
 
 <%= turbo_stream_toast(:success,
                        I18n.t("game_session.destroy.success", name: @game_session.game_name),

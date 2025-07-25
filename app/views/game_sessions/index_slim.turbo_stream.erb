@@ -1,0 +1,3 @@
+<%= turbo_stream.update("upcoming_game_sessions",
+                        partial: "game_sessions/upcoming_game_sessions_list_slim",
+                        locals: {upcoming_game_sessions: game_sessions, game_proposal: game_proposal}) %>

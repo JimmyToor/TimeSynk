@@ -1,0 +1,28 @@
+<%# locals: (upcoming_game_sessions: [], game_proposal: nil) %>
+<% if upcoming_game_sessions.present? %>
+  <%= render "shared/header_primary", id: "upcoming_game_sessions", extra_classes: "text-center mb-2" do %>
+    <% if game_proposal.present? %>
+      <%= t("game_session.upcoming.title",
+            game_name: content_tag(:span, game_proposal.game_name, class: 'font-bold text-primary-600'),
+            group_name: content_tag(:span, game_proposal.group.name, class: 'font-bold text-primary-600')).html_safe %>
+    <% else %>
+      <%= t("game_session.upcoming.title_generic") %>
+    <% end %>
+  <% end %>
+
+  <ul aria-labelledby="upcoming_game_sessions" class="divide-y-2 grid grid-cols-1 w-full peer">
+    <% upcoming_game_sessions.sort_by(&:date).each do |game_session| %>
+      <%= content_tag :li,
+                      dom_id(game_session),
+                      'aria-label': "#{game_session.game_name} game session for #{game_session.group_name}",
+                      class:"w-full border-gray-400 dark:border-gray-600 p-2 relative
+                        flex flex-col lg:flex-row hover:bg-secondary-100 dark:hover:bg-secondary-600" do %>
+        <%= render "game_session_slim", game_session: game_session, container_tag: :li %>
+      <% end %>
+    <% end %>
+  </ul>
+  <p class="block peer-has-[turbo-frame]:hidden">
+    No game sessions have been scheduled yet.
+  </p>
+  <%= render "shared/table_nav" %>
+<% end %>

@@ -33,6 +33,9 @@ class GameSession < ApplicationRecord
     duration: 1.hour
   }
 
+  PAGE_LIMIT = 8
+  PAGE_LIMIT_SHORT = 5
+
   def self.role_providing_associations
     [:game_proposal]
   end
@@ -120,7 +123,6 @@ class GameSession < ApplicationRecord
     schedule[:id] = id
     schedule[:name] = name
     schedule[:duration] = duration
-    schedule[:user_id] = owner.id
     schedule[:selectable] = selectable
     schedule[:group] = game_proposal.group.name
 
@@ -134,30 +136,23 @@ class GameSession < ApplicationRecord
   def broadcast_game_session_update
     return unless saved_change_to_date? || saved_change_to_duration?
 
-    user_ids_to_broadcast = game_proposal.group.users.pluck(:id)
-
-    user_ids_to_broadcast.each do |user_id|
-      next if user_id == Current.user.id
-      user = User.find(user_id)
-      broadcast_action_later_to(
-        "upcoming_game_sessions_user_#{user_id}",
-        action: "frame_reload",
-        target: "upcoming_game_sessions_user_#{user.id}",
-        render: false
+    if saved_change_to_date?
+      UpcomingGameSessionUpdatesChannel.broadcast_to(
+        group,
+        old_date: saved_change_to_date&.first,
+        new_date: date
       )
     end
 
-    broadcast_render_later_to(
-      "game_session_#{id}",
+    broadcast_render_later(
       template: "game_sessions/update_details",
       locals: {game_session: self}
     )
   end
 
   def broadcast_game_session_attendances
-    broadcast_replace_later_to(
-      self,
-      targets: "#game_session_#{id}_attendances",
+    broadcast_replace_later(
+      targets: ".game_session_#{id}_attendances",
       partial: "game_session_attendances/game_session_attendance_list",
       locals: {game_session: self}
     )
@@ -166,30 +161,21 @@ class GameSession < ApplicationRecord
   private
 
   def broadcast_game_session_create
-    user_ids_to_broadcast = game_proposal.group.users.pluck(:id)
-
-    user_ids_to_broadcast.each do |user_id|
-      user = User.find(user_id)
-      broadcast_action_later_to(
-        "upcoming_game_sessions_user_#{user_id}",
-        action: "frame_reload",
-        target: "upcoming_game_sessions_user_#{user.id}",
-        render: false
-      )
-    end
+    UpcomingGameSessionUpdatesChannel.broadcast_to(
+      group,
+      old_date: nil,
+      new_date: date
+    )
   end
 
   def broadcast_game_session_destroy
-    user_ids_to_broadcast = game_proposal.group.users.pluck(:id)
+    return if game_proposal.marked_for_destruction?
 
-    user_ids_to_broadcast.each do |user_id|
-      Turbo::StreamsChannel.broadcast_action_to(
-        "upcoming_game_sessions_user_#{user_id}",
-        action: "frame_reload",
-        target: "upcoming_game_sessions_user_#{user_id}",
-        render: false
-      )
-    end
+    UpcomingGameSessionUpdatesChannel.broadcast_to(
+      group,
+      old_date: date,
+      new_date: date
+    )
 
     broadcast_replace_to(
       self,

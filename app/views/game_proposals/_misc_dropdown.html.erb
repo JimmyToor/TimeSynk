@@ -1,6 +1,6 @@
 <%# locals: (game_proposal:, proposal_availability: nil) %>
 <%= render "shared/dropdown_list",
-           id: "#{game_proposal.id}_game_proposal_misc_dropdown",
+           id: "game_proposal_#{game_proposal.id}_misc_dropdown",
            label: t("game_proposal.miscellaneous_dropdown.title", game_name: game_proposal.game_name),
            svg_path: "icons/chevron-down.svg",
            button_classes: "relative inline-flex items-center rounded-lg text-center text-sm font-medium focus:ring-4

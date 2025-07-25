@@ -28,10 +28,8 @@ class GameProposalTest < ActiveSupport::TestCase
     session2 = game_sessions(:group_3_game_thief_session_2)
     session3 = game_sessions(:group_3_game_thief_session_3)
 
-    # Session 1 from fixtures (proposal_3_session_1) should be excluded by the range
-    session_owner = users(:radperson)
+    users(:radperson)
 
-    # Expected structure for session2 fixture
     valid_calendar_schedule2 = {
       start_time: {time: session2.date.utc, zone: session2.date.time_zone.name},
       end_time: {time: (session2.date + session2.duration).utc, zone: session2.date.time_zone.name},
@@ -41,12 +39,10 @@ class GameProposalTest < ActiveSupport::TestCase
       id: session2.id,
       name: session2.game_name,
       duration: session2.duration,
-      user_id: session_owner.id,
       selectable: true,
       group: session2.group_name
     }
 
-    # Expected structure for session3 fixture
     valid_calendar_schedule3 = {
       start_time: {time: session3.date.utc, zone: session3.date.time_zone.name},
       end_time: {time: (session3.date + session3.duration).utc, zone: session3.date.time_zone.name},
@@ -56,7 +52,6 @@ class GameProposalTest < ActiveSupport::TestCase
       id: session3.id,
       name: session3.game_name,
       duration: session3.duration,
-      user_id: session_owner.id, # Assuming this is the expected user
       selectable: true,
       group: session3.group_name
     }

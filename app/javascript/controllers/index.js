@@ -96,3 +96,12 @@ application.register("anchor-position", AnchorPositionController);
 
 import SidebarController from "./sidebar_controller";
 application.register("sidebar", SidebarController);
+
+import UpcomingGameSessionUpdatesController from "./upcoming_game_session_updates_controller";
+application.register(
+  "upcoming-game-session-updates",
+  UpcomingGameSessionUpdatesController,
+);
+
+import LocalTimeConversionController from "./local_time_conversion_controller";
+application.register("local-time-conversion", LocalTimeConversionController);

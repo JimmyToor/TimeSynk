@@ -1,0 +1,9 @@
+<%# locals: (game_session:) %>
+<div class="game_session_<%= game_session.id %>_details_duration" role="presentation">
+  <span class="hidden game_session_duration_<%= game_session.id %>">Session Duration: </span>
+  <time datetime="<%= game_session.duration.iso8601 %>"
+        aria-labelledby="game_session_duration_<%= game_session.id %>">
+    <span aria-hidden="true"><%= format_interval(game_session.duration) %></span>
+    <span class="sr-only"><%= format_interval_sr(game_session.duration) %></span>
+  </time>
+</div>

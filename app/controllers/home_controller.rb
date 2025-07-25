@@ -5,14 +5,12 @@ class HomeController < ApplicationController
   def index
     @game_proposals = policy_scope(GameProposal)
     @groups = policy_scope(Group)
-    @game_sessions = Current.user.upcoming_game_sessions
     respond_to do |format|
       format.html {
         render :index,
           locals: {game_proposals: @game_proposals,
                    game_proposal: @game_proposals.first,
                    groups: @groups,
-                   game_sessions: @game_sessions,
                    pending_game_proposals: Current.user.pending_game_proposals},
           status: :ok
       }

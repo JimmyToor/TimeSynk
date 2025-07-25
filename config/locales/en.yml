@@ -227,6 +227,7 @@ en:
     not_found: "Game session not found. It may have been deleted."
     upcoming:
       title: "Upcoming Game Sessions for %{game_name} - %{group_name}"
+      title_generic: "Upcoming Game Sessions"
     edit:
       title: "Edit %{game_name} session - %{group_name}"
     new:
