@@ -73,7 +73,13 @@ class InvitesController < ApplicationController
   private
 
   def set_invite
-    @invite = Invite.with_token(params[:invite_token]) || Invite.find(params[:id])
+    @invite = if params[:invite_token]
+      Invite.with_token(params[:invite_token])
+    elsif params[:id]
+      Invite.find_by(id: params[:id])
+    else
+      raise ActionController::ParameterMissing, "invite_token or id is required"
+    end
     authorize(@invite)
   end
 

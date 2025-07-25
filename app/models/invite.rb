@@ -39,9 +39,11 @@ class Invite < ApplicationRecord
   end
 
   # Finds an invite by its token.
+  # @param token [String] the invite token to search for
+  # @param scope [ActiveRecord::Relation] the scope to search within, defaults to all invites
   # @return [Invite, nil] the invite if found, otherwise nil
-  def self.with_token(token)
-    find_by(invite_token: token)
+  def self.with_token(token, invite_scope: Invite.all)
+    invite_scope.find_by(invite_token: token)
   end
 
   def user_can_change_roles?(role_ids)

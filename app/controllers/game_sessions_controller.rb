@@ -125,7 +125,7 @@ class GameSessionsController < ApplicationController
   end
 
   def set_game_session
-    @game_session = authorize(GameSession.find(params[:id]))
+    @game_session = authorize(GameSession.includes(:game_session_attendances).find(params[:id]))
   end
 
   def set_game_session_attendance

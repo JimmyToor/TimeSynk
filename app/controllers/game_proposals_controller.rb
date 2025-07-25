@@ -70,7 +70,7 @@ class GameProposalsController < ApplicationController
   private
 
   def set_game_proposal
-    @game_proposal = authorize(GameProposal.find(params[:id]))
+    @game_proposal = authorize(GameProposal.includes(:proposal_votes).find(params[:id]))
   end
 
   def set_game
@@ -81,7 +81,7 @@ class GameProposalsController < ApplicationController
     @game_proposals = if params[:group_id]
       group = Group.find(params[:group_id])
       authorize(group, :show?, policy_class: GroupPolicy)
-      GameProposal.for_group(params[:group_id])
+      GameProposal.includes(:proposal_votes).for_group(params[:group_id])
     else
       policy_scope(GameProposal)
     end

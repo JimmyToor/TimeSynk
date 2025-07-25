@@ -7,10 +7,10 @@ class GameSessionAttendancesController < ApplicationController
 
   # GET /game_session_attendances
   def index
-    @game_session_attendances = params[:query].present? ?
-                                  @game_session.game_session_attendances.search(params[:query]) :
-                                  @game_session.game_session_attendances
-    @pagy, @game_session_attendances = pagy(@game_session_attendances.sorted_scope, limit: 10)
+    scope = @game_session.game_session_attendances.includes(:user)
+    scope = scope.search(params[:query]) if params[:query].present?
+
+    @pagy, @game_session_attendances = pagy(scope.sorted_scope, limit: 10)
 
     respond_to do |format|
       format.turbo_stream

@@ -42,16 +42,20 @@ class CalendarCreationService < ApplicationService
   def call
     @calendars = []
     if @params[:user_id].present?
+      # Fetch all game proposals for the user, excluding proposals without sessions.
       GameProposal.joins(group: :users)
         .where(users: {id: @params[:user_id]})
         .joins(:game_sessions)
+        .includes(:game, :game_sessions)
         .distinct.each do |game_proposal|
         @calendars << make_game_proposal_calendar(game_proposal)
       end
     end
 
     if @params[:group_id].present?
-      @calendars.concat(make_group_calendars(Group.find(@params[:group_id])))
+      # Fetch the group and its game proposals
+      group = Group.includes(game_proposals: [:game_sessions, :game]).find_by(id: @params[:group_id])
+      @calendars.concat(make_group_calendars(group)) unless group.nil?
     end
 
     if @params[:schedule_id].present?
@@ -102,7 +106,7 @@ class CalendarCreationService < ApplicationService
     Pundit.authorize(@user, group, :show?)
     calendars = []
     calendars.concat(make_availability_calendars(group.users, group: group)) unless @params[:exclude_availabilities]
-    group.game_proposals.reject { |proposal| proposal.game_sessions.empty? }.each do |game_proposal|
+    group.game_proposals.each do |game_proposal|
       calendars << make_game_proposal_calendar(game_proposal)
     end
     calendars

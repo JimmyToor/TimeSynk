@@ -160,7 +160,7 @@ class GameProposal < ApplicationRecord
 
   def broadcast_game_proposals_destroy
     user_ids_to_broadcast = group.users.pluck(:id)
-    users_to_broadcast = User.where(id: user_ids_to_broadcast).includes(:game_proposals)
+    users_to_broadcast = User.includes(:game_proposals).where(id: user_ids_to_broadcast)
     users_to_broadcast.each do |user|
       # Can't use the helper here because the game proposal is destroyed and the helper will result in a failed deserialization when the job runs.
       # Using perform_later directly removes the need for deserialization later on.
