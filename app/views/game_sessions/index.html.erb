@@ -9,6 +9,11 @@
 <% else %>
   <%= render "upcoming_game_sessions", upcoming_game_sessions: game_sessions, src: game_sessions_path %>
 <% end %>
+<%= render "shared/buttons/icon_link_thick",
+           path: new_game_proposal_game_session_path(game_proposal: game_proposal),
+           text: t("game_session.new.label"),
+           data: {turbo_frame: "modal_frame"},
+           title: t("game_session.new.label") if game_proposal.present? && policy(game_proposal).create_game_session? %>
 
 <% stream_id = game_proposal.present? ? "game_proposal_#{game_proposal.id}" : "user_#{Current.user.id}" %>
 <% type = game_proposal.present? ? "data-calendar-game-proposal-id=#{game_proposal.id}" : "data-calendar-user-id=#{Current.user.id}"  %>
