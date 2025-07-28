@@ -183,12 +183,14 @@ class User < ApplicationRecord
   end
 
   def groups_user_can_create_proposals_for
-    groups.select { |group| GroupPolicy.new(self, group).create_game_proposal? }
+    groups.select do |group|
+      Pundit.policy(self, group).create_game_proposal?
+    end
   end
 
   def game_proposals_user_can_create_sessions_for
     game_proposals.includes(:group).select do |proposal|
-      authorize(proposal, :create_game_session?, policy_class: GameProposalPolicy)
+      Pundit.policy(self, proposal).create_game_session?
     end
   end
 

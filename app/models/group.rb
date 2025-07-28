@@ -39,7 +39,7 @@ class Group < ApplicationRecord
   end
 
   def is_user_member?(user)
-    users.include?(user)
+    users.exists?(id: user.id)
   end
 
   def membership_for_user(user)
@@ -51,7 +51,7 @@ class Group < ApplicationRecord
   end
 
   def members
-    group_memberships.map { |membership| membership.user }
+    group_memberships.includes(:user).map(&:user)
   end
 
   def notify_calendar_update(cascade = true)
@@ -60,7 +60,7 @@ class Group < ApplicationRecord
 
   def game_proposals_user_can_create_sessions_for(user)
     game_proposals.includes(:group).select do |proposal|
-      GameProposalPolicy.new(user, proposal).create_game_session?
+      Pundit.policy(user, proposal).create_game_session?
     end
   end
 end
