@@ -59,23 +59,27 @@ class CalendarCreationService < ApplicationService
     end
 
     if @params[:schedule_id].present?
-      @calendars << make_schedule_calendar(Schedule.find(@params[:schedule_id]))
+      schedule = Schedule.find_by_id(@params[:schedule_id])
+      @calendars << make_schedule_calendar(Schedule.find(@params[:schedule_id])) if schedule.present?
     end
 
     if @params[:schedule_ids].present?
-      @calendars.concat(@params[:schedule_ids].map { |id| make_schedule_calendar(Schedule.find(id)) })
+      schedules = Schedule.where(id: @params[:schedule_ids])
+      @calendars.concat(schedules.map { |curr_schedule| make_schedule_calendar(curr_schedule) }) if schedules.present?
     end
 
     if @params[:availability_id].present?
-      @calendars << make_availability_calendar(Availability.find(@params[:availability_id]))
+      availability = Availability.find_by_id(@params[:availability_id])
+      @calendars << make_availability_calendar(availability) if availability.present?
     end
 
     if @params[:game_session_id].present?
-      @calendars << make_game_session_calendar(GameSession.find(@params[:game_session_id]))
+      game_session = GameSession.find_by_id(@params[:game_session_id])
+      @calendars << make_game_session_calendar(game_session) if game_session.present?
     end
 
     if @params[:game_proposal_id].present?
-      game_proposal = GameProposal.find(@params[:game_proposal_id])
+      game_proposal = GameProposal.find_by_id(@params[:game_proposal_id])
       @calendars << make_game_proposal_calendar(game_proposal) unless game_proposal.game_sessions.empty?
       @calendars.concat(make_availability_calendars(game_proposal.group.users, game_proposal: game_proposal)) unless @params[:exclude_availabilities]
     end
