@@ -10,6 +10,10 @@ class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
 
+  setup do
+    travel_to Time.zone.local(2024, 5, 15, 10, 0, 0)
+  end
+
   # Add more helper methods to be used by all tests here...
   def sign_in_as(user)
     post(sign_in_url, params: {username_or_email: user.username, password: "Secret1*3*5*"})

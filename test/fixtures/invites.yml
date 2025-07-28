@@ -1,29 +1,28 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 group_onemember_no_roles:
   user: admin
   group: one_member
   invite_token: "KokmVkamrzGDQG1JQ4ZeUfpZ"
   assigned_role_ids: [""]
-  expires_at: <%= 1.day.from_now %>
+  expires_at: 2024-05-16 10:00:00
 
 group_twomembers_role_manage_users:
   user: cooluserguy
   group: two_members
   invite_token: "StTcjEw2ZDDcNcMLM4tw2yf6"
   assigned_role_ids: ["",ActiveRecord::FixtureSet.identify(:group_1_manage_users)]
-  expires_at: <%= 1.day.from_now %>
+  expires_at: 2024-05-16 10:00:00
 
 group_onemember_role_admin_expired:
   user: admin
   group: one_member
   invite_token: "yseXyHbgRC1MzDoir3BfBRA2"
   assigned_role_ids: ["",ActiveRecord::FixtureSet.identify(:group_1_admin)]
-  expires_at: <%= 1.day.ago %>
+  expires_at: 2024-05-14 10:00:00
 
 group_threemembers0proposals_no_roles:
   user: groupsmemberuser
   group: three_members_0_proposals
   invite_token: "XyZtWqRkL1N2O3P4Q5R6S7T8"
   assigned_role_ids: [""]
-  expires_at: <%= 1.week.from_now %>
+  expires_at: 2024-05-22 10:00:00
