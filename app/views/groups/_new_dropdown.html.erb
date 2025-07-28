@@ -1,7 +1,7 @@
 <%# locals: (group:, can_propose: false) %>
 <%= render "shared/dropdown_list",
            id: "group_#{group.id}_new_dropdown",
-           label: "Open creation dropdown for #{group.name}",
+           label: t("group.creation_dropdown.label", group_name: group.name),
            svg_path: "icons/add.svg",
            button_classes: "relative inline-flex items-center rounded-lg text-center text-sm font-medium focus:ring-4 focus:outline-none
           text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100",

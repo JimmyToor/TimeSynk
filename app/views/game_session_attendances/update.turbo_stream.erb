@@ -1,5 +1,5 @@
 <%= turbo_stream_toast(:success,
-                       I18n.t("game_session_attendance.update.success", name: @game_session_attendance.game_session.game_name),
+                       I18n.t("game_session_attendance.update.success", game_name: @game_session_attendance.game_session.game_name),
                        "game_session_attendance_#{@game_session_attendance.id}",
                        highlight: " #{@game_session_attendance.game_session.game_name} ") %>
 

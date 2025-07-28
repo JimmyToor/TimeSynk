@@ -23,7 +23,7 @@ class GroupsTest < ApplicationSystemTestCase
     fill_in "Name", with: new_group_name
     click_on "Create Group"
 
-    assert_text I18n.t("group.create.success", name: new_group_name)
+    assert_text I18n.t("group.create.success", group_name: new_group_name)
   end
 
   test "should visit group" do
@@ -35,7 +35,7 @@ class GroupsTest < ApplicationSystemTestCase
     click_on "Go to #{group.name}"
 
     assert_text group.name
-    assert_text "Leave this group"
+    assert_text I18n.t("group_membership.destroy.self.label")
   end
 
   test "should update Group" do
@@ -50,7 +50,7 @@ class GroupsTest < ApplicationSystemTestCase
     fill_in "group_name", with: new_group_name
     click_on "Update Group"
 
-    assert_text I18n.t("group.update.success", name: new_group_name)
+    assert_text I18n.t("group.update.success", group_name: new_group_name)
   end
 
   test "should not have edit button if not group owner" do
@@ -77,6 +77,6 @@ class GroupsTest < ApplicationSystemTestCase
     check I18n.t("group.destroy.confirm")
     click_on "Delete"
 
-    assert_text I18n.t("group.destroy.success", name: group.name)
+    assert_text I18n.t("group.destroy.success", group_name: group.name)
   end
 end

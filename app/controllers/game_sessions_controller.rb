@@ -65,11 +65,11 @@ class GameSessionsController < ApplicationController
         set_game_session_attendance
         format.html {
           redirect_to game_proposal_path(@game_session.game_proposal),
-            success: {message: I18n.t("game_session.create.success", name: @game_session.game_name)}
+            success: {message: I18n.t("game_session.create.success", game_name: @game_session.game_name)}
         }
         format.turbo_stream { render :create }
       else
-        flash.now[:error] = {message: I18n.t("game_session.create.error", name: @game_session.game_name),
+        flash.now[:error] = {message: I18n.t("game_session.create.error", game_name: @game_session.game_name),
                             options: {list_items: @game_session.errors.full_messages}}
         set_proposal_options
         format.html {
@@ -86,7 +86,7 @@ class GameSessionsController < ApplicationController
   def update
     respond_to do |format|
       if @game_session.update(game_session_params)
-        notification = {message: I18n.t("game_session.update.success", name: @game_session.game_name),
+        notification = {message: I18n.t("game_session.update.success", game_name: @game_session.game_name),
                         options: {highlight: " #{@game_session.game_name} "}}
         format.html { redirect_to game_proposal_path(@game_session.game_proposal), success: notification }
         format.turbo_stream {
@@ -94,7 +94,7 @@ class GameSessionsController < ApplicationController
           render :update
         }
       else
-        flash.now[:error] = {message: I18n.t("game_session.update.error", name: @game_session.game_name),
+        flash.now[:error] = {message: I18n.t("game_session.update.error", game_name: @game_session.game_name),
                              options: {list_items: @game_session.errors.full_messages}}
         format.html {
           render :edit, locals: {game_session: @game_session}, status: :unprocessable_entity

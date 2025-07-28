@@ -7,6 +7,6 @@
 <%= turbo_stream.update("modal_frame") %>
 
 <%= turbo_stream_toast(:success,
-                       I18n.t("group.update.success", name: @group.name),
+                       I18n.t("group.update.success", group_name: @group.name),
                        "group_#{@group.id}",
                        highlight: "#{@group.name}") %>

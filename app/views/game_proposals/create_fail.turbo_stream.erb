@@ -1,6 +1,6 @@
 <%= turbo_stream_toast(:error,
                        I18n.t("game_proposal.create.error",
-                              name: @game_proposal.game_name),
+                              game_name: @game_proposal.game_name),
                        "game_proposal_new",
                        highlight: " #{@game_proposal.game_name}",
                        list_items: @game_proposal.errors.full_messages) %>

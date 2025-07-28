@@ -6,14 +6,16 @@
   <% if button_content.present? %>
     <%= button_content %>
   <% else %>
-    <%= render "shared/buttons/dialog_delete_button", extra_classes:"flex items-center" %>
+    <%= render "shared/buttons/dialog_delete_button",
+               title: t("generic.delete_resource", resource_type: resource.class.name.titleize),
+               extra_classes:"flex items-center" %>
   <% end %>
 
   <% title_content = capture do %>
     <div class="flex items-center px-2">
       <span class="text-notice-400"><%= inline_svg_tag "icons/exclamation-triangle.svg" %></span>
       <h2 class="ml-1 text-lg font-semibold">
-        Delete <%= resource.class.name.titleize %><%= resource_title.blank? ? "" : ": #{resource_title}" %>
+        <%= t("generic.delete_resource", resource_type: resource.class.name.titleize ) -%><%= resource_title.blank? ? "" : ": #{resource_title}" %>
       </h2>
     </div>
   <% end %>

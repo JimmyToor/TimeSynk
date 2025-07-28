@@ -1,6 +1,6 @@
 <%# locals: (permission_set:) %>
 <%= link_to polymorphic_path([:edit,permission_set.resource,:permission_set]),
-            title:"Edit #{permission_set.resource.class.name} Permissions",
+            title:t("permission_set.edit.title", resource_type: permission_set.resource.class.name),
             'aria-haspopup': "dialog",
             class: "text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100",
             data: { turbo_frame: "modal_frame" } do %>

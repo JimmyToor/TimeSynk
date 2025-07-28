@@ -75,7 +75,7 @@ en:
       email_sent: "If a verified account with that email exists, a password reset link has been sent to it."
   group:
     create:
-      success: "Group %{name} successfully created."
+      success: "Group %{group_name} successfully created."
       error: "There was an error creating the group."
     validation:
       name:
@@ -85,13 +85,13 @@ en:
     join_success: "You have successfully joined the group."
     invalid_link: "Invalid group invite link."
     destroy:
-      success: "Group %{name} successfully deleted."
+      success: "Group %{group_name} successfully deleted."
       error: "There was an error deleting the group."
       title: "Delete Group"
       confirm: "I confirm that I want to permanently delete this group"
       confirm_name: "Type the group name to confirm deletion:"
     update:
-      success: "Group name changed to %{name}."
+      success: "Group name changed to %{group_name}."
       error: "There was an error updating the group."
     title: "Groups"
     not_found: "Sorry, we couldn't find that group."
@@ -111,6 +111,8 @@ en:
       create_game_proposals: "Create Game Proposals"
       manage_all_game_proposals: "Manage All Game Proposals"
     view_roles_label: "View roles for %{username} in %{group_name}"
+    creation_dropdown:
+      label: "Open creation dropdown for %{group_name}"
   group_membership:
     invite_not_valid: "There was a problem with the invite."
     already_member: "You are already a member of this group."
@@ -168,6 +170,8 @@ en:
       authorization_error: "You do not have permission to update those roles."
     roles:
       title: "%{resource_type} Roles"
+    edit:
+      title: "Edit %{resource_type} Permissions"
   availability:
     help:
       no_schedules: "You can click here to set your default availability times, or set them later through your profile."
@@ -236,51 +240,55 @@ en:
       duration:
         length: "must be a multiple of 15 minutes."
     create:
-      success: "Game session for %{name} successfully created."
-      error: "There was an error creating the %{name} game session."
+      success: "Game session for %{game_name} successfully created."
+      error: "There was an error creating the %{game_name} game session."
     destroy:
-      success: "Game session for %{name} successfully deleted."
-      error: "There was an error deleting the %{name} game session."
+      success: "Game session for %{game_name} successfully deleted."
+      error: "There was an error deleting the %{game_name} game session."
+      label: "Delete Game Session"
+      confirm: "I confirm that I want to permanently delete this game session."
     update:
-      success: "Game session for %{name} successfully updated."
-      error: "There was an error updating the %{name} game session."
+      success: "Game session for %{game_name} successfully updated."
+      error: "There was an error updating the %{game_name} game session."
     not_found: "Game session not found. It may have been deleted."
     upcoming:
       title: "Upcoming Game Sessions for %{game_name} - %{group_name}"
       title_generic: "Upcoming Game Sessions"
+      none: "There are no upcoming game sessions for this proposal."
     edit:
       title: "Edit %{game_name} session - %{group_name}"
     new:
       title: "New %{game_name} session - %{group_name}"
       label: "New Game Session"
+      submit: "Save Game Session"
     title: "Game Sessions"
     index:
       label: "View Game Sessions"
     role:
       owner: "Owner"
+    view_attendance: "View Attendance"
+    view:
+      label: "View details for %{game_name} session in %{group_name}"
   game_session_attendance:
     create:
-      success: "Attendance for %{name} saved."
+      success: "Attendance for %{game_name} saved."
       error: "There was an error saving your attendance."
     destroy:
-      success: "Attendance for %{name} saved."
+      success: "Attendance for %{game_name} saved."
       error: "There was an error saving your attendance."
     update:
-      success: "Attendance for %{name} saved."
+      success: "Attendance for %{game_name} saved."
       error: "There was an error saving your attendance."
   game_proposal:
     create:
-      success: "Game proposal for %{name} successfully created ."
-      error: "There was an error creating the proposal for %{name}."
+      success: "Game proposal for %{game_name} successfully created ."
+      error: "There was an error creating the proposal for %{game_name}."
     destroy:
-      success: "Game proposal for %{name} successfully deleted."
-      error: "There was an error deleting the proposal for %{name}."
+      success: "Game proposal for %{game_name} successfully deleted."
+      error: "There was an error deleting the proposal for %{game_name}."
       label: "Delete Game Proposal"
       confirm: "I confirm that I want to permanently delete this game proposal and all associated game sessions"
       confirm_name: "Type the game name to confirm deletion:"
-    update:
-      success: "Game proposal for %{name} successfully updated."
-      error: "There was an error updating the proposal for %{name}."
     index:
       title: "Game Proposals for %{group_name}"
       label: "View Game Proposals"
@@ -290,6 +298,7 @@ en:
       aria_label: "View game proposals %{count} pending."
     new:
       label: "New Game Proposal"
+      submit: "Create Proposal"
     miscellaneous_dropdown:
       title: "Open miscellaneous dropdown for #{game_name}"
     role:
@@ -298,6 +307,8 @@ en:
       create_game_sessions: "Create Game Sessions"
       manage_all_game_sessions: "Manage All Game Sessions"
     view_roles_label: "View roles for %{username} in %{game_name} for %{group_name}"
+    creation_dropdown:
+      label: "Open creation dropdown for %{game_name}"
   user:
     avatar:
       update:
@@ -339,6 +350,8 @@ en:
     confirm_transfer_button: "Confirm Transfer"
   generic:
     refresh_try_again: "Please refresh and try again."
+    delete: "Delete"
+    delete_resource: "Delete %{resource_type}"
   game_proposal_availability:
     edit:
       label: "Edit Proposal Availability"

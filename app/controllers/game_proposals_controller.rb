@@ -64,7 +64,7 @@ class GameProposalsController < ApplicationController
 
     respond_to do |format|
       format.html {
-        redirect_to game_proposals_url, success: {message: I18n.t("game_proposal.destroy.success", name: @game_proposal.game.name),
+        redirect_to game_proposals_url, success: {message: I18n.t("game_proposal.destroy.success", game_name: @game_proposal.game.name),
                                                   options: {highlight: " #{@game_proposal.game.name}"}}
       }
     end

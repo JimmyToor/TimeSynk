@@ -46,7 +46,7 @@ class GroupsController < ApplicationController
     respond_to do |format|
       if @group.persisted?
         format.turbo_stream {
-          redirect_to group_url(@group), success: {message: I18n.t("group.create.success", name: @group.name), options: {highlight: @group.name}}
+          redirect_to group_url(@group), success: {message: I18n.t("group.create.success", group_name: @group.name), options: {highlight: @group.name}}
         }
       else
         format.turbo_stream {
@@ -80,7 +80,7 @@ class GroupsController < ApplicationController
     respond_to do |format|
       if @group.destroy
         format.turbo_stream {
-          redirect_to groups_path, success: {message: I18n.t("group.destroy.success", name: @group.name), id: "groups"}
+          redirect_to groups_path, success: {message: I18n.t("group.destroy.success", group_name: @group.name), id: "groups"}
         }
       else
         format.turbo_stream { render partial: "destroy_fail", status: :unprocessable_entity }

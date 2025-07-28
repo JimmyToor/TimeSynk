@@ -4,12 +4,12 @@
   <div>
     <label>
       <input data-confirmation-target="input" data-action="confirmation#check" type="checkbox" autofocus/>
-      I confirm that I want to permanently delete this game session.
+      <%= t("game_session.destroy.confirm") %>
     </label>
   </div>
 
   <div class="flex justify-between">
-    <%= button_to "Delete", game_session, method: :delete, title: "Delete Game Session",
+    <%= button_to "Delete", game_session, method: :delete, title: t("game_session.destroy.label"),
                   data: { confirmation_target: "item" },
                   disabled: "true",
                   form: { data: { refresh_calendar_on_submit:"" } },
