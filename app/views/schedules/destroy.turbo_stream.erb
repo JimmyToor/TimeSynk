@@ -3,3 +3,5 @@
 
 <%= turbo_stream.replace("show_schedule_#{@schedule.id}",
                          html: raw("<p>Schedule Deleted</p><p>#{link_to 'Back to schedules', schedules_path}</p>")) %>
+
+<%= turbo_stream_toast(:success, t("schedule.destroy.success"), "schedule_#{@schedule.id}") %>

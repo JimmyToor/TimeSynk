@@ -9,11 +9,9 @@
                  path: edit_schedule_path(schedule),
                  data: { turbo_frame: "modal_frame" },
                  extra_classes: "text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100",
-                 title:"Edit Schedule",
+                 title: t("generic.edit_resource", resource_type: "Schedule"),
                  svg_name:"edit" if policy(schedule).edit? %>
-      <%= render "shared/buttons/delete_link",
-                 path: schedule_path(schedule),
-                 confirm_text: "Are you sure you want to delete this schedule?" if policy(schedule).destroy? %>
+      <%= render "shared/delete_modal", resource: schedule, form_partial: "schedules/delete_form" %>
     </div>
 
   <% end %>

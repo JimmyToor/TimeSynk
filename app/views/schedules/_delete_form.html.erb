@@ -1,0 +1,21 @@
+<%# locals: (schedule:) %>
+<div data-controller="confirmation" class="space-y-3">
+
+  <div>
+    <label>
+      <input data-confirmation-target="input" data-action="confirmation#check" type="checkbox" autofocus/>
+      <%= t("schedule.destroy.confirm") %>
+    </label>
+  </div>
+
+  <div class="flex justify-between">
+    <%= button_to "Delete", schedule, method: :delete, title: t("schedule.delete.title"),
+                  data: { confirmation_target: "item" },
+                  disabled: "true",
+                  form: { data: { refresh_calendar_on_submit:"" } },
+                  class: "disabled:cursor-not-allowed disabled:bg-red-300 rounded-full bg-red-600 px-3
+                                  py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline
+                                  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 " %>
+    <button type="button" data-action="dialog#close">Cancel</button>
+  </div>
+</div>

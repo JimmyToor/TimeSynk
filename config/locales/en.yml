@@ -162,7 +162,14 @@ en:
     destroy:
       success: "Schedule successfully deleted."
       error: "There was an error deleting the schedule."
+      confirm: "I confirm that I want to permanently delete this schedule"
     title: "Schedules"
+    new:
+      title: "New Schedule"
+    edit:
+      submit: "Save Schedule"
+    delete:
+      title: "Delete Schedule"
   permission_set:
     update:
       success: "Permissions successfully updated."
@@ -352,6 +359,7 @@ en:
     refresh_try_again: "Please refresh and try again."
     delete: "Delete"
     delete_resource: "Delete %{resource_type}"
+    edit_resource: "Edit %{resource_type}"
   game_proposal_availability:
     edit:
       label: "Edit Proposal Availability"
