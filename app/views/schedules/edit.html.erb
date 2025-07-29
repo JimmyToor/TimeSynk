@@ -1,5 +1,5 @@
 <%= render "shared/header_primary", extra_classes: "text-center" do %>
-  Edit Schedule: <span class="font-bold text-primary-600"><%= @schedule.name %></span>
+  <%= "#{t("schedule.edit.title")}:" %><span class="font-bold text-primary-600"><%= @schedule.name %></span>
 <% end %>
 
 <%= modal_wrapper(@schedule.name) do %>

@@ -27,7 +27,7 @@
       <div data-rails-nested-form-target="target">
       </div>
 
-      <%= render "shared/buttons/accent_button", text:"Add Availability", extra_classes: "mt-2",
+      <%= render "shared/buttons/accent_button", text: t("schedule.add_availability"), extra_classes: "mt-2",
                         data: {action:"rails-nested-form#add",
                                mutually_exclusive_select_target:"addButton"} %>
     </div>
@@ -87,11 +87,11 @@
     </div>
 
     <div>
-      <% if modal_wrapper? %>
-        <%= render "shared/buttons/form_submit_button", form: form, text: "Save Schedule", data: { turbo_submits_with: "Saving..." }, extra_classes: "mt-2 me-2 mb-2" %>
-      <% else %>
-        <%= render "shared/buttons/form_submit_button", form: form, text: "Save Schedule", data: { turbo: false }, extra_classes: "mt-2 me-2 mb-2" %>
-      <% end %>
+      <%= render "shared/buttons/form_submit_button",
+                 form: form,
+                 text: t("schedule.edit.submit"),
+                 data: modal_wrapper? ? { turbo_submits_with: t("generic.saving") } : { turbo: false },
+                 extra_classes: "mt-2 me-2 mb-2" %>
     </div>
 
   </div>

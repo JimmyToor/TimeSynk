@@ -38,9 +38,9 @@
   <div class="w-auto flex flex-col lg:flex-row space-y-2 lg:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
     <%= render "shared/buttons/icon_link_thick",
                path: new_schedule_path,
-               text: t("schedules.new.title"),
+               text: t("schedule.new.title"),
                data: {turbo_frame: "modal_frame"},
-               title: t("schedules.new.title"),
+               title: t("schedule.new.title"),
                ping: Current.user&.schedules&.count == 0 %>
   </div>
 

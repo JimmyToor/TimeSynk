@@ -5,9 +5,9 @@
                 data: {controller: "dialog", dialog_ignore_submit_success_value: true},
                 class: container_classes do %>
   <%= render "shared/buttons/icon_button",
-             text:"Attendance",
+             text: t("generic.attendance"),
              action:"dialog#open",
-             title: "View All Attendance",
+             title: t("game_session.view_all_attendance"),
              svg_name: "votes",
              button_attributes: {'aria-haspopup': "dialog" },
              extra_classes: "font-semibold #{modal_link_classes}",

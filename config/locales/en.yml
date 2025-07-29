@@ -113,6 +113,7 @@ en:
     view_roles_label: "View roles for %{username} in %{group_name}"
     creation_dropdown:
       label: "Open creation dropdown for %{group_name}"
+    name_label: "Group"
   group_membership:
     invite_not_valid: "There was a problem with the invite."
     already_member: "You are already a member of this group."
@@ -138,6 +139,7 @@ en:
         label: "Invite Token/Link"
     accept_invite:
       title: "You've been invited to join %{group_name}"
+    created_at_label: "Joined"
   proposal_vote:
     validation:
       vote_unique: "You have already voted on this proposal."
@@ -155,6 +157,7 @@ en:
     edit:
       label: "Edit your vote for %{game_name} in %{group_name}"
       submit: "Save Vote and Comment"
+    vote_label: "Vote"
   schedule:
     create:
       success: "Schedule successfully created."
@@ -168,8 +171,12 @@ en:
       title: "New Schedule"
     edit:
       submit: "Save Schedule"
+      title: "Edit Schedule"
     delete:
       title: "Delete Schedule"
+    add_availability: "Add Availability"
+    update:
+      success: "Schedule successfully updated."
   permission_set:
     update:
       success: "Permissions successfully updated."
@@ -231,6 +238,7 @@ en:
       title: "Edit Group Invite - %{group_name}"
       label: "Edit Invite"
     new:
+      title: "New invite to %{group_name}"
       label: "New Invite"
     accept_invite: "Accept Invite"
   game_session:
@@ -276,6 +284,7 @@ en:
     view_attendance: "View Attendance"
     view:
       label: "View details for %{game_name} session in %{group_name}"
+    view_all_attendance: "View All Attendance"
   game_session_attendance:
     create:
       success: "Attendance for %{game_name} saved."
@@ -286,6 +295,14 @@ en:
     update:
       success: "Attendance for %{game_name} saved."
       error: "There was an error saving your attendance."
+    edit:
+      label: "Edit Attendance"
+      submit: "Save Attendance"
+    attendance_label: "Attendance"
+    values:
+      attending: "Attending"
+      not_attending: "Not Attending"
+      unsure: "Unsure"
   game_proposal:
     create:
       success: "Game proposal for %{game_name} successfully created ."
@@ -323,6 +340,7 @@ en:
         error: "There was a problem changing your avatar."
     edit:
       title: "Settings"
+    username_label: "User"
   session:
     create:
       error: "That username/email and password is incorrect."
@@ -336,12 +354,6 @@ en:
     day: "Day"
     hour: "Hour"
     minute: "Minute"
-  schedules:
-    new:
-      title: "New Schedule"
-  invites:
-    new:
-      title: "New invite to %{group_name}"
   dashboard:
     title: "Dashboard"
   game:
@@ -359,7 +371,9 @@ en:
     refresh_try_again: "Please refresh and try again."
     delete: "Delete"
     delete_resource: "Delete %{resource_type}"
+    attendance: "Attendance"
     edit_resource: "Edit %{resource_type}"
+    saving: "Saving..."
   game_proposal_availability:
     edit:
       label: "Edit Proposal Availability"
@@ -376,3 +390,5 @@ en:
     game_proposals: "Proposals"
     availabilities: "Availabilities"
     schedules: "Schedules"
+  pundit:
+    not_authorized: "You are not authorized to perform that action."

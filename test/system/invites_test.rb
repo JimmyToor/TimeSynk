@@ -34,8 +34,10 @@ class InvitesTest < ApplicationSystemTestCase
     group = groups(:three_members_0_proposals)
 
     visit group_invites_url(group)
+
     button_title = I18n.t("invite.edit.label")
     find("a[title='#{button_title}']").click
+
     check I18n.t("group.role.kick_users")
     click_on "Save"
 
@@ -47,6 +49,7 @@ class InvitesTest < ApplicationSystemTestCase
 
     visit group_invites_url(group)
     button_title = I18n.t("invite.destroy.label")
+
     accept_confirm do
       find("a[title='#{button_title}']").click
     end

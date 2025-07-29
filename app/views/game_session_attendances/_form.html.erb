@@ -7,16 +7,16 @@
   </div>
 
   <div>
-    <%= form.label :attending, "Attendance", style: "display: block" %>
+    <%= form.label :attending, t("game_session_attendance.attending_label"), style: "display: block" %>
     <%= form.radio_button :attending, true,  checked: game_session_attendance.attending == true%>
-    <%= form.label :attending_true, "Attending", style: "display: inline" %>
+    <%= form.label :attending_true, t("game_session_attendance.values.attending"), style: "display: inline" %>
     <%= form.radio_button :attending, false, checked: game_session_attendance.attending == false%>
-    <%= form.label :attending_false, "Not Attending", style: "display: inline" %>
+    <%= form.label :attending_false, t("game_session_attendance.values.not_attending"), style: "display: inline" %>
     <%= form.radio_button :attending, "", checked: game_session_attendance.new_record? || game_session_attendance.attending == nil%>
-    <%= form.label :attending_, "Unsure", style: "display: inline" %>
+    <%= form.label :attending_, t("game_session_attendance.values.unsure"), style: "display: inline" %>
     <%= render "shared/buttons/form_submit_button",
                form: form,
-               text: "Save Attendance",
+               text: t("game_session_attendance.edit.submit"),
                data: {turbo_submits_with: "Saving..."},
                extra_classes: "block mt-2 mb-2 disabled:bg-gray-600 disabled:cursor-default disabled:hover:bg-gray-600 dark:disabled:hover:bg-gray-600" %>
   </div>
