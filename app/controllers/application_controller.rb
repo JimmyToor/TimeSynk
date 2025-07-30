@@ -34,8 +34,15 @@ class ApplicationController < ActionController::Base
   private
 
   def user_not_authorized
-    flash[:alert] = "You are not authorized to perform this action."
-    redirect_back(fallback_location: root_path, status: :forbidden)
+    respond_to do |format|
+      format.html {
+        flash[:alert] = t("pundit.not_authorized")
+        redirect_back(fallback_location: root_path)
+      }
+      format.turbo_stream {
+        turbo_stream_toast(:error, t("pundit.not_authorized"), t("pundit.not_authorized"))
+      }
+    end
   end
 
   def check_maintenance_mode
