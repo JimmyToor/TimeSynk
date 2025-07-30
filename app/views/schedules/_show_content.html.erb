@@ -11,7 +11,7 @@
                  extra_classes: "text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100",
                  title: t("generic.edit_resource", resource_type: "Schedule"),
                  svg_name:"edit" if policy(schedule).edit? %>
-      <%= render "shared/delete_modal", resource: schedule, form_partial: "schedules/delete_form" %>
+      <%= render "shared/delete_modal", resource: schedule, form_partial: "schedules/delete_form" if policy(schedule).destroy? %>
     </div>
 
   <% end %>
