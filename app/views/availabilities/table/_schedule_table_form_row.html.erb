@@ -2,8 +2,7 @@
 <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 text-center">
   <td class="w-4 px-6 py-3">
     <div class="w-min">
-      <%= hidden_field_tag "availability[availability_schedules_attributes][][schedule_id]", schedule.id %>
-      <%= check_box_tag "availability[availability_schedules_attributes][][_destroy]",
+      <%= check_box_tag "schedule_selection_#{schedule.id}",
                         "1",
                         checked,
                         data:{ action:"change->schedule-selection#toggleSchedule",

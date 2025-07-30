@@ -6,10 +6,10 @@
        data-controller="search"
        data-search-src-value="<%= availabilities_path(format: :turbo_stream) %>"
        data-search-search-complete-message-value="<%= t('search.complete_message') %>">
-    <%= render "availabilities/availability_table_header" %>
+    <%= render "availabilities/table/availability_table_header" %>
     <div class="relative">
       <%= turbo_frame_tag "availability_table", data: {src:availabilities_path(format: :turbo_stream), turbo_prefetch:"false", search_target:"frame"} do %>
-        <%= render "availability_table", availabilities: availabilities %>
+        <%= render "availabilities/table/availability_table", availabilities: availabilities %>
       <% end %>
       <%= render "shared/spinner_absolute", start_hidden: true %>
     </div>

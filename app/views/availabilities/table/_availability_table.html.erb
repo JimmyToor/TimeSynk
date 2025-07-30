@@ -1,0 +1,19 @@
+<%# locals: (availabilities:) %>
+<div class="overflow-x-auto text-center">
+  <table class="w-full text-sm text-gray-500 dark:text-gray-400">
+    <thead class="text-xs text-gray-700 uppercase bg-tertiary-50 dark:bg-gray-700 dark:text-gray-400">
+    <tr class="text-center">
+      <th></th>
+      <th scope="col" class="px-4 py-3 text-left">Availability</th>
+      <th scope="col" class="px-4 py-3 table-cell">Description</th>
+      <th scope="col" class="px-4 py-3 hidden lg:table-cell">Schedules</th>
+    </tr>
+    </thead>
+    <tbody data-controller="element-toggle" >
+    <% availabilities.each do |availability| %>
+      <%= render partial:"availabilities/table/availability_table_row", locals: {availability: availability} %>
+    <% end %>
+    </tbody>
+  </table>
+</div>
+<%= render partial: "shared/table_nav" %>
