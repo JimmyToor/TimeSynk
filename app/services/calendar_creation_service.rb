@@ -93,9 +93,8 @@ class CalendarCreationService < ApplicationService
   # @param schedule [Schedule] the schedule to create a calendar for
   # @return [Calendar] the created calendar
   def make_schedule_calendar(schedule)
-    Pundit.authorize(@user, schedule, :show?)
     Calendar.new(
-      schedules: [schedule.make_calendar_schedule],
+      schedules: [schedule.make_calendar_schedule(selectable: authorized?(schedule))],
       name: schedule.name.to_s,
       id: "calendar_schedule_#{schedule.id}",
       type: :schedule
@@ -169,7 +168,11 @@ class CalendarCreationService < ApplicationService
         all_schedules.concat(consolidated_schedules)
       end
 
-      calendar_schedules = consolidated_schedules.map { |schedule| schedule.make_calendar_schedule(selectable: schedule.user_id == @user.id) }
+      selectable = authorized?(availability)
+
+      calendar_schedules = consolidated_schedules.map { |schedule|
+        schedule.make_calendar_schedule(selectable: selectable)
+      }
       calendars << make_availability_calendar(availability, calendar_schedules: calendar_schedules)
     end
     calendars << make_overlap_calendar(all_schedules) if overlap_possible && calendars.length > 1
@@ -217,7 +220,7 @@ class CalendarCreationService < ApplicationService
   # @param game_session [GameSession] the game session to create a calendar for
   # @return [Calendar] the created calendar
   def make_game_session_calendar(game_session)
-    Pundit.authorize(@user, game_session.game_proposal, :show?)
+    authorized?(game_session)
     session_schedule = game_session.make_calendar_schedule
     Calendar.new(
       schedules: [session_schedule],
@@ -232,12 +235,22 @@ class CalendarCreationService < ApplicationService
   # @param game_proposal [GameProposal] the game proposal to create a calendar for
   # @return [Calendar] the created calendar
   def make_game_proposal_calendar(game_proposal)
-    Pundit.authorize(@user, game_proposal, :show?)
+    authorized?(game_proposal)
     Calendar.new(
       schedules: game_proposal.make_calendar_schedules(start_time: @params[:start], end_time: @params[:end]),
       name: Game.find(game_proposal.game_id).name.to_s,
       id: "calendar_proposal_#{game_proposal.id}",
       type: :game
     )
+  end
+
+  # Checks if the user is authorized to view the given record.
+  #
+  # @param record [ApplicationRecord] the record to check authorization for
+  # @return [Boolean] true if authorized, false otherwise
+  def authorized?(record)
+    true if Pundit.authorize(@user, record, :show?)
+  rescue Pundit::NotAuthorizedError
+    false
   end
 end
