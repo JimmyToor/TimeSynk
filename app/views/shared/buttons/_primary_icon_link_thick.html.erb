@@ -1,0 +1,13 @@
+<%# locals: (path:, text: "", title: "", svg_name: "plus", data: {}, extra_classes: "", icon_classes:"size-3.5 mr-2", ping: false) %>
+<%= link_to path,
+            data: data,
+            title: title,
+            aria: {label: title, haspopup: true},
+            class: "flex items-center relative justify-center text-white font-medium rounded-lg text-sm px-4 py-2
+              focus:ring-4 w-fit #{visit_link_bg_classes} #{extra_classes}" do %>
+  <% if ping %>
+    <span id="new_ping" class="absolute inset-0 animate-ping rounded-lg opacity-75 bg-secondary-400"></span>
+  <% end %>
+  <%= inline_svg("icons/#{svg_name}.svg", class: icon_classes) %>
+  <%= text %>
+<% end %>

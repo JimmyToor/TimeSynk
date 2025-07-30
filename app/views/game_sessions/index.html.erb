@@ -9,7 +9,7 @@
 <% else %>
   <%= render "upcoming_game_sessions", upcoming_game_sessions: game_sessions, src: game_sessions_path %>
 <% end %>
-<%= render "shared/buttons/icon_link_thick",
+<%= render "shared/buttons/secondary_icon_link_thick",
            path: new_game_proposal_game_session_path(game_proposal: game_proposal),
            text: t("game_session.new.label"),
            data: {turbo_frame: "modal_frame"},

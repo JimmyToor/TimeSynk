@@ -1,9 +1,8 @@
 <%# locals: (availability:, schedules:) %>
 <section class="bg-tertiary-50 dark:bg-gray-900 xl:flex xl:flex-col xl:items-center space-y-4">
-
-  <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-    New Availability
-  </h1>
+  <%= render "shared/header_primary" do %>
+    <%= t("availability.new.title") %>
+  <% end %>
 
   <%= modal_wrapper(availability.name) do %>
     <%= render "form", availability: availability, schedules: schedules %>

@@ -81,7 +81,7 @@ class Schedule < ApplicationRecord
   # Generates data compatible with FullCalendar.
   #
   # Included fields: id, name, duration, user_id, cal_rrule, end_time, extimes, rtimes, start_time.
-  # @param icecube_schedule [IceCube::Schedule, nil] the IceCube schedule
+  # @param icecube_schedule [IceCube::Schedule, nil] the IceCube schedule to convert. If nil, a new schedule will be created.
   # @param selectable [Boolean] whether the schedule is selectable in FullCalendar
   # @return [Hash] the calendar data
   def make_calendar_schedule(icecube_schedule = nil, selectable: true)

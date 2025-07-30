@@ -201,6 +201,8 @@ en:
       only_availability: "Cannot delete your only availability."
     no_schedules: "You can create schedules to indicate the times you're available. You can then select them here to be combined to create this availability. Get started by creating a new schedule."
     title: "Availabilities"
+    new:
+      title: "New Availability"
   proposal_availability:
     create:
       success: "Availability set for %{game_name}."

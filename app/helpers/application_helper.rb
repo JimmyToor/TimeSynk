@@ -64,8 +64,20 @@ module ApplicationHelper
                               dark:focus:border-blue-500"
   end
 
-  def modal_link_classes
+  def modal_link_text_classes
     "text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100"
+  end
+
+  def modal_link_bg_classes
+    "bg-secondary-500 hover:bg-secondary-400 focus:ring-secondary-300 dark:bg-secondary-400 dark:hover:bg-secondary-300 dark:focus:ring-secondary-200"
+  end
+
+  def visit_link_bg_classes
+    "bg-primary-500 hover:bg-primary-400 dark:bg-primary-700 dark:hover:bg-primary-600"
+  end
+
+  def visit_link_text_classes
+    "text-black hover:text-gray-100 dark:text-gray-200 dark:hover:text-gray-100"
   end
 
   def policy_class_for_resource(resource)
