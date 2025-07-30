@@ -3,8 +3,7 @@
 <%= form.button :submit,
                 title: "Search",
                 'aria-label': "Submit search",
-                class: "text-white dark:text-black bg-accent-800 hover:bg-accent-700 dark:bg-accent-600 dark:hover:bg-accent-500
-          dark:focus:ring-accent-500 cursor-pointer focus:ring-4 focus:outline-none focus:ring-accent-500 font-medium
-          rounded-lg text-sm px-4 height-1/2" do %>
+                class: "text-white cursor-pointer focus:ring-4 focus:outline-none font-medium
+                  rounded-lg text-sm px-4 height-1/2 #{functional_button_classes}" do %>
   <%= inline_svg "icons/search.svg", class: "w-4 h-4", aria_hidden: true %>
 <% end %>

@@ -203,6 +203,7 @@ en:
     title: "Availabilities"
     new:
       title: "New Availability"
+    include_schedule: "Include schedule %{schedule_name} in the availability."
   proposal_availability:
     create:
       success: "Availability set for %{game_name}."

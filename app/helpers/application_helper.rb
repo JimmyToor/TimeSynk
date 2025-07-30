@@ -58,10 +58,9 @@ module ApplicationHelper
   end
 
   def input_field_classes
-    "bg-tertiary-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg
-                              focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700
-                              dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500
-                              dark:focus:border-blue-500"
+    "bg-tertiary-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600
+      focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
+      dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
   end
 
   def modal_link_text_classes
@@ -78,6 +77,10 @@ module ApplicationHelper
 
   def visit_link_text_classes
     "text-black hover:text-gray-100 dark:text-gray-200 dark:hover:text-gray-100"
+  end
+
+  def functional_button_classes
+    "bg-accent-800 hover:bg-accent-700 dark:bg-accent-600 dark:hover:bg-accent-500 dark:focus:ring-accent-500 focus:ring-accent-500"
   end
 
   def policy_class_for_resource(resource)
