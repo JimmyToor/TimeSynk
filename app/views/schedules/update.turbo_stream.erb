@@ -2,3 +2,5 @@
                         partial:"schedules/form",
                         locals: { schedule: @schedule,
                                   notice: "Your schedule has been updated" }) %>
+
+<%= turbo_stream_toast(:success, I18n.t("schedule.update.success"), "schedule_#{@schedule.id}") %>
