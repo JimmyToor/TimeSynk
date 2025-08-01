@@ -17,7 +17,6 @@ class SchedulesController < ApplicationController
     respond_to do |format|
       format.html { render :index, locals: {schedules: @schedules} }
       format.turbo_stream
-      format.json { render json: @schedules }
     end
   end
 
@@ -25,7 +24,6 @@ class SchedulesController < ApplicationController
   def show
     respond_to do |format|
       format.html { render :show, locals: {schedule: @schedule} }
-      format.json { render json: @schedule }
     end
   end
 
@@ -46,13 +44,11 @@ class SchedulesController < ApplicationController
     respond_to do |format|
       if @schedule.save
         format.html { redirect_to schedule_url(@schedule), notice: "Schedule was successfully created." }
-        format.json { render :show, status: :created, location: @schedule }
         format.turbo_stream
       else
         flash.now[:alert] = {message: I18n.t("schedule.create.error"),
                                       options: {list_items: @schedule.errors.full_messages}}
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @schedule.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -63,11 +59,9 @@ class SchedulesController < ApplicationController
     respond_to do |format|
       if @schedule.update(schedule_params)
         format.html { redirect_to schedule_url(@schedule), notice: "Schedule was successfully updated." }
-        format.json { render :show, status: :ok, location: @schedule }
         format.turbo_stream
       else
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @schedule.errors, status: :unprocessable_entity }
         format.turbo_stream {
           render turbo_stream: turbo_stream.replace(
             helpers.dom_id(@schedule, :form),
@@ -85,7 +79,6 @@ class SchedulesController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to schedules_url, notice: "Schedule was successfully destroyed." }
-      format.json { head :no_content }
       format.turbo_stream
     end
   end

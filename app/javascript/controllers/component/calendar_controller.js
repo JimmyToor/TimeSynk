@@ -4,9 +4,9 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interaction from "@fullcalendar/interaction";
-import CalendarService from "../services/calendar_service";
-import consumer from "../channels/consumer";
-import Utility from "../../../lib/util/utility";
+import CalendarService from "../../services/calendar_service";
+import consumer from "../../channels/consumer";
+import Utility from "../../../../lib/util/utility";
 /**
  * Main controller class for the calendar functionality.
  * Mainly concerned with UI interactions and rendering.
