@@ -1,5 +1,11 @@
-<%= form_with(model: proposal_vote.new_record? ?  [game_proposal, proposal_vote] :  proposal_vote, id:dom_id(proposal_vote, :form)) do |form| %>
-  <%= render "shared/notification", id: proposal_vote.new_record? ? "proposal_vote_new" : "proposal_vote_#{proposal_vote.id}" %>
+<%= form_with(model: proposal_vote.new_record? ?
+                       [game_proposal, proposal_vote] :
+                       proposal_vote,
+              id:dom_id(proposal_vote, :form)) do |form| %>
+
+  <%= render "shared/notification", id: proposal_vote.new_record? ?
+                                          "proposal_vote_new" :
+                                          "proposal_vote_#{proposal_vote.id}" %>
 
   <div class="text-center">
     <%= form.hidden_field :user_id, value: Current.user.id %>
@@ -22,6 +28,9 @@
   </div>
 
   <div class="text-center">
-    <%= render "shared/buttons/form_submit_button", form: form, text: t("proposal_vote.edit.submit"), extra_classes: "m-2" %>
+    <%= render "shared/buttons/form_submit_button",
+               form: form,
+               text: t("proposal_vote.edit.submit_text"),
+               extra_classes: "m-2" %>
   </div>
 <% end %>

@@ -1,0 +1,12 @@
+en:
+  user:
+    avatar:
+      update:
+        success: "Avatar updated."
+        error: "There was a problem changing your avatar."
+    edit:
+      title: "Settings"
+    username:
+      field_label: "User"
+    settings:
+      button_text: "Settings"

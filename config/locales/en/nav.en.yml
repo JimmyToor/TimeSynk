@@ -1,0 +1,10 @@
+en:
+  nav:
+    dashboard: "Dashboard"
+    groups: "Groups"
+    game_proposals: "Proposals"
+    availabilities: "Availabilities"
+    schedules: "Schedules"
+    user_menu:
+      button_title: "User Menu"
+      button_label: "Open user menu."

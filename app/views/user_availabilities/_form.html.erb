@@ -19,7 +19,10 @@
                             data:{action: "change->availability-selection#setCalendarAvailability",
                                   availability_selection_target:"availabilitySelectInput"},
                             'aria-describedby': "tooltip-user-availability"%>
-      <%= render "shared/buttons/form_submit_button", form: form, text: "Set Availability", extra_classes: "mt-2 me-2 mb-2" %>
+      <%= render "shared/buttons/form_submit_button",
+                 form: form,
+                 text: t("user_availability.edit.submit_text"),
+                 extra_classes: "mt-2 me-2 mb-2" %>
     </div>
   </div>
 <% end %>

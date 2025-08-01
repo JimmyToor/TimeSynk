@@ -9,7 +9,8 @@
   </div>
 
   <div class="flex justify-between">
-    <%= button_to "Delete", game_session, method: :delete, title: t("game_session.destroy.label"),
+    <%= button_to "Delete", game_session,
+                  method: :delete,
                   data: { confirmation_target: "item" },
                   disabled: "true",
                   form: { data: { refresh_calendar_on_submit:"" } },

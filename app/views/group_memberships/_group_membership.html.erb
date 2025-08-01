@@ -2,27 +2,27 @@
 <dl id="<%= dom_id group_membership %>">
 
   <div class="flex space-x-2">
-    <dt class="font-semibold"><%= "#{t("user.username_label")}:" %></dt>
+    <dt class="font-semibold"><%= "#{t("user.username.field_label")}:" %></dt>
     <dd> <%= group_membership.user.username %></dd>
   </div>
 
   <div class="flex space-x-2">
-    <dt class="font-semibold"><%= "#{t("group.name_label")}:" %></dt>
+    <dt class="font-semibold"><%= "#{t("group_membership.group.name.field_label")}:" %></dt>
     <dd> <%= group_membership.group.name %></dd>
   </div>
 
   <div class="flex space-x-2">
-    <dt class="font-semibold"><%= "#{t("group_membership.created_at_label")}:" %></dt>
+    <dt class="font-semibold"><%= "#{t("group_membership.created_at.field_label")}:" %></dt>
     <dd> <%= group_membership.created_at.in_time_zone(Current.user.timezone).strftime("%B %d, %Y %I:%M %p") %></dd>
   </div>
 
   <%= content_tag :div, class:"flex space-x-2" do %>
-    <dt class="font-semibold"><%= "#{t("game_session_attendance.attendance_label")}:" %></dt>
+    <dt class="font-semibold"><%= "#{t("game_session_attendance.attendance.field_label")}:" %></dt>
     <dd> <%= format_attendance(attendance) %></dd>
   <% end if attendance.present? %>
 
   <%= content_tag :div, class:"flex space-x-2" do %>
-    <dt class="font-semibold"><%= "#{t("proposal_vote.vote_label")}:" %></dt>
+    <dt class="font-semibold"><%= "#{t("proposal_vote.vote.field_label")}:" %></dt>
     <dd> <%= format_vote(proposal_vote) %></dd>
   <% end if proposal_vote.present? %>
 </dl>

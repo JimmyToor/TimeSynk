@@ -20,7 +20,8 @@ class ProposalAvailabilitiesController < ApplicationController
     if @game_proposal.proposal_availabilities.where(user_id: Current.user.id).exists?
       redirect_to edit_proposal_availability_path(@game_proposal.proposal_availabilities.find_by(user_id: Current.user.id))
     end
-    @proposal_availability = @game_proposal.proposal_availabilities.build(user_id: Current.user.id, game_proposal_id: params[:game_proposal_id])
+    @proposal_availability = @game_proposal.proposal_availabilities.build(user_id: Current.user.id,
+      game_proposal_id: params[:game_proposal_id])
   end
 
   # GET /proposal_availabilities/1/edit
@@ -36,8 +37,8 @@ class ProposalAvailabilitiesController < ApplicationController
       if @proposal_availability.save
         format.html {
           redirect_to @game_proposal,
-            success: {message: I18n.t("proposal_availability.create.success", game_name: @game_proposal.game_name),
-                      options: {highlight: @game_proposal.game_name}}
+            success: {message: I18n.t("proposal_availability.create.success", availability_name: @availability.name),
+                      options: {highlight: @availability.name}}
         }
         format.json { render :show, status: :created, location: @proposal_availability }
       else
@@ -53,7 +54,8 @@ class ProposalAvailabilitiesController < ApplicationController
       if @proposal_availability.update(proposal_availability_params)
         format.html {
           redirect_to @proposal_availability.game_proposal,
-            success: {message: I18n.t("proposal_availability.update.success", game_name: @proposal_availability.game_proposal.game_name),
+            success: {message: I18n.t("proposal_availability.update.success",
+              availability_name: @proposal_availability.availability_name),
                       options: {highlight: "#{@proposal_availability.game_proposal.game_name}."}}
         }
         format.json { render :show, status: :ok, location: @proposal_availability }

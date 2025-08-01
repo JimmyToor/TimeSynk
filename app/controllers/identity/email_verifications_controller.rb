@@ -15,7 +15,7 @@ class Identity::EmailVerificationsController < ApplicationController
   def create
     send_email_verification
     redirect_to edit_identity_email_path,
-      notice: {message: "Verification email sent to #{params[:email]}. It may be in your spam folder.",
+      notice: {message: t("identity.email.verification_sent", email: params[:email]),
                options: {highlight: params[:email]}}
   end
 

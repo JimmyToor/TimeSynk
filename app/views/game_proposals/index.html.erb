@@ -12,7 +12,9 @@
         <% end %>
     </div>
     <div>
-      <%= render "shared/buttons/primary_link", path: new_game_proposal_path(group_id: group), text: t("game_proposal.new.label") %>
+      <%= render "shared/buttons/primary_link",
+                 path: new_game_proposal_path(group_id: group),
+                 text: t("game_proposal.new.button_text") %>
     </div>
   </div>
 

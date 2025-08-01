@@ -1,0 +1,20 @@
+en:
+  proposal_vote:
+    validation:
+      vote_unique: "You have already voted on this proposal."
+    create:
+      success: "Vote successfully cast."
+      error: "There was an error casting your vote."
+    update:
+      success: "Vote successfully updated."
+      error: "There was an error updating your vote."
+    destroy:
+      success: "Vote successfully deleted."
+      error: "There was an error deleting your vote."
+    index:
+      button_title: "View All Votes"
+    edit:
+      button_title: "Edit your vote for %{game_name} in %{group_name}"
+      submit_text: "Save Vote and Comment"
+    vote:
+      field_label: "Vote"

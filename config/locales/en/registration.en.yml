@@ -1,0 +1,7 @@
+en:
+  registration:
+    create:
+      error: "There was a problem creating your account."
+      success: "Welcome to TimeSynk! Please check your email to verify your account."
+    new:
+      button_text: "Sign Up"

@@ -72,10 +72,10 @@ class AvailabilitiesController < ApplicationController
   def destroy
     respond_to do |format|
       if @availability.destroy
-        format.html { redirect_to availabilities_url, notice: "Availability was successfully destroyed." }
+        format.html { redirect_to availabilities_url, notice: t("availability.destroy.success") }
         format.turbo_stream
       else
-        format.html { redirect_to availabilities_url, alert: "Availability could not be destroyed." }
+        format.html { redirect_to availabilities_url, alert: t("availability.destroy.error") }
         format.turbo_stream { render :destroy_fail }
       end
     end

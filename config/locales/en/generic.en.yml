@@ -1,0 +1,8 @@
+en:
+  generic:
+    refresh_try_again: "Please refresh and try again."
+    delete: "Delete"
+    delete_resource: "Delete %{resource_type}"
+    attendance: "Attendance"
+    edit_resource: "Edit %{resource_type}"
+    saving: "Saving..."

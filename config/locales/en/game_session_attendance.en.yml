@@ -1,0 +1,21 @@
+en:
+  game_session_attendance:
+    index:
+      button_title: "View All Attendance"
+    create:
+      success: "Attendance for %{game_name} saved."
+      error: "There was an error saving your attendance."
+    destroy:
+      success: "Attendance for %{game_name} saved."
+      error: "There was an error saving your attendance."
+    update:
+      success: "Attendance for %{game_name} saved."
+      error: "There was an error saving your attendance."
+    edit:
+      submit: "Save Attendance"
+    attendance:
+      field_label: "Attendance"
+    values:
+      attending: "Attending"
+      not_attending: "Not Attending"
+      unsure: "Unsure"

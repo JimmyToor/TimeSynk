@@ -12,15 +12,17 @@
              extra_classes: "inline-block px-3 py-2 font-medium text-black bg-gray-200 dark:text-white
               dark:bg-gray-300 rounded-xl shadow-xl tooltip max-w-xxs sm:max-w-md lg:max-w-lg mr-5" do %>
     <p class="whitespace-normal wrap-normal">
-      Set an availability for this group to let others know when you can play.
-      This availability will also be used for all of this group's game proposals and game sessions that do not have an availability set.
+      <%= t("group_availability.new.help") %>
     </p>
   <% end %>
 
   <%= render "form", group_availability: @group_availability, availabilities: @availabilities %>
 
   <div class="my-6">
-    <%= render "shared/buttons/delete_button", confirm: false, resource: @group_availability, text: "Unset Group Availability" %>
+    <%= render "shared/buttons/delete_button",
+               confirm: false,
+               resource: @group_availability,
+               text: t("group_availability.destroy.submit_text") %>
   </div>
 
   <div class="my-6 space-y-2">

@@ -1,7 +1,8 @@
 <%# locals: (game_proposal:, proposal_availability: nil) %>
 <%= render "shared/dropdown_list",
            id: "game_proposal_#{game_proposal.id}_misc_dropdown",
-           label: t("game_proposal.miscellaneous_dropdown.title", game_name: game_proposal.game_name),
+           title: t("game_proposal.miscellaneous_dropdown.button_title", game_name: game_proposal.game_name),
+           label: t("game_proposal.miscellaneous_dropdown.button_label", game_name: game_proposal.game_name),
            svg_path: "icons/chevron-down.svg",
            button_classes: "relative inline-flex items-center rounded-lg text-center text-sm font-medium focus:ring-4
             focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800",
@@ -10,12 +11,11 @@
   <li role="menuitem"
       class="flex hover:border-gray-600 dark:hover:border-gray-500 hover:bg-gray-200 dark:hover:bg-gray-600">
     <%= link_to game_proposal_game_sessions_path(game_proposal),
-                title: t("game_session.index.label"),
                 class: "flex items-center px-2 py-1 w-full",
                 role: "menuitem",
                 data: { action: "dropdown#toggle", turbo_frame: "_top" } do %>
       <%= inline_svg_tag "icons/rectangle_stack.svg", aria_hidden: true %>
-      <span class="ml-2"><%= t("game_session.index.label") %></span>
+      <span class="ml-2"><%= t("game_session.index.button_text") %></span>
     <% end %>
   </li>
 
@@ -28,7 +28,7 @@
                 role: "menuitem",
                 data: { turbo_frame: "_top" } do %>
       <%= inline_svg_tag "icons/calendar.svg", aria_hidden: true %>
-      <span class="ml-2"><%= has_availability ? t("game_proposal_availability.edit.label") : t("game_proposal_availability.new.label") %></span>
+      <span class="ml-2"><%= has_availability ? t("proposal_availability.edit.button_text") : t("proposal_availability.new.button_text") %></span>
     <% end %>
   </li>
 
@@ -60,7 +60,7 @@
               data-action="dialog#open"
               class="flex w-full items-center px-2 py-1 text-notice-400">
         <%= inline_svg_tag "icons/trash.svg", aria_hidden: true %>
-        <span class="ml-2 text-left"><%= t("game_proposal.destroy.label") %></span>
+        <span class="ml-2 text-left"><%= t("game_proposal.destroy.button_text") %></span>
       </button>
     <% end %>
 

@@ -1,0 +1,6 @@
+en:
+  user_availability:
+    edit:
+      button_text: "Set Default Availability"
+      submit_text: "Save Default Availability"
+    button_text: "Default Availability"

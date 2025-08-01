@@ -24,7 +24,7 @@ class Availability < ApplicationRecord
   after_commit :notify_calendars
 
   DEFAULT_PARAMS = {
-    name: I18n.t("availability.new.title"),
+    name: I18n.t("availability.new.default_name"),
     description: ""
   }.freeze
 

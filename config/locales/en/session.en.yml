@@ -1,0 +1,10 @@
+en:
+  session:
+    create:
+      error: "That username/email and password is incorrect."
+    destroy:
+      button_text: "Sign Out"
+    new:
+      submit_text: "Sign In"
+      forgot_password: "Forgot password?"
+      sign_up_signpost: "Don't have an account yet?"

@@ -1,7 +1,8 @@
 <%# locals: (group:, can_propose: false) %>
 <%= render "shared/dropdown_list",
            id: "group_#{group.id}_new_dropdown",
-           label: t("group.creation_dropdown.label", group_name: group.name),
+           title: t("group.creation_dropdown.button_title"),
+           label: t("group.creation_dropdown.button_label", group_name: group.name),
            svg_path: "icons/add.svg",
            button_classes: "relative inline-flex items-center rounded-lg text-center text-sm font-medium focus:ring-4 focus:outline-none
           text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100",
@@ -11,11 +12,10 @@
                   role:"menuitem",
                   class: "flex hover:border-gray-600 dark:hover:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600" do %>
     <%= link_to new_group_game_proposal_path(group),
-                title: t("game_proposal.new.label"),
                 class: "flex h-fit w-full items-center px-2 py-1",
                 data:  { action: "dropdown#toggle", turbo_frame: "_top" } do %>
       <%= inline_svg_tag "icons/rectangle_stack.svg" %>
-      <span class="ml-2"><%= t("game_proposal.new.label") %></span>
+      <span class="ml-2"><%= t("game_proposal.new.button_text") %></span>
     <% end %>
   <% end %>
 <% end if can_propose %>

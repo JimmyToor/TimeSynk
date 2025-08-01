@@ -1,0 +1,18 @@
+en:
+  group_availability:
+    create:
+      success: "Group availability set to %{availability_name}."
+      error: "There was a problem setting the group availability."
+    edit:
+      button_text: "Change Group Availability"
+      submit_text: "Set Group Availability"
+    update:
+      success: "Group availability was changed to %{availability_name}."
+      error: "There was a problem changing the group availability."
+    destroy:
+      success: "Availability unset for %{group_name}."
+      error: "There was an error removing the group availability."
+      submit_text: "Unset Group Availability"
+    new:
+      button_text: "Set Group Availability"
+      help: "Set an availability for this group to let others know when you can play. This availability will also be used for all of this group's game proposals and game sessions that do not have an availability set."

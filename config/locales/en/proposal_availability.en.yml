@@ -1,0 +1,17 @@
+en:
+  proposal_availability:
+    create:
+      success: "Proposal availability set to %{availability_name}."
+      error: "There was a problem setting the proposal availability."
+    edit:
+      button_text: "Change Proposal Availability"
+      submit_text: "Set Proposal Availability"
+    update:
+      success: "Proposal availability set to %{availability_name}."
+      error: "There was a problem changing the proposal availability."
+    destroy:
+      success: "Availability unset for %{game_name}."
+      error: "There was an error removing the proposal availability."
+      submit_text: "Unset Proposal Availability"
+    new:
+      button_text: "Set Proposal Availability"

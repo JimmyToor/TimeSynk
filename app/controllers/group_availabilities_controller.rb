@@ -1,4 +1,5 @@
 class GroupAvailabilitiesController < ApplicationController
+  add_flash_types :success
   before_action :set_group_availability, only: %i[show edit update destroy]
   before_action :set_group, only: %i[new create]
   before_action :set_availabilities, only: %i[new edit create]
@@ -32,7 +33,11 @@ class GroupAvailabilitiesController < ApplicationController
 
     respond_to do |format|
       if @group_availability.save
-        format.html { redirect_to @group, notice: "Group availability was successfully created." }
+        format.html {
+          redirect_to @group, success: {message: t("group_availability.create.success",
+            availability_name: @availability.name),
+                                        options: {highlight: "#{@group_availability.group_name}."}}
+        }
       else
         format.html { render :new, status: :unprocessable_entity }
       end
@@ -43,7 +48,12 @@ class GroupAvailabilitiesController < ApplicationController
   def update
     respond_to do |format|
       if @group_availability.update(group_availability_params)
-        format.html { redirect_to @group_availability.group, notice: "Group availability was successfully updated." }
+        format.html {
+          redirect_to @group_availability.group,
+            success: {message: t("group_availability.update.success",
+              availability_name: @group_availability.availability_name),
+                      options: {highlight: "#{@group_availability.group_name}."}}
+        }
       else
         format.html { render :edit, status: :unprocessable_entity }
       end
@@ -56,7 +66,10 @@ class GroupAvailabilitiesController < ApplicationController
     @group_availability.destroy!
 
     respond_to do |format|
-      format.html { redirect_to group, notice: "Group availability was successfully destroyed." }
+      format.html {
+        redirect_to group, success: {message: t("group_availability.destroy.success",
+          group_name: group.name), options: {highlight: "#{@group_availability.group_name}."}}
+      }
     end
   end
 

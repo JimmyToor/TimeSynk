@@ -4,12 +4,12 @@
     <div class="flex space-x-2">
       <%= render "shared/buttons/secondary_link",
                  path: new_group_path,
-                 text: t("group.new.title"),
+                 text: t("group.new.button_text"),
                  attributes: {'aria-haspopup': true},
                  data: { turbo_frame: "modal_frame" } %>
       <%= render "shared/buttons/primary_link",
                  path: join_group_path,
-                 text: t("group.join.title") %>
+                 text: t("group.join.button_text") %>
     </div>
   </div>
 

@@ -1,0 +1,10 @@
+en:
+  permission_set:
+    update:
+      success: "Permissions successfully updated."
+      error: "There was an error updating the permissions."
+      authorization_error: "You do not have permission to update those roles."
+    roles:
+      title: "%{resource_type} Roles"
+    edit:
+      button_title: "Edit %{resource_type} Permissions"

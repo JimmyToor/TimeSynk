@@ -9,9 +9,9 @@
   </div>
   <div class="flex flex-col">
     <%= form.hidden_field :user_id, value: Current.user.id %>
-    <%= render "shared/form_label", form: form, field: :invite_token, text: t("group_membership.form.token.label") %>
+    <%= render "shared/form_label", form: form, field: :invite_token, text: t("group_membership.form.token.field_label") %>
     <%= form.text_field :invite_token,
-                        placeholder: t("group_membership.form.token.label"),
+                        placeholder: t("group_membership.form.token.field_label"),
                         autofocus: "autofocus",
                         value: (params[:invite_token] if params[:invite_token].present?) %>
     <p>You can paste the token by itself or the entire invite URL.</p>
@@ -22,7 +22,7 @@
         <%= root_url %>invites/accept?invite_token=uW1eCcdMo4njbTySoKk21ytq
       </li>
     </ul>
-    <%= form.submit t("group.join.title"),
+    <%= form.submit t("group.join.submit_text"),
                     class:"cursor-pointer mt-2 text-white bg-gradient-to-r from-blue-500 via-blue-600
     to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800
     shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5

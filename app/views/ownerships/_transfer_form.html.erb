@@ -6,17 +6,17 @@
   <%= form_with(url: transfer_ownership_path(resource), method: :patch) do |owner_form| %>
     <div class="flex flex-col space-y-4 items-center">
       <div class="flex flex-col">
-        <%= render "shared/form_label", form: owner_form, field: :new_owner_id, text: t("ownership.new_owner_label") %>
+        <%= render "shared/form_label", form: owner_form, field: :new_owner_id, text: t("ownership.new_owner.label_text") %>
         <%= owner_form.collection_select(:new_owner_id, resource.associated_users_without_owner, :id, :username) %>
       </div>
 
       <label>
         <input data-confirmation-target="input" data-action="confirmation#check" type="checkbox" autofocus/>
-        <%= t("ownership.confirm_transfer", resource_type: resource_type) %>
+        <%= t("ownership.edit.confirm", resource_type: resource_type) %>
       </label>
 
       <div class="flex w-full justify-between">
-        <%= owner_form.submit t("ownership.confirm_transfer_button"), title: t("ownership.transfer"),
+        <%= owner_form.submit t("ownership.edit.submit_text"), title: t("ownership.transfer"),
                       data: { confirmation_target: "item", turbo_frame: "_top" },
                       'aria-haspopup': "dialog",
                       disabled: "true",

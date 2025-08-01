@@ -9,7 +9,7 @@
   </div>
 
   <div class="flex justify-between">
-    <%= button_to "Delete", schedule, method: :delete, title: t("schedule.delete.title"),
+    <%= button_to "Delete", schedule, method: :delete,
                   data: { confirmation_target: "item" },
                   disabled: "true",
                   form: { data: { refresh_calendar_on_submit:"" } },

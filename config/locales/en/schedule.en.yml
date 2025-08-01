@@ -1,0 +1,19 @@
+en:
+  schedule:
+    create:
+      success: "Schedule successfully created."
+      error: "There was a problem creating the schedule."
+    destroy:
+      success: "Schedule successfully deleted."
+      error: "There was an error deleting the schedule."
+      confirm: "I confirm that I want to permanently delete this schedule"
+    title: "Schedules"
+    new:
+      title: "New Schedule"
+      button_text: "New Schedule"
+    edit:
+      submit_text: "Save Schedule"
+      title: "Edit Schedule"
+    add_availability: "Add Availability"
+    update:
+      success: "Schedule successfully updated."

@@ -1,0 +1,50 @@
+en:
+  group:
+    create:
+      success: "Group %{group_name} successfully created."
+      error: "There was an error creating the group."
+    validation:
+      name:
+        presence: "cannot be blank."
+        length: "is too long (maximum is %{count} characters)."
+    join_error: "There was an error joining the group."
+    join_success: "You have successfully joined the group."
+    invalid_link: "Invalid group invite link."
+    destroy:
+      success: "Group %{group_name} successfully deleted."
+      error: "There was an error deleting the group."
+      button_title: "Delete Group"
+      button_text: "Delete Group"
+      confirm: "I confirm that I want to permanently delete this group"
+      confirm_name: "Type the group name to confirm deletion:"
+    update:
+      success: "Group name changed to %{group_name}."
+      error: "There was an error updating the group."
+    title: "Groups"
+    not_found: "Sorry, we couldn't find that group."
+    new:
+      title: "New Group"
+      button_text: "New Group"
+    edit:
+      title: "Edit Group"
+      button_text: "Edit Group"
+      button_title: "Edit Group"
+    miscellaneous_dropdown:
+      button_title: "Misc Dropdown"
+      button_label: "Open miscellaneous dropdown for %{group_name}"
+    join:
+      submit_text: "Join Group"
+      button_text: "Join Group"
+    role:
+      owner: "Owner"
+      admin: "Admin"
+      manage_invites: "Manage Invites"
+      kick_users: "Kick Users"
+      create_game_proposals: "Create Game Proposals"
+      manage_all_game_proposals: "Manage All Game Proposals"
+    view_roles_label: "View roles for %{username} in %{group_name}"
+    creation_dropdown:
+      button_title: "Creation Dropdown"
+      button_label: "Open creation dropdown for %{group_name}"
+    name:
+      field_label: "Name"

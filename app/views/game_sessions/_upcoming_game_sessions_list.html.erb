@@ -2,7 +2,7 @@
 <% if upcoming_game_sessions.present? %>
   <section>
     <%= render "shared/header_primary", id: "upcoming_game_sessions" do %>
-      <%= t("game_session.upcoming.title_generic") %>
+      <%= t("game_session.upcoming.title") %>
     <% end %>
     <ul aria-labelledby="upcoming_game_sessions">
       <% upcoming_game_sessions.sort_by(&:date).each do |game_session| %>

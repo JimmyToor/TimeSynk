@@ -1,0 +1,41 @@
+en:
+  game_session:
+    validation:
+      name:
+        presence: "cannot be blank."
+        length: "is too long (maximum is %{count} characters)."
+      start_time:
+        presence: "cannot be blank."
+        date: "must be a valid date."
+      end_time:
+        presence: "cannot be blank."
+        date: "must be a valid date."
+      duration:
+        length: "must be a multiple of 15 minutes."
+    create:
+      success: "Game session for %{game_name} successfully created."
+      error: "There was an error creating the %{game_name} game session."
+    destroy:
+      success: "Game session for %{game_name} successfully deleted."
+      error: "There was an error deleting the %{game_name} game session."
+      confirm: "I confirm that I want to permanently delete this game session."
+    update:
+      success: "Game session for %{game_name} successfully updated."
+      error: "There was an error updating the %{game_name} game session."
+    not_found: "Game session not found. It may have been deleted."
+    upcoming:
+      title: "Upcoming Game Sessions"
+      title_proposal: "Upcoming Game Sessions for %{game_name} - %{group_name}"
+      none: "There are no upcoming game sessions for this proposal."
+    edit:
+      title: "Edit %{game_name} session - %{group_name}"
+      button_title: "Edit %{game_name} session - %{group_name}"
+    new:
+      title: "New %{game_name} session - %{group_name}"
+      button_text: "New Game Session"
+      submit_text: "Save Game Session"
+    title: "Game Sessions"
+    index:
+      button_text: "View Game Sessions"
+    show:
+      button_title: "View details for %{game_name} session in %{group_name}"

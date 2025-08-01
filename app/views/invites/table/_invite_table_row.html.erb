@@ -3,7 +3,7 @@
   <td class="ml-1 items-center justify-center py-3 my-2">
     <%= render "shared/buttons/delete_link",
                path: invite_path(invite),
-               title: t("invite.destroy.label"),
+               title: t("invite.destroy.button_title"),
                extra_classes: "inline-block",
                confirm_text: "Are you sure you want to delete this invite?",
                data: {turbo_frame: "_top"} if policy(invite).destroy? %>
@@ -11,7 +11,7 @@
                path: edit_invite_path(invite),
                extra_classes: "text-secondary-500 hover:text-secondary-400 dark:text-secondary-200
                 dark:hover:text-secondary-100 inline-block",
-               title: t("invite.edit.label"),
+               title: t("invite.edit.button_title"),
                data: {turbo_frame: "modal_frame"},
                link_attributes: {'aria-haspopup': "dialog" },
                svg_name: "edit" if policy(invite).edit? %>

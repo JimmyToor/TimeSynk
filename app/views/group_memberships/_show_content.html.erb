@@ -8,7 +8,7 @@
       <% if can_kick_user?(group_membership) %>
         <%= render "shared/buttons/delete_button",
                    resource: group_membership,
-                   text: t("group_membership.destroy.label", username: group_membership.user.username),
+                   text: t("group_membership.destroy.button_text", username: group_membership.user.username),
                    confirm_text: "Are you sure you want to kick #{group_membership.user.username} from the group?" %>
       <% end %>
     </div>

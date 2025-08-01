@@ -1,8 +1,9 @@
 <%# locals: (resource:, text: "Delete", confirmation: true, confirm_text: "Are you sure?", data: {}, extra_classes: "", confirm: true) %>
 
 <%= button_to text,
-      resource,
-      method: :delete,
-      data: confirmation ? { turbo_confirm: confirm_text }.merge(data) : data,
-      class: "text-white text-sm px-5 py-2.5 bg-notice-300 hover:bg-notice-200 focus:ring-notice-100
-          focus:ring-4 dark:bg-notice-600 dark:hover:bg-notice-700 dark:focus:ring-notice-500 rounded-lg #{extra_classes}" %>
+              resource,
+              method: :delete,
+              data: confirmation ? { turbo_confirm: confirm_text }.merge(data) : data,
+              class: "text-white text-sm px-5 py-2.5 bg-notice-300 hover:bg-notice-200 focus:ring-notice-100
+                focus:ring-4 dark:bg-notice-600 dark:hover:bg-notice-700 dark:focus:ring-notice-500 rounded-lg
+                #{extra_classes}" %>

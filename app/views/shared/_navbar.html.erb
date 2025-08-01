@@ -34,7 +34,8 @@
 
             <div class="flex items-center ms-2" data-controller="dropdown">
               <div>
-                <button aria-label="Open user menu"
+                <button aria-label="<%= t('nav.user_menu.button_label') %>"
+                        title="<%= t('nav.user_menu.button_title') %>"
                         data-dropdown-target="toggleButton"
                         type="button"
                         class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
@@ -61,22 +62,34 @@
                 <ul class="py-1">
                   <li>
                     <%= link_to root_path, data: {action: "dropdown#toggle"}, role: "menuitem" do %>
-                      <div class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Dashboard</div>
+                      <div class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300
+                                 dark:hover:bg-gray-600 dark:hover:text-white">
+                        <%= t("dashboard.button_text") %>
+                      </div>
                     <% end %>
                   </li>
                   <li>
                     <%= link_to settings_path, data: {action: "dropdown#toggle"}, role: "menuitem" do  %>
-                      <div class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Settings</div>
+                      <div class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300
+                          dark:hover:bg-gray-600 dark:hover:text-white">
+                        <%= t("user.settings.button_text") %>
+                      </div>
                     <% end %>
                   </li>
                   <li>
                     <%= link_to edit_user_availability_path, data: {action: "dropdown#toggle"}, role: "menuitem" do %>
-                      <div class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Default Availability</div>
+                      <div class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300
+                          dark:hover:bg-gray-600 dark:hover:text-white">
+                        <%= t("user_availability.button_text") %>
+                      </div>
                     <% end %>
                   </li>
                   <li>
                     <%= link_to sign_out_path, method: :get, data: { 'turbo-method': :get, action: "dropdown#toggle" }, role: "menuitem" do %>
-                      <div class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Sign out</div>
+                      <div class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300
+                          dark:hover:bg-gray-600 dark:hover:text-white">
+                        <%= t("session.destroy.button_text") %>
+                      </div>
                     <% end %>
                   </li>
                 </ul>

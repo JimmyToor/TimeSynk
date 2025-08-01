@@ -18,7 +18,7 @@ class GroupsTest < ApplicationSystemTestCase
     new_group_name = "newgroup"
 
     visit groups_url
-    click_on I18n.t("group.new.title")
+    click_on I18n.t("group.new.button_text")
 
     fill_in "Name", with: new_group_name
     click_on "Create Group"
@@ -35,7 +35,7 @@ class GroupsTest < ApplicationSystemTestCase
     click_on "Go to #{group.name}"
 
     assert_text group.name
-    assert_text I18n.t("group_membership.destroy.self.label")
+    assert_text I18n.t("group_membership.destroy.self.button_text")
   end
 
   test "should update Group" do
@@ -44,7 +44,7 @@ class GroupsTest < ApplicationSystemTestCase
     sign_in_as user
 
     visit group_url(group)
-    click_on I18n.t("group.edit.title")
+    click_on I18n.t("group.edit.button_title")
 
     new_group_name = "#{group.name} - updated"
     fill_in "group_name", with: new_group_name
@@ -60,7 +60,7 @@ class GroupsTest < ApplicationSystemTestCase
 
     visit group_url(group)
 
-    assert_no_text I18n.t("group.edit.title")
+    assert_no_text I18n.t("group.edit.button_title")
   end
 
   test "should destroy Group" do
@@ -71,7 +71,7 @@ class GroupsTest < ApplicationSystemTestCase
     visit group_url(group)
     find("#group_#{group.id}_misc_dropdown_button").click
 
-    click_on I18n.t("group.destroy.title")
+    click_on I18n.t("group.destroy.button_text")
 
     fill_in I18n.t("group.destroy.confirm_name"), with: group.name
     check I18n.t("group.destroy.confirm")

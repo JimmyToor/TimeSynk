@@ -1,4 +1,4 @@
-<%# locals:(group_availability:, availabilities:, group: nil %>
+<%# locals: (group_availability:, availabilities:, group: nil) %>
 <%= form_with(model: group_availability.new_record? ? [group, group_availability] : group_availability) do |form| %>
 
   <div>
@@ -17,7 +17,7 @@
                                   availability_selection_target:"availabilitySelectInput"}  %>
       <%= render "shared/buttons/form_submit_button",
                  form: form,
-                 text: "Set Availability for Group: #{group_availability.group.name}",
+                 text: t("group_availability.edit.submit_text", group_name: group_availability.group_name),
                  extra_classes: "mt-2 me-2 mb-2" %>
     </div>
   </div>

@@ -1,0 +1,12 @@
+en:
+  ownership:
+    edit:
+      submit_text: "Confirm Transfer"
+      title: "Transfer Ownership of %{resource_type} - %{resource_title}"
+      confirm: "I confirm that I want to transfer ownership of this %{resource_type}."
+    update:
+      success: "Ownership was transferred to %{new_owner}."
+      error: "There was an error transferring ownership."
+    transfer: "Transfer Ownership"
+    new_owner:
+      label_text: "New Owner"

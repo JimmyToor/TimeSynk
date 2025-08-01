@@ -2,11 +2,11 @@
 <section>
   <%= render "shared/header_primary", id: "upcoming_game_sessions", extra_classes: "text-center mb-2" do %>
     <% if game_proposal.present? %>
-      <%= t("game_session.upcoming.title",
+      <%= t("game_session.upcoming.title_proposal",
             game_name: content_tag(:span, game_proposal.game_name, class: 'font-bold text-primary-600'),
             group_name: content_tag(:span, game_proposal.group.name, class: 'font-bold text-primary-600')).html_safe %>
     <% else %>
-      <%= t("game_session.upcoming.title_generic") %>
+      <%= t("game_session.upcoming.title") %>
     <% end %>
   <% end %>
   <% if upcoming_game_sessions.present? %>

@@ -1,0 +1,32 @@
+en:
+  invite:
+    create:
+      success: "Invite successfully created."
+      error: "There was an error creating the invite."
+    destroy:
+      success: "Invite successfully deleted."
+      error: "There was an error deleting the invite."
+      button_title: "Delete Invite"
+    update:
+      success: "Invite successfully updated."
+      error: "There was an error updating the invite."
+    invalid: "This invite is invalid."
+    expired: "This invite has expired."
+    validation:
+      assigned_role_ids:
+        invalid: "contained invalid roles. Please refresh the page and try again."
+      expires_at:
+        presence: "cannot be blank."
+    index:
+      title: "Invites for %{group_name}"
+      empty: "No invites found for this group."
+      button_text: "View Invites"
+    title: "Invites"
+    edit:
+      title: "Edit Group Invite - %{group_name}"
+      button_title: "Edit Invite"
+    new:
+      title: "New invite to %{group_name}"
+      button_title: "New invite to %{group_name}"
+      button_text: "New Invite"
+    accept_invite: "Accept Invite"

@@ -59,7 +59,7 @@
           <% if policy(game_session).edit? %>
             <%= render "shared/buttons/icon_link",
                        svg_name: "edit",
-                       title: t("game_session.edit.title", game_name: game_session.game_name, group_name: game_session.group_name),
+                       title: t("game_session.edit.button_title", game_name: game_session.game_name, group_name: game_session.group_name),
                        path: edit_game_session_path(game_session),
                        data: {turbo_frame: "modal_frame", turbo_prefetch: "false", action: "click->dialog#startLoading"},
                           extra_classes: "align-top ml-2 text-secondary-500 hover:text-secondary-400 dark:text-secondary-200

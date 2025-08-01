@@ -1,0 +1,18 @@
+en:
+  identity:
+    email:
+      already_verified: "This email is already in-use by another user."
+      invalid: "That email verification link is invalid."
+      verification_sent: "A verification email has been sent to %{email}. It may be in your spam folder."
+      update:
+        success: "Your email has been changed."
+        error: "There was a problem updating your email."
+      destroy:
+        success: "Your email has been un-associated with your account."
+        error: "There was a problem removing your email address."
+    password:
+      update:
+        success: "Your password has been changed."
+        error: "There was a problem changing your password."
+    password_reset:
+      email_sent: "If a verified account with that email exists, a password reset link has been sent to it."

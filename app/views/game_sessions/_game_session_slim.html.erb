@@ -3,7 +3,7 @@
   <%= link_to game_session,
               id: dom_id(game_session, :link),
               data: {turbo_frame: "modal_frame"},
-              title: t("game_session.view.label",
+              title: t("game_session.show.button_title",
                        game_name: game_session.game_name,
                        group_name: game_session.group_name),
               class: "after:absolute after:top-0 after:bottom-0 after:left-0 after:right-0 space-y-2 justify-between" do %>

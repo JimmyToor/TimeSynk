@@ -1,0 +1,32 @@
+en:
+  group_membership:
+    invite_not_valid: "There was a problem with the invite."
+    already_member: "You are already a member of this group."
+    destroy:
+      self:
+        success: "You have successfully left %{group_name}."
+        error: "There was a problem leaving %{group_name}."
+        button_text: "Leave Group"
+      success: "%{username} is no longer a member of %{group_name}."
+      error: "There was an error removing %{username} from %{group_name}."
+      confirm: "Are you sure you want to leave %{group_name}?"
+      button_text: "Kick %{username}"
+      button_title: "Kick %{username}"
+    create:
+      success: "You have joined %{group_name}!"
+      error: "There was a problem joining %{group_name}!"
+    new:
+      title: "Join a Group"
+    index:
+      button_text: "Members"
+      button_title: "View All Members"
+    form:
+      token:
+        field_label: "Invite Token/Link"
+    accept_invite:
+      title: "You've been invited to join %{group_name}"
+    created_at:
+      field_label: "Joined"
+    group:
+      name:
+        field_label: "Group"

@@ -3,7 +3,7 @@
   <div class="grid grid-cols-3 gap-4 md:grid-cols-6 lg:grid-cols-9">
     <% games.each do |game| %>
       <div class="relative">
-        <%= button_tag t("game_proposal.new.submit"),
+        <%= button_tag t("game_proposal.new.submit_text"),
                        data: { action: "game-selection#submitSelection", game_id: game.id, game_name: game.name },
                        disabled: true,
                        'aria-hidden': true,

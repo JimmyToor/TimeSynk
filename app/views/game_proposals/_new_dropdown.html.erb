@@ -1,7 +1,8 @@
 <%# locals: (game_proposal:, can_create_session: false) %>
 <%= render "shared/dropdown_list",
            id: "game_proposal_#{game_proposal.id}_new_dropdown",
-           label: t("game_proposal.creation_dropdown.label", game_name: game_proposal.game_name),
+           title: t("game_proposal.creation_dropdown.button_title", game_name: game_proposal.game_name),
+           label: t("game_proposal.creation_dropdown.button_label", game_name: game_proposal.game_name),
            svg_path: "icons/add.svg",
            button_classes: "relative inline-flex items-center rounded-lg text-center text-sm font-medium focus:ring-4 focus:outline-none
           text-secondary-500 hover:text-secondary-400 dark:text-secondary-200 dark:hover:text-secondary-100",
@@ -9,12 +10,11 @@
           bg-slate-100 shadow transition dark:bg-gray-700 py-2 text-sm text-gray-700 dark:text-gray-200" do %>
     <%= content_tag :li, role: "menuitem", class: "flex hover:border-gray-600 dark:hover:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600" do %>
       <%= link_to new_game_proposal_game_session_path(game_proposal),
-                  title: t("game_session.new.label"),
                   class: "flex h-fit w-full items-center px-2 py-1",
                   'aria-haspopup': "dialog",
                   data:  { action: "dropdown#toggle", turbo_frame: "modal_frame" } do %>
         <%= inline_svg_tag "icons/rectangle_stack.svg" %>
-        <span class="ml-2"><%= t("game_session.new.label") %></span>
+        <span class="ml-2"><%= t("game_session.new.button_text") %></span>
       <% end %>
     <% end %>
 <% end if can_create_session %>

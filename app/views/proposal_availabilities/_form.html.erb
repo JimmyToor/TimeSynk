@@ -9,8 +9,14 @@
 
   <div>
     <div>
-      <%= form.collection_select :availability_id, availabilities, :id, :name, {}, data:{action: "change->availability-selection#setCalendarAvailability", availability_selection_target:"availabilitySelectInput"} %>
-      <%= render "shared/buttons/form_submit_button", form:form, text: "Set Availability", extra_classes: "mt-2 me-2 mb-2" %>
+      <%= form.collection_select :availability_id,
+                                 availabilities,
+                                 :id,
+                                 :name,
+                                 {},
+                                 data:{action: "change->availability-selection#setCalendarAvailability",
+                                       availability_selection_target:"availabilitySelectInput"} %>
+      <%= render "shared/buttons/form_submit_button", form:form, text: t("proposal_availability.edit.submit_text"), extra_classes: "mt-2 me-2 mb-2" %>
     </div>
   </div>
 

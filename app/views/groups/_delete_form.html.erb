@@ -24,7 +24,7 @@
   </div>
 
   <div class="flex justify-between">
-    <%= button_to "Delete", group, method: :delete, title: t("group.destroy.title"),
+    <%= button_to "Delete", group, method: :delete, title: t("group.destroy.button_title"),
                   data: { confirmation_target: "item", turbo_frame: "_top" },
                   'aria-haspopup': "dialog",
                   disabled: "true",
