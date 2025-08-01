@@ -1,6 +1,6 @@
 <%# locals: (game_proposal:) %>
-<%= link_to game_proposal, class: "bg-primary-500 dark:bg-primary-900 text-xs font-medium px-2 py-0.5 rounded
-  hover:underline -translate-x-2",
+<%= link_to game_proposal,
+            class: "bg-primary-500 dark:bg-primary-900 text-xs font-medium px-2 py-0.5 rounded hover:underline -translate-x-2",
             title: "Go to #{game_proposal.game_name} - #{game_proposal.group.name}",
             data: {turbo_frame: "_top"} do %>
   <span aria-hidden="true">
