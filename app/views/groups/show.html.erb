@@ -5,17 +5,10 @@
            group_permission_set: group_permission_set %>
 
 <div>
-  <% if Current.user.has_cached_role?(:site_admin) && !group_membership.present? %>
-    <%= form_with(url: group_group_memberships_path(group), scope: :group_membership, method: :post) do |form| %>
-      <%= form.hidden_field :user_id, value: Current.user.id %>
-      <%= form.hidden_field :invite_token, value: "admin" %>
-      <%= render "shared/buttons/form_submit_button", form: form, text: "Join Group", extra_classes: "mt-2" %>
-    <% end %>
-  <% end %>
   <%= content_tag :div, class:"mt-2" do %>
     <%= render "shared/buttons/delete_button",
                resource: group_membership,
-               text: t("group_membership.destroy.self.label"),
+               text: t("group_membership.destroy.self.button_text"),
                confirm_text: t("group_membership.destroy.confirm", group_name: group.name) %>
   <% end unless policy(group).edit? %>
 </div>

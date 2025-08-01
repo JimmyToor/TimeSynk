@@ -10,7 +10,7 @@ class AvailabilityPolicy < ApplicationPolicy
   end
 
   def show?
-    record.user == user || user.has_role?(:site_admin)
+    record.user == user
   end
 
   def create?

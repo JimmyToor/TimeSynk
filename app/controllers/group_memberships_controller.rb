@@ -84,7 +84,7 @@ class GroupMembershipsController < ApplicationController
   end
 
   def set_invite
-    return unless invite_required? && token_present?
+    return unless token_present?
 
     token = extract_token(params)
     handle_invite(token)
@@ -122,10 +122,6 @@ class GroupMembershipsController < ApplicationController
 
   def set_game_session
     @game_session = GameSession.find(params[:game_session_id]) if params[:game_session_id]
-  end
-
-  def invite_required?
-    params[:invite_token] != "admin" || !Current.user.has_cached_role?(:site_admin)
   end
 
   def redirect_if_member

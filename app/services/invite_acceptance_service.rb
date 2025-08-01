@@ -41,7 +41,7 @@ class InviteAcceptanceService < ApplicationService
       @group = Group.find_by(id: @group_id)
       user = User.find_by(id: @user_id)
 
-      return invalid_invite unless @group && user && (@invite || user.has_role?(:site_admin))
+      return invalid_invite unless @group && user && @invite
       return expired_invite if @invite&.expired?
 
       @group_membership = new_member(user)

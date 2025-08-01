@@ -6,8 +6,7 @@ class GameProposalPolicy < ApplicationPolicy
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
   def new?
-    user.has_cached_role?(:site_admin) ||
-      user.has_any_role_for_resource?([:admin, :owner, :create_game_proposals], record.group)
+    user.has_any_role_for_resource?([:admin, :owner, :create_game_proposals], record.group)
   end
 
   def create?
@@ -15,12 +14,11 @@ class GameProposalPolicy < ApplicationPolicy
   end
 
   def show?
-    user.has_cached_role?(:site_admin) || user.groups.include?(record.group)
+    user.groups.include?(record.group)
   end
 
   def edit?
-    user.has_cached_role?(:site_admin) ||
-      user.has_any_role_for_resource?([:admin, :owner, :manage_all_proposals], record.group)
+    user.has_any_role_for_resource?([:admin, :owner, :manage_all_proposals], record.group)
   end
 
   def update?
@@ -32,15 +30,13 @@ class GameProposalPolicy < ApplicationPolicy
   end
 
   def create_game_session?
-    user.has_cached_role?(:site_admin) ||
-      user.has_any_role_for_resource?([:owner, :admin, :create_game_sessions, :manage_all_game_sessions], record) ||
+    user.has_any_role_for_resource?([:owner, :admin, :create_game_sessions, :manage_all_game_sessions], record) ||
       user.has_any_role_for_resource?([:owner, :admin, :manage_all_game_proposals], record.group)
   end
 
   def transfer_ownership?
     user.has_cached_role?(:owner, record) ||
-      user.has_any_role_for_resource?([:admin, :owner, :manage_all_game_proposals], record.group) ||
-      user.has_cached_role?(:site_admin)
+      user.has_any_role_for_resource?([:admin, :owner, :manage_all_game_proposals], record.group)
   end
 
   class Scope < ApplicationPolicy::Scope

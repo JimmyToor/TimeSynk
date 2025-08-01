@@ -6,11 +6,7 @@ class GroupMembershipPolicy < ApplicationPolicy
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
   def show?
-    user.has_cached_role?(:site_admin) || record.group.is_user_member?(user)
-  end
-
-  def create?
-    user.has_cached_role?(:site_admin)
+    record.group.is_user_member?(user)
   end
 
   def destroy?
@@ -28,6 +24,6 @@ class GroupMembershipPolicy < ApplicationPolicy
   private
 
   def user_has_kick_permission?
-    user.has_cached_role?(:site_admin) || user.has_any_role_for_resource?([:owner, :admin, :kick_users], record.group)
+    user.has_any_role_for_resource?([:owner, :admin, :kick_users], record.group)
   end
 end

@@ -1,6 +1,6 @@
 class GroupPolicy < ApplicationPolicy
   def show?
-    user.has_cached_role?(:site_admin) || record.is_user_member?(user)
+    record.is_user_member?(user)
   end
 
   def create?
@@ -28,7 +28,7 @@ class GroupPolicy < ApplicationPolicy
   end
 
   def transfer_ownership?
-    user.has_cached_role?(:owner, record) || user.has_cached_role?(:site_admin)
+    user.has_cached_role?(:owner, record)
   end
 
   class Scope < ApplicationPolicy::Scope
