@@ -103,7 +103,7 @@ class GameSession < ApplicationRecord
   # - name: Name of the game session (displayed in the calendar)
   # - duration: Duration of the game session as an interval
   # - user_id: ID of the user who owns the game session
-  # - selectable: Boolean indicating if the schedule is selectable
+  # - selectable: Boolean indicating if the schedule is selectable in the calendar
   # - group: Name of the group associated with the game proposal
   # - icecube_schedule fields: start_time, end_time, rrules, rtimes, extimes
   #
