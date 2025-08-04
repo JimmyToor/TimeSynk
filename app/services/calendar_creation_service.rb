@@ -175,7 +175,14 @@ class CalendarCreationService < ApplicationService
       }
       calendars << make_availability_calendar(availability, calendar_schedules: calendar_schedules)
     end
-    calendars << make_overlap_calendar(all_schedules) if overlap_possible && calendars.length > 1
+
+    begin
+      overlap_calendars = make_overlap_calendar(all_schedules) if overlap_possible && calendars.length > 1
+      calendars << overlap_calendars if overlap_calendars.present?
+    rescue ScheduleOverlapError => e
+      Rails.logger.error("ScheduleOverlapError: #{e.message}. Schedules: #{all_schedules.inspect}")
+    end
+
     calendars
   end
 

@@ -8,6 +8,8 @@ class Schedule < ApplicationRecord
     against: [:name, :description],
     using: {tsearch: {prefix: true}}
 
+  class ScheduleOverlapError < StandardError; end
+
   has_many :availability_schedules, dependent: :destroy, inverse_of: :schedule
   has_many :availabilities, through: :availability_schedules
   has_many :user_availabilities, through: :availabilities
@@ -177,31 +179,34 @@ class Schedule < ApplicationRecord
       if event.is_a?(ScheduleStart)
         if stacks[event.schedule.user_id].empty?
           stacks[event.schedule.user_id].push(event)
+
           ideal_top = ideal_intervals.last
           if ideal_top&.is_a?(ScheduleStart) && ideal_top.schedule.user_id != event.schedule.user_id
             ideal_intervals.pop
           end
+
           unless stacks.any? { |_, stack| stack.empty? }
             ideal_intervals.push(event)
           end
         elsif stacks[event.schedule.user_id].last.is_a?(ScheduleStart)
           stacks[event.schedule.user_id].push(event)
         else
-          raise "Stack error: ScheduleEnd in stack."
+          raise ScheduleOverlapError, "Unexpected ScheduleEnd in user #{event.schedule.user_id} stack. Stack: #{stacks[event.schedule.user_id].inspect}"
         end
       elsif event.is_a?(ScheduleEnd)
         if stacks[event.schedule.user_id].last.is_a?(ScheduleStart)
           stacks[event.schedule.user_id].pop
+
           if stacks[event.schedule.user_id].empty? && ideal_intervals.last.is_a?(ScheduleStart)
             ideal_intervals.push(event)
           end
         elsif stacks[event.schedule.user_id].last.is_a?(ScheduleEnd)
-          raise "Stack error: ScheduleEnd in stack."
+          raise ScheduleOverlapError, "Unexpected ScheduleEnd in user #{event.schedule.user_id} stack. Stack: #{stacks[event.schedule.user_id].inspect}"
         else # nil
-          raise "Stack error: ScheduleEnd without ScheduleStart."
+          raise ScheduleOverlapError, "ScheduleEnd without proceeding ScheduleStart in user #{event.schedule.user_id} stack. Stack: #{stacks[event.schedule.user_id].inspect}"
         end
       else
-        raise "Event error: Unknown event type."
+        raise ScheduleOverlapError, "Unknown event type in #{event.schedule.user_id} stack. Stack: #{stacks[event.schedule.user_id].inspect}"
       end
     end
 
@@ -210,12 +215,12 @@ class Schedule < ApplicationRecord
     while ideal_intervals.length > 0
       curr_start = ideal_intervals.shift
       unless curr_start.is_a?(ScheduleStart)
-        throw "Ideal interval error: Expected ScheduleStart, got #{curr_start.class}."
+        throw ScheduleOverlapError, "Expected ScheduleStart while calculating ideal intervals, got #{curr_start.inspect}. Ideal intervals: #{ideal_intervals.inspect}."
       end
 
       curr_end = ideal_intervals.shift
       unless curr_end.is_a?(ScheduleEnd)
-        throw "Ideal interval error: Expected ScheduleEnd, got #{curr_end.class}."
+        throw ScheduleOverlapError, "Expected ScheduleEnd while calculating ideal intervals, got #{curr_end.inspect}. Ideal intervals: #{ideal_intervals.inspect}."
       end
 
       overlaps.push(ScheduleInterval.new(curr_start.date, curr_end.date))
