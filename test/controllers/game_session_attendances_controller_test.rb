@@ -2,7 +2,7 @@ require "test_helper"
 
 class GameSessionAttendancesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @game_session_attendance = game_session_attendances(:proposal_3_session_2_cooluserguy)
+    @game_session_attendance = game_session_attendances(:group_3_game_thief_session_2_cooluserguy)
     @user = users(:cooluserguy)
     sign_in_as(@user)
   end

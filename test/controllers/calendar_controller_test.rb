@@ -27,6 +27,6 @@ class CalendarControllerTest < ActionDispatch::IntegrationTest
     group = groups(:one_member)
     get calendars_url(format: :json, params: {group_id: group.id})
 
-    assert_response :unauthorized
+    assert_equal [], JSON.parse(@response.body)
   end
 end

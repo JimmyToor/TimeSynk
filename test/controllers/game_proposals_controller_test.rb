@@ -13,6 +13,11 @@ class GameProposalsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should get index with turbo_stream" do
+    get game_proposals_url, as: :turbo_stream
+    assert_response :success
+  end
+
   test "should get new" do
     get new_group_game_proposal_url @group
     assert_response :success
@@ -42,11 +47,6 @@ class GameProposalsControllerTest < ActionDispatch::IntegrationTest
     get game_proposal_url(@game_proposal, format: :json)
     assert_response :success
     assert_equal "application/json", @response.media_type
-  end
-
-  test "should get edit" do
-    get edit_game_proposal_url(@game_proposal)
-    assert_response :success
   end
 
   test "should destroy game_proposal" do

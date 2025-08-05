@@ -18,7 +18,7 @@ class SessionsTest < ApplicationSystemTestCase
     visit sign_in_url
     fill_in "username_or_email", with: @user.username
     fill_in "Password", with: "Secret1*3*5*"
-    find_button(text: I18n.t("session.new.submit_text")).click
+    click_on I18n.t("session.new.submit_text")
 
     assert_current_path root_path
   end
@@ -26,7 +26,8 @@ class SessionsTest < ApplicationSystemTestCase
   test "signing out" do
     sign_in_as @user
 
+    click_on I18n.t("nav.user_menu.button_title")
     click_on I18n.t("session.destroy.button_text")
-    assert_text "That session has been logged out"
+    assert_current_path sign_in_path
   end
 end

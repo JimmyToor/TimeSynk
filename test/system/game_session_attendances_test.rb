@@ -2,45 +2,48 @@ require "application_system_test_case"
 
 class GameSessionAttendancesTest < ApplicationSystemTestCase
   setup do
-    @game_session_attendance = game_session_attendances(:proposal_1_session_1_admin)
-    @game_session = game_sessions(:group_1_game_thief_session_1)
+    @game_session = game_sessions(:group_3_game_thief_session_2)
+    @user = users(:radperson)
+    sign_in_as @user
   end
 
-  test "visiting the index" do
-    visit game_session_game_session_attendances_url(@game_session)
-    assert_selector "h1", text: "Game session attendances"
+  test "should view attendance list" do
+    visit game_session_url(@game_session)
+
+    attendance_list = find(".game_session_#{@game_session.id}_attendances")
+
+    assert attendance_list.present?
+    assert attendance_list.has_css?("&> div", count: @game_session.game_session_attendances.count)
   end
 
-  test "should create game session attendance" do
-    visit game_session_game_session_attendances_url(@game_session)
-    click_on "New game session attendance"
+  test "should view attendance modal" do
+    visit game_session_url(@game_session)
 
-    check "Attending" if @game_session_attendance.attending
-    fill_in "Game session", with: @game_session_attendance.game_session_id
-    fill_in "User", with: @game_session_attendance.user_id
-    click_on "Create Game session attendance"
+    click_on I18n.t("generic.attendance"), match: :first
 
-    assert_text "Game session attendance was successfully created"
-    click_on "Back"
+    assert_selector "tbody tr th", count: @game_session.game_session_attendances.count
+  end
+
+  test "should view attendance details" do
+    game_session_attendance = game_session_attendances(:group_3_game_thief_session_2_radperson)
+    visit game_session_url(@game_session)
+
+    attendance = find("div", id: "game_session_attendance_#{game_session_attendance.id}").find_button
+    attendance.hover
+
+    popover = find_by_id("popover_game_session_attendance_#{game_session_attendance.id}")
+    assert popover.has_text?(I18n.t("game_session_attendance.values.unsure"))
   end
 
   test "should update Game session attendance" do
-    visit game_session_attendance_url(@game_session_attendance)
-    click_on "Edit this game session attendance", match: :first
+    game_proposal = @game_session.game_proposal
 
-    check "Attending" if @game_session_attendance.attending
-    fill_in "Game session", with: @game_session_attendance.game_session_id
-    fill_in "User", with: @game_session_attendance.user_id
-    click_on "Update Game session attendance"
+    visit game_proposal_game_sessions_url(game_proposal)
+    find("##{dom_id(@game_session, :link)}").click
 
-    assert_text "Game session attendance was successfully updated"
-    click_on "Back"
-  end
+    choose I18n.t("game_session_attendance.values.attending")
+    click_on I18n.t("game_session_attendance.edit.submit")
 
-  test "should destroy Game session attendance" do
-    visit game_session_attendance_url(@game_session_attendance)
-    click_on "Destroy this game session attendance", match: :first
-
-    assert_text "Game session attendance was successfully destroyed"
+    assert_text I18n.t("game_session_attendance.update.success", game_name: game_proposal.game_name)
   end
 end

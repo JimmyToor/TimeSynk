@@ -11,7 +11,6 @@ class GroupsTest < ApplicationSystemTestCase
   end
 
   test "should create group" do
-    groups(:three_members)
     user = users(:radperson)
     sign_in_as user
 
@@ -78,5 +77,20 @@ class GroupsTest < ApplicationSystemTestCase
     click_on "Delete"
 
     assert_text I18n.t("group.destroy.success", group_name: group.name)
+  end
+
+  test "should transfer group ownership" do
+    group = groups(:two_members)
+    user = users(:cooluserguy)
+    sign_in_as user
+
+    visit group_url(group)
+    find("#group_#{group.id}_misc_dropdown_button").click
+    click_on I18n.t("ownership.transfer")
+
+    check I18n.t("ownership.edit.confirm", resource_type: "Group")
+    click_on I18n.t("ownership.edit.submit_text")
+
+    assert_text I18n.t("ownership.update.success", new_owner: users(:radperson).username)
   end
 end

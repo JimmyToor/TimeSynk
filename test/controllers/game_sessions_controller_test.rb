@@ -14,6 +14,11 @@ class GameSessionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should get index with turbo_stream" do
+    get game_proposal_game_sessions_url(@game_proposal, format: :turbo_stream)
+    assert_response :success
+  end
+
   test "should get new" do
     get new_game_proposal_game_session_url(@game_proposal)
     assert_response :success

@@ -8,3 +8,8 @@ user_admin_group_1_game_thief_availability:
   availability: user_admin_default_availability # default availability
   game_proposal: group_1_game_thief
   user: admin
+
+user_cooluserguy_group_3_game_thief_availability:
+  availability: user_cooluserguy_empty_availability # default availability
+  game_proposal: group_3_game_thief
+  user: cooluserguy

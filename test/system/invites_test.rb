@@ -13,7 +13,7 @@ class InvitesTest < ApplicationSystemTestCase
 
     find("#group_#{group.id}_misc_dropdown_button").click
 
-    click_on I18n.t("invite.index.label")
+    click_on I18n.t("invite.index.button_text")
 
     assert_selector "h2", text: I18n.t("invite.index.title", group_name: group.name)
   end
@@ -22,7 +22,7 @@ class InvitesTest < ApplicationSystemTestCase
     group = groups(:three_members_0_proposals)
 
     visit group_invites_url(group)
-    click_on I18n.t("invite.new.label")
+    click_on I18n.t("invite.new.button_text")
 
     click_on "Save"
 
@@ -35,7 +35,7 @@ class InvitesTest < ApplicationSystemTestCase
 
     visit group_invites_url(group)
 
-    button_title = I18n.t("invite.edit.label")
+    button_title = I18n.t("invite.edit.button_title")
     find("a[title='#{button_title}']").click
 
     check I18n.t("group.role.kick_users")
@@ -48,7 +48,7 @@ class InvitesTest < ApplicationSystemTestCase
     group = groups(:three_members_0_proposals)
 
     visit group_invites_url(group)
-    button_title = I18n.t("invite.destroy.label")
+    button_title = I18n.t("invite.destroy.button_title")
 
     accept_confirm do
       find("a[title='#{button_title}']").click

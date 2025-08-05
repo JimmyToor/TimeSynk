@@ -56,6 +56,7 @@ class GroupMembershipsControllerTest < ActionDispatch::IntegrationTest
     travel_to 1.week.from_now
 
     get accept_invite_url(invite_token: invite.invite_token)
+
     assert_response :unprocessable_entity
     assert_equal I18n.t("invite.expired"), flash[:error][:options][:list_items][0]
   end

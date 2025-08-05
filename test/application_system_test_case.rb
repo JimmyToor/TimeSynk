@@ -7,7 +7,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     visit sign_in_url
     fill_in :username_or_email, with: user.username
     fill_in :password, with: "Secret1*3*5*"
-    click_on "Sign in"
+    click_on I18n.t("session.new.submit_text")
 
     assert_current_path root_url
     user

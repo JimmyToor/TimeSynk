@@ -2,46 +2,72 @@ require "application_system_test_case"
 
 class ProposalVotesTest < ApplicationSystemTestCase
   setup do
-    @proposal_vote = proposal_votes(:one)
+    @user = users(:radperson)
+    sign_in_as @user
   end
 
-  test "visiting the index" do
-    visit proposal_votes_url
-    assert_selector "h1", text: "Proposal votes"
+  test "should view proposal vote count" do
+    game_proposal = game_proposals(:group_3_game_thief)
+    visit game_proposal_url(game_proposal)
+
+    vote_count = find("#vote_count_game_proposal_#{game_proposal.id}")
+
+    assert vote_count.present?
+    assert vote_count.has_css?("span", text: "Yes: 1")
+    assert vote_count.has_css?("span", text: "No: 0")
+    assert vote_count.has_css?("span", text: "Undecided: 2")
   end
 
-  test "should create proposal vote" do
-    visit proposal_votes_url
-    click_on "New proposal vote"
+  test "should view proposal vote list" do
+    game_proposal = game_proposals(:group_3_game_thief)
+    visit game_proposal_url(game_proposal)
 
-    fill_in "Comment", with: @proposal_vote.comment
-    fill_in "Proposal", with: @proposal_vote.proposal_id
-    fill_in "User", with: @proposal_vote.user_id
-    check "Yes vote" if @proposal_vote.yes_vote
-    click_on "Create Proposal vote"
+    vote_list = find("#game_proposal_#{game_proposal.id}_votes")
 
-    assert_text "Proposal vote was successfully created"
-    click_on "Back"
+    assert vote_list.has_css?("&> div", count: game_proposal.proposal_votes.count)
+  end
+
+  test "should view proposal vote modal" do
+    game_proposal = game_proposals(:group_3_game_thief)
+    visit game_proposal_url(game_proposal)
+
+    click_on I18n.t("proposal_vote.index.button_title")
+
+    assert_selector "tbody tr th", count: game_proposal.proposal_votes.count
+  end
+
+  test "should view proposal vote details" do
+    game_proposal = game_proposals(:group_3_game_thief)
+    proposal_vote = proposal_votes(:group_3_game_thief_user_radperson_undecided)
+    visit game_proposal_url(game_proposal)
+
+    vote = find("div", id: "proposal_vote_#{proposal_vote.id}").find_button
+    vote.hover
+
+    popover = find_by_id("popover_proposal_vote_#{proposal_vote.id}")
+    assert popover.has_text?("Undecided")
   end
 
   test "should update Proposal vote" do
-    visit proposal_vote_url(@proposal_vote)
-    click_on "Edit this proposal vote", match: :first
+    game_proposal = game_proposals(:group_3_game_thief)
+    proposal_vote = proposal_votes(:group_3_game_thief_user_radperson_undecided)
+    visit game_proposal_url(game_proposal)
 
-    fill_in "Comment", with: @proposal_vote.comment
-    fill_in "Proposal", with: @proposal_vote.proposal_id
-    fill_in "User", with: @proposal_vote.user_id
-    check "Yes vote" if @proposal_vote.yes_vote
-    click_on "Update Proposal vote"
+    click_on I18n.t("proposal_vote.edit.button_title", game_name: game_proposal.game_name, group_name: game_proposal.group_name)
 
-    assert_text "Proposal vote was successfully updated"
-    click_on "Back"
-  end
+    choose "Yes"
+    fill_in "Comment", with: "This is a test comment."
 
-  test "should destroy Proposal vote" do
-    visit proposal_vote_url(@proposal_vote)
-    click_on "Destroy this proposal vote", match: :first
+    click_on I18n.t("proposal_vote.edit.submit_text")
 
-    assert_text "Proposal vote was successfully destroyed"
+    find("dialog").find_button.click
+
+    assert_text I18n.t("proposal_vote.update.success")
+
+    vote = find("div", id: "proposal_vote_#{proposal_vote.id}").find_button
+    vote.hover
+
+    popover = find_by_id("popover_proposal_vote_#{proposal_vote.id}")
+    assert popover.has_text?("Yes")
   end
 end
