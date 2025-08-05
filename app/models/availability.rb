@@ -3,6 +3,7 @@ class Availability < ApplicationRecord
   pg_search_scope :search,
     against: [:name, :description],
     using: {tsearch: {prefix: true}}
+
   belongs_to :user
   has_many :availability_schedules, dependent: :destroy, inverse_of: :availability
   has_many :schedules, through: :availability_schedules

@@ -16,7 +16,7 @@
         <div class="flex">
           <%= form.hidden_field :availability_id, value: availability.id %>
           <%= form.hidden_field :separate_included, value: true %>
-          <%= form.text_field :query,
+          <%= form.search_field :query,
                               name:"query",
                               type:"search",
                               'aria-label':"Schedules",

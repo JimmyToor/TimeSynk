@@ -11,27 +11,6 @@
          role="search"
          data-controller="search"
          data-search-search-complete-message-value="<%= t('search.complete_message') %>">
-      <div id="table_holder">
-        <div class="mx-auto max-w-screen-xl bg-tertiary-50 dark:bg-gray-900">
-          <div class="relative bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
-            <%= render "availabilities/table/schedule_table_form_header", availability: availability %>
-            <div class="relative">
-              <%= turbo_frame_tag "schedule_table",
-                                  src: schedules_path(availability_id: availability.id,
-                                                      separate_included: true,
-                                                      format: :turbo_stream),
-                                  data: {schedule_selection_target:"frame",
-                                         availability_id: availability.id,
-                                         search_target:"frame",
-                                         turbo_prefetch:"false" } do %>
-                <div class="h-[50vh] w-full"></div>
-              <% end %>
-              <%= render "shared/spinner_absolute", start_hidden: true %>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <%= form_with(model: availability,
                     id:dom_id(availability, :form),
                     data: {controller:"rails-nested-form",
@@ -39,7 +18,7 @@
 
         <div>
           <%= render "shared/form_label", form: form, field: :name, text: "Availability Name", extra_classes: "block" %>
-          <%= form.text_area :name, maxlength: 300 %>
+          <%= form.text_field :name, maxlength: 300, size:20 %>
         </div>
 
         <div>
@@ -61,7 +40,7 @@
         <div>
           <%= render "shared/form_label", form: form, field: :availability_schedules, text: "Included Schedules:",
                      extra_classes: "block" %>
-          <ul class="list-disc group/included_schedules">
+          <ul class="list-disc group/included_schedules space-y-1">
             <%= form.fields_for :availability_schedules do |sub_form| %>
               <%= render "availability_schedule_form",
                          schedule_id: sub_form.object.schedule&.id,
@@ -77,12 +56,33 @@
           <%= render "shared/buttons/form_submit_button", form: form, text: t("availability.edit.submit_text") %>
         </div>
       <% end %>
+
+      <div id="table_holder">
+        <div class="mx-auto max-w-screen-xl bg-tertiary-50 dark:bg-gray-900">
+          <div class="relative bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
+            <%= render "availabilities/table/schedule_table_form_header", availability: availability %>
+            <div class="relative">
+              <%= turbo_frame_tag "schedule_table",
+                                  src: schedules_path(availability_id: availability.id,
+                                                      separate_included: true,
+                                                      format: :turbo_stream),
+                                  data: {schedule_selection_target:"frame",
+                                         availability_id: availability.id,
+                                         search_target:"frame",
+                                         turbo_prefetch:"false" } do %>
+                <div class="h-[50vh] w-full"></div>
+              <% end %>
+              <%= render "shared/spinner_absolute", start_hidden: true %>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <h2 class="text-center text-2xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white
-      mt-2">
+    <%= render "shared/header_primary", extra_classes: "mt-2" do %>
       Preview
-    </h2>
+    <% end %>
     <div id="calendar_holder" data-controller="calendar"
          data-calendar-interactive-value="true"
          data-calendar-dialog-outlet=".dialog"

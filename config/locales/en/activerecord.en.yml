@@ -18,6 +18,10 @@ en:
               blank: "cannot be blank."
               too_short: "is too short (minimum is %{count} characters)."
               too_long: "is too long (maximum is %{count} characters)."
+        availability:
+          attributes:
+              name:
+                taken: "has already been taken by one of your other availabilities."
     attributes:
       invite:
         assigned_role_ids: "Assigned permissions"

@@ -7,9 +7,5 @@
   <%= modal_wrapper(availability.name) do %>
     <%= render "form", availability: availability, schedules: schedules %>
   <% end %>
-
-  <div class="mt-3">
-    <%= render "shared/buttons/secondary_link", text: "Back to availabilities", path: availabilities_path %>
-  </div>
 </section>
 <% content_for(:page_title, t("availability.title")) %>

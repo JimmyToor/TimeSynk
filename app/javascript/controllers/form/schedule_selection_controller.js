@@ -140,7 +140,6 @@ export default class extends Controller {
         scheduleIdInput.dataset.scheduleId === targetScheduleId,
     );
     if (!existingInput) return;
-
     // The outlet only uses the event for the target property to find the wrapper to remove.
     // If the event was triggered by something outside the wrapper, then the target won't be in the desired wrapper.
     // To ensure the target is correct without messing with the event, we can use a new empty event and set the target manually to the wrapped input.

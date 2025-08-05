@@ -17,3 +17,5 @@ en:
     add_availability: "Add Availability"
     update:
       success: "Schedule successfully updated."
+    remove_from_availability_button_label: "Remove from availability"
+    remove_from_availability_button_title: "Remove from availability"
