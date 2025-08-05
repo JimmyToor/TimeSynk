@@ -20,7 +20,7 @@ export default class extends Controller {
 
   initialize() {
     this.debouncedCalendarUpdate = Utility.debounceFn(
-      () => this.updateCalendar,
+      () => this.updateCalendar(),
       500,
     );
     this.submitSuccessCallback = this.onSubmitSuccess.bind(this);
@@ -172,6 +172,7 @@ export default class extends Controller {
   // Updates the calendar with the current schedules.
   updateCalendar() {
     const id = this.calendarOutlet.sourceIdValue;
+
     this.calendarOutlet.replaceEventSource(id, {
       url: "/calendars",
       method: "GET",
