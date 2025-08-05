@@ -5,26 +5,28 @@ class SessionsTest < ApplicationSystemTestCase
     @user = users(:cooluserguy)
   end
 
-  test "visiting the index" do
-    sign_in_as @user
+  test "should sign in with email" do
+    visit sign_in_url
+    fill_in "username_or_email", with: @user.email
+    fill_in "Password", with: "Secret1*3*5*"
+    click_on I18n.t("session.new.submit_text")
 
-    click_on "Devices & Sessions"
-    assert_selector "h1", text: "Sessions"
+    assert_current_path root_path
   end
 
-  test "signing in" do
+  test "should sign in with username" do
     visit sign_in_url
-    fill_in "Email", with: @user.email
+    fill_in "username_or_email", with: @user.username
     fill_in "Password", with: "Secret1*3*5*"
-    click_on "Sign in"
+    find_button(text: I18n.t("session.new.submit_text")).click
 
-    assert_text "Signed in successfully"
+    assert_current_path root_path
   end
 
   test "signing out" do
     sign_in_as @user
 
-    click_on "Sign out"
+    click_on I18n.t("session.destroy.button_text")
     assert_text "That session has been logged out"
   end
 end

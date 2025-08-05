@@ -34,59 +34,91 @@ class CalendarCreationService < ApplicationService
   def initialize(params, user)
     @params = params.permit(:start, :end, :user_id, :group_id, :schedule_id, :availability_id, :game_session_id, :game_proposal_id, :exclude_availabilities, schedule_ids: [])
     @user = user
+    @calendars = []
   end
 
   # Orchestrates the creation of different calendar types based on the initialized parameters.
   #
   # @return [Array<Calendar>] An array of generated Calendar objects, ready to be parsed for FullCalendar.
   def call
-    @calendars = []
-    if @params[:user_id].present?
-      # Fetch all game proposals for the user, excluding proposals without sessions.
-      GameProposal.joins(group: :users)
-        .where(users: {id: @params[:user_id]})
-        .joins(:game_sessions)
-        .includes(:game, :game_sessions)
-        .distinct.each do |game_proposal|
-        @calendars << make_game_proposal_calendar(game_proposal)
-      end
-    end
-
-    if @params[:group_id].present?
-      # Fetch the group and its game proposals
-      group = Group.includes(game_proposals: [:game_sessions, :game]).find_by(id: @params[:group_id])
-      @calendars.concat(make_group_calendars(group)) unless group.nil?
-    end
-
-    if @params[:schedule_id].present?
-      schedule = Schedule.find_by_id(@params[:schedule_id])
-      @calendars << make_schedule_calendar(Schedule.find(@params[:schedule_id])) if schedule.present?
-    end
-
-    if @params[:schedule_ids].present?
-      schedules = Schedule.where(id: @params[:schedule_ids])
-      @calendars.concat(schedules.map { |curr_schedule| make_schedule_calendar(curr_schedule) }) if schedules.present?
-    end
-
-    if @params[:availability_id].present?
-      availability = Availability.find_by_id(@params[:availability_id])
-      @calendars << make_availability_calendar(availability) if availability.present?
-    end
-
-    if @params[:game_session_id].present?
-      game_session = GameSession.find_by_id(@params[:game_session_id])
-      @calendars << make_game_session_calendar(game_session) if game_session.present?
-    end
-
-    if @params[:game_proposal_id].present?
-      game_proposal = GameProposal.find_by_id(@params[:game_proposal_id])
-      @calendars << make_game_proposal_calendar(game_proposal) unless game_proposal.game_sessions.empty?
-      @calendars.concat(make_availability_calendars(game_proposal.group.users, game_proposal: game_proposal)) unless @params[:exclude_availabilities]
-    end
+    process_user_calendars if @params[:user_id].present?
+    process_group_calendars if @params[:group_id].present?
+    process_schedule_calendars if @params[:schedule_id].present? || @params[:schedule_ids].present?
+    process_availability_calendar if @params[:availability_id].present?
+    process_game_session_calendar if @params[:game_session_id].present?
+    process_game_proposal_calendars if @params[:game_proposal_id].present?
     @calendars
   end
 
   private
+
+  def process_user_calendars
+    game_proposals = GameProposal.joins(group: :users)
+      .includes(:game, :game_sessions)
+      .where(users: {id: @params[:user_id]})
+      .distinct
+    game_proposals.each do |game_proposal|
+      @calendars << make_game_proposal_calendar(game_proposal)
+    end
+  rescue Pundit::NotAuthorizedError => e
+    Rails.logger.error("Authorization error processing user calendars for #{@user.inspect}: #{e.message}")
+  end
+
+  def process_group_calendars
+    group = Group.includes(game_proposals: [:game_sessions, :game]).find_by(id: @params[:group_id])
+    return unless group
+
+    raise Pundit::NotAuthorizedError unless authorized?(group)
+    @calendars.concat(make_availability_calendars(group.users, group: group)) unless @params[:exclude_availabilities]
+    group.game_proposals.each do |game_proposal|
+      @calendars << make_game_proposal_calendar(game_proposal)
+    end
+  rescue Pundit::NotAuthorizedError => e
+    Rails.logger.error("Authorization error processing group calendars for #{@user.inspect}: #{e.message}")
+  end
+
+  def process_schedule_calendars
+    schedules = if @params[:schedule_id].present?
+      Schedule.where(id: @params[:schedule_id])
+    else
+      Schedule.where(id: @params[:schedule_ids])
+    end
+    schedules.each do |schedule|
+      @calendars << make_schedule_calendar(schedule)
+    end
+  rescue Pundit::NotAuthorizedError => e
+    Rails.logger.error("Authorization error processing schedule calendars for #{@user.inspect}: #{e.message}")
+  end
+
+  def process_availability_calendar
+    availability = Availability.includes(:schedules).find_by(id: @params[:availability_id])
+    return unless availability
+
+    @calendars << make_availability_calendar(availability)
+  rescue Pundit::NotAuthorizedError => e
+    Rails.logger.error("Authorization error processing availability calendar for #{@user.inspect}: #{e.message}")
+  end
+
+  def process_game_session_calendar
+    game_session = GameSession.find_by(id: @params[:game_session_id])
+    return unless game_session
+
+    @calendars << make_game_session_calendar(game_session)
+  rescue Pundit::NotAuthorizedError => e
+    Rails.logger.error("Authorization error processing game session calendar for #{@user.inspect}: #{e.message}")
+  end
+
+  def process_game_proposal_calendars
+    game_proposal = GameProposal.includes(:game_sessions, group: :users).find_by(id: @params[:game_proposal_id])
+    return unless game_proposal
+
+    @calendars << make_game_proposal_calendar(game_proposal) unless game_proposal.game_sessions.empty?
+    unless @params[:exclude_availabilities]
+      @calendars.concat(make_availability_calendars(game_proposal.group.users, game_proposal: game_proposal))
+    end
+  rescue Pundit::NotAuthorizedError => e
+    Rails.logger.error("Authorization error processing game proposal calendars for #{@user.inspect}: #{e.message}")
+  end
 
   # Creates a calendar for a given schedule.
   #
@@ -99,20 +131,6 @@ class CalendarCreationService < ApplicationService
       id: "calendar_schedule_#{schedule.id}",
       type: :schedule
     )
-  end
-
-  # Creates calendars for a given group.
-  #
-  # @param group [Group] the group to create calendars for
-  # @return [Array<Calendar>] the created calendars
-  def make_group_calendars(group)
-    Pundit.authorize(@user, group, :show?)
-    calendars = []
-    calendars.concat(make_availability_calendars(group.users, group: group)) unless @params[:exclude_availabilities]
-    group.game_proposals.each do |game_proposal|
-      calendars << make_game_proposal_calendar(game_proposal)
-    end
-    calendars
   end
 
   # Creates a calendar for a given availability.
@@ -227,7 +245,7 @@ class CalendarCreationService < ApplicationService
   # @param game_session [GameSession] the game session to create a calendar for
   # @return [Calendar] the created calendar
   def make_game_session_calendar(game_session)
-    authorized?(game_session)
+    raise Pundit::NotAuthorizedError unless authorized?(game_session)
     session_schedule = game_session.make_calendar_schedule
     Calendar.new(
       schedules: [session_schedule],
@@ -242,7 +260,7 @@ class CalendarCreationService < ApplicationService
   # @param game_proposal [GameProposal] the game proposal to create a calendar for
   # @return [Calendar] the created calendar
   def make_game_proposal_calendar(game_proposal)
-    authorized?(game_proposal)
+    raise Pundit::NotAuthorizedError unless authorized?(game_proposal)
     Calendar.new(
       schedules: game_proposal.make_calendar_schedules(start_time: @params[:start], end_time: @params[:end]),
       name: Game.find(game_proposal.game_id).name.to_s,
