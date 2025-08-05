@@ -97,6 +97,11 @@ class User < ApplicationRecord
     permission_service.most_permissive_role_weight_for_resource(resource)
   end
 
+  # (see UserPermissionsService#most_permissive_cascading_role_weight_for_resource)
+  def most_permissive_cascading_role_weight_for_resource(resource)
+    permission_service.most_permissive_cascading_role_weight_for_resource(resource)
+  end
+
   # (see UserPermissionsService#most_permissive_cascading_role_for_resource)
   def most_permissive_cascading_role_for_resource(resource)
     permission_service.most_permissive_cascading_role_for_resource(resource)

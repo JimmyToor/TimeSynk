@@ -18,7 +18,7 @@ class GameProposalPolicy < ApplicationPolicy
   end
 
   def edit?
-    user.has_any_role_for_resource?([:admin, :owner, :manage_all_proposals], record.group)
+    user.most_permissive_cascading_role_weight_for_resource(record) <= record.class::MIN_PERMISSION_EDIT_WEIGHT
   end
 
   def update?

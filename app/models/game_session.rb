@@ -6,8 +6,8 @@ class GameSession < ApplicationRecord
 
   require "rounding"
 
-  belongs_to :game_proposal
-  has_many :game_session_attendances, dependent: :destroy
+  belongs_to :game_proposal, inverse_of: :game_sessions
+  has_many :game_session_attendances, dependent: :destroy, inverse_of: :game_session
   has_one :group, through: :game_proposal
   has_one :game, through: :game_proposal
 

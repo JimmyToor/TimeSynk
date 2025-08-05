@@ -2,9 +2,10 @@ module Restrictable
   extend ActiveSupport::Concern
 
   class_methods do
-    def restrict(min_weight: nil)
-      default_weight = RoleHierarchy::NON_PERMISSIVE_WEIGHT
-      const_set(:MIN_PERMISSION_EDIT_WEIGHT, min_weight || default_weight)
+    # Sets the minimum role weight required to edit this resource (MIN_PERMISSION_EDIT_WEIGHT).
+    # @param min_weight defaults to RoleHierarchy::NON_PERMISSIVE_WEIGHT
+    def restrict(min_weight: RoleHierarchy::NON_PERMISSIVE_WEIGHT)
+      const_set(:MIN_PERMISSION_EDIT_WEIGHT, min_weight)
     end
   end
 

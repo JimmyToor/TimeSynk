@@ -1,5 +1,5 @@
 class GameProposalsController < ApplicationController
-  add_flash_types :success
+  add_flash_types :success, :error
   before_action :set_game_proposal, :set_game, only: %i[show destroy]
   before_action :set_groups, only: %i[new]
   before_action :set_game_proposals, only: %i[index]
@@ -60,12 +60,20 @@ class GameProposalsController < ApplicationController
 
   # DELETE /game_proposals/1
   def destroy
-    authorize(@game_proposal).destroy!
+    @game_proposal.destroy!
 
     respond_to do |format|
       format.html {
         redirect_to game_proposals_url, success: {message: I18n.t("game_proposal.destroy.success", game_name: @game_proposal.game.name),
                                                   options: {highlight: " #{@game_proposal.game.name}"}}
+      }
+    end
+  rescue ActiveRecord::RecordNotDestroyed => e
+    respond_to do |format|
+      format.html {
+        redirect_to game_proposal_url(@game_proposal), error: {message: I18n.t("game_proposal.destroy.error", game_name: @game_proposal&.game&.name),
+                                                               options: {highlight: " #{@game_proposal&.game&.name}",
+                                                                         list_items: [e.record.errors.full_messages.join(", ")]}}
       }
     end
   end

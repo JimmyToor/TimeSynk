@@ -9,7 +9,7 @@ class GameSessionAttendance < ApplicationRecord
       .order(Arel.sql("CASE WHEN attending IS TRUE THEN 0 WHEN attending IS FALSE THEN 1 ELSE 2 END, username ASC"))
   }
 
-  belongs_to :game_session
+  belongs_to :game_session, inverse_of: :game_session_attendances
   belongs_to :user
   has_one :game_proposal, through: :game_session
   has_one :group, through: :game_session

@@ -24,12 +24,22 @@ class UserPermissionsService
 
   # @return [Role] the highest role a user has for a particular resource.
   def most_permissive_role_for_resource(resource)
-    @user.roles.where(resource: resource).min_by { |role| RoleHierarchy.role_weight(role) }
+    roles_for_resource(resource).min_by { |role| RoleHierarchy.role_weight(role) }
   end
 
   # @return [Integer] The weight of the most permissive role a user has for a particular resource.
   def most_permissive_role_weight_for_resource(resource)
-    @user.roles.where(resource: resource).map { |role| RoleHierarchy.role_weight(role) }.min || RoleHierarchy::NON_PERMISSIVE_WEIGHT
+    most_permissive_role = most_permissive_role_for_resource(resource)
+    return RoleHierarchy::NON_PERMISSIVE_WEIGHT if most_permissive_role.nil?
+
+    RoleHierarchy.role_weight(most_permissive_role)
+  end
+
+  def most_permissive_cascading_role_weight_for_resource(resource)
+    most_permissive_role = most_permissive_cascading_role_for_resource(resource)
+    return RoleHierarchy::NON_PERMISSIVE_WEIGHT if most_permissive_role.nil?
+
+    RoleHierarchy.role_weight(most_permissive_role)
   end
 
   # @return [Role] The highest role a user has for a particular resource, including roles from parent resources.
@@ -38,7 +48,7 @@ class UserPermissionsService
 
     return current_highest_role unless resource.class.respond_to?(:role_providing_associations)
 
-    resource.class.role_providing_associations.each do |association_name|
+    resource.class.role_providing_associations&.each do |association_name|
       parent_resource = resource.send(association_name)
       next if parent_resource.nil?
 
