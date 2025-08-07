@@ -9,9 +9,9 @@
   </div>
   <div class="flex flex-col">
     <%= form.hidden_field :user_id, value: Current.user.id %>
-    <%= render "shared/form_label", form: form, field: :invite_token, text: t("group_membership.form.token.field_label") %>
+    <%= render "shared/form_label", form: form, field: :invite_token, text: t("invite.token.field_label") %>
     <%= form.text_field :invite_token,
-                        placeholder: t("group_membership.form.token.field_label"),
+                        placeholder: t("invite.token.field_label"),
                         autofocus: "autofocus",
                         value: (params[:invite_token] if params[:invite_token].present?) %>
     <p>You can paste the token by itself or the entire invite URL.</p>

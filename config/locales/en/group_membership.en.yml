@@ -20,9 +20,6 @@ en:
     index:
       button_text: "Members"
       button_title: "View All Members"
-    form:
-      token:
-        field_label: "Invite Token/Link"
     accept_invite:
       title: "You've been invited to join %{group_name}"
     created_at:

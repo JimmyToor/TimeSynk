@@ -25,7 +25,7 @@ class GroupMembershipsTest < ApplicationSystemTestCase
 
     find("button[aria-label='#{label}']").click
 
-    assert_text "Joined:"
+    assert_text I18n.t("group_membership.created_at.field_label")
     assert_text I18n.t("permission_set.roles.title", resource_type: group.class.name.titleize)
 
     roles = user.roles.where(resource: group)
@@ -42,7 +42,7 @@ class GroupMembershipsTest < ApplicationSystemTestCase
     visit groups_url
     click_on I18n.t("group.join.button_text")
 
-    fill_in I18n.t("group_membership.form.token.field_label"), with: invite.invite_token
+    fill_in I18n.t("invite.token.field_label"), with: invite.invite_token
     click_on I18n.t("group.join.button_text")
 
     click_on I18n.t("invite.accept_invite")
