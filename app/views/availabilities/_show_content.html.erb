@@ -1,6 +1,8 @@
 <%# locals: (availability:) %>
 <%= modal_wrapper(availability.name) do %>
   <%= content_tag(:div, id:dom_id(availability, :content)) do %>
+    <%= render "shared/notification", id: dom_id(availability) %>
+
     <%= turbo_frame_tag "availability_#{availability.id}" do %>
       <%= render availability %>
     <% end %>

@@ -24,16 +24,15 @@ class AvailabilitiesTest < ApplicationSystemTestCase
     click_on I18n.t("availability.new.button_text")
 
     new_name = "New Test Availability"
-    fill_in "Availability Name", with: new_name
-    fill_in "Description", with: "This is a test availability description."
+    fill_in I18n.t("availability.name.field_label"), with: new_name
+    fill_in I18n.t("availability.description.field_label"), with: "This is a test availability description."
 
     schedule = schedules(:user_radperson_unique_name)
     find("input[data-schedule-id='#{schedule.id}']").set(true)
 
-    click_on "Save Changes"
+    click_on I18n.t("availability.edit.submit_text")
     assert_text new_name
-
-    click_on "Back"
+    assert_text I18n.t("availability.create.success")
   end
 
   test "should update Availability" do
@@ -46,12 +45,12 @@ class AvailabilitiesTest < ApplicationSystemTestCase
     click_on I18n.t("generic.edit_resource", resource_type: "Availability"), match: :first
 
     schedule = schedules(:user_radperson_unique_name)
-    fill_in "Availability Name", with: "New Test Availability Name"
+    fill_in I18n.t("availability.name.field_label"), with: "New Test Availability Name"
     find("input[data-schedule-id='#{schedule.id}']").set(false)
 
-    click_on "Save Changes"
-
+    click_on I18n.t("availability.edit.submit_text")
     assert_text "None"
+    assert_text I18n.t("availability.update.success")
   end
 
   test "should destroy Availability" do

@@ -7,6 +7,7 @@ en:
       error: "There was a problem creating the availability."
     edit:
       submit_text: "Save Changes"
+      title: "Edit Availability: %{availability_name}"
     update:
       success: "Availability successfully updated."
       error: "There was a problem updating the availability."
@@ -24,3 +25,7 @@ en:
     include_schedule: "Include schedule %{schedule_name} in the availability."
     destroyed: "Availability Deleted"
     back_to_index: "Back to Availabilities"
+    name:
+      field_label: "Availability Name"
+    description:
+      field_label: "Description"

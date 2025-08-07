@@ -1,4 +1,5 @@
 class AvailabilitiesController < ApplicationController
+  add_flash_types :success
   before_action :set_availability, only: %i[show edit update destroy]
   before_action :set_schedules, only: %i[new edit create]
   before_action :add_no_schedules_flash, only: %i[new edit create]
@@ -42,29 +43,23 @@ class AvailabilitiesController < ApplicationController
     authorize(@availability)
     add_no_schedules_flash
 
-    respond_to do |format|
-      if @availability.save
-        format.html { redirect_to availability_url(@availability), success: {message: "Availability was successfully created."} }
-      else
-        flash.now[:alert] = {message: I18n.t("availability.create.error"),
-                             options: {list_items: @availability.errors.full_messages}}
-        format.html { render :new, locals: {schedules: @schedules, availability: @availability}, status: :unprocessable_entity }
-        format.turbo_stream { render "create_fail" }
-      end
+    if @availability.save
+      redirect_to availability_path(@availability), success: {message: t("availability.create.success")}
+    else
+      flash.now[:alert] = {message: I18n.t("availability.create.error"),
+                           options: {list_items: @availability.errors.full_messages}}
+      render "create_fail"
     end
   end
 
   # PATCH/PUT /availabilities/1
   def update
-    respond_to do |format|
-      if @availability.update(availability_params)
-        format.html { redirect_to availability_url(@availability), notice: "Availability was successfully updated." }
-      else
-        flash.now[:alert] = {message: I18n.t("availability.update.error"),
-                             options: {list_items: @availability.errors.full_messages}}
-        format.html { render :edit, locals: {schedules: @schedules, availability: @availability}, status: :unprocessable_entity }
-        format.turbo_stream { render "update_fail" }
-      end
+    if @availability.update(availability_params)
+      redirect_to availability_path(@availability), success: {message: I18n.t("availability.update.success")}
+    else
+      flash.now[:alert] = {message: I18n.t("availability.update.error"),
+                           options: {list_items: @availability.errors.full_messages}}
+      render "update_fail"
     end
   end
 
@@ -72,7 +67,7 @@ class AvailabilitiesController < ApplicationController
   def destroy
     respond_to do |format|
       if @availability.destroy
-        format.html { redirect_to availabilities_url, notice: t("availability.destroy.success") }
+        format.html { redirect_to availabilities_url, success: t("availability.destroy.success") }
         format.turbo_stream
       else
         format.html { redirect_to availabilities_url, alert: t("availability.destroy.error") }
