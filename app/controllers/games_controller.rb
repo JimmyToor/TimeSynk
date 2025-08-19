@@ -4,7 +4,7 @@ class GamesController < ApplicationController
 
   # GET /games
   def index
-    @games = params[:query].present? ? Game.search_name(params[:query]) : Game.get_popular
+    @games = params[:query].present? ? Game.search_name(params[:query]) : Game.get_popular.order(:name)
     @pagy, @games = pagy(@games, items: 30)
     respond_to do |format|
       format.html { render :index, locals: {games: @games} }
