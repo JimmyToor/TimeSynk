@@ -76,60 +76,29 @@ class GameGateway
     games
   end
 
-  # Fetches all new games created since a specified date
+  # Fetches all games updated since a specified date (including new ones), streaming them in batches
   # @param fields [String] The fields to retrieve, defaults to all fields
   # @param limit [Integer] The batch size for fetching games, defaults to 500
   # @param sort [String] The sorting criteria, defaults to "id asc"
   # @param offset [Integer] The offset for pagination, defaults to 0
-  # @param date [DateTime] The date since which to fetch new games, defaults to latest created_at or 1 week ago if database is empty
-  # @return [Array<Hash>] Array of new games data
-  def fetch_all_new_games(fields: "*", limit: 500, sort: "id asc", offset: 0, date: Game.maximum(:created_at) || 1.week.ago)
-    @client.endpoint = "games/count"
-    where = "#{GAMES_ONLY} & created_at >= #{date.to_i}"
-    count = fetch_game_count(where: where)
+  # @param date [DateTime] Games updated after or on this date are fetched and updated, defaults to latest updated_at, falls back to 1 week ago
+  # @return [Array<Hash>] Array of updated games data batch
+  def each_updated_game_batch(fields: "*", limit: 500, sort: "id asc", date: Game.maximum(:updated_at) || 1.week.ago)
+    # This allows for calling without a block
+    return enum_for(:each_updated_game_batch, fields:, limit:, sort:, date:) unless block_given?
 
-    @client.endpoint = "games"
-    games = []
-
-    while offset < count
-      puts "Starting fetch of new games from offset #{offset}..."
-
-      params = {fields: fields, limit: limit, sort: sort, offset: offset, where: where}
-      games.concat @client.get(params)
-
-      offset += limit
-
-      puts "Fetched #{games.count} games out of #{count}"
-    end
-    games
-  end
-
-  # Fetches all games updated since a specified date
-  # @param fields [String] The fields to retrieve, defaults to all fields
-  # @param limit [Integer] The batch size for fetching games, defaults to 500
-  # @param sort [String] The sorting criteria, defaults to "id asc"
-  # @param offset [Integer] The offset for pagination, defaults to 0
-  # @param date [DateTime] The date since which to fetch updated games, defaults to latest updated_at or 1 week ago
-  # @return [Array<Hash>] Array of updated games data
-  def fetch_all_updated_games(fields: "*", limit: 500, sort: "id asc", offset: 0, date: Game.maximum(:updated_at) || 1.week.ago)
-    @client.endpoint = "games/count"
+    offset = 0
     where = "#{GAMES_ONLY} & updated_at >= #{date.to_i}"
-    count = fetch_game_count(where: where)
+    total = fetch_game_count(where: where)
 
-    @client.endpoint = "games"
-    games = []
+    puts "Total games to fetch: #{total} (updated since #{date})"
 
-    while offset < count
-      puts "Starting fetch of updated games from offset #{offset}..."
-
-      params = {fields: fields, limit: limit, sort: sort, offset: offset, where: where}
-      games.concat @client.get(params)
+    while offset < total
+      batch = fetch_batch_of_games(fields: fields, limit: limit, sort: sort, offset: offset, where: where)
+      yield batch
 
       offset += limit
-
-      puts "Fetched #{games.count} games out of #{count}"
     end
-    games
   end
 
   # Fetches a batch of games starting from the specified offset
@@ -138,14 +107,13 @@ class GameGateway
   # @param sort [String] The sorting criteria, defaults to "id asc"
   # @param offset [Integer] The offset for pagination, defaults to 0
   # @return [Array<Hash>] Array of games data for the retrieved batch
-  def fetch_batch_of_games(fields: "*", limit: 500, sort: "id asc", offset: 0)
+  def fetch_batch_of_games(fields: "*", limit: 500, sort: "id asc", offset: 0, where: GAMES_ONLY)
     @client.endpoint = "games"
-    games = []
 
     puts "Starting fetch of games from offset #{offset}..."
 
-    params = {fields: fields, limit: limit, sort: sort, offset: offset, where: GAMES_ONLY}
-    games.concat @client.get(params)
+    params = {fields: fields, limit: limit, sort: sort, offset: offset, where: where}
+    games = @client.get(params)
 
     puts "Fetched #{games.count} games"
     games
