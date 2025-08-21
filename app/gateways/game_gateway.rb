@@ -2,6 +2,7 @@
 
 class GameGateway
   GAMES_ONLY = "version_parent = null & (category = 0 | category = 4)"
+  GAME_FIELDS = "id, name, first_release_date, platforms.name, cover.url, created_at, updated_at"
 
   # Initializes a new GameGateway instance
   # Sets up the IGDB client with credentials from AppConfig
@@ -56,7 +57,7 @@ class GameGateway
   # @param sort [String] The sorting criteria, defaults to "id asc"
   # @param offset [Integer] The offset for pagination, defaults to 0
   # @return [Array<Hash>] Array of all games data
-  def fetch_all_games(fields: "*", limit: 500, sort: "id asc", offset: 0)
+  def fetch_all_games(fields: GAME_FIELDS, limit: 500, sort: "id asc", offset: 0)
     @client.endpoint = "games/count"
     count = fetch_game_count
 
@@ -83,7 +84,7 @@ class GameGateway
   # @param offset [Integer] The offset for pagination, defaults to 0
   # @param date [DateTime] Games updated after or on this date are fetched and updated, defaults to latest updated_at, falls back to 1 week ago
   # @return [Array<Hash>] Array of updated games data batch
-  def each_updated_game_batch(fields: "*", limit: 500, sort: "id asc", date: Game.maximum(:updated_at) || 1.week.ago)
+  def each_updated_game_batch(fields: GAME_FIELDS, limit: 500, sort: "id asc", date: Game.maximum(:updated_at) || 1.week.ago)
     # This allows for calling without a block
     return enum_for(:each_updated_game_batch, fields:, limit:, sort:, date:) unless block_given?
 
@@ -107,7 +108,7 @@ class GameGateway
   # @param sort [String] The sorting criteria, defaults to "id asc"
   # @param offset [Integer] The offset for pagination, defaults to 0
   # @return [Array<Hash>] Array of games data for the retrieved batch
-  def fetch_batch_of_games(fields: "*", limit: 500, sort: "id asc", offset: 0, where: GAMES_ONLY)
+  def fetch_batch_of_games(fields: GAME_FIELDS, limit: 500, sort: "id asc", offset: 0, where: GAMES_ONLY)
     @client.endpoint = "games"
 
     puts "Starting fetch of games from offset #{offset}..."
