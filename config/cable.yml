@@ -1,8 +1,12 @@
 development:
-  adapter: async
+  adapter: redis
+  url: <%= ENV.fetch("REDIS_URL", "redis://localhost:6379/0") %>
+  channel_prefix: timesynk_development
 
 test:
   adapter: test
 
 production:
-  adapter: postgresql
+  adapter: redis
+  url: <%= ENV.fetch("REDIS_URL") %>
+  channel_prefix: timesynk

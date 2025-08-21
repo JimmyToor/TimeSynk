@@ -1,0 +1,20 @@
+:concurrency: 5
+:queues:
+  - default
+:url: redis://localhost:6379/0
+:schedule:
+  update_games_weekly:
+    cron: "0 0 * * 5" # every Friday at midnight
+    class: "GamesUpdateJob"
+    description: "Update existing games and fetch new ones every Friday at 00:00 UTC"
+
+  update_popularity_weekly:
+    cron: "0 3 * * 5" # Every Friday at 3 AM
+    class: "UpdatePopularityJob"
+    description: "Update popularity of games every Friday at 3 AM UTC"
+
+  # Purge expired invites every 10 minutes
+  purge_expired_invites:
+    cron: "*/10 * * * *" # Every 10 minutes
+    class: "DestroyExpiredInvitesJob"
+    description: "Purge expired invites every 10 minutes"

@@ -45,6 +45,8 @@ Input your available times and TimeSynk will find the best time for everyone to 
    | MAILER_PASSWORD            | SMTP authentication password                                                                               |
    | TIMESYNK_DATABASE_USER     | Database server username (default: postgres)                                                               |
    | TIMESYNK_DATABASE_PASSWORD | Database server password (default: postgres)                                                               |
+   | TIMESYNK_DATABASE_PASSWORD | Database server password (default: postgres)                                                               |
+   | REDIS_URL                  | Redis server URL                                                                       |
    
 
 ## Running
@@ -91,14 +93,15 @@ Input your available times and TimeSynk will find the best time for everyone to 
 
 2. Setup `.env.production` environment variables
 
-   | Variable          | Description                                                                                                |
-   |-------------------|------------------------------------------------------------------------------------------------------------|
+   | Variable         | Description                                                                                                |
+   |------------------|------------------------------------------------------------------------------------------------------------|
    | RAILS_MAX_THREADS | (Default: 5)                                                                                               |
-   | PORT              | Listening Port (default: 3000)                                                                             |
-   | MAINTENANCE_MODE  | Set to 'true' to enable maintenance mode, <br/>preventing non-admins from using the site. (default: false) |
-   | MAILER_ADDRESS    | SMTP server address for sending emails                                                                     |
-   | MAILER_HOST       | Default host for email links                                                                               |
-   | MAILER_FROM       | Default sender email address                                                                               |
+   | PORT             | Listening Port (default: 3000)                                                                             |
+   | MAINTENANCE_MODE | Set to 'true' to enable maintenance mode, <br/>preventing non-admins from using the site. (default: false) |
+   | MAILER_ADDRESS   | SMTP server address for sending emails                                                                     |
+   | MAILER_HOST      | Default host for email links                                                                               |
+   | MAILER_FROM      | Default sender email address                                                                               |
+   | REDIS_URL        | Redis server URL                                                                                           |
 
 
 3. Create `/config/secrets/postgres_password.secret` and `/config/secrets/postgres_user.secret` files with the production database password and username respectively. 
@@ -111,9 +114,9 @@ Input your available times and TimeSynk will find the best time for everyone to 
    
 ## Configuration
 
-### Cron
-`/config/cron/games-crontab` holds the cron jobs for the application.
-They update and fetch new games once a month and update popularity once a week.
+### Database Updates
+`/config/sidekiq.yml` holds the schedules jobs for the application.
+They update and fetch new games once a week and update popularity once a week.
 
 ### Initial Seed
 If the Games table is empty when starting the application, it will be seeded with data from IGDB. 

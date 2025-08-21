@@ -54,7 +54,7 @@ FROM base AS final
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libvips postgresql-client cron file && \
+    apt-get install --no-install-recommends -y curl libvips postgresql-client file && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy built artifacts: gems, application
@@ -78,13 +78,12 @@ ENTRYPOINT ["./bin/docker-entrypoint"]
 EXPOSE 3000
 CMD ["./bin/rails", "server"]
 
-# For scheduler container
-FROM final AS scheduler
+# For sidekiq container
+FROM final AS sidekiq
 
-# cron daemon needs root
-USER root
+RUN useradd rails --create-home --shell /bin/bash && \
+    chown -R rails:rails db log storage tmp
+USER rails:rails
 
-RUN mkdir -p /var/run && chown root:root /var/run
-
-ENTRYPOINT ["./bin/docker-scheduler-entrypoint"]
-CMD ["cron", "-f"]
+ENTRYPOINT ["./bin/docker-entrypoint"]
+CMD ["bundle", "exec", "sidekiq"]

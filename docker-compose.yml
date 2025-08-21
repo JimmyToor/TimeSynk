@@ -22,14 +22,13 @@ services:
       - postgres
     command: ./bin/rails server ${IGNORE_SEED:+--ignore-seed}
 
-  postgres: # database
+  postgres: # Database
     image: postgres:17
     env_file:
       - .env.production
     environment:
       POSTGRES_USER_FILE: /run/secrets/postgres_user
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
-      POSTGRES_DB: timesynk_production
     secrets:
       - postgres_user
       - postgres_password
@@ -39,39 +38,52 @@ services:
       - "5432:5432"
     restart: unless-stopped
 
-  scheduler: # cron jobs
-    image: timesynk-scheduler:latest
+  redis: # Redis server
+    image: redis:8
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  sidekiq: # Background job processor
     build:
       context: .
-      target: scheduler
-      args:
-        - RAILS_ENV=production
+      target: sidekiq
+    command: bundle exec sidekiq
+    depends_on:
+      - redis
+      - postgres
     env_file:
       - .env.production
     environment:
       RAILS_ENV: production
       RAILS_MASTER_KEY_FILE: /run/secrets/rails_master_key
-    restart: unless-stopped
     secrets:
       - rails_master_key
     volumes:
-      - ./config/cron/games-crontab:/rails/config/cron/games-crontab
-    entrypoint: ["/rails/bin/docker-scheduler-entrypoint"]
-    command: ["cron", "-f"]
+      - storage:/rails/storage
+    restart: unless-stopped
 
 volumes:
-    storage:
-      driver: local
-      driver_opts:
-        type: none
-        device: ./.volumes/storage
-        o: bind
-    postgres_data:
-      driver: local
-      driver_opts:
-        type: none
-        device: ./.volumes/postgres_data
-        o: bind
+  storage:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./.volumes/storage
+      o: bind
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./.volumes/postgres_data
+      o: bind
+  redis-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./.volumes/redis_data
+      o: bind
 
 secrets:
   rails_master_key:

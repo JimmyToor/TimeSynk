@@ -84,7 +84,9 @@ gem "pg_search", "~> 2.3"
 
 gem "rounding", "~> 1.0"
 
-gem "whenever", require: false
+gem "sidekiq", "~> 8.0"
+
+gem "sidekiq-cron", "~> 2.3.0"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

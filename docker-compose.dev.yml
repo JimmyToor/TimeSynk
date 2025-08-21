@@ -9,8 +9,17 @@ services:
       POSTGRES_DB: timesynk_development
     volumes:
       - postgres_dev_data:/var/lib/postgresql/data
+      - ./config/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./config/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
     ports:
       - "5432:5432"
+  redis:
+    image: redis/redis-stack:latest
+    ports:
+      - "6379:6379" # Redis server
+      - "8001:8001" # RedisInsight
+    volumes:
+      - redis_dev_data:/data
 
 volumes:
   postgres_dev_data:
@@ -18,4 +27,10 @@ volumes:
     driver_opts:
       type: none
       device: ./.volumes/postgres_dev_data
+      o: bind
+  redis_dev_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./.volumes/redis_dev_data
       o: bind
