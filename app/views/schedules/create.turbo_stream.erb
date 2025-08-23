@@ -10,3 +10,5 @@
 <% @schedule.availabilities.each do |availability| %>
   <%= frame_reload "availability_#{availability.id}" %>
 <% end %>
+
+<%= frame_reload "schedule_table" %>
