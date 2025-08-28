@@ -16,7 +16,7 @@ module TurboStreamActionsHelper
   # @option options [String] :list_items An array of items to display as a list below the message.
   # @option options [String] :link A hash containing the link text and URL. Example: { text: "Click here", url: "/path" }. Only links the first occurrence.
   #
-  # @return [String] Turbo Stream HTML for appending the toast
+  # @return [String] Turbo Stream action for appending the toast
   def turbo_stream_toast(type, message, id = nil, **options)
     turbo_stream.append "toast_container", partial: "shared/toast",
       locals: {
@@ -25,9 +25,6 @@ module TurboStreamActionsHelper
         id: id,
         options: options
       }
-  end
-
-  def notification
   end
 end
 
