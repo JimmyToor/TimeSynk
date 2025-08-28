@@ -2,7 +2,7 @@ en:
   game_proposal:
     create:
       success: "Game proposal for %{game_name} successfully created ."
-      error: "There was an error creating the proposal for %{game_name}."
+      error: "There was an error creating the proposal."
     destroy:
       success: "Game proposal for %{game_name} successfully deleted."
       error: "There was an error deleting the proposal for %{game_name}."
