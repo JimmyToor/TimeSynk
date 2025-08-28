@@ -48,7 +48,7 @@ class AvailabilitiesControllerTest < ActionDispatch::IntegrationTest
 
   test "should not create availability with invalid param (name)" do
     assert_no_difference("Availability.count") do
-      post availabilities_url, params: {availability: {user_id: @user.id, name: ""}}
+      post availabilities_url(format: :turbo_stream), params: {availability: {user_id: @user.id, name: ""}}
     end
 
     assert_response :unprocessable_entity
@@ -69,8 +69,9 @@ class AvailabilitiesControllerTest < ActionDispatch::IntegrationTest
     new_name = "#{old_name} updated"
 
     assert_changes "@availability.reload.name", from: old_name, to: new_name do
-      patch availability_url(@availability), params: {availability: {user_id: @user.id, name: new_name}, id: @availability.id}
+      patch availability_url(@availability, format: :turbo_stream), params: {availability: {user_id: @user.id, name: new_name}, id: @availability.id}
     end
+
     assert_redirected_to availability_url(@availability)
   end
 
