@@ -13,9 +13,9 @@ class GameProposalsController < ApplicationController
       format.html { render :index, locals: {game_proposals: @game_proposals} }
       format.turbo_stream {
         if params[:pending_only]
-          render "index_pending", locals: {game_proposals: @game_proposals}
+          render "index_pending"
         else
-          render "index", locals: {game_proposals: @game_proposals}
+          render "index"
         end
       }
     end
