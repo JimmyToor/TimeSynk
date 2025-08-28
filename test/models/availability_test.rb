@@ -28,7 +28,7 @@ class AvailabilityTest < ActiveSupport::TestCase
     user = existing_availability.user
     duplicate = Availability.new(name: existing_availability.name, user: user)
     refute duplicate.valid?
-    assert_includes duplicate.errors[:name], "has already been taken"
+    assert_includes duplicate.errors[:name], I18n.t("activerecord.errors.models.availability.attributes.name.taken")
   end
 
   test "should return the user's username" do
