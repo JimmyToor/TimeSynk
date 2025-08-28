@@ -17,8 +17,8 @@ class GameProposal < ApplicationRecord
   scope :for_current_user_groups, -> { where(group_id: Current.user.groups.ids) }
   scope :for_group, ->(group_id) { where(group_id: group_id) }
 
-  after_create_commit :broadcast_game_proposal_create
-  after_destroy_commit :broadcast_game_proposals_destroy
+  after_create_commit :broadcast_pending_game_proposal_changes
+  after_destroy_commit :broadcast_game_proposal_destroyed
 
   after_create :create_initial_votes, :create_roles
 
@@ -129,60 +129,47 @@ class GameProposal < ApplicationRecord
     end
   end
 
-  def broadcast_game_proposal_create
-    group.users.each do |user|
-      broadcast_pending_game_proposal_update(user.id)
-      broadcast_action_later_to(
+  def broadcast_game_proposal_destroyed
+    broadcast_pending_game_proposal_changes
+    broadcast_game_proposal_removal
+    CalendarUpdateNotifierService.call(group)
+  end
+
+  def broadcast_pending_game_proposal_changes
+    # only need to notify users with no vote for this proposal
+    relevant_users = group.users.joins("LEFT JOIN proposal_votes ON proposal_votes.user_id = users.id AND proposal_votes.game_proposal_id = #{id}")
+    counts = relevant_users.map { |user| [user.id, user.pending_game_proposal_count] }.to_h
+
+    counts.each do |user_id, count|
+      broadcast_pending_game_proposal_updates_for_user(user_id, count: count)
+    end
+  end
+
+  # Broadcasts updates to the pending game proposal count for a specific user.
+  def broadcast_pending_game_proposal_updates_for_user(user_id, count: nil)
+    count ||= User.find(user_id).pending_game_proposal_count
+
+    GameProposals::UpdatePendingCountBroadcastJob.perform_later(user_id, count: count)
+    broadcast_pending_game_proposal_reload(user_id)
+  end
+
+  def broadcast_game_proposal_removal
+    associated_users.each do |user|
+      Turbo::Streams::ActionBroadcastJob.perform_later(
         "game_proposals_user_#{user.id}",
-        action: "frame_reload",
-        target: "game_proposals",
-        render: false
+        action: :remove,
+        target: "game_proposal_#{id}"
       )
     end
   end
 
-  def broadcast_pending_game_proposal_update(user_id)
-    broadcast_update_later_to(
-      "pending_game_proposals_count_user_#{user_id}",
-      target: "pending_game_proposals_count",
-      partial: "game_proposals/pending_count",
-      locals: {count: User.find(user_id).pending_game_proposal_count}
-    )
-    broadcast_action_later_to(
+  def broadcast_pending_game_proposal_reload(user_id)
+    Turbo::Streams::ActionBroadcastJob.perform_later(
       "pending_game_proposals_user_#{user_id}",
       action: "frame_reload",
       target: "pending_game_proposals",
       render: false
     )
-  end
-
-  def broadcast_game_proposals_destroy
-    user_ids_to_broadcast = group.users.pluck(:id)
-    users_to_broadcast = User.includes(:game_proposals).where(id: user_ids_to_broadcast)
-    users_to_broadcast.each do |user|
-      # Can't use the helper here because the game proposal is destroyed and the helper will result in a failed deserialization when the job runs.
-      # Using perform_later directly removes the need for deserialization later on.
-      Turbo::Streams::ActionBroadcastJob.perform_later(
-        "pending_game_proposals_count_user_#{user.id}",
-        action: :update,
-        target: "pending_game_proposals_count",
-        partial: "game_proposals/pending_count",
-        locals: {count: user.pending_game_proposal_count}
-      )
-      Turbo::Streams::ActionBroadcastJob.perform_later(
-        "pending_game_proposals_user_#{user.id}",
-        action: "frame_reload",
-        target: "pending_game_proposals",
-        render: false
-      )
-      Turbo::Streams::ActionBroadcastJob.perform_later(
-        "game_proposals_user_#{user.id}",
-        action: "frame_reload",
-        target: "game_proposals",
-        render: false
-      )
-    end
-    CalendarUpdateNotifierService.call(group)
   end
 
   def broadcast_game_proposal_vote_count
