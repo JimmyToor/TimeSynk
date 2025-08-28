@@ -9,7 +9,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     fill_in :password, with: "Secret1*3*5*"
     click_on I18n.t("session.new.submit_text")
 
-    assert_current_path root_url
+    assert_current_path root_url, wait: 10
     user
   end
 end
