@@ -75,6 +75,16 @@ class AvailabilitiesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to availability_url(@availability)
   end
 
+  test "should not update availability with invalid param (name)" do
+    @availability.name
+    new_name = ""
+
+    assert_no_changes "@availability.reload.name" do
+      patch availability_url(@availability, format: :turbo_stream), params: {availability: {user_id: @user.id, name: new_name}, id: @availability.id}
+    end
+    assert_response :unprocessable_entity
+  end
+
   test "should destroy availability" do
     assert_difference("Availability.count", -1) do
       delete availability_url(@availability)
