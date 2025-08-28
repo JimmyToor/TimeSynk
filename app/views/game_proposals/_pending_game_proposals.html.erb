@@ -1,8 +1,8 @@
-<%# locals: (pending_game_proposals: nil, limit: GameProposal::PAGE_LIMIT_SHORT)  %>
+<%# locals: (pending_game_proposals: nil, limit: GameProposal::PAGE_LIMIT_SHORT) %>
 <%= turbo_frame_tag "pending_game_proposals",
                     role: "presentation",
                     class: "empty:hidden",
                     data: {controller:"reload-on-restore",
                            src: "#{game_proposals_path}?limit=#{limit}&pending_only=true&format=turbo_stream"} do %>
-  <%= render "game_proposals/pending_game_proposals_list", pending_game_proposals: pending_game_proposals %>
+  <%= render "game_proposals/pending_game_proposals_list", pending_game_proposals: pending_game_proposals, limit: limit %>
 <% end %>

@@ -1,11 +1,11 @@
-<%# locals: (pending_game_proposals: nil)  %>
+<%# locals: (pending_game_proposals: nil, limit: GameSession::PAGE_LIMIT_SHORT)  %>
 <% if pending_game_proposals.present? %>
   <section>
     <%= render "shared/header_primary", id: "pending_game_proposals" do %>
       <%= t("game_proposal.pending.title") %>
     <% end %>
     <ul aria-labelledby="pending_game_proposals">
-      <% pending_game_proposals.sort_by(&:created_at).each do |game_proposal| %>
+      <% pending_game_proposals.sort_by(&:created_at).first(limit).each do |game_proposal| %>
         <li class="flex">
           <%= render game_proposal,
                      reload_on_restore: false,
