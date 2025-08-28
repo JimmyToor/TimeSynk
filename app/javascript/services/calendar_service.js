@@ -10,10 +10,7 @@ export default class CalendarService {
    * @param {Object} options - Configuration options for the calendar.
    */
   constructor(calendarElement, options) {
-    this.fullCalendarObj = this.#createFullCalendar(
-      calendarElement,
-      options,
-    );
+    this.fullCalendarObj = this.#createFullCalendar(calendarElement, options);
     this.allCalendars = new Map(); // <calendarId, calendar>
     this.calendarIdsByType = new Map(); // <calendarType, Set<calendarId>>
     this.calendarStates = new Map(); // <calendarId, isActive>
@@ -32,7 +29,7 @@ export default class CalendarService {
       eventSourceSuccess: (retrievedCalendars, response) => {
         return this.#processCalendars(retrievedCalendars);
       },
-      eventSourceFailure:(errorObj)=> {
+      eventSourceFailure: (errorObj) => {
         if (!(errorObj instanceof JsonRequestError)) return;
 
         this.#handleError(errorObj);
@@ -51,20 +48,15 @@ export default class CalendarService {
    * @param explanation {string} - A message explaining the error context.
    * @param solution {string} - A message suggesting a solution or next steps.
    */
-  #handleError(errorObj,
-               explanation = "There was an error while fetching the calendar! Error: ",
-               solution = "\nPlease refresh and try again.") {
-    alert(
-      explanation +
-      errorObj.message +
-      solution,
-    );
+  #handleError(
+    errorObj,
+    explanation = "There was an error while fetching the calendar! Error: ",
+    solution = "\nPlease refresh and try again.",
+  ) {
+    alert(explanation + errorObj.message + solution);
 
     if (process.env.NODE_ENV !== "production") {
-      console.error(
-        explanation,
-        errorObj,
-      );
+      console.error(explanation, errorObj);
     }
   }
 
@@ -83,7 +75,6 @@ export default class CalendarService {
 
     return events;
   }
-
 
   /**
    * Processes a single calendar and updates the events array.
@@ -170,10 +161,7 @@ export default class CalendarService {
       // Each event is derived from a hash that includes IceCube::Schedule data
       start: schedule.start_time.time,
       end: schedule.end_time.time, // End time for the initial event, not the end of recurrence
-      // If the duration is a multiple of 1440 min (24 hours) and starts at midnight (T07:00:00), it lasts for entire days
-      allDay:
-        (schedule.duration / 60) % 1440 === 0 &&
-        schedule.start_time.time.includes("T07:00:00"),
+      allDay: this.#eventIsAllDay(schedule.start_time.time, schedule.duration),
       extendedProps: {
         recordId: schedule.id,
         type: calendar.type,
@@ -211,7 +199,25 @@ export default class CalendarService {
     // Don't want to include RRULE if it's not a recurring event
     if (schedule.cal_rrule && schedule.cal_rrule.includes("RRULE"))
       event.rrule = this.#convertRule(schedule.cal_rrule);
+
     return event;
+  }
+
+  /**
+   * Checks if a start time and duration imply an event lasts entire days e.g. from midnight to a following midnight
+   * @param startTime - The start time in any format accepted by the Date constructor
+   * @param duration - A duration in seconds
+   * @returns {boolean} True if event lasts entire days, false otherwise
+   */
+  #eventIsAllDay(startTime, duration) {
+    startTime = new Date(startTime);
+    // Check if start is at local midnight and duration is full days
+    return (
+      startTime.getHours() === 0 &&
+      startTime.getMinutes() === 0 &&
+      startTime.getSeconds() === 0 &&
+      (duration / 60) % 1440 === 0
+    );
   }
 
   /**
@@ -247,7 +253,7 @@ export default class CalendarService {
   }
 
   /**
-   * Resets all internal data structures.
+   * Clears all stored calendar data
    */
   resetData() {
     this.allCalendars.clear();
