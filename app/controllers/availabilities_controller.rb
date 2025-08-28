@@ -48,7 +48,7 @@ class AvailabilitiesController < ApplicationController
     else
       flash.now[:alert] = {message: I18n.t("availability.create.error"),
                            options: {list_items: @availability.errors.full_messages}}
-      render "create_fail"
+      render "create_fail", status: :unprocessable_entity
     end
   end
 
@@ -59,7 +59,7 @@ class AvailabilitiesController < ApplicationController
     else
       flash.now[:alert] = {message: I18n.t("availability.update.error"),
                            options: {list_items: @availability.errors.full_messages}}
-      render "update_fail"
+      render "update_fail", status: :unprocessable_entity
     end
   end
 
