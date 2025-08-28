@@ -1,4 +1,4 @@
-<%# locals: (src:, slim: false, game_proposal: nil, upcoming_game_sessions: [], group_id: nil, limit: GameSession::PAGE_LIMIT)  %>
+<%# locals: (src:, slim: false, game_proposal: nil, upcoming_game_sessions: [], group_id: nil, limit: GameSession::PAGE_LIMIT_SHORT)  %>
 <%= turbo_frame_tag "upcoming_game_sessions",
                     role: "presentation",
                     class: "empty:hidden",
@@ -10,8 +10,8 @@
   <% if slim %>
     <%= render "game_sessions/upcoming_game_sessions_list_slim",
                upcoming_game_sessions: upcoming_game_sessions,
-               game_proposal: game_proposal %>
+               game_proposal: game_proposal -%>
   <% else %>
-    <%= render "game_sessions/upcoming_game_sessions_list", upcoming_game_sessions: upcoming_game_sessions %>
+    <%= render "game_sessions/upcoming_game_sessions_list", upcoming_game_sessions: upcoming_game_sessions -%>
   <% end %>
-<% end -%>
+<% end %>
