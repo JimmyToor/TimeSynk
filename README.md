@@ -46,12 +46,12 @@ Input your available times and TimeSynk will find the best time for everyone to 
    | TIMESYNK_DATABASE_USER     | Database server username (default: postgres)                                                               |
    | TIMESYNK_DATABASE_PASSWORD | Database server password (default: postgres)                                                               |
    | TIMESYNK_DATABASE_PASSWORD | Database server password (default: postgres)                                                               |
-   | REDIS_URL                  | Redis server URL                                                                       |
+   | REDIS_URL                  | Redis server URL                                                                                           |
    
 
 ## Running
 
-1. Start Postgres database. You can also manually set up the database with an existing Postgres server instead.
+1. Start Postgres and Redis databases.
    ```bash
    docker compose -f docker-compose.dev.yml up -d
    ```
